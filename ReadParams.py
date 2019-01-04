@@ -33,6 +33,7 @@ class ReadParams:
     def getForEqs(self,param): 
 	
         match = [s for s in self.input if param in s]
+        #print(param,match)
         match_split = match[0].split(",")
         #equation = match_split[0]
         plotMee = match_split[1]

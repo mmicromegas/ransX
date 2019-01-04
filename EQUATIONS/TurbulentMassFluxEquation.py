@@ -255,7 +255,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r""
+        setylabel = r"g cm$^{-2}$ s$^{-2}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

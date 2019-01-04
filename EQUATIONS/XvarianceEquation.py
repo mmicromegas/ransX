@@ -13,7 +13,7 @@ import ALIMIT as al
 
 class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,tauL,intc,data_prefix):
         super(XvarianceEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -21,6 +21,8 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         self.data_prefix = data_prefix
         self.inuc = inuc
+        self.element = element
+        self.tauL = tauL 		
 
         # assign global data to be shared across whole class
         self.timec     = eht.item().get('timec')[intc] 
@@ -131,11 +133,11 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # END Xi VARIANCE EQUATION 		
         ##########################		
 		
-        print('#----------------------------------------------------#')		
-        print('Loading RA-ILES COMPOSITION VARIANCE EQUATION terms')	
-        print('Central time (in s): ',round(self.timec,1))	
-        print('Averaging windows (in s): ',self.tavg.item(0))
-        print('Time range (in s from-to): ',round(self.trange[0],1),round(self.trange[1],1))		
+        #print('#----------------------------------------------------#')		
+        #print('Loading RA-ILES COMPOSITION VARIANCE EQUATION terms')	
+        #print('Central time (in s): ',round(self.timec,1))	
+        #print('Averaging windows (in s): ',self.tavg.item(0))
+        #print('Time range (in s from-to): ',round(self.trange[0],1),round(self.trange[1],1))		
 				
 		
     def plot_Xvariance(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -143,6 +145,7 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
+        element = self.element
 		
         # load x GRID
         grd1 = self.xzn0
@@ -161,8 +164,8 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('Xvariance xnucid '+str(xnucid))
-        plt.semilogy(grd1,plt1,color='b',label = r'$\sigma$'+str(self.inuc))
+        plt.title('Xvariance for ' + self.element)
+        plt.semilogy(grd1,plt1,color='b',label = r"$\sigma_i$")
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -177,14 +180,17 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xvariance_'+xnucid+'.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xvariance_'+element+'.png')
 		
 	
-    def plot_Xvariance_equation(self,LAXIS,xbl,xbr,ybu,ybd,tauL,ilg):
+    def plot_Xvariance_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xi variance equation in the model""" 
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
+        element = self.element		
+		
+        tauL = self.tauL		
 		
         # load x GRID
         grd1 = self.xzn0
@@ -212,7 +218,7 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 				
         # plot DATA 
-        plt.title('Xvariance equation xnucid '+str(xnucid))
+        plt.title('Xvariance equation for '+self.element)
         plt.plot(grd1,lhs0,color='cyan',label = r'$-\partial_t (\overline{\rho} \sigma)$')
         plt.plot(grd1,lhs1,color='purple',label = r'$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma)$')		
         plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f^\sigma$')
@@ -234,5 +240,5 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xvariance_'+xnucid+'.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_XvarianceEquation_'+element+'.png')		
 		

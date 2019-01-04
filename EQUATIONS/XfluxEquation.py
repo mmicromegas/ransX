@@ -13,7 +13,7 @@ import ALIMIT as al
 
 class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,intc,data_prefix):
         super(XfluxEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -21,6 +21,7 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         self.data_prefix = data_prefix
         self.inuc = inuc
+        self.element = element
 		
         # assign global data to be shared across whole class
         self.timec     = eht.item().get('timec')[intc] 
@@ -148,11 +149,11 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # END Xi FLUX EQUATION 
         ######################	
 
-        print('#----------------------------------------------------#')		
-        print('Loading RA-ILES COMPOSITION FLUX EQUATION terms')	
-        print('Central time (in s): ',round(self.timec,1))	
-        print('Averaging windows (in s): ',self.tavg.item(0))
-        print('Time range (in s from-to): ',round(self.trange[0],1),round(self.trange[1],1))
+        #print('#----------------------------------------------------#')		
+        #print('Loading RA-ILES COMPOSITION FLUX EQUATION terms')	
+        #print('Central time (in s): ',round(self.timec,1))	
+        #print('Averaging windows (in s): ',self.tavg.item(0))
+        #print('Time range (in s from-to): ',round(self.trange[0],1),round(self.trange[1],1))
 		
 			
     def plot_Xflux(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -160,6 +161,7 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
+        element = self.element
 		
         # load x GRID
         grd1 = self.xzn0		
@@ -175,8 +177,8 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 					
         # plot DATA 
-        plt.title('Xflux xnucid '+str(xnucid))
-        plt.plot(grd1,plt1,color='k',label = r'f'+str(self.inuc))
+        plt.title('Xflux for '+self.element)
+        plt.plot(grd1,plt1,color='k',label = r'f')
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -191,13 +193,14 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xflux_'+xnucid+'.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xflux_'+element+'.png')
 		
     def plot_Xflux_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xi flux equation in the model""" 
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
+        element = self.element
 		
         # load x GRID
         grd1 = self.xzn0
@@ -225,7 +228,7 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 				
         # plot DATA 
-        plt.title('Xflux equation xnucid '+str(xnucid))
+        plt.title('Xflux equation for '+self.element)
         plt.plot(grd1,lhs0,color='#8B3626',label = r'$-\partial_t f_i$')
         plt.plot(grd1,lhs1,color='#FF7256',label = r'$-\nabla_r (\widetilde{u}_r f)$')		
         plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f^r_i$')
@@ -249,7 +252,7 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xflux_'+xnucid+'.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_XfluxEquation_'+element+'.png')		
 						
     #def gauss(x, *p): 
     # Define model function to be used to fit to the data above:

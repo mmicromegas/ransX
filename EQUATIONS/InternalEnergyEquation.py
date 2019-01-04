@@ -78,7 +78,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_dt_eht_dd_fht_ei = -self.dt(t_ddei,xzn0,t_timec,intc)	
 
         # LHS -div eht_dd fht_ux fht_ei		
-        self.minus_div_eht_dd_fht_ux_fht_ei = -self.Div(dd*fht_ei,xzn0)
+        self.minus_div_eht_dd_fht_ux_fht_ei = -self.Div(dd*fht_ux*fht_ei,xzn0)
 		
         # RHS -div fei
         self.minus_div_fei = -self.Div(f_ei,xzn0)

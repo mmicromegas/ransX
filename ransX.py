@@ -26,13 +26,56 @@ def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
 
-# plot	
+# PLOT
+
+# CONTINUITY EQUATION
 if str2bool(params.getForEqs('rho')['plotMee']): plt.execRho()					
 if str2bool(params.getForEqs('conteq')['plotMee']): plt.execContEq()
 if str2bool(params.getForEqsBar('conteqBar')['plotMee']): plt.execContEqBar()
 
+# MOMENTUM X EQUATION
+if str2bool(params.getForEqs('momx')['plotMee']): plt.execMomx()
+if str2bool(params.getForEqs('momxeq')['plotMee']): plt.execMomxEq()
+
+# TURBULENT KINETIC ENERGY EQUATION
 if str2bool(params.getForEqs('tke')['plotMee']): plt.execTke()
-if str2bool(params.getForEqs('tkeeq')['plotMee']): plt.execTkeEq(properties['kolmrate'])
+if str2bool(params.getForEqs('tkeeq')['plotMee']): plt.execTkeEq(properties['kolm_tke_diss_rate'])
+
+# INTERNAL ENERGY EQUATION
+if str2bool(params.getForEqs('eint')['plotMee']): plt.execEi()
+if str2bool(params.getForEqs('eieq')['plotMee']): plt.execEiEq(properties['tke_diss'])
+
+# INTERNAL ENERGY FLUX EQUATION
+if str2bool(params.getForEqs('eintflx')['plotMee']): plt.execEiFlx()
+if str2bool(params.getForEqs('eiflxeq')['plotMee']): plt.execEiFlxEq(properties['tke_diss'])
+
+# INTERNAL ENERGY VARIANCE EQUATION
+if str2bool(params.getForEqs('eintvar')['plotMee']): plt.execEiVar()
+if str2bool(params.getForEqs('eivareq')['plotMee']): plt.execEiVarEq(properties['tke_diss'],properties['tauL'])
+
+# ENTROPY EQUATION
+if str2bool(params.getForEqs('entr')['plotMee']): plt.execSS()
+if str2bool(params.getForEqs('sseq')['plotMee']): plt.execSSeq(properties['tke_diss'])
+
+# ENTROPY FLUX EQUATION
+if str2bool(params.getForEqs('entrflx')['plotMee']): plt.execSSflx()
+if str2bool(params.getForEqs('ssflxeq')['plotMee']): plt.execSSflxEq(properties['tke_diss'])
+
+# ENTROPY VARIANCE EQUATION
+if str2bool(params.getForEqs('entrvar')['plotMee']): plt.execSSvar()
+if str2bool(params.getForEqs('ssvareq')['plotMee']): plt.execSSvarEq(properties['tke_diss'],properties['tauL'])
+
+# DENSITY VARIANCE EQUATION
+if str2bool(params.getForEqs('densvar')['plotMee']): plt.execDDvar()
+if str2bool(params.getForEqs('ddvareq')['plotMee']): plt.execDDvarEq(properties['tauL'])
+
+# TURBULENT MASS FLUX EQUATION a.k.a A EQUATION
+if str2bool(params.getForEqs('tmsflx')['plotMee']): plt.execTMSflx()
+if str2bool(params.getForEqs('aeq')['plotMee']): plt.execAeq()
+
+# DENSITY-SPECIFIC VOLUME COVARIANCE a.k.a. B EQUATION
+if str2bool(params.getForEqs('dsvc')['plotMee']): plt.execDSVC()
+if str2bool(params.getForEqs('beq')['plotMee']): plt.execBeq()
 
 # load network
 network = params.getNetwork() 
@@ -40,81 +83,9 @@ network = params.getNetwork()
 for elem in network[1:-1]: # skip network identifier in the list 
     inuc = params.getInuc(network,elem) 	
     if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem)
-    if str2bool(params.getForEqs('xtrs_'+elem)['plotMee']): plt.execXtrs(inuc,elem,'xtrs_'+elem)
-    #if str2bool(params.getForEqs('xflx_'+elem)['plotMee']): plt.execXflx(inuc,elem,'xflx_'+elem)
-    #if str2bool(params.getForEqs('xsig_'+elem)['plotMee']): plt.execXvar(inuc,elem,'xsig_'+elem)	
-
-			  
-#ransXMOM    =    xmom.XmomentumEquation(eht_data,ig,intc,prefix)
-#ransTKE     =     tken.TurbulentKineticEnergyEquation(eht_data,ig,intc,-properties['kolmrate'],prefix)
-#ransEINT    =    eint.InternalEnergyEquation(eht_data,ig,intc,properties['tke_diss'],prefix)
-#ransENTR    =    entr.EntropyEquation(eht_data,ig,intc,properties['tke_diss'],prefix)
-#ransSIGMASS = sigmass.EntropyVarianceEquation(eht_data,ig,intc,properties['tke_diss'],properties['tauL'],prefix)
-#ransSIGMAEI = sigmaei.InternalEnergyVarianceEquation(eht_data,ig,intc,properties['tke_diss'],properties['tauL'],prefix)
-#ransSIGMADD = sigmadd.DensityVarianceEquation(eht_data,ig,intc,,prefix)
-#ransB       =       b.DensitySpecificVolumeCovarianceEquation(eht_data,ig,intc,prefix)
-#ransFEIX    = feix.InternalEnergyFluxEquation(eht_data,ig,intc,properties['tke_diss'],prefix)
-#ransFSSX    = fssx.EntropyFluxEquation(eht_data,ig,intc,properties['tke_diss'],prefix)
-#ransA       = a.TurbulentMassFluxEquation(eht_data,ig,intc,prefix)
-
-#ransXtra = xtra.XtransportEquation(eht_data,ig,inuc,intc,prefix)
-#ransXflx = xflx.XfluxEquation(eht_data,ig,inuc,intc,prefix)
-#ransXvar = xvar.XvarianceEquation(eht_data,ig,inuc,intc,prefix)
-#ransXdif = xdif.Xdiffusivity(eht_data,ig,inuc,intc,prefix) 
-
-
-# PLOT UX MOMENTUM EQUATION
-
-#ransXMOM.plot_ux(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransXMOM.plot_x_momentum_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT TURBULENT KINETIC ENERGY EQUATION
-
-#xbl = 3.5e8; xbr = 3.9e8 ; ybu = 2.e2; ybd = -2.e2; ilg = 0 # Ne-shell Cyril
-#xbl = 3.7e8; xbr = 9.8e8 ; ybu = 3.e13; ybd = 0.; ilg = 0 # O-burn Meakin/Arnett 2007
-
-#ransTKE.plot_tke(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-#xbl = 3.5e8; xbr = 3.9e8 ; ybu = 2.e2; ybd = -2.e2; ilg = 0 # Ne-shell Cyril
-#xbl = 3.7e8; xbr = 9.8e8 ; ybu = +6.e18; ybd = -6.e18; ilg = 0 # O-burn Meakin/Arnett 2007
-
-
-#ransTKE.plot_tke_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT INTERNAL ENERGY EQUATION
-#ransEINT.plot_ei(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransEINT.plot_ei_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT ENTROPY EQUATION
-#ransENTR.plot_ss(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransENTR.plot_ss_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT ENTROPY VARIANCE EQUATION 
-#ransSIGMASS.plot_sigma_ss(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransSIGMASS.plot_sigma_ss_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT ENTROPY FLUX EQUATION 
-#ransFSSX.plot_fss(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransFSSX.plot_fss_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT INTERNAL ENERGY FLUX EQUATION 
-#ransFEIX.plot_fei(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransFEIX.plot_fei_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT DENSITY SPECIFIC VOLUME COVARIANCE
-#ransB.plot_b(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransB.plot_b_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT INTERNAL ENERGY VARIANCE EQUATION
-#ransSIGMAEI.plot_sigma_ei(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransSIGMAEI.plot_sigma_ei_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT DENSITY VARIANCE EQUATION
-#ransSIGMADD.plot_sigma_dd(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransSIGMADD.plot_sigma_dd_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-# PLOT TURBULENT MASS FLUX EQUATION
-#ransA.plot_a(LAXIS,xbl,xbr,ybu,ybd,ilg)
-#ransA.plot_a_equation(LAXIS,xbl,xbr,ybu,ybd,ilg)
-
-
+    if str2bool(params.getForEqs('xtrseq_'+elem)['plotMee']): plt.execXtrsEq(inuc,elem,'xtrseq_'+elem)
+    if str2bool(params.getForEqs('xflx_'+elem)['plotMee']): plt.execXflx(inuc,elem,'xflx_'+elem)	
+    if str2bool(params.getForEqs('xflxeq_'+elem)['plotMee']): plt.execXflxEq(inuc,elem,'xflxeq_'+elem)
+    if str2bool(params.getForEqs('xvar_'+elem)['plotMee']): plt.execXvar(inuc,elem,'xvar_'+elem)	
+    if str2bool(params.getForEqs('xvareq_'+elem)['plotMee']): plt.execXvarEq(inuc,elem,'xvareq_'+elem,properties['tauL'])	
+    if str2bool(params.getForEqs('xdiff_'+elem)['plotMee']): plt.execDiff(inuc,elem,'xdiff_'+elem,properties['lc'],properties['uconv'])

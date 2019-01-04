@@ -12,10 +12,10 @@ import ALIMIT as al
 
 # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf
 
-class XmomentumEquation(calc.CALCULUS,al.ALIMIT,object):
+class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
-        super(XmomentumEquation,self).__init__(ig) 
+        super(MomentumEquationY,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)	
@@ -26,82 +26,78 @@ class XmomentumEquation(calc.CALCULUS,al.ALIMIT,object):
         self.timec     = eht.item().get('timec')[intc] 
         self.tavg      = np.asarray(eht.item().get('tavg')) 
         self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
+        self.xzn0      = np.asarray(eht.item().get('xzn0'))
+        self.yzn0      = np.asarray(eht.item().get('yzn0'))		
         self.nx        = np.asarray(eht.item().get('nx')) 
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
+        self.dd        = np.asarray(eht.item().get('dd')[intc])		
         self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.gg        = np.asarray(eht.item().get('gg')[intc])
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-
-        self.dduxux      = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy      = np.asarray(eht.item().get('dduyuy')[intc])
+        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
+        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
+		
+        self.dduyux      = np.asarray(eht.item().get('dduxuy')[intc])
         self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])		
 		
         xzn0 = self.xzn0
+        yzn0 = self.yzn0
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 
-        t_ddux    = np.asarray(eht.item().get('ddux')) 		
+        t_dduy    = np.asarray(eht.item().get('dduy')) 		
 
  		# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 		
         dd = self.dd
-        ux = self.ux
         pp = self.pp
-        gg = self.gg
         ddux = self.ddux
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz
+        dduy = self.dduy		
+        dduyux = self.dduyux
+        dduzuz = self.dduzuz 		
 		
-        # construct equation-specific mean fields		
-        fht_ux = ddux/dd
-        rxx = dduxux - ddux*ddux/dd
+        # construct equation-specific mean fields
+        fht_ux = ddux/dd  		
+        fht_uy = dduy/dd 		
+        ryx = dduyux - dduy*ddux/dd
 		
         #####################
-        # X MOMENTUM EQUATION 
+        # Y MOMENTUM EQUATION 
         #####################
 
         # LHS -dq/dt 		
-        self.minus_dt_ddux = -self.dt(t_ddux,xzn0,t_timec,intc)
+        self.minus_dt_dduy = -self.dt(t_dduy,xzn0,t_timec,intc)
      
         # LHS -div rho fht_ux fht_ux
-        self.minus_div_eht_dd_fht_ux_fht_ux = -self.Div(dd*fht_ux*fht_ux,xzn0)	 
-		
-        # RHS -div rxx
-        self.minus_div_rxx = -self.Div(rxx,xzn0)
+        self.minus_div_eht_dd_fht_ux_fht_uy = -self.Div(dd*fht_ux*fht_uy,xzn0)	 
+		 
+        # RHS -div ryy
+        self.minus_div_ryx = -self.Div(ryx,xzn0)
 		
         # RHS -G
-        self.minus_G = -(dduyuy+dduzuz)/xzn0
+        self.minus_G = -(dduyux/xzn0 - dduzuz_o_rtany)
 		
-        # RHS -(grad P - rho g)
-        #self.minus_gradx_pp_eht_dd_eht_gg = self.Grad(pp,xzn0) - dd*gg
-        self.minus_gradx_pp_eht_dd_eht_gg = np.zeros(self.nx)   		
+        # RHS -1/r gradx_pp		
+        self.minus_1or_gradx_pp = -(1./xzn0)*self.Grad(pp,xzn0) 
 		
         # -res
-        self.minus_resResXmomentumEquation = \
-          -(self.minus_dt_ddux + self.minus_div_eht_dd_fht_ux_fht_ux + self.minus_div_rxx \
-            + self.minus_G + self.minus_gradx_pp_eht_dd_eht_gg)
+        self.minus_resResYmomentumEquation = \
+          -(self.minus_dt_dduy + self.minus_div_eht_dd_fht_ux_fht_uy + self.minus_div_ryx \
+            + self.minus_G + self.minus_1or_gradx_pp)
 		
         #########################
-        # END X MOMENTUM EQUATION 
+        # END Y MOMENTUM EQUATION 
         #########################		
 		
-    def plot_ux(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot velocity ux stratification in the model""" 
+    def plot_momentum_y(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot dduy stratification in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
 
         # load DATA to plot
-        plt1 = self.ddux/self.dd
-        plt2 = self.ux
-        #plt3 = self.vexp
+        plt1 = self.dduy
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -110,18 +106,16 @@ class XmomentumEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [plt1,plt2]		
+        to_plot = [plt1]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 			
         # plot DATA 
-        plt.title('ux')
-        plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{u}_x$')
-        plt.plot(grd1,plt2,color='green',label = r'$\overline{u}_x$')
-        #plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')		
-
+        plt.title('dduy')
+        plt.plot(grd1,plt1,color='brown',label = r'$\overline{\rho} \widetilde{u}_y$')
+		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$\widetilde{u}_x$ (cm s$^{-1}$)"
+        setylabel = r"$\overline{\rho} \widetilde{u}_y$ (g cm$^{-2}$ s$^{-1}$)"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -133,22 +127,22 @@ class XmomentumEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_ux.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_dduy.png')
 	
-    def plot_x_momentum_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot continuity equation in the model""" 
+    def plot_momentum_equation_y(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot momentum y equation in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_ddux
-        lhs1 = self.minus_div_eht_dd_fht_ux_fht_ux
+        lhs0 = self.minus_dt_dduy
+        lhs1 = self.minus_div_eht_dd_fht_ux_fht_uy
 		
-        rhs0 = self.minus_div_rxx 
+        rhs0 = self.minus_div_ryx 
         rhs1 = self.minus_G
-        rhs2 = self.minus_gradx_pp_eht_dd_eht_gg
+        rhs2 = self.minus_1or_gradx_pp
 		
-        res = self.minus_resResXmomentumEquation
+        res = self.minus_resResYmomentumEquation
 				
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -161,12 +155,12 @@ class XmomentumEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('x momentum equation')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
+        plt.title('y momentum equation')
+        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_\theta ) $")
         plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_r ) $")		
-        plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
-        plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_r}$")
-        plt.plot(grd1,rhs2,color='r',label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r) \ 0$")		
+        plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\theta r})$")
+        plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\theta}$")
+        plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \partial_r \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS
@@ -182,7 +176,7 @@ class XmomentumEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'rmomentum_eq.png')			
+        plt.savefig('RESULTS/'+self.data_prefix+'momentum_y_eq.png')			
 		
 
 

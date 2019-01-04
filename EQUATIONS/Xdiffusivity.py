@@ -14,7 +14,7 @@ import ALIMIT as al
 
 class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,lc,uconv,intc,data_prefix):
         super(Xdiffusivity,self).__init__(ig) 
 	
         # load data to structured array
@@ -22,6 +22,9 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 	
         self.data_prefix = data_prefix
         self.inuc = inuc
+        self.element = element		
+        self.lc = lc
+        self.uconv = uconv 		
 	
         self.xzn0      = np.asarray(eht.item().get('xzn0')) 
 	
@@ -38,12 +41,15 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         self.ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
 		
 		
-    def plot_X_Ediffusivity(self,LAXIS,xbl,xbr,ybu,ybd,lc,uconv,ilg):
+    def plot_X_Ediffusivity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
     # Eulerian diffusivity
 	
         # convert nuc ID to string
         xnucid = str(self.inuc)
-
+        lc = self.lc
+        uconv = self.uconv		
+        element = self.element
+		
         # load x GRID
         grd1 = self.xzn0		
         xzn0 = self.xzn0
@@ -110,7 +116,7 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 	
         # plot DATA 		
-        plt.title(r'Eulerian Diff xnucid '+str(xnucid))
+        plt.title(r'Eulerian Diff for '+self.element)
         plt.plot(grd1,term0,label=r"$\sigma_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
         plt.plot(grd1,term1,label=r"$\sigma_{urms} = (1/3) \ u_{rms} \ l_c $")
         plt.plot(grd1,term2,label=r"$\sigma_{umlt} = + u_{mlt} \ l_c $")        
@@ -130,7 +136,7 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'Ediff_'+xnucid+'.png')			
+        plt.savefig('RESULTS/'+self.data_prefix+'Ediff_'+element+'.png')			
 			
 				
     def gauss(x, *p): 

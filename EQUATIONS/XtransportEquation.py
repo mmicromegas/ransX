@@ -121,7 +121,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_rhoX_'+'.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_rhoX_'+element+'.png')
 	
     def plot_Xtransport_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xrho transport equation in the model""" 

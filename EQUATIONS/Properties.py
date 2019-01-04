@@ -186,7 +186,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         tke = self.tke		
 		
         # load TKE dissipation
-        diss = self.minus_resTkeEquation
+        diss = abs(self.minus_resTkeEquation)
 
         # load enuc
         enuc1 = self.enuc1	 
@@ -208,7 +208,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         diss[idxr:self.nx] = 0.
  
         diss_max = diss.max()
-        ind = np.where( (diss < 0.02*diss_max) )[0]
+        ind = np.where( (diss > 0.02*diss_max) )[0]
 		
         xzn0inc  = xzn0[ind[0]]
         xzn0outc = xzn0[ind[-1]]		
@@ -279,18 +279,18 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
 
         uconv = (2.*tke)**0.5
         if lc != 0.: 
-            kolmrate = (uconv**3)/lc
-            tauL = tke/kolmrate
+            kolm_tke_diss_rate = (uconv**3)/lc
+            tauL = tke/kolm_tke_diss_rate
         else:
             print('ERROR: Estimated size of convection zone is 0')
-            kolmrate = 99999999999.
+            kolm_tke_diss_rate = 99999999999.
             tauL = 9999999999. 			
             #sys.exit()
 		
-        return {'tauL':tauL,'kolmrate':kolmrate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv}			
+        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv}			
 		
     def execute(self):
         p = self.properties(self.laxis,self.xbl,self.xbr)
-        return {'tauL':p['tauL'],'kolmrate':p['kolmrate'],'tke_diss':p['tke_diss'],'tke':p['tke'],'lc':p['lc'],'uconv':p['uconv']}		
+        return {'tauL':p['tauL'],'kolm_tke_diss_rate':p['kolm_tke_diss_rate'],'tke_diss':p['tke_diss'],'tke':p['tke'],'lc':p['lc'],'uconv':p['uconv']}		
 		
 		
