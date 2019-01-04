@@ -11,7 +11,7 @@ import EQUATIONS.Properties as prop
 import MasterPlot as plot
 import ast 
 
-paramFile = 'param.oblrez'
+paramFile = 'param.file'
 params = rp.ReadParams(paramFile)
 
 # get simulation properties
