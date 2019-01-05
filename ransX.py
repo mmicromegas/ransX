@@ -80,6 +80,7 @@ if str2bool(params.getForEqs('beq')['plotMee']): plt.execBeq()
 # load network
 network = params.getNetwork() 
 
+# COMPOSITION TRANSPORT, FLUX, VARIANCE EQUATIONS and EULERIAN DIFFUSIVITY
 for elem in network[1:-1]: # skip network identifier in the list 
     inuc = params.getInuc(network,elem) 	
     if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem)
