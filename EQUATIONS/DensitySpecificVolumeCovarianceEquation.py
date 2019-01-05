@@ -10,7 +10,7 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf
+# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 
 class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
@@ -45,7 +45,7 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_sv      = np.asarray(eht.item().get('sv')) 		
 
  		# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
         dd   = self.dd
         ux   = self.ux

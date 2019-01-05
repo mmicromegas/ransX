@@ -38,7 +38,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         #######################
 		
  	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf		
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/		
 		
         dd      = self.dd
         ddux    = self.ddux

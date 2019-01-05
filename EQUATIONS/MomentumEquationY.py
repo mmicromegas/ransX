@@ -10,7 +10,7 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf
+# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 
 class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
 
@@ -48,7 +48,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         t_dduy    = np.asarray(eht.item().get('dduy')) 		
 
  	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
         dd = self.dd
         pp = self.pp

@@ -10,7 +10,7 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf
+# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 
 class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
@@ -40,8 +40,8 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         t_dd      = np.asarray(eht.item().get('dd')) 
         t_ddux    = np.asarray(eht.item().get('ddux')) 		
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
         dd = self.dd
         ux = self.ux

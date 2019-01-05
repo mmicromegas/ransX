@@ -9,7 +9,7 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf
+# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 
 class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
@@ -64,7 +64,7 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         ######################		
  
   	# pick equation-specific Reynolds-averaged mean fields according to: 
-        # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
                       
         dd = self.dd       
         ux = self.ux       

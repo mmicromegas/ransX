@@ -10,7 +10,7 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf
+# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 
 class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
@@ -65,7 +65,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_sigma_ei	= (t_ddeiei/t_dd) -(t_ddei*t_ddei)/(t_dd*t_dd)	
  
  	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
         dd = self.dd
         ux = self.ux

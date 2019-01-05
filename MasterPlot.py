@@ -83,7 +83,7 @@ class MasterPlot():
 					   params.getForProp('prop')['intc'],\
 					   params.getForProp('prop')['prefix'])
 
-        # plot continuity equation									   
+        # plot continuity equation						       
         ransCONT.plot_continuity_equation(params.getForProp('prop')['laxis'],\
 	                                  params.getForEqs('conteq')['xbl'],\
 					  params.getForEqs('conteq')['xbr'],\
@@ -101,7 +101,7 @@ class MasterPlot():
 					   params.getForProp('prop')['intc'],\
 					   params.getForProp('prop')['prefix'])
 
-        # plot continuity equation bar									   
+        # plot continuity equation bar						       
         ransCONT.plot_continuity_equation_bar(params.getForProp('prop')['laxis'],\
 	                                      params.getForEqsBar('conteqBar')['xbl'],\
 					      params.getForEqsBar('conteqBar')['xbr'],\
@@ -120,7 +120,6 @@ class MasterPlot():
 	                                   params.getForProp('prop')['intc'],\
 				           params.getForProp('prop')['prefix'])
 
-        # plot Xrho									   
         ransXtra.plot_Xrho(params.getForProp('prop')['laxis'],\
 	                   params.getForEqs(x)['xbl'],\
 		    	   params.getForEqs(x)['xbr'],\
@@ -131,7 +130,7 @@ class MasterPlot():
     def execXtrsEq(self,inuc,element,x):
 
         params = self.params
-								  									  
+	
 	# instantiate 
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],\
 	                                   params.getForProp('prop')['ig'],\
@@ -159,7 +158,6 @@ class MasterPlot():
 	                              params.getForProp('prop')['intc'],\
 				      params.getForProp('prop')['prefix'])
 
-        # plot Xrho									   
         ransXflx.plot_Xflux(params.getForProp('prop')['laxis'],\
 	                    params.getForEqs(x)['xbl'],\
 		    	    params.getForEqs(x)['xbr'],\
@@ -170,8 +168,8 @@ class MasterPlot():
     def execXflxEq(self,inuc,element,x):
 
         params = self.params
-								  									  
-	    # instantiate 
+	 				    					  
+	# instantiate 
         ransXflx = xflx.XfluxEquation(params.getForProp('prop')['eht_data'],\
 	                              params.getForProp('prop')['ig'],\
 	                              inuc,element,\
@@ -198,7 +196,6 @@ class MasterPlot():
 	                                  params.getForProp('prop')['intc'],\
 				          params.getForProp('prop')['prefix'])
 
-        # plot Xrho									   
         ransXvar.plot_Xvariance(params.getForProp('prop')['laxis'],\
 	                        params.getForEqs(x)['xbl'],\
 		    	      	params.getForEqs(x)['xbr'],\
@@ -255,7 +252,7 @@ class MasterPlot():
 						      -kolmrate,\
 						      params.getForProp('prop')['prefix'])
 
-        # plot turbulent kinetic energy								   
+        # plot turbulent kinetic energy			   
         ransTke.plot_tke(params.getForProp('prop')['laxis'],\
 	                 params.getForEqs('tkeeq')['xbl'],\
 			 params.getForEqs('tkeeq')['xbr'],\
