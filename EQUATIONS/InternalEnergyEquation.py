@@ -50,7 +50,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         t_dd      = np.asarray(eht.item().get('dd')) 
         t_ddei    = np.asarray(eht.item().get('ddei')) 		
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 		
         dd = self.dd
@@ -98,7 +98,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS dissipated turbulent kinetic energy
         self.plus_disstke = +tke_diss  	
 
-	    # -res
+	# -res
         self.minus_resEiEquation = -(self.minus_dt_eht_dd_fht_ei + self.minus_div_eht_dd_fht_ux_fht_ei + \
          self.minus_div_fei + self.minus_div_ftt + self.minus_eht_pp_div_eht_ux + self.minus_eht_ppf_df + \
          self.plus_eht_dd_fht_enuc + self.plus_disstke)

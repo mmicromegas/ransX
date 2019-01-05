@@ -49,7 +49,7 @@ class MomentumEquationZ(calc.CALCULUS,al.ALIMIT,object):
         t_dd      = np.asarray(eht.item().get('dd')) 
         t_dduz    = np.asarray(eht.item().get('dduz')) 		
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 		
         dd = self.dd

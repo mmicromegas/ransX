@@ -59,7 +59,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         t_sigma_ss	= (t_ddsssq/t_dd)-(t_ddss*t_ddss)/(t_dd*t_dd)	
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 		
         dd = self.dd
@@ -93,7 +93,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         disstke_tt = tke_diss/tt
 					 
         ###########################		
-		# ENTROPY VARIANCE EQUATION
+	# ENTROPY VARIANCE EQUATION
         ###########################  
      
         # LHS -dt dd sigma_ss 		
@@ -105,7 +105,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div f_sigma_ss
         self.minus_div_f_sigma_ss = -self.Div(f_sigma_ss,xzn0)		
 
-		# RHS minus_two_f_ss_gradx_fht_ss
+	# RHS minus_two_f_ss_gradx_fht_ss
         self.minus_two_f_ss_gradx_fht_ss = -2.*f_ss*self.Grad(fht_ss,xzn0)
 
         # RHS minus_two_ssff_div_ftt_T
@@ -118,7 +118,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS plus_two_ssff_epsilonk_tt_approx		
         self.plus_two_ssff_epsilonk_tt_approx = +2.*(ss-ddss/dd)*disstke_tt
 		
-		# -res 
+	# -res 
         self.minus_resSigmaSSequation = -(self.minus_dt_eht_dd_sigma_ss + self.minus_div_eht_dd_fht_ux_sigma_ss + \
          self.minus_div_f_sigma_ss + self.minus_two_f_ss_gradx_fht_ss + self.minus_two_ssff_div_ftt_T + \
          self.plus_two_ssff_enuc_T + self.plus_two_ssff_epsilonk_tt_approx)
@@ -127,7 +127,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_sigmaSSkolmdiss = -dd*sigma_ss/tauL		 
 		 
         ###############################		
-		# END ENTROPY VARIANCE EQUATION
+	# END ENTROPY VARIANCE EQUATION
         ###############################
 								   
 		

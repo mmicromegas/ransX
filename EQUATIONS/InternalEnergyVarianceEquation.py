@@ -64,7 +64,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         t_sigma_ei	= (t_ddeiei/t_dd) -(t_ddei*t_ddei)/(t_dd*t_dd)	
  
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 		
         dd = self.dd
@@ -116,7 +116,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div f_sigma_ei
         self.minus_div_f_sigma_ei = -self.Div(f_sigma_ei,xzn0)
 				
-		# RHS minus_two_f_ei_gradx_fht_ei
+	# RHS minus_two_f_ei_gradx_fht_ei
         self.minus_two_f_ei_gradx_fht_ei = -2.*f_ei*self.Grad(fht_ei,xzn0)
 		
         # RHS -2 eiff eht_pp fht_d
@@ -128,7 +128,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -2 fht_d eht_eiff ppf
         self.minus_two_fht_d_eht_eiff_ppf = -2.*(dddivu/dd)*(eippdivu - eidivu*pp - (ddei/dd)*ppdivu + (ddei/dd)*pp*divu - eipp*dddivu/dd + ei*pp*dddivu/dd)
 
-	    # RHS -2 eht_eiff ppf dff
+	# RHS -2 eht_eiff ppf dff
         self.minus_two_eht_eiff_ppf_dff =  -2.*(eippdivu - eidivu*pp - (ddei/dd)*ppdivu + (ddei/dd)*pp*divu - eipp*dddivu/dd + ei*pp*dddivu/dd)		
 		
         # RHS +2 eht_eiff dd enuc
@@ -143,7 +143,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
           self.minus_two_eht_pp_eht_eiff_dff + self.minus_two_fht_d_eht_eiff_ppf + self.minus_two_eht_eiff_ppf_dff + \
           self.plus_two_eht_eiff_dd_enuc + self.plus_two_eht_eiff_tke_diss_approx) 
 		  
-		# Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
+	# Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
         self.minus_sigmaEIkolmdiss = -dd*sigma_ei/tauL	
 		
         ################################################

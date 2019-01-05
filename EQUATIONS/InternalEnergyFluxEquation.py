@@ -75,7 +75,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ddei = np.asarray(eht.item().get('ddei'))
         t_ddeiux = np.asarray(eht.item().get('ddeiux')) 		
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 
         ux = self.ux
@@ -132,7 +132,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         eiff_GrM = -(ddeiuyuy - (ddei/dd)*dduyuy)/xzn0 - (ddeiuzuz - (ddei/dd)*dduzuz)/xzn0		
 		
         ###############################		
-		# INTERNAL ENERGY FLUX EQUATION
+	# INTERNAL ENERGY FLUX EQUATION
         ###############################
 					   
         # time-series of internal energy flux 
@@ -147,25 +147,24 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div flux internal energy flux
         self.minus_div_fr_ei = -self.Div(fr_ei,xzn0)
         
-		# RHS -f_ei_gradx_fht_ux
+	# RHS -f_ei_gradx_fht_ux
         self.minus_f_ei_gradx_fht_ux = -f_ei*self.Grad(fht_ux,xzn0)
 		
-		# RHS -rxx_gradx_fht_ei
+	# RHS -rxx_gradx_fht_ei
         self.minus_rxx_gradx_fht_ei = -rxx*self.Grad(fht_ei,xzn0)	
 
-		# RHS -eht_eiff_gradx_eht_pp
+	# RHS -eht_eiff_gradx_eht_pp
         self.minus_eht_eiff_gradx_eht_pp = -(ei - ddei/dd)*self.Grad(pp,xzn0)
 		
         # RHS -eht_eiff_gradx_ppf
         self.minus_eht_eiff_gradx_ppf = -(eigradxpp - (ddei/dd)*self.Grad(pp,xzn0))
 		
-		# RHS -eht_uxff_pp_divu
+	# RHS -eht_uxff_pp_divu
         self.minus_eht_uxff_pp_divu = -(uxppdivu - (ddux/dd)*ppdivu)
 
         # RHS eht_uxff_dd_nuc	
         self.plus_eht_uxff_dd_nuc =  (dduxenuc1 + dduxenuc2) - fht_ux*(ddenuc1+ddenuc2) 		
-
-		# RHS eht_uxff_div_ftt (not calculated)
+	# RHS eht_uxff_div_ftt (not calculated)
         eht_uxff_div_f_tt = np.zeros(self.nx)  		
         self.plus_eht_uxff_div_ftt = eht_uxff_div_f_tt
 		
@@ -183,7 +182,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
           self.plus_Gei)
                                        
         ###################################		
-		# END INTERNAL ENERGY FLUX EQUATION
+	# END INTERNAL ENERGY FLUX EQUATION
         ###################################
 									   
     def plot_fei(self,LAXIS,xbl,xbr,ybu,ybd,ilg):

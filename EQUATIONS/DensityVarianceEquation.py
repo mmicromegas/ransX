@@ -49,7 +49,7 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ddux    = np.asarray(eht.item().get('ddux')) 			
         t_ddsq    = np.asarray(eht.item().get('ddsq'))		
 		
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 				
         ux = self.ux
@@ -69,7 +69,7 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         f_sigma_dd = ddddux - 2.*ddux*dd + dd*dd*ux - ddsq*fht_ux + dd*dd*fht_ux		
     
         ###########################   		
-		# DENSITY VARIANCE EQUATION
+	# DENSITY VARIANCE EQUATION
         ###########################		
 		
         # time-series of density variance 
@@ -105,7 +105,7 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_sigmaDDkolmdiss = -(ddsq-dd*dd)/tauL		
 
         ###############################   		
-		# END DENSITY VARIANCE EQUATION
+	# END DENSITY VARIANCE EQUATION
         ###############################									
 					
     def plot_sigma_dd(self,LAXIS,xbl,xbr,ybu,ybd,ilg):

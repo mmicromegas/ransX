@@ -79,7 +79,7 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         # variance of temperature fluctuations		
         sigmatt = (ddttsq-ddtt*ddtt/dd)/dd	
 		
-		# effective diffusivity
+	# effective diffusivity
         Deff = -fxi/(dd*self.Grad(fht_xi,xzn0))
 		
         # urms diffusivity		

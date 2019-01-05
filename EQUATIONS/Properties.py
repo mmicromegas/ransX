@@ -66,7 +66,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         # TURBULENT KINETIC ENERGY EQUATION 
         ###################################   		
 		
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 		
         dd = self.dd
@@ -155,8 +155,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke + \
                                        self.plus_wb + self.plus_wp + self.minus_div_fekx + \
 	                                   self.minus_div_fpx + self.minus_r_grad_u)
-
-									   									   
+        
         #######################################
         # END TURBULENT KINETIC ENERGY EQUATION 
         #######################################  		
@@ -168,9 +167,9 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
     def properties(self,laxis,xbl,xbr):
         """ Print properties of your simulation""" 
 
-        ##############################		
+        ##############		
         # PROPERTIES #
-        ##############################
+        ##############
 	
         xzn0 = self.xzn0
 	

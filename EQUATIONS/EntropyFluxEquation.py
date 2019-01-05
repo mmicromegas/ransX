@@ -75,7 +75,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ddss = np.asarray(eht.item().get('ddss'))
         t_ddssux = np.asarray(eht.item().get('ddssux')) 		
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 
         ux = self.ux
@@ -132,7 +132,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ssff_GrM = -(ddssuyuy - (ddss/dd)*dduyuy)/xzn0 - (ddssuzuz - (ddss/dd)*dduzuz)/xzn0		
 		
         #######################		
-		# ENTROPY FLUX EQUATION
+	# ENTROPY FLUX EQUATION
         #######################
 					   
         # time-series of entropy flux 
@@ -147,13 +147,13 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div flux internal energy flux
         self.minus_div_fr_ss = -self.Div(fr_ss,xzn0)
         
-		# RHS -f_ss_gradx_fht_ux
+	# RHS -f_ss_gradx_fht_ux
         self.minus_f_ss_gradx_fht_ux = -f_ss*self.Grad(fht_ux,xzn0)
 		
-		# RHS -rxx_gradx_fht_ss
+	# RHS -rxx_gradx_fht_ss
         self.minus_rxx_gradx_fht_ss = -rxx*self.Grad(fht_ss,xzn0)	
 
-		# RHS -eht_ssff_gradx_eht_pp
+	# RHS -eht_ssff_gradx_eht_pp
         self.minus_eht_ssff_gradx_eht_pp = -(ss - ddss/dd)*self.Grad(pp,xzn0)
 		
         # RHS -eht_ssff_gradx_ppf
@@ -162,7 +162,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS eht_uxff_dd_nuc_T	
         self.plus_eht_uxff_dd_nuc_T =  (dduxenuc1_tt + dduxenuc2_tt) - fht_ux*(ddenuc1_tt+ddenuc2_tt) 		
 
-		# RHS eht_uxff_div_ftt_T (not calculated)
+	# RHS eht_uxff_div_ftt_T (not calculated)
         eht_uxff_div_f_tt_T = np.zeros(self.nx)  		
         self.plus_eht_uxff_div_ftt_T = eht_uxff_div_f_tt_T
 		
@@ -180,7 +180,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
           self.plus_Gss)
 
         ###########################		
-		# END ENTROPY FLUX EQUATION
+	# END ENTROPY FLUX EQUATION
         ###########################
 
     def plot_fss(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -277,7 +277,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=1,prop={'size':8})
+        plt.legend(loc=ilg,prop={'size':8})
 
         # display PLOT
         plt.show(block=False)

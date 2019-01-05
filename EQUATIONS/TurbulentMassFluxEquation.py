@@ -60,7 +60,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ux      = np.asarray(eht.item().get('ux')) 
         t_ddux    = np.asarray(eht.item().get('ddux')) 		
 
- 		# pick equation-specific Reynolds-averaged mean fields according to:
+ 	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/PROMPI_DATA/blob/master/ransXtoPROMPI.pdf	
 
         dd = self.dd		
@@ -94,7 +94,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         eht_a = ux - ddux/dd
 				
         ############################## 		
-		# TURBULENT MASS FLUX EQUATION
+	# TURBULENT MASS FLUX EQUATION
         ##############################
 
         # time-series of turbulent mass flux 
@@ -118,9 +118,9 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS +div_eht_ddf_uxf_uxf
         self.plus_div_eht_ddf_uxf_uxf = self.Div(eht_ddf_uxf_uxf,xzn0) 
 
-		##########################
+	##########################
 		
-		# RHS +div rxx
+	# RHS +div rxx
         #self.plus_div_rxx = +self.Div(rxx,xzn0)
 
         # RHS -eht_dd div uxf uxf
@@ -156,7 +156,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 		#  self.plus_Ga) 
 		
         ################################## 		
-		# END TURBULENT MASS FLUX EQUATION
+	# END TURBULENT MASS FLUX EQUATION
         ##################################
 		
     def plot_a(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
