@@ -192,8 +192,6 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         ax = fig.add_subplot(1,1,1)
         ax.yaxis.grid(color='gray', linestyle='dashed')
         ax.xaxis.grid(color='gray', linestyle='dashed')
-
-#        plt.ylim([-80.,80.])
      
         fc = 1.
     
@@ -216,7 +214,7 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         ax.set_ylabel(r'g s$^{-1}$')
  
         # Create a title, in italics
-#        ax.set_title('continuity equation')
+        # ax.set_title('continuity equation')
  
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.
