@@ -38,6 +38,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
 		
         self.dduyux      = np.asarray(eht.item().get('dduxuy')[intc])
         self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])		
+        self.dduzuzcoty      = np.asarray(eht.item().get('dduzuzcoty')[intc])
 		
         xzn0 = self.xzn0
         yzn0 = self.yzn0
@@ -55,7 +56,8 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         ddux = self.ddux
         dduy = self.dduy		
         dduyux = self.dduyux
-        dduzuz = self.dduzuz 		
+        dduzuz = self.dduzuz 	
+        dduzuzcoty = self.dduzuzcoty		
 		
         # construct equation-specific mean fields
         fht_ux = ddux/dd  		
@@ -72,11 +74,11 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         # LHS -div rho fht_ux fht_ux
         self.minus_div_eht_dd_fht_ux_fht_uy = -self.Div(dd*fht_ux*fht_uy,xzn0)	 
 		 
-        # RHS -div ryy
+        # RHS -div ryx
         self.minus_div_ryx = -self.Div(ryx,xzn0)
 		
         # RHS -G
-        self.minus_G = -(dduyux/xzn0 - dduzuz_o_rtany)
+        self.minus_G = -(dduyux/xzn0 - dduzuzcoty/xzn0)
 		
         # RHS -1/r gradx_pp		
         self.minus_1or_gradx_pp = -(1./xzn0)*self.Grad(pp,xzn0) 
@@ -157,7 +159,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         # plot DATA 
         plt.title('y momentum equation')
         plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_\theta ) $")
-        plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_r ) $")		
+        plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\theta ) $")		
         plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\theta r})$")
         plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\theta}$")
         plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \partial_r \overline{P}$")		

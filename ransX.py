@@ -28,18 +28,62 @@ def str2bool(param):
 
 # PLOT
 
+# TEMPERATURE AND DENSITY 
+if str2bool(params.getForEqs('ttdd')['plotMee']): plt.execRhoTemp()	
+
+# PRESSURE AND INTERNAL ENERGY 
+if str2bool(params.getForEqs('ppei')['plotMee']): plt.execPressEi()	
+
+# NUCLEAR ENERGY PRODUCTION
+if str2bool(params.getForEqs('enuc')['plotMee']): plt.execEnuc()	
+
+# TEMPERATURE GRADIENTS
+if str2bool(params.getForEqs('nablas')['plotMee']): plt.execNablas()
+
+# DEGENERACY PARAMETER
+if str2bool(params.getForEqs('psi')['plotMee']): plt.execDegeneracy()
+
+# TURBULENT AND EXPANSION VELOCITY 
+if str2bool(params.getForEqs('vel')['plotMee']): plt.execVelocities()
+
+# BRUNT-VAISALLA FREQUENCY
+if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
+
+# BUOYANCY 
+if str2bool(params.getForEqs('buo')['plotMee']): plt.execBuoyancy()
+
 # CONTINUITY EQUATION
 if str2bool(params.getForEqs('rho')['plotMee']): plt.execRho()					
 if str2bool(params.getForEqs('conteq')['plotMee']): plt.execContEq()
 if str2bool(params.getForEqsBar('conteqBar')['plotMee']): plt.execContEqBar()
 
 # MOMENTUM X EQUATION
-if str2bool(params.getForEqs('momx')['plotMee']): plt.execMomx()
+if str2bool(params.getForEqs('momex')['plotMee']): plt.execMomx()
 if str2bool(params.getForEqs('momxeq')['plotMee']): plt.execMomxEq()
 
+# MOMENTUM Y EQUATION
+if str2bool(params.getForEqs('momey')['plotMee']): plt.execMomy()
+if str2bool(params.getForEqs('momyeq')['plotMee']): plt.execMomyEq()
+
+# MOMENTUM Z EQUATION
+if str2bool(params.getForEqs('momez')['plotMee']): plt.execMomz()
+if str2bool(params.getForEqs('momzeq')['plotMee']): plt.execMomzEq()
+
+# REYNOLDS STRESS XX EQUATION
+if str2bool(params.getForEqs('rxx')['plotMee']): plt.execRxx()
+if str2bool(params.getForEqs('rexxeq')['plotMee']): plt.execRxxEq(properties['kolm_tke_diss_rate'])
+
+# KINETIC ENERGY EQUATION
+if str2bool(params.getForEqs('kine')['plotMee']): plt.execKe()
+if str2bool(params.getForEqs('kieq')['plotMee']): plt.execKeEq(properties['kolm_tke_diss_rate'])
+
 # TURBULENT KINETIC ENERGY EQUATION
-if str2bool(params.getForEqs('tke')['plotMee']): plt.execTke()
+if str2bool(params.getForEqs('tkie')['plotMee']): plt.execTke()
 if str2bool(params.getForEqs('tkeeq')['plotMee']): plt.execTkeEq(properties['kolm_tke_diss_rate'])
+
+# TOTAL ENERGY EQUATION
+if str2bool(params.getForEqs('toe')['plotMee']): plt.execTe()
+if str2bool(params.getForEqs('teeq')['plotMee']): plt.execTeEq(properties['kolm_tke_diss_rate'])
 
 # INTERNAL ENERGY EQUATION
 if str2bool(params.getForEqs('eint')['plotMee']): plt.execEi()

@@ -23,10 +23,10 @@ class PROMPI_ransdat:
         header_line4 = fhead.readline().split()
 
 #       Cyril's output + 4 lines		
-        header_line5 = fhead.readline().split()
-        header_line6 = fhead.readline().split()
-        header_line7 = fhead.readline().split()
-        header_line8 = fhead.readline().split()
+        #header_line5 = fhead.readline().split()
+        #header_line6 = fhead.readline().split()
+        #header_line7 = fhead.readline().split()
+        #header_line8 = fhead.readline().split()
 		
         self.nstep       = int(header_line1[0])
         self.rans_tstart = float(header_line1[1])
@@ -66,7 +66,7 @@ class PROMPI_ransdat:
 			
         for line in range(self.qqx):
             line = fhead.readline().strip()        
-            self.xznl.append(float(line[8:22].strip()))
+            self.xznl.append(float(line[8:24].strip()))
             self.xzn0.append(float(line[23:38].strip()))
             self.xznr.append(float(line[39:54].strip()))
 			
@@ -74,12 +74,12 @@ class PROMPI_ransdat:
             line = fhead.readline().strip()        
             self.yznl.append(float(line[8:22].strip()))
             self.yzn0.append(float(line[23:38].strip()))
-            self.yznr.append(float(line[39:54].strip()))	
+            self.yznr.append(float(line[39:54].strip()))
 
         for line in range(self.qqz):
             line = fhead.readline().strip()
-            self.zznl.append(float(line[8:22].strip()))
-            self.zzn0.append(float(line[23:38].strip()))
+            self.zznl.append(float(line[8:23].strip()))
+            self.zzn0.append(float(line[24:38].strip()))
             self.zznr.append(float(line[39:54].strip()))	
 
         frans = open(filename,'rb')
@@ -88,9 +88,43 @@ class PROMPI_ransdat:
         self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='F')	
 
         self.ransd = {}
+
+        nx = {'nx' : self.qqx}
+        self.ransd.update(nx)
 		
-        self.ransd = {"xzn0" : self.xzn0}
+        ny = {'ny' : self.qqy}
+        self.ransd.update(ny)
 		
+        nz = {'nz' : self.qqz}		
+        self.ransd.update(nz)
+		
+        xzn0 = {'xzn0' : self.xzn0}
+        self.ransd.update(xzn0)		
+		
+        xznl = {'xznl' : self.xznl}
+        self.ransd.update(xznl)		
+		
+        xznr = {'xznr' : self.xznr}
+        self.ransd.update(xznr)		
+		
+        yzn0 = {'yzn0' : self.yzn0}
+        self.ransd.update(yzn0)				
+		
+        yznl = {'yznl' : self.yznl}
+        self.ransd.update(yznl)				
+		
+        yznr = {'yznr' : self.yznr}
+        self.ransd.update(yznr)		
+
+        zzn0 = {'zzn0' : self.zzn0}
+        self.ransd.update(zzn0)				
+		
+        zznl = {'zznl' : self.zznl}
+        self.ransd.update(zznl)				
+		
+        zznr = {'zznr' : self.zznr}
+        self.ransd.update(zznr)	
+				
         i = 0
 #        print(self.ransl)
 		
@@ -109,29 +143,11 @@ class PROMPI_ransdat:
         return self.ransd
 		
     def rans_list(self):
-        return self.ransl
-		
-    def rans_qqx(self):
-        return self.qqx
-
-    def rans_qqy(self):
-        return self.qqy
-
-    def rans_qqz(self):
-        return self.qqz		
-
-    def rans_xznl(self):
-        return self.xznl
-
-    def rans_xznr(self):
-        return self.xznr		
+        return self.ransl	
 		
     def ransdict(self):
         print self.eh.keys()
-		
-    def sterad(self):
-        pass
-    
+
 class PROMPI_blockdat:
 
     def __init__(self,filename,dat):

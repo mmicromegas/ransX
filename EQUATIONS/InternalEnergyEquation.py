@@ -48,7 +48,8 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 
-        t_ddei    = np.asarray(eht.item().get('ddei')) 		
+        t_ddei    = np.asarray(eht.item().get('ddei')) 	
+        t_fht_ei = t_ddie/t_dd		
 
  	# pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
@@ -75,7 +76,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         ##########################
 
         # LHS -dq/dt 		
-        self.minus_dt_eht_dd_fht_ei = -self.dt(t_ddei,xzn0,t_timec,intc)	
+        self.minus_dt_eht_dd_fht_ei = -self.dt(t_dd*t_fht_ei,xzn0,t_timec,intc)	
 
         # LHS -div eht_dd fht_ux fht_ei		
         self.minus_div_eht_dd_fht_ux_fht_ei = -self.Div(dd*fht_ux*fht_ei,xzn0)

@@ -199,13 +199,15 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs1 = self.minus_div_eht_dd_fht_ux_sigma_ei
 		
         rhs0 = self.minus_div_f_sigma_ei
-        rhs1 = self.minus_two_f_ei_gradx_fht_ei		
+        #rhs1 = self.minus_two_f_ei_gradx_fht_ei		
         rhs2 = self.minus_two_eiff_eht_pp_fht_d
-        rhs3 = self.minus_two_eht_pp_eht_eiff_dff
+        #rhs3 = self.minus_two_eht_pp_eht_eiff_dff
         rhs4 = self.minus_two_fht_d_eht_eiff_ppf
         rhs5 = self.minus_two_eht_eiff_ppf_dff
         rhs6 = self.plus_two_eht_eiff_dd_enuc
         rhs7 = self.plus_two_eht_eiff_tke_diss_approx 
+		
+        rhs9 = self.minus_two_f_ei_gradx_fht_ei + self.minus_two_eht_pp_eht_eiff_dff
 		
         res = self.minus_resSigmaEIequation
 		
@@ -218,7 +220,8 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,res]		
+        #to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,res]
+        to_plot = [lhs0,lhs1,rhs0,rhs2,rhs4,rhs5,rhs6,rhs7,rhs8,rhs9,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
@@ -227,14 +230,15 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma_{\epsilon_I})$")	
 		
         plt.plot(grd1,rhs0,color='r',label = r'$-\nabla f_{\sigma \epsilon_I}$')     
-        plt.plot(grd1,rhs1,color='c',label = r'$-2 f_\sigma \partial_r \widetilde{\epsilon_I}$') 
+        #plt.plot(grd1,rhs1,color='c',label = r'$-2 f_\sigma \partial_r \widetilde{\epsilon_I}$') 
+        plt.plot(grd1,rhs9,color='c',label = r'$-2 f_\sigma \partial_r \widetilde{\epsilon_I} -2 \overline{P} \ \overline{\epsilon''_I d''}$')
         plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 \overline{\epsilon''_i} \ \overline{P} \ \widetilde{d}$") 
-        plt.plot(grd1,rhs3,color='m',label = r"$-2 \overline{P} \ \overline{\epsilon''_I d''}$")
+        #plt.plot(grd1,rhs3,color='m',label = r"$-2 \overline{P} \ \overline{\epsilon''_I d''}$")
         plt.plot(grd1,rhs4,color='g',label = r"$-2 \widetilde{d} \ \overline{\epsilon''_I P'}$")	
         plt.plot(grd1,rhs5,color='olive',label = r"$-2 \overline{\epsilon''_I P' d''} $")	
         plt.plot(grd1,rhs6,color='b',label = r"$+2\overline{\epsilon''_I \rho \varepsilon_{nuc}} $")	
         plt.plot(grd1,rhs7,color='deeppink',label = r"$+2\overline{\epsilon''_I \varepsilon_{k}} $")	
-        plt.plot(grd1,rhs8,color='y',label = r"$-\sigma_\epsilon / \tau_L$")				
+        plt.plot(grd1,rhs8,color='k',linewidth=0.8,label = r"$-\sigma_\epsilon / \tau_L$")				
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$")
  
         # define and show x/y LABELS

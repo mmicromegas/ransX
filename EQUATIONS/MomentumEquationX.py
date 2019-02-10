@@ -27,8 +27,8 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.tavg      = np.asarray(eht.item().get('tavg')) 
         self.trange    = np.asarray(eht.item().get('trange')) 		
         self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
-
+        self.nx      = np.asarray(eht.item().get('nx')) 
+		
         self.dd        = np.asarray(eht.item().get('dd')[intc])
         self.ux        = np.asarray(eht.item().get('ux')[intc])	
         self.pp        = np.asarray(eht.item().get('pp')[intc])
@@ -80,8 +80,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.minus_G = -(dduyuy+dduzuz)/xzn0
 		
         # RHS -(grad P - rho g)
-        #self.minus_gradx_pp_eht_dd_eht_gg = self.Grad(pp,xzn0) - dd*gg
-        self.minus_gradx_pp_eht_dd_eht_gg = np.zeros(self.nx)   		
+        self.minus_gradx_pp_eht_dd_eht_gg = self.Grad(pp,xzn0) - dd*gg   		
 		
         # -res
         self.minus_resResXmomentumEquation = \
@@ -166,7 +165,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_r ) $")		
         plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
         plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_r}$")
-        plt.plot(grd1,rhs2,color='r',label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r) \ 0$")		
+        plt.plot(grd1,rhs2,color='r',label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r)$")		
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS

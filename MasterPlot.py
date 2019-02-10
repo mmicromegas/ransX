@@ -1,9 +1,9 @@
 import EQUATIONS.ContinuityEquation as cont
 import EQUATIONS.MomentumEquationX as momx
-#import EQUATIONS.MomentumEquationY as momy
-#import EQUATIONS.MomentumEquationZ as momz
+import EQUATIONS.MomentumEquationY as momy
+import EQUATIONS.MomentumEquationZ as momz
 
-#import EQUATIONS.ReynoldsStressXX as rxx N/A YET
+import EQUATIONS.ReynoldsStressXXequation as rxx
 #import EQUATIONS.ReynoldsStressYY as ryy N/A YET
 #import EQUATIONS.ReynoldsStressZZ as rzz N/A YET
 #import EQUATIONS.ReynoldsStressXY as rxy N/A YET
@@ -18,14 +18,15 @@ import EQUATIONS.InternalEnergyEquation as ei
 import EQUATIONS.InternalEnergyVarianceEquation as sigmaei
 import EQUATIONS.InternalEnergyFluxEquation as feix
 
-#import EQUATIONS.KineticEnergyEquation as ek N/A YET
-#import EQUATIONS.TotalEnergyEquation as et N/A YET
+import EQUATIONS.KineticEnergyEquation as ek
+import EQUATIONS.TotalEnergyEquation as et
 
 import EQUATIONS.EntropyEquation as ss
 import EQUATIONS.EntropyVarianceEquation as sigmass
 import EQUATIONS.EntropyFluxEquation as fssx
 
 #import EQUATIONS.PressureEquation as pp N/A YET
+#import EQUATIONS.PressureFluxEquation as fppx N/A YET
 #import EQUATIONS.PressureVarianceEquation as sigmapp N/A YET
 
 #import EQUATIONS.TemperatureEquation as tt N/A YET
@@ -33,6 +34,7 @@ import EQUATIONS.EntropyFluxEquation as fssx
 #import EQUATIONS.TemperatureVarianceEquation as sigmatt N/A YET
 
 #import EQUATIONS.EnthalpyEquation as hh N/A YET
+#import EQUATIONS.EnthalpyVarianceEquation as fhhx N/A YET
 #import EQUATIONS.EnthalpyFluxEquation as sigmahh N/A YET
 
 import EQUATIONS.DensityVarianceEquation as sigmadd
@@ -46,6 +48,16 @@ import EQUATIONS.Xdiffusivity as xdiff
 
 #import EQUATIONS.ABARtransportEquation as abar N/A YET
 #import EQUATIONS.ZBARtransportEquation as zbar N/A YET
+
+import EQUATIONS.TemperatureDensity as ttdd
+import EQUATIONS.PressureInternalEnergy as ppei
+import EQUATIONS.NuclearEnergyProduction as enuc
+import EQUATIONS.TemperatureGradients as nablas
+import EQUATIONS.Degeneracy as psi
+import EQUATIONS.Velocities as vel
+import EQUATIONS.BruntVaisalla as bruntv
+import EQUATIONS.Buoyancy as buo
+
 
 import ReadParams as params
 
@@ -254,11 +266,11 @@ class MasterPlot():
 
         # plot turbulent kinetic energy			   
         ransTke.plot_tke(params.getForProp('prop')['laxis'],\
-	                 params.getForEqs('tkeeq')['xbl'],\
-			 params.getForEqs('tkeeq')['xbr'],\
-			 params.getForEqs('tkeeq')['ybu'],\
-			 params.getForEqs('tkeeq')['ybd'],\
-			 params.getForEqs('tkeeq')['ilg'])
+	                 params.getForEqs('tkie')['xbl'],\
+			 params.getForEqs('tkie')['xbr'],\
+			 params.getForEqs('tkie')['ybu'],\
+			 params.getForEqs('tkie')['ybd'],\
+			 params.getForEqs('tkie')['ilg'])
 										  
 										  
     def execTkeEq(self,kolmrate):
@@ -279,7 +291,7 @@ class MasterPlot():
 				  params.getForEqs('tkeeq')['ybu'],\
 				  params.getForEqs('tkeeq')['ybd'],\
 				  params.getForEqs('tkeeq')['ilg'])
-        
+				  
     def execMomx(self):
 						  
         params = self.params						  
@@ -291,7 +303,7 @@ class MasterPlot():
 					   params.getForProp('prop')['prefix'])
 								   
         ransMomx.plot_momentum_x(params.getForProp('prop')['laxis'],\
-	                                  params.getForEqs('momx')['xbl'],\
+	                                  params.getForEqs('momex')['xbl'],\
 				 params.getForEqs('momx')['xbr'],\
 				 params.getForEqs('momx')['ybu'],\
 				 params.getForEqs('momx')['ybd'],\
@@ -327,11 +339,11 @@ class MasterPlot():
 					   params.getForProp('prop')['prefix'])
 								   
         ransMomy.plot_momentum_y(params.getForProp('prop')['laxis'],\
-	                         params.getForEqs('mony')['xbl'],\
-				 params.getForEqs('mony')['xbr'],\
-				 params.getForEqs('mony')['ybu'],\
-				 params.getForEqs('mony')['ybd'],\
-				 params.getForEqs('mony')['ilg'])
+	                         params.getForEqs('momey')['xbl'],\
+				 params.getForEqs('momey')['xbr'],\
+				 params.getForEqs('momey')['ybu'],\
+				 params.getForEqs('momey')['ybd'],\
+				 params.getForEqs('momey')['ilg'])
 										  
 
     def execMomyEq(self):
@@ -345,11 +357,11 @@ class MasterPlot():
 					   params.getForProp('prop')['prefix'])
 								   
         ransMomy.plot_momentum_equation_y(params.getForProp('prop')['laxis'],\
-	                                  params.getForEqs('monyeq')['xbl'],\
-					  params.getForEqs('monyeq')['xbr'],\
-					  params.getForEqs('monyeq')['ybu'],\
-					  params.getForEqs('monyeq')['ybd'],\
-					  params.getForEqs('monyeq')['ilg'])
+	                                  params.getForEqs('momyeq')['xbl'],\
+					  params.getForEqs('momyeq')['xbr'],\
+					  params.getForEqs('momyeq')['ybu'],\
+					  params.getForEqs('momyeq')['ybd'],\
+					  params.getForEqs('momyeq')['ilg'])
 	
     def execMomz(self):
 						  
@@ -362,11 +374,11 @@ class MasterPlot():
 					   params.getForProp('prop')['prefix'])
 								   
         ransMomz.plot_momentum_z(params.getForProp('prop')['laxis'],\
-	                         params.getForEqs('monz')['xbl'],\
-				 params.getForEqs('monz')['xbr'],\
-				 params.getForEqs('monz')['ybu'],\
-				 params.getForEqs('monz')['ybd'],\
-				 params.getForEqs('monz')['ilg'])
+	                         params.getForEqs('momez')['xbl'],\
+				 params.getForEqs('momez')['xbr'],\
+				 params.getForEqs('momez')['ybu'],\
+				 params.getForEqs('momez')['ybd'],\
+				 params.getForEqs('momez')['ilg'])
 										  
 
     def execMomzEq(self):
@@ -380,11 +392,11 @@ class MasterPlot():
 					   params.getForProp('prop')['prefix'])
 								   
         ransMomz.plot_momentum_equation_z(params.getForProp('prop')['laxis'],\
-	                                  params.getForEqs('monzeq')['xbl'],\
-					  params.getForEqs('monzeq')['xbr'],\
-					  params.getForEqs('monzeq')['ybu'],\
-					  params.getForEqs('monzeq')['ybd'],\
-					  params.getForEqs('monzeq')['ilg'])
+	                                  params.getForEqs('momzeq')['xbl'],\
+					  params.getForEqs('momzeq')['xbr'],\
+					  params.getForEqs('momzeq')['ybu'],\
+					  params.getForEqs('momzeq')['ybd'],\
+					  params.getForEqs('momzeq')['ilg'])
 
 									  
     def execEi(self):
@@ -738,3 +750,268 @@ class MasterPlot():
 				 params.getForEqs('beq')['ybu'],\
 				 params.getForEqs('beq')['ybd'],\
 				 params.getForEqs('beq')['ilg'])
+				 
+    def execRhoTemp(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransTempRho =  ttdd.TemperatureDensity(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransTempRho.plot_ttdd(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('ttdd')['xbl'],\
+				 params.getForEqs('ttdd')['xbr'],\
+				 params.getForEqs('ttdd')['ybu'],\
+				 params.getForEqs('ttdd')['ybd'],\
+				 params.getForEqs('ttdd')['ilg'])				 
+				 
+    def execPressEi(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransPressEi =  ppei.PressureInternalEnergy(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransPressEi.plot_ppei(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('ppei')['xbl'],\
+				 params.getForEqs('ppei')['xbr'],\
+				 params.getForEqs('ppei')['ybu'],\
+				 params.getForEqs('ppei')['ybd'],\
+				 params.getForEqs('ppei')['ilg'])				 
+				 				 
+    def execEnuc(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransEnuc =  enuc.NuclearEnergyProduction(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransEnuc.plot_enuc(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('enuc')['xbl'],\
+				 params.getForEqs('enuc')['xbr'],\
+				 params.getForEqs('enuc')['ybu'],\
+				 params.getForEqs('enuc')['ybd'],\
+				 params.getForEqs('enuc')['ilg'])
+								 
+    def execNablas(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransNablas =  nablas.TemperatureGradients(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransNablas.plot_nablas(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('nablas')['xbl'],\
+				 params.getForEqs('nablas')['xbr'],\
+				 params.getForEqs('nablas')['ybu'],\
+				 params.getForEqs('nablas')['ybd'],\
+				 params.getForEqs('nablas')['ilg'])
+								 
+    def execDegeneracy(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransDeg =  psi.Degeneracy(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransDeg.plot_degeneracy(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('psi')['xbl'],\
+				 params.getForEqs('psi')['xbr'],\
+				 params.getForEqs('psi')['ybu'],\
+				 params.getForEqs('psi')['ybd'],\
+				 params.getForEqs('psi')['ilg'])								 
+
+    def execVelocities(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransVel =  vel.Velocities(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransVel.plot_velocities(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('vel')['xbl'],\
+				 params.getForEqs('vel')['xbr'],\
+				 params.getForEqs('vel')['ybu'],\
+				 params.getForEqs('vel')['ybd'],\
+				 params.getForEqs('vel')['ilg'])				 
+				 
+    def execBruntV(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransBruntV =  bruntv.BruntVaisalla(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransBruntV.plot_bruntvaisalla(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('nsq')['xbl'],\
+				 params.getForEqs('nsq')['xbr'],\
+				 params.getForEqs('nsq')['ybu'],\
+				 params.getForEqs('nsq')['ybd'],\
+				 params.getForEqs('nsq')['ilg'])	
+
+    def execBuoyancy(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransBuo =  buo.Buoyancy(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransBuo.plot_buoyancy(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('buo')['xbl'],\
+				 params.getForEqs('buo')['xbr'],\
+				 params.getForEqs('buo')['ybu'],\
+				 params.getForEqs('buo')['ybd'],\
+				 params.getForEqs('buo')['ilg'])
+
+    def execKe(self):
+						  
+        params = self.params			
+        kolmrate = 0.		
+						  
+        # instantiate 		
+        ransKe =  ek.KineticEnergyEquation(params.getForProp('prop')['eht_data'],\
+	                                              params.getForProp('prop')['ig'],\
+					              params.getForProp('prop')['intc'],\
+						      -kolmrate,\
+						      params.getForProp('prop')['prefix'])
+
+        # plot kinetic energy			   
+        ransKe.plot_ke(params.getForProp('prop')['laxis'],\
+	                 params.getForEqs('kine')['xbl'],\
+			 params.getForEqs('kine')['xbr'],\
+			 params.getForEqs('kine')['ybu'],\
+			 params.getForEqs('kine')['ybd'],\
+			 params.getForEqs('kine')['ilg'])
+										  
+										  
+    def execKeEq(self,kolmrate):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransKe =  ek.KineticEnergyEquation(params.getForProp('prop')['eht_data'],\
+	                                              params.getForProp('prop')['ig'],\
+					              params.getForProp('prop')['intc'],\
+						      -kolmrate,\
+						      params.getForProp('prop')['prefix'])
+
+        # plot kinetic energy equation			     
+        ransKe.plot_ke_equation(params.getForProp('prop')['laxis'],\
+	                          params.getForEqs('kieq')['xbl'],\
+				  params.getForEqs('kieq')['xbr'],\
+				  params.getForEqs('kieq')['ybu'],\
+				  params.getForEqs('kieq')['ybd'],\
+				  params.getForEqs('kieq')['ilg'])		
+
+    def execTe(self):
+						  
+        params = self.params			
+        kolmrate = 0.		
+						  
+        # instantiate 		
+        ransTe =  et.TotalEnergyEquation(params.getForProp('prop')['eht_data'],\
+	                                              params.getForProp('prop')['ig'],\
+					              params.getForProp('prop')['intc'],\
+						      -kolmrate,\
+						      params.getForProp('prop')['prefix'])
+
+        # plot total energy			   
+        ransTe.plot_et(params.getForProp('prop')['laxis'],\
+	                 params.getForEqs('toe')['xbl'],\
+			 params.getForEqs('toe')['xbr'],\
+			 params.getForEqs('toe')['ybu'],\
+			 params.getForEqs('toe')['ybd'],\
+			 params.getForEqs('toe')['ilg'])
+										  
+										  
+    def execTeEq(self,kolmrate):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransTe =  et.TotalEnergyEquation(params.getForProp('prop')['eht_data'],\
+	                                              params.getForProp('prop')['ig'],\
+					              params.getForProp('prop')['intc'],\
+						      -kolmrate,\
+						      params.getForProp('prop')['prefix'])
+
+        # plot total energy equation			     
+        ransTe.plot_et_equation(params.getForProp('prop')['laxis'],\
+	                          params.getForEqs('teeq')['xbl'],\
+				  params.getForEqs('teeq')['xbr'],\
+				  params.getForEqs('teeq')['ybu'],\
+				  params.getForEqs('teeq')['ybd'],\
+				  params.getForEqs('teeq')['ilg'])
+
+    def execRxx(self):
+						  
+        params = self.params			
+        kolmrate = 0.		
+						  
+        # instantiate 		
+        ransRxx =  rxx.ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],\
+	                                              params.getForProp('prop')['ig'],\
+					              params.getForProp('prop')['intc'],\
+						      -kolmrate,\
+						      params.getForProp('prop')['prefix'])
+
+        # plot reynolds stress rxx			   
+        ransRxx.plot_rxx(params.getForProp('prop')['laxis'],\
+	                 params.getForEqs('rxx')['xbl'],\
+			 params.getForEqs('rxx')['xbr'],\
+			 params.getForEqs('rxx')['ybu'],\
+			 params.getForEqs('rxx')['ybd'],\
+			 params.getForEqs('rxx')['ilg'])
+										  
+										  
+    def execRxxEq(self,kolmrate):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransRxx =  rxx.ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],\
+	                                              params.getForProp('prop')['ig'],\
+					              params.getForProp('prop')['intc'],\
+						      -kolmrate,\
+						      params.getForProp('prop')['prefix'])
+
+        # plot reynolds stress rxx			     
+        ransRxx.plot_rxx_equation(params.getForProp('prop')['laxis'],\
+	                          params.getForEqs('rexxeq')['xbl'],\
+				  params.getForEqs('rexxeq')['xbr'],\
+				  params.getForEqs('rexxeq')['ybu'],\
+				  params.getForEqs('rexxeq')['ybd'],\
+				  params.getForEqs('rexxeq')['ilg'])
+				  

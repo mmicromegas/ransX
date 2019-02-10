@@ -4,31 +4,24 @@ import os
 import sys
 import matplotlib.pyplot as plt       
 	   
-#datadir = 'C:\Users\mmocak\Desktop\simonX\MREZ\\'
-datadir = 'C:\Users\mmocak\Desktop\cyrilX\\'
-dataout = 'DATA\\tseries_ransout_nelrez'
+datadir = 'C:\Users\mmocak\Desktop\simonX\MREZ\\'
+#datadir = 'C:\Users\mmocak\Desktop\cyrilX\\'
+dataout = 'TSERIES\\tseries_ransout_obmrez'
 
-#trange = [210. ,650.]
+#trange = [650. ,1100.]
 #tavg = 430.
 
-#trange = [90. ,198.]
-#tavg = 100.
+trange = [200. ,372.]
+tavg = 160.
 
-trange = [200. ,450.]
-tavg = 200.
+#trange = [200. ,450.]
+#tavg = 200.
 
 ransdat = [file for file in os.listdir(datadir) if "ransdat" in file]
 ransdat = [file.replace(file,datadir+file) for file in ransdat]	
 
 filename = ransdat[0]
 ts = pt.PROMPI_ransdat(filename)
-
-qqx = ts.rans_qqx()
-qqy = ts.rans_qqy()
-qqz = ts.rans_qqz()
-
-xznl = ts.rans_xznl()
-xznr = ts.rans_xznr()
 
 ransl = ts.rans_list()
 		
@@ -69,7 +62,7 @@ ntc      = len(timec)
 
 print('Number of time averaged snapshots: ', ntc)
 print('Averaged time range: ',round(timecmin,3), round(timecmax,3))
-print('qqx',qqx)
+print('nx',ts.rans()['nx'])
 
 if ntc == 0:
     print("----------")
@@ -102,23 +95,50 @@ for s in ts.ransl:
     for i in range(ntc):
         itavg = np.where((time >= (timec[i]-tavg/2.)) & (time <= (timec[i]+tavg/2.)))
         sumdt = np.sum(dt[itavg])
-        tmp1 = np.zeros(qqx)
+        tmp1 = np.zeros(ts.rans()['nx'])
         for j in itavg[0]:   
             tmp1 += np.asarray(eh[:][j][idx])*dt[j]
         tmp2.append(tmp1/sumdt)
     field = {str(s) : tmp2}  		
     eht.update(field)     
 
-# store radial grid 
+# store grid 
 	
-grid = {'xzn0' : ts.rans()['xzn0']}
-eht.update(grid)
+nx = {'nx' : ts.rans()['nx']}
+eht.update(nx)
 
-xznl = {'xznl' : xznl}
+ny = {'nx' : ts.rans()['ny']}
+eht.update(ny)
+
+nz = {'nx' : ts.rans()['nz']}
+eht.update(nz)	
+	
+xzn0 = {'xzn0' : ts.rans()['xzn0']}
+eht.update(xzn0)
+
+xznl = {'xznl' : ts.rans()['xznl']}
 eht.update(xznl)
 
-xznr = {'xznr' : xznr}
+xznr = {'xznr' : ts.rans()['xznr']}
 eht.update(xznr)
+
+yzn0 = {'yzn0' : ts.rans()['yzn0']}
+eht.update(yzn0)
+
+yznl = {'yznl' : ts.rans()['yznl']}
+eht.update(yznl)
+
+yznr = {'yznr' : ts.rans()['yznr']}
+eht.update(yznr)
+
+zzn0 = {'zzn0' : ts.rans()['zzn0']}
+eht.update(zzn0)
+
+zznl = {'zznl' : ts.rans()['zznl']}
+eht.update(zznl)
+
+zznr = {'zznr' : ts.rans()['zznr']}
+eht.update(zznr)
 
 ntc = {'ntc': ntc}
 eht.update(ntc)
@@ -138,13 +158,13 @@ eht.update(trange)
 
 # store number of grid points in simulation
 
-nx = {'nx': qqx}
+nx = {'nx': ts.rans()['nx']}
 eht.update(nx)
 
-ny = {'ny': qqy}
+ny = {'ny': ts.rans()['ny']}
 eht.update(ny)
 
-nz = {'nz': qqz}
+nz = {'nz': ts.rans()['nz']}
 eht.update(nz)
 
 
