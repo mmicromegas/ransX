@@ -36,7 +36,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         self.ddux      = np.asarray(eht.item().get('ddux')[intc])
         self.dduy      = np.asarray(eht.item().get('dduy')[intc])
 		
-        self.dduyux      = np.asarray(eht.item().get('dduxuy')[intc])
+        self.dduxuy      = np.asarray(eht.item().get('dduxuy')[intc])
         self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])		
         self.dduzuzcoty      = np.asarray(eht.item().get('dduzuzcoty')[intc])
 		
@@ -55,14 +55,14 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         pp = self.pp
         ddux = self.ddux
         dduy = self.dduy		
-        dduyux = self.dduyux
+        dduxuy = self.dduxuy
         dduzuz = self.dduzuz 	
         dduzuzcoty = self.dduzuzcoty		
 		
         # construct equation-specific mean fields
         fht_ux = ddux/dd  		
         fht_uy = dduy/dd 		
-        ryx = dduyux - dduy*ddux/dd
+        ryx = dduxuy - ddux*dduy/dd
 		
         #####################
         # Y MOMENTUM EQUATION 
@@ -78,7 +78,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         self.minus_div_ryx = -self.Div(ryx,xzn0)
 		
         # RHS -G
-        self.minus_G = -(dduyux/xzn0 - dduzuzcoty/xzn0)
+        self.minus_G = -(dduxuy - dduzuzcoty)/xzn0
 		
         # RHS -1/r gradx_pp		
         self.minus_1or_gradx_pp = -(1./xzn0)*self.Grad(pp,xzn0) 

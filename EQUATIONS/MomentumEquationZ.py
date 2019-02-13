@@ -38,14 +38,10 @@ class MomentumEquationZ(calc.CALCULUS,al.ALIMIT,object):
         self.dduy      = np.asarray(eht.item().get('dduy')[intc])
         self.dduz      = np.asarray(eht.item().get('dduz')[intc])		
 		
-        self.dduzux      = np.asarray(eht.item().get('dduxuz')[intc])
-        self.dduzuy      = np.asarray(eht.item().get('dduyuz')[intc])		
-        self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])		
-		
+        self.dduxuz      = np.asarray(eht.item().get('dduxuz')[intc])
         self.dduzuycoty = np.asarray(eht.item().get('dduzuycoty')[intc])
 		
         xzn0 = self.xzn0
-        yzn0 = self.yzn0
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -60,15 +56,13 @@ class MomentumEquationZ(calc.CALCULUS,al.ALIMIT,object):
         pp = self.pp
         ddux = self.ddux
         dduz = self.dduz		
-        dduzux = self.dduzux
-        dduzuy = self.dduzuy		
-        dduzuz = self.dduzuz
+        dduxuz = self.dduxuz
         dduzuycoty = self.dduzuycoty		
 		
         # construct equation-specific mean fields
         fht_ux = ddux/dd  		
         fht_uz = dduz/dd 		
-        rzx = dduzux - dduz*ddux/dd
+        rzx = dduxuz - ddux*dduz/dd
 		
         #####################
         # Z MOMENTUM EQUATION 
@@ -84,7 +78,7 @@ class MomentumEquationZ(calc.CALCULUS,al.ALIMIT,object):
         self.minus_div_rzx = -self.Div(rzx,xzn0)
 		
         # RHS -G
-        self.minus_G = -(dduzux/xzn0 + dduzuycoty/xzn0)
+        self.minus_G = -(dduxuz + dduzuycoty)/xzn0
 	
         # -res
         self.minus_resResZmomentumEquation = \
