@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,45 +10,45 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class Buoyancy(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
         super(Buoyancy,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.xznl      = np.asarray(eht.item().get('xznl'))
-        self.xznr      = np.asarray(eht.item().get('xznr'))		
-        self.nx      = np.asarray(eht.item().get('nx')) 
+        # load grid
+        nx   = np.asarray(eht.item().get('nx'))		
+        xzn0 = np.asarray(eht.item().get('xzn0')) 	
+        xznl = np.asarray(eht.item().get('xznl'))
+        xznr = np.asarray(eht.item().get('xznr'))		
+		
+        # pick specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
         dd        = np.asarray(eht.item().get('dd')[intc]) 
         pp        = np.asarray(eht.item().get('pp')[intc]) 
         gg        = np.asarray(eht.item().get('gg')[intc])
         gamma1    = np.asarray(eht.item().get('gamma1')[intc])
 		
-        dlnrhodr = self.deriv(np.log(dd),self.xzn0)
-        dlnpdr = self.deriv(np.log(pp),self.xzn0)
+        dlnrhodr  = self.deriv(np.log(dd),xzn0)
+        dlnpdr    = self.deriv(np.log(pp),xzn0)
         dlnrhodrs = (1./gamma1)*dlnpdr
-        self.nsq = gg*(dlnrhodr-dlnrhodrs)
+        nsq       = gg*(dlnrhodr-dlnrhodrs)
 		
-        self.b = np.zeros(self.nx)
-        dx = self.xznr-self.xznl
-        for i in range(0,self.nx):
-            self.b[i] = self.b[i-1] + self.nsq[i]*dx[i]
+        b = np.zeros(nx)
+        dx = xznr-xznl
+        for i in range(0,nx):
+            b[i] = b[i-1] + nsq[i]*dx[i]
 		
-		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.b           = b		
+			
     def plot_buoyancy(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot Buoyancy parameter in the model""" 
+        """Plot buoyancy in the model""" 
 
         # load x GRID
         grd1 = self.xzn0
@@ -84,6 +84,6 @@ class Buoyancy(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_Buoyancy.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_buoyancy.png')
 	
 	

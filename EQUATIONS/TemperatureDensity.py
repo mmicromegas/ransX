@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,27 +10,28 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
         super(TemperatureDensity,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx      = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+
+        # pick specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 		
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.tt        = np.asarray(eht.item().get('tt')[intc])
+        dd = np.asarray(eht.item().get('dd')[intc])
+        tt = np.asarray(eht.item().get('tt')[intc])
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0 = xzn0
+        self.dd   = dd
+        self.tt   = tt		
 		
     def plot_ttdd(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot temperature and density stratification in the model""" 

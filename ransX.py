@@ -6,9 +6,9 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: January/2019
 
-import ReadParams as rp
 import EQUATIONS.Properties as prop
-import MasterPlot as plot
+import UTILS.ReadParams as rp
+import UTILS.MasterPlot as plot
 import ast 
 
 paramFile = 'param.file'
@@ -73,6 +73,14 @@ if str2bool(params.getForEqs('momzeq')['plotMee']): plt.execMomzEq()
 if str2bool(params.getForEqs('rxx')['plotMee']): plt.execRxx()
 if str2bool(params.getForEqs('rexxeq')['plotMee']): plt.execRxxEq(properties['kolm_tke_diss_rate'])
 
+# REYNOLDS STRESS YY EQUATION
+if str2bool(params.getForEqs('ryy')['plotMee']): plt.execRyy()
+if str2bool(params.getForEqs('reyyeq')['plotMee']): plt.execRyyEq(properties['kolm_tke_diss_rate'])
+
+# REYNOLDS STRESS ZZ EQUATION
+if str2bool(params.getForEqs('rzz')['plotMee']): plt.execRzz()
+if str2bool(params.getForEqs('rezzeq')['plotMee']): plt.execRzzEq(properties['kolm_tke_diss_rate'])
+
 # KINETIC ENERGY EQUATION
 if str2bool(params.getForEqs('kine')['plotMee']): plt.execKe()
 if str2bool(params.getForEqs('kieq')['plotMee']): plt.execKeEq(properties['kolm_tke_diss_rate'])
@@ -120,6 +128,14 @@ if str2bool(params.getForEqs('aeq')['plotMee']): plt.execAeq()
 # DENSITY-SPECIFIC VOLUME COVARIANCE a.k.a. B EQUATION
 if str2bool(params.getForEqs('dsvc')['plotMee']): plt.execDSVC()
 if str2bool(params.getForEqs('beq')['plotMee']): plt.execBeq()
+
+# MEAN NUMBER OF NUCLEONS PER ISOTOPE a.k.a ABAR EQUATION
+if str2bool(params.getForEqs('abar')['plotMee']): plt.execAbar()
+if str2bool(params.getForEqs('abreq')['plotMee']): plt.execAbarEq()
+
+# MEAN CHARGE PER ISOTOPE a.k.a ZBAR EQUATION
+if str2bool(params.getForEqs('zbar')['plotMee']): plt.execZbar()
+if str2bool(params.getForEqs('zbreq')['plotMee']): plt.execZbarEq()
 
 # load network
 network = params.getNetwork() 

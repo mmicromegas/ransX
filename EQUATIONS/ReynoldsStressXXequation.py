@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -9,90 +9,50 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,minus_kolmrate,data_prefix):
         super(ReynoldsStressXXequation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 		
-		
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])		
-		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
-        self.dduz      = np.asarray(eht.item().get('dduz')[intc])		
-		
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy    = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz    = np.asarray(eht.item().get('dduzuz')[intc])
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduxuy    = np.asarray(eht.item().get('dduxuy')[intc])
-        self.dduxuz    = np.asarray(eht.item().get('dduxuz')[intc])
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/			
+		
+        dd     = np.asarray(eht.item().get('dd')[intc])
+        ux     = np.asarray(eht.item().get('ux')[intc])	
+        pp     = np.asarray(eht.item().get('pp')[intc])		
+		
+        ddux   = np.asarray(eht.item().get('ddux')[intc])
+        dduy   = np.asarray(eht.item().get('dduy')[intc])
+        dduz   = np.asarray(eht.item().get('dduz')[intc])		
+		
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
 
-        self.dduxuxux    = np.asarray(eht.item().get('dduxuxux')[intc])
-        self.dduxuyuy    = np.asarray(eht.item().get('dduxuyuy')[intc])
-        self.dduxuzuz    = np.asarray(eht.item().get('dduxuzuz')[intc])
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
+        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+
+        dduxuxux = np.asarray(eht.item().get('dduxuxux')[intc])
+        dduxuyuy = np.asarray(eht.item().get('dduxuyuy')[intc])
+        dduxuzuz = np.asarray(eht.item().get('dduxuzuz')[intc])
 		
-        self.ddekux	   = np.asarray(eht.item().get('ddekux')[intc])	
-        self.ddek      = np.asarray(eht.item().get('ddek')[intc])		
+        ddekux = np.asarray(eht.item().get('ddekux')[intc])	
+        ddek   = np.asarray(eht.item().get('ddek')[intc])		
 		
-        self.ppdivux   = np.asarray(eht.item().get('ppdivux')[intc])
-        self.divux     = np.asarray(eht.item().get('divux')[intc])
-        self.ppux      = np.asarray(eht.item().get('ppux')[intc])		
+        ppdivux = np.asarray(eht.item().get('ppdivux')[intc])
+        divux   = np.asarray(eht.item().get('divux')[intc])
+        ppux    = np.asarray(eht.item().get('ppux')[intc])		
 
         #############################
         # REYNOLDS STRESS XX EQUATION 
-        #############################   		
-		
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        pp = self.pp
-		
-        ddux = self.ddux
-        dduy = self.dduy
-        dduz = self.dduz
-
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz
-
-        dduxux = self.dduxux
-        dduxuy = self.dduxuy
-        dduxuz = self.dduxuz
-
-        dduxuxux = self.dduxuxux
-        dduxuyuy = self.dduxuyuy
-        dduxuzuz = self.dduxuzuz
-		
-        ddek    = self.ddek
-        ddekux  = self.ddekux
-        ppux    = self.ppux
-        ppdivux = self.ppdivux
-        divux   = self.divux
-		
-        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
-        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
-        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 		
-
-        xzn0 = self.xzn0
+        #############################   				
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 
@@ -115,10 +75,14 @@ class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
         # construct equation-specific mean fields
         fht_ux = ddux/dd
         fht_uy = dduy/dd
-        fht_uz = dduz/dd		
+        fht_uz = dduz/dd
+
+        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
+			
         rxx = dd*uxffuxff
+		
         fkr = dduxuxux - 3.*fht_ux*dduxux + 2.*fht_ux*fht_ux*fht_ux*dd
-        self.rxx = rxx
+        fpx = ppux - pp*ux
 		
         # LHS -dq/dt 			
         self.minus_dt_rxx = -self.dt(t_rxx,xzn0,t_timec,intc)
@@ -129,28 +93,28 @@ class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
         # -div 2 fkr 
         self.minus_div_two_fkr  = -self.Div(2.*fkr,xzn0)
 
-        # -2 div acoustic flux		
-        self.minus_div_two_fpx = -2.*self.Div(ppux - pp*ux,xzn0)		
+        # -div 2 acoustic flux		
+        self.minus_div_two_fpx = -self.Div(2.*fpx,xzn0)		
 		
         # warning ax = overline{+u''_x} 
-        self.plus_ax = -ux + ddux/dd		
+        self.plus_ax = -ux + fht_ux		
 		
         # +2 buoyancy work
         self.plus_two_wb = 2.*self.plus_ax*self.Grad(pp,xzn0)
 		
         # +2 pressure rr dilatation
-        self.plus_two_ppf_divuxff = 2.*(self.ppdivux - self.pp*self.divux)
+        self.plus_two_ppf_divuxff = 2.*(ppdivux - pp*divux)
 				
         # -2 R grad u	
-        rxx = dduxux - ddux*ddux/dd
         self.minus_two_rxx_grad_fht_ux = -2.*rxx*self.Grad(fht_ux,xzn0)
 		
-		# +2 Gkr
+		# +GrrR
         GrrR = - 2.*(dduxuyuy - 2.*dduy*dduxuy/dd - fht_ux*dduyuy + 2.*fht_uy*fht_uy*fht_ux*dd)/xzn0 - \
                	 2.*(dduxuzuz - 2.*dduz*dduxuz/dd - fht_ux*dduzuz + 2.*fht_uz*fht_uz*fht_ux*dd)/xzn0 	
         uxff_GrM = (-dduxuyuy-dduxuzuz)/xzn0 - fht_ux*(-dduyuy-dduzuz)/xzn0
 
-        self.plus_two_Gkr = (1./2.)*GrrR - uxff_GrM 	   
+        # +2 Gkr		
+        self.plus_two_Gkr = 2.*((1./2.)*GrrR - uxff_GrM) 	   
 		
         # -res		
         self.minus_resRxxEquation = -(self.minus_dt_rxx + self.minus_div_fht_ux_rxx + self.minus_div_two_fkr +\
@@ -164,6 +128,12 @@ class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
         #################################
         # END REYNOLDS STRESS XX EQUATION 
         #################################  		
+			
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.dd         = dd			
+        self.rxx         = rxx				
 			
     def plot_rxx(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Reynolds stress xx in the model""" 
@@ -204,7 +174,7 @@ class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
         plt.savefig('RESULTS/'+self.data_prefix+'mean_rxx.png')		
 
     def plot_rxx_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot turbulent kinetic energy equation in the model""" 
+        """Plot Reynolds stress rxx equation in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0

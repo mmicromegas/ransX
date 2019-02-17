@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -9,97 +9,55 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,inuc,element,intc,data_prefix):
         super(XfluxEquation,self).__init__(ig) 
-	
+					
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix
-        self.inuc = inuc
-        self.element = element
-		
-        # assign global data to be shared across whole class
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
+        eht = np.load(filename)		
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.xi        = np.asarray(eht.item().get('x'+inuc)[intc])	
-		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
-        self.dduz      = np.asarray(eht.item().get('dduz')[intc])
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy    = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz    = np.asarray(eht.item().get('dduzuz')[intc])
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+
+        dd = np.asarray(eht.item().get('dd')[intc])
+        ux = np.asarray(eht.item().get('ux')[intc])	
+        pp = np.asarray(eht.item().get('pp')[intc])
+        xi = np.asarray(eht.item().get('x'+inuc)[intc])	
+		
+        ddux = np.asarray(eht.item().get('ddux')[intc])
+        dduy = np.asarray(eht.item().get('dduy')[intc])
+        dduz = np.asarray(eht.item().get('dduz')[intc])
+
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
 	
-        self.ddxi      = np.asarray(eht.item().get('ddx'+inuc)[intc])
-        self.ddxiux    = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
-        self.ddxidot   = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
-	 		
-        self.ddxidotux = np.asarray(eht.item().get('ddx'+inuc+'dotux')[intc]) 	
-        self.ddxiuxux  = np.asarray(eht.item().get('ddx'+inuc+'uxux')[intc])		
-        self.ddxiuyuy  = np.asarray(eht.item().get('ddx'+inuc+'uyuy')[intc])
-        self.ddxiuzuz  = np.asarray(eht.item().get('ddx'+inuc+'uzuz')[intc])		
+        ddxi    = np.asarray(eht.item().get('ddx'+inuc)[intc])
+        ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
+        ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
+	 	
+        ddxidotux = np.asarray(eht.item().get('ddx'+inuc+'dotux')[intc]) 	
+        ddxiuxux  = np.asarray(eht.item().get('ddx'+inuc+'uxux')[intc])		
+        ddxiuyuy  = np.asarray(eht.item().get('ddx'+inuc+'uyuy')[intc])
+        ddxiuzuz  = np.asarray(eht.item().get('ddx'+inuc+'uzuz')[intc])		
 
-        self.xigradxpp = np.asarray(eht.item().get('x'+inuc+'gradxpp')[intc]) 
+        xigradxpp = np.asarray(eht.item().get('x'+inuc+'gradxpp')[intc]) 
 		
         # store time series for time derivatives
-        self.t_timec   = np.asarray(eht.item().get('timec')) 
-        self.t_dd      = np.asarray(eht.item().get('dd')) 
-        self.t_ddux    = np.asarray(eht.item().get('ddux')) 
-        self.t_ddxi    = np.asarray(eht.item().get('ddx'+inuc))		
-        self.t_ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux'))
+        t_timec   = np.asarray(eht.item().get('timec')) 
+        t_dd      = np.asarray(eht.item().get('dd')) 
+        t_ddux    = np.asarray(eht.item().get('ddux')) 
+        t_ddxi    = np.asarray(eht.item().get('ddx'+inuc))		
+        t_ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux'))
 				
         ##################
         # Xi FLUX EQUATION 
         ##################		
- 
- 	# pick equation-specific Reynolds-averaged mean fields according to: 
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-                      
-        dd = self.dd       
-        ux = self.ux       
-        pp = self.pp       
-        xi = self.xi       
-		           
-        ddux = self.ddux     
-        dduy = self.dduy     
-        dduz =  self.dduz     
-                   
-        dduxux = self.dduxux   
-        dduyuy = self.dduyuy   
-        dduzuz = self.dduzuz   
-	               
-        ddxi    = self.ddxi     
-        ddxiux  = self.ddxiux   
-        ddxidot = self.ddxidot  
-	 	           	
-        ddxidotux =	self.ddxidotux
-        ddxiuxux  =	self.ddxiuxux 
-        ddxiuyuy  = self.ddxiuyuy 
-        ddxiuzuz  =	self.ddxiuzuz 
-                   
-        xigradxpp = self.xigradxpp
- 
-        xzn0 = self.xzn0
- 
-        # store time series for time derivatives
-        t_timec   = self.t_timec
-        t_dd      = self.t_dd
-        t_ddux    = self.t_ddux
-        t_ddxi    = self.t_ddxi	
-        t_ddxiux  = self.t_ddxiux
- 
+   
         # construct equation-specific mean fields
         t_fxi  = t_ddxiux - t_ddxi*t_ddux/t_dd
 			
@@ -149,13 +107,13 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # END Xi FLUX EQUATION 
         ######################	
 
-        #print('#----------------------------------------------------#')		
-        #print('Loading RA-ILES COMPOSITION FLUX EQUATION terms')	
-        #print('Central time (in s): ',round(self.timec,1))	
-        #print('Averaging windows (in s): ',self.tavg.item(0))
-        #print('Time range (in s from-to): ',round(self.trange[0],1),round(self.trange[1],1))
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0    = xzn0		
+        self.inuc    = inuc
+        self.element = element
+        self.fxi     = fxi		
 		
-			
     def plot_Xflux(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xflux stratification in the model""" 
 
@@ -167,10 +125,13 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0		
 		
         # load and calculate DATA to plot
-        plt1 = self.ddxiux - self.ddxi*self.ddux/self.dd
+        plt1 = self.fxi
 		
         # create FIGURE
-        plt.figure(figsize=(7,6))		
+        plt.figure(figsize=(7,6))	
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))			
 		
         # set plot boundaries   
         to_plot = [plt1]		
@@ -252,12 +213,4 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_XfluxEquation_'+element+'.png')		
-						
-    #def gauss(x, *p): 
-    # Define model function to be used to fit to the data above:
-    #    A, mu, sigma = p
-    #    return A*np.exp(-(x-mu)**2/(2.*sigma**2))		
-
-	
-	
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_XfluxEquation_'+element+'.png')			

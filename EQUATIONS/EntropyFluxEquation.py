@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,114 +10,72 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,tke_diss,data_prefix):
         super(EntropyFluxEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 
+        nx   = np.asarray(eht.item().get('nx'))		
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.ss        = np.asarray(eht.item().get('ss')[intc])	
-        self.tt        = np.asarray(eht.item().get('tt')[intc])
-		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
-        self.dduz      = np.asarray(eht.item().get('dduz')[intc])		
-        self.ddss      = np.asarray(eht.item().get('ddss')[intc])
-		
-        self.dduxux      = np.asarray(eht.item().get('dduxux')[intc])		
-        self.dduyuy      = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])	
-		
-        self.ddssux      = np.asarray(eht.item().get('ddssux')[intc])
-        self.ddssuy      = np.asarray(eht.item().get('ddssuy')[intc])
-        self.ddssuz      = np.asarray(eht.item().get('ddssuz')[intc])		
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 
-        self.ddssuxux      = np.asarray(eht.item().get('ddssuxux')[intc])
-        self.ddssuyuy      = np.asarray(eht.item().get('ddssuyuy')[intc])
-        self.ddssuzuz      = np.asarray(eht.item().get('ddssuzuz')[intc])
+        dd = np.asarray(eht.item().get('dd')[intc])
+        ux = np.asarray(eht.item().get('ux')[intc])	
+        pp = np.asarray(eht.item().get('pp')[intc])
+        ss = np.asarray(eht.item().get('ss')[intc])	
+        tt = np.asarray(eht.item().get('tt')[intc])
 		
-        self.divu        = np.asarray(eht.item().get('divu')[intc])		
-        self.ppdivu      = np.asarray(eht.item().get('ppdivu')[intc])
+        ddux = np.asarray(eht.item().get('ddux')[intc])		
+        dduy = np.asarray(eht.item().get('dduy')[intc])
+        dduz = np.asarray(eht.item().get('dduz')[intc])		
+        ddss = np.asarray(eht.item().get('ddss')[intc])
+		
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])		
+        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])	
+		
+        ddssux = np.asarray(eht.item().get('ddssux')[intc])
+        ddssuy = np.asarray(eht.item().get('ddssuy')[intc])
+        ddssuz = np.asarray(eht.item().get('ddssuz')[intc])		
 
-        self.ddenuc1_tt      = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
-        self.ddenuc2_tt      = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+        ddssuxux = np.asarray(eht.item().get('ddssuxux')[intc])
+        ddssuyuy = np.asarray(eht.item().get('ddssuyuy')[intc])
+        ddssuzuz = np.asarray(eht.item().get('ddssuzuz')[intc])
+		
+        divu   = np.asarray(eht.item().get('divu')[intc])		
+        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
 
-        self.dduxenuc1_tt      = np.asarray(eht.item().get('dduxenuc1_tt')[intc])		
-        self.dduxenuc2_tt      = np.asarray(eht.item().get('dduxenuc2_tt')[intc])
+        ddenuc1_tt = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
+        ddenuc2_tt = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+
+        dduxenuc1_tt = np.asarray(eht.item().get('dduxenuc1_tt')[intc])		
+        dduxenuc2_tt = np.asarray(eht.item().get('dduxenuc2_tt')[intc])
 		
-        self.ssgradxpp      = np.asarray(eht.item().get('ssgradxpp')[intc])				
+        ssgradxpp = np.asarray(eht.item().get('ssgradxpp')[intc])				
 		
-        self.ppdivu      = np.asarray(eht.item().get('ppdivu')[intc])		
-        self.uxppdivu    = np.asarray(eht.item().get('uxppdivu')[intc])		
-		
-        xzn0 = self.xzn0
+        ppdivu   = np.asarray(eht.item().get('ppdivu')[intc])		
+        uxppdivu = np.asarray(eht.item().get('uxppdivu')[intc])		
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddux = np.asarray(eht.item().get('ddux')) 
-        t_ddss = np.asarray(eht.item().get('ddss'))
-        t_ddssux = np.asarray(eht.item().get('ddssux')) 		
-
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-
-        ux = self.ux
-        dd = self.dd
-        pp = self.pp
-        ss = self.ss
-        tt = self.tt
-		
-        ddux = self.ddux
-        dduy = self.dduy
-        dduz = self.dduz		
-        ddss = self.ddss
-
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz		
-        ddssux = self.ddssux
-		
-        ddssux   = self.ddssux
-        ddssuy   = self.ddssuy
-        ddssuz   = self.ddssuz		
-		
-        ddssuxux   = self.ddssuxux
-        ddssuyuy   = self.ddssuyuy
-        ddssuzuz   = self.ddssuzuz
-        ddenuc1_tt    = self.ddenuc1_tt
-        ddenuc2_tt    = self.ddenuc2_tt
-        dduxenuc1_tt  = self.dduxenuc1_tt
-        dduxenuc2_tt  = self.dduxenuc2_tt
-        ssgradxpp  = self.ssgradxpp
-
-        ddss     = self.ddss		
-        ppdivu   = self.ppdivu
-        uxppdivu = self.uxppdivu
+        t_dd      = np.asarray(eht.item().get('dd'))
+        t_ddux    = np.asarray(eht.item().get('ddux')) 
+        t_ddss    = np.asarray(eht.item().get('ddss'))
+        t_ddssux  = np.asarray(eht.item().get('ddssux')) 		
 		
         # construct equation-specific mean fields		
         fht_ux   = ddux/dd
         fht_ss   = ddss/dd
-        rxx  = dduxux - ddux*ddux/dd 		
+        rxx      = dduxux - ddux*ddux/dd 		
 
-        f_ss       = ddssux - ddux*ddss/dd
-        fr_ss      = ddssuxux - ddss*dduxux/dd - 2.*fht_ux*ddssux + 2.*dd*fht_ux*fht_ss*fht_ux
+        f_ss  = ddssux - ddux*ddss/dd
+        fr_ss = ddssuxux - ddss*dduxux/dd - 2.*fht_ux*ddssux + 2.*dd*fht_ux*fht_ss*fht_ux
 
         ssff = ss - ddss/dd				
         ssff_gradx_ppf = ssgradxpp - ss*self.Grad(pp,xzn0)
@@ -132,7 +90,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ssff_GrM = -(ddssuyuy - (ddss/dd)*dduyuy)/xzn0 - (ddssuzuz - (ddss/dd)*dduzuz)/xzn0		
 		
         #######################		
-	# ENTROPY FLUX EQUATION
+        # ENTROPY FLUX EQUATION
         #######################
 					   
         # time-series of entropy flux 
@@ -147,13 +105,13 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div flux internal energy flux
         self.minus_div_fr_ss = -self.Div(fr_ss,xzn0)
         
-	# RHS -f_ss_gradx_fht_ux
+        # RHS -f_ss_gradx_fht_ux
         self.minus_f_ss_gradx_fht_ux = -f_ss*self.Grad(fht_ux,xzn0)
 		
-	# RHS -rxx_gradx_fht_ss
+        # RHS -rxx_gradx_fht_ss
         self.minus_rxx_gradx_fht_ss = -rxx*self.Grad(fht_ss,xzn0)	
 
-	# RHS -eht_ssff_gradx_eht_pp
+        # RHS -eht_ssff_gradx_eht_pp
         self.minus_eht_ssff_gradx_eht_pp = -(ss - ddss/dd)*self.Grad(pp,xzn0)
 		
         # RHS -eht_ssff_gradx_ppf
@@ -162,8 +120,8 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS eht_uxff_dd_nuc_T	
         self.plus_eht_uxff_dd_nuc_T =  (dduxenuc1_tt + dduxenuc2_tt) - fht_ux*(ddenuc1_tt+ddenuc2_tt) 		
 
-	# RHS eht_uxff_div_ftt_T (not calculated)
-        eht_uxff_div_f_tt_T = np.zeros(self.nx)  		
+        # RHS eht_uxff_div_ftt_T (not calculated)
+        eht_uxff_div_f_tt_T = np.zeros(nx)  		
         self.plus_eht_uxff_div_ftt_T = eht_uxff_div_f_tt_T
 		
         # RHS eht_uxff_epsilonk_approx_T	
@@ -180,8 +138,14 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
           self.plus_Gss)
 
         ###########################		
-	# END ENTROPY FLUX EQUATION
+        # END ENTROPY FLUX EQUATION
         ###########################
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.f_ss        = f_ss			
+		
 
     def plot_fss(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean Favrian entropy flux stratification in the model""" 
@@ -190,7 +154,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.ddssux - self.ddux*self.ddss/self.dd
+        plt1 = self.f_ss
 				
         # create FIGURE
         plt.figure(figsize=(7,6))

@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,54 +10,35 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
         super(MomentumEquationX,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx      = np.asarray(eht.item().get('nx')) 
-		
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.gg        = np.asarray(eht.item().get('gg')[intc])
-		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dduxux      = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy      = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])		
-		
-        xzn0 = self.xzn0
-		
-        # store time series for time derivatives
-        t_timec   = np.asarray(eht.item().get('timec'))		
-        t_dd      = np.asarray(eht.item().get('dd')) 
-        t_ddux    = np.asarray(eht.item().get('ddux')) 		
-
- 	# pick equation-specific Reynolds-averaged mean fields according to:
+        # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
-        dd = self.dd
-        ux = self.ux
-        pp = self.pp
-        gg = self.gg
-        ddux = self.ddux
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz
+        dd = np.asarray(eht.item().get('dd')[intc])
+        ux = np.asarray(eht.item().get('ux')[intc])	
+        pp = np.asarray(eht.item().get('pp')[intc])
+        gg = np.asarray(eht.item().get('grav')[intc])
+		
+        ddux = np.asarray(eht.item().get('ddux')[intc])		
+
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])		
+		
+        # store time series for time derivatives
+        t_timec = np.asarray(eht.item().get('timec'))		
+        t_dd    = np.asarray(eht.item().get('dd')) 
+        t_ddux  = np.asarray(eht.item().get('ddux')) 		
 		
         # construct equation-specific mean fields		
         fht_ux = ddux/dd
@@ -80,7 +61,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.minus_G = -(dduyuy+dduzuz)/xzn0
 		
         # RHS -(grad P - rho g)
-        self.minus_gradx_pp_eht_dd_eht_gg = self.Grad(pp,xzn0) - dd*gg   		
+        self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg   		
 		
         # -res
         self.minus_resResXmomentumEquation = \
@@ -89,7 +70,13 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         #########################
         # END X MOMENTUM EQUATION 
-        #########################		
+        #########################	
+
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.ddux        = ddux
+        self.ux          = ux      		
 		
     def plot_momentum_x(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ddux stratification in the model""" 

@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -18,18 +18,20 @@ class Degeneracy(calc.CALCULUS,al.ALIMIT,object):
         super(Degeneracy,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx      = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0 = np.asarray(eht.item().get('xzn0')) 			
 		
-        self.psi        = np.asarray(eht.item().get('psi')[intc]) 
+        # pick specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+		
+        psi = np.asarray(eht.item().get('psi')[intc]) 
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.psi         = psi			
 		
     def plot_degeneracy(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot degeneracy parameter in the model""" 

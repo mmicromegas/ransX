@@ -1,18 +1,18 @@
-import PROMPI_data as pt
+import UTILS.PROMPI_data as pt
 import numpy as np
 import os
 import sys
 import matplotlib.pyplot as plt       
 	   
-datadir = 'C:\Users\mmocak\Desktop\simonX\MREZ\\'
+datadir = 'C:\Users\mmocak\Desktop\simonX\lres-oburn-fullransx-15Feb19\lres-oburn-fullransx-15Feb19\\'
 #datadir = 'C:\Users\mmocak\Desktop\cyrilX\\'
-dataout = 'TSERIES\\tseries_ransout_obmrez'
+dataout = 'DATA\TSERIES\\tseries_ransout_oblreznew'
 
 #trange = [650. ,1100.]
 #tavg = 430.
 
-trange = [200. ,372.]
-tavg = 160.
+trange = [140. ,340.]
+tavg = 190.
 
 #trange = [200. ,450.]
 #tavg = 200.

@@ -1,9 +1,9 @@
-import PROMPI_single as psg
+import UTILS.PROMPI_single as psg
 import warnings
 
 warnings.filterwarnings("ignore")
 
-fl_rans = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\RANSDAT\\he3d.45.nnuc6.lrez.00434.ransdat' 
+fl_rans = 'C:\Users\mmocak\Desktop\simonX\lres-oburn-fullransx-15Feb19\lres-oburn-fullransx-15Feb19\ob3d.45.lrez.00002.ransdat' 
 
 ransdat = psg.PROMPI_single(fl_rans)
 
@@ -26,7 +26,7 @@ ransdat.SetMatplotlibParams()
 #                       r'$\varepsilon_{nuc}$',r'$\epsilon$')
 
 #ransdat.plot_nablas(xbl,xbr)
-#ransdat.plot_lin_q1(xbl,xbr,'psi',r'r (10$^{8}$ cm)','psi','psi')
-#ransdat.plot_lin_q1(xbl,xbr,'ux',r'r (10$^{8}$ cm)','ux','ux')					   
-#ransdat.plot_check_heq2(xbl,xbr)	   
-ransdat.plot_lin_q1(xbl,xbr,'uyuz',r'r (10$^{8}$ cm)','ux','ux')
+ransdat.plot_lin_q1(xbl,xbr,'grav',r'r (10$^{8}$ cm)','psi','psi')
+ransdat.plot_lin_q1(xbl,xbr,'ppdivuy',r'r (10$^{8}$ cm)','ux','ux')					   
+ransdat.plot_check_heq1()	   
+#ransdat.plot_lin_q1(xbl,xbr,'uyuz',r'r (10$^{8}$ cm)','ux','ux')

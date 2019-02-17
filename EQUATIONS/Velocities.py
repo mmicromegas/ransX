@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,35 +10,42 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class Velocities(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
         super(Velocities,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.xzn0      = np.asarray(eht.item().get('xzn0'))		 			
-        self.ux        = np.asarray(eht.item().get('ux')[intc])
+        # load grid
+        xzn0 = np.asarray(eht.item().get('xzn0')) 	
 		
-        dd        = np.asarray(eht.item().get('dd')[intc])				
-        ddux      = np.asarray(eht.item().get('ddux')[intc])
-        dduxux    = np.asarray(eht.item().get('dduxux')[intc])  		
+        # pick specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+
+        ux     = np.asarray(eht.item().get('ux')[intc])		
+        dd     = np.asarray(eht.item().get('dd')[intc])				
+        ddux   = np.asarray(eht.item().get('ddux')[intc])
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])  		
 		
         # store time series for time derivatives
-        t_timec   = np.asarray(eht.item().get('timec'))		
-        t_mm      = np.asarray(eht.item().get('mm')) 		
+        t_timec = np.asarray(eht.item().get('timec'))		
+        t_mm    = np.asarray(eht.item().get('mm')) 		
 		
-        plus_dt_mm = self.dt(t_mm,self.xzn0,t_timec,intc)
-        self.vexp1 = plus_dt_mm/(4.*np.pi*(self.xzn0**2.)*dd)
-        self.vexp2 = ddux/dd
-        self.vturb = ((dduxux - ddux*ddux/dd)/dd)**0.5
+        plus_dt_mm = self.dt(t_mm,xzn0,t_timec,intc)
 		
+        vexp1 = plus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
+        vexp2 = ddux/dd
+        vturb = ((dduxux - ddux*ddux/dd)/dd)**0.5
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0  = xzn0
+        self.ux    = ux		
+        self.vexp1 = vexp1	
+        self.vexp2 = vexp2			
+        self.vturb = vturb	
 		
     def plot_velocities(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot velocities in the model""" 

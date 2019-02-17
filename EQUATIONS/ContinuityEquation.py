@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,43 +10,28 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
         super(ContinuityEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0 = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])			
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-		
-        xzn0 = self.xzn0
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+
+        dd    = np.asarray(eht.item().get('dd')[intc])
+        ux    = np.asarray(eht.item().get('ux')[intc])			
+        ddux  = np.asarray(eht.item().get('ddux')[intc])		
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
-        t_dd      = np.asarray(eht.item().get('dd')) 
-        t_ddux    = np.asarray(eht.item().get('ddux')) 		
-
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        ddux = self.ddux
-		
+        t_dd      = np.asarray(eht.item().get('dd')) 	
+				
         # construct equation-specific mean fields		
         fht_ux = ddux/dd	
 	
@@ -69,6 +54,11 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         #########################	
         # END CONTINUITY EQUATION
         #########################
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.dd        = dd	
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):

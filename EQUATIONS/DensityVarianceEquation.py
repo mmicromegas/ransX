@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -18,30 +18,23 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         super(DensityVarianceEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.gg        = np.asarray(eht.item().get('gg')[intc])
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
+
+        dd        = np.asarray(eht.item().get('dd')[intc])
+        ux        = np.asarray(eht.item().get('ux')[intc])	
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-        self.ddsq      = np.asarray(eht.item().get('ddsq')[intc])
-        self.divu      = np.asarray(eht.item().get('divu')[intc])		
-        self.ddddux    = np.asarray(eht.item().get('ddddux')[intc])
-        self.dddivu    = np.asarray(eht.item().get('dddivu')[intc])
-        self.dddddivu  = np.asarray(eht.item().get('dddddivu')[intc])
-	
-        xzn0 = self.xzn0
+        ddux      = np.asarray(eht.item().get('ddux')[intc])		
+        ddsq      = np.asarray(eht.item().get('ddsq')[intc])
+        divu      = np.asarray(eht.item().get('divu')[intc])		
+        ddddux    = np.asarray(eht.item().get('ddddux')[intc])
+        dddivu    = np.asarray(eht.item().get('dddivu')[intc])
+        dddddivu  = np.asarray(eht.item().get('dddddivu')[intc])
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -49,27 +42,19 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ddux    = np.asarray(eht.item().get('ddux')) 			
         t_ddsq    = np.asarray(eht.item().get('ddsq'))		
 		
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-				
-        ux = self.ux
-        dd = self.dd
-        divu = self.divu
-        ddsq = self.ddsq
-        ddux = self.ddux
-        ddddux = self.ddddux
-        dddivu = self.dddivu
-        dddddivu = self.dddddivu
-		
         # construct equation-specific mean fields
-        fht_ux = ddux/dd
+        fht_ux   = ddux/dd
         fht_divu = dddivu/dd		
         sigma_dd = ddsq - dd*dd
 
+        eht_ddf_uxff       = ddux - dd*fht_ux - dd*ux + dd*fht_ux 		
+        eht_dd_eht_ddf_dff = dddivu - dd*fht_divu - dd*divu + dd*fht_divu 		
+        eht_ddf_ddf_dff    = dddddivu - 2.*dddivu*dd + dd*dd*divu - ddsq*fht_divu + dd*dd*fht_divu 	
+		
         f_sigma_dd = ddddux - 2.*ddux*dd + dd*dd*ux - ddsq*fht_ux + dd*dd*fht_ux		
     
         ###########################   		
-	# DENSITY VARIANCE EQUATION
+        # DENSITY VARIANCE EQUATION
         ###########################		
 		
         # time-series of density variance 
@@ -85,16 +70,16 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_div_f_sigma_dd = -self.Div(f_sigma_dd,xzn0)        
         
         # RHS minus_two_eht_dd_eht_ddf_dff
-        self.minus_two_eht_dd_eht_ddf_dff = -2.*dd*(dddivu - dd*fht_divu - dd*divu + dd*fht_divu)
+        self.minus_two_eht_dd_eht_ddf_dff = -2.*dd*eht_dd_eht_ddf_dff
 		
         # RHS minus_two_eht_ddf_uxff_gradx_eht_rho
-        self.minus_two_eht_ddf_uxff_gradx_eht_dd = -2.*(ddux - dd*fht_ux - dd*ux + dd*fht_ux)*self.Grad(dd,xzn0) 
+        self.minus_two_eht_ddf_uxff_gradx_eht_dd = -2.*eht_ddf_uxff*self.Grad(dd,xzn0) 
 		
         # RHS minus_two_fht_divu_sigma_dd
-        self.minus_two_fht_divu_sigma_dd = -2.*fht_divu*(ddsq - dd*dd)
+        self.minus_two_fht_divu_sigma_dd = -2.*fht_divu*(sigma_dd)
 
         # RHS -eht_ddf_ddf_dff
-        self.minus_eht_ddf_ddf_dff = -(dddddivu - 2.*dddivu*dd + dd*dd*divu - ddsq*fht_divu + dd*dd*fht_divu)
+        self.minus_eht_ddf_ddf_dff = -eht_ddf_ddf_dff
 
         # -res
         self.minus_resSigmaDDequation = -(self.minus_dt_sigma_dd + self.minus_fht_ux_div_sigma_dd + \
@@ -102,20 +87,25 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
            self.minus_two_fht_divu_sigma_dd + self.minus_eht_ddf_ddf_dff)
 
         # Kolmogorov dissipation, tauL is Kolmogorov damping timescale		   
-        self.minus_sigmaDDkolmdiss = -(ddsq-dd*dd)/tauL		
+        self.minus_sigmaDDkolmdiss = -sigma_dd/tauL		
 
         ###############################   		
-	# END DENSITY VARIANCE EQUATION
-        ###############################									
+        # END DENSITY VARIANCE EQUATION
+        ###############################	
+
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.sigma_dd    = sigma_dd			
 					
     def plot_sigma_dd(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot mean Favrian internal energy stratification in the model""" 
+        """Plot mean density variance in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.ddsq-self.dd*self.dd
+        plt1 = self.sigma_dd
 				
         # create FIGURE
         plt.figure(figsize=(7,6))

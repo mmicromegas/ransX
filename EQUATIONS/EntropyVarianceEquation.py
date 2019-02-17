@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,46 +10,41 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,tke_diss,tauL,data_prefix):
         super(EntropyVarianceEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 
+        nx   = np.asarray(eht.item().get('nx'))		
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.tt        = np.asarray(eht.item().get('tt')[intc])		
-        self.ss        = np.asarray(eht.item().get('ss')[intc])	
-		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-        self.ddei      = np.asarray(eht.item().get('ddei')[intc])
-        self.ddss      = np.asarray(eht.item().get('ddss')[intc])		
-        self.ddssux    = np.asarray(eht.item().get('ddssux')[intc])
-        self.ddsssq    = np.asarray(eht.item().get('ddsssq')[intc])
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 
-        self.ddssssux    = np.asarray(eht.item().get('ddssssux')[intc])         
+        dd        = np.asarray(eht.item().get('dd')[intc])
+        ux        = np.asarray(eht.item().get('ux')[intc])	
+        pp        = np.asarray(eht.item().get('pp')[intc])
+        tt        = np.asarray(eht.item().get('tt')[intc])		
+        ss        = np.asarray(eht.item().get('ss')[intc])	
 		
-        self.ddenuc1_tt = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
-        self.ddenuc2_tt = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+        ddux      = np.asarray(eht.item().get('ddux')[intc])		
+        ddei      = np.asarray(eht.item().get('ddei')[intc])
+        ddss      = np.asarray(eht.item().get('ddss')[intc])		
+        ddssux    = np.asarray(eht.item().get('ddssux')[intc])
+        ddsssq    = np.asarray(eht.item().get('ddsssq')[intc])
 
-        self.ddssenuc1_tt = np.asarray(eht.item().get('ddssenuc1_tt')[intc])		
-        self.ddssenuc2_tt = np.asarray(eht.item().get('ddssenuc2_tt')[intc])
+        ddssssux    = np.asarray(eht.item().get('ddssssux')[intc])         
 		
-        xzn0 = self.xzn0
+        ddenuc1_tt = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
+        ddenuc2_tt = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+
+        ddssenuc1_tt = np.asarray(eht.item().get('ddssenuc1_tt')[intc])		
+        ddssenuc2_tt = np.asarray(eht.item().get('ddssenuc2_tt')[intc])
+
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -58,28 +53,6 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ddsssq  = np.asarray(eht.item().get('ddsssq')) 
 		
         t_sigma_ss	= (t_ddsssq/t_dd)-(t_ddss*t_ddss)/(t_dd*t_dd)	
-
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        ss = self.ss
-        tt = self.tt
-		
-        ddux   = self.ddux
-        ddei   = self.ddei
-        ddss   = self.ddss
-        ddssux = self.ddssux
-        ddsssq = self.ddsssq
-
-        ddssssux = self.ddssssux		
- 
-        ddenuc1_tt = self.ddenuc1_tt
-        ddenuc2_tt = self.ddenuc2_tt
-
-        ddssenuc1_tt = self.ddssenuc1_tt
-        ddssenuc2_tt = self.ddssenuc2_tt
 		
         # construct equation-specific mean fields		
         fht_ux   = ddux/dd
@@ -93,23 +66,23 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         disstke_tt = tke_diss/tt
 					 
         ###########################		
-	# ENTROPY VARIANCE EQUATION
+        # ENTROPY VARIANCE EQUATION
         ###########################  
      
         # LHS -dt dd sigma_ss 		
         self.minus_dt_eht_dd_sigma_ss = -self.dt(t_dd*t_sigma_ss,xzn0,t_timec,intc)
 
         # LHS -div dd fht_ux sigma_ss
-        self.minus_div_eht_dd_fht_ux_sigma_ss = -self.Div(ddux*sigma_ss,xzn0)
+        self.minus_div_eht_dd_fht_ux_sigma_ss = -self.Div(dd*fht_ux*sigma_ss,xzn0)
 		
         # RHS -div f_sigma_ss
         self.minus_div_f_sigma_ss = -self.Div(f_sigma_ss,xzn0)		
 
-	# RHS minus_two_f_ss_gradx_fht_ss
+        # RHS minus_two_f_ss_gradx_fht_ss
         self.minus_two_f_ss_gradx_fht_ss = -2.*f_ss*self.Grad(fht_ss,xzn0)
 
         # RHS minus_two_ssff_div_ftt_T
-        self.minus_two_ssff_div_ftt_T = +np.zeros(self.nx)
+        self.minus_two_ssff_div_ftt_T = +np.zeros(nx)
 		
         # RHS plus_two_ssff_enuc_T	
         self.plus_two_ssff_enuc_T = +2.*((ddssenuc1_tt+ddssenuc2_tt)- \
@@ -118,7 +91,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS plus_two_ssff_epsilonk_tt_approx		
         self.plus_two_ssff_epsilonk_tt_approx = +2.*(ss-ddss/dd)*disstke_tt
 		
-	# -res 
+        # -res 
         self.minus_resSigmaSSequation = -(self.minus_dt_eht_dd_sigma_ss + self.minus_div_eht_dd_fht_ux_sigma_ss + \
          self.minus_div_f_sigma_ss + self.minus_two_f_ss_gradx_fht_ss + self.minus_two_ssff_div_ftt_T + \
          self.plus_two_ssff_enuc_T + self.plus_two_ssff_epsilonk_tt_approx)
@@ -127,10 +100,14 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_sigmaSSkolmdiss = -dd*sigma_ss/tauL		 
 		 
         ###############################		
-	# END ENTROPY VARIANCE EQUATION
+        # END ENTROPY VARIANCE EQUATION
         ###############################
 								   
-		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.sigma_ss    = sigma_ss	
+								   
     def plot_sigma_ss(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean Favrian entropy variance stratification in the model""" 
 		
@@ -138,7 +115,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.ddsssq-self.ddss*self.ddss/(self.dd*self.dd)
+        plt1 = self.sigma_ss
 				
         # create FIGURE
         plt.figure(figsize=(7,6))

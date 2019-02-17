@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,61 +10,40 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,tke_diss,data_prefix):
         super(InternalEnergyEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+        nx     = np.asarray(eht.item().get('nx')) 
+		
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
+        dd     = np.asarray(eht.item().get('dd')[intc])
+        ux     = np.asarray(eht.item().get('ux')[intc])	
+        pp     = np.asarray(eht.item().get('pp')[intc])
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-        self.ddei      = np.asarray(eht.item().get('ddei')[intc])
-        self.ddeiux      = np.asarray(eht.item().get('ddeiux')[intc])
+        ddux   = np.asarray(eht.item().get('ddux')[intc])		
+        ddei   = np.asarray(eht.item().get('ddei')[intc])
+        ddeiux = np.asarray(eht.item().get('ddeiux')[intc])
 		
-        self.divu        = np.asarray(eht.item().get('divu')[intc])		
-        self.ppdivu      = np.asarray(eht.item().get('ppdivu')[intc])
+        divu   = np.asarray(eht.item().get('divu')[intc])		
+        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
 
-        self.ddenuc1      = np.asarray(eht.item().get('ddenuc1')[intc])		
-        self.ddenuc2      = np.asarray(eht.item().get('ddenuc2')[intc])
-		
-        xzn0 = self.xzn0
+        ddenuc1 = np.asarray(eht.item().get('ddenuc1')[intc])		
+        ddenuc2 = np.asarray(eht.item().get('ddenuc2')[intc])
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 
         t_ddei    = np.asarray(eht.item().get('ddei')) 	
-        t_fht_ei = t_ddie/t_dd		
-
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        pp = self.pp
-        ddux = self.ddux
-        ddei = self.ddei
-        ddeiux = self.ddeiux		
-        divu = self.divu
-        ppdivu = self.ppdivu
- 
-        ddenuc1 = self.ddenuc1
-        ddenuc2 = self.ddenuc2
+        t_fht_ei = t_ddei/t_dd		
 		
         # construct equation-specific mean fields		
         fht_ux = ddux/dd
@@ -85,7 +64,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_div_fei = -self.Div(f_ei,xzn0)
 		
         # RHS -div ftt (not included) heat flux
-        self.minus_div_ftt = -np.zeros(self.nx)
+        self.minus_div_ftt = -np.zeros(nx)
 		
         # RHS -P d = - eht_pp Div eht_ux
         self.minus_eht_pp_div_eht_ux = -pp*self.Div(ux,xzn0)		
@@ -99,7 +78,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS dissipated turbulent kinetic energy
         self.plus_disstke = +tke_diss  	
 
-	# -res
+        # -res
         self.minus_resEiEquation = -(self.minus_dt_eht_dd_fht_ei + self.minus_div_eht_dd_fht_ux_fht_ei + \
          self.minus_div_fei + self.minus_div_ftt + self.minus_eht_pp_div_eht_ux + self.minus_eht_ppf_df + \
          self.plus_eht_dd_fht_enuc + self.plus_disstke)
@@ -108,6 +87,11 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # END INTERNAL ENERGY EQUATION 
         ##############################			
 		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.fht_ei      = fht_ei			
+		
     def plot_ei(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean Favrian internal energy stratification in the model""" 
 		
@@ -115,7 +99,7 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.ddei/self.dd
+        plt1 = self.fht_ei
 				
         # create FIGURE
         plt.figure(figsize=(7,6))

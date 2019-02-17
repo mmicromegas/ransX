@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -10,8 +10,6 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,inuc,element,lc,uconv,intc,data_prefix):
@@ -19,15 +17,11 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 	
         # load data to structured array
         eht = np.load(filename)	
-	
-        self.data_prefix = data_prefix
-        self.inuc = inuc
-        self.element = element		
-        self.lc = lc
-        self.uconv = uconv 		
-	
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-	
+		
+        # pick specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/		
+        # assign global data to be shared across whole class
+
         self.dd     = np.asarray(eht.item().get('dd')[intc])
         self.pp     = np.asarray(eht.item().get('pp')[intc])
         self.tt     = np.asarray(eht.item().get('tt')[intc])
@@ -39,10 +33,16 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         self.ddxiux = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
         self.ddhhux = np.asarray(eht.item().get('ddhhux')[intc])
         self.ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
-		
+	
+        self.data_prefix = data_prefix
+        self.xzn0    = np.asarray(eht.item().get('xzn0')) 
+        self.element = element
+        self.inuc    = inuc
+        self.lc      = lc
+        self.uconv   = uconv 		
 		
     def plot_X_Ediffusivity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-    # Eulerian diffusivity
+        # Eulerian diffusivity
 	
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -79,7 +79,7 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         # variance of temperature fluctuations		
         sigmatt = (ddttsq-ddtt*ddtt/dd)/dd	
 		
-	# effective diffusivity
+        # effective diffusivity
         Deff = -fxi/(dd*self.Grad(fht_xi,xzn0))
 		
         # urms diffusivity		

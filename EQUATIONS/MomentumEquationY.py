@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,59 +10,39 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
         super(MomentumEquationY,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0'))
-        self.yzn0      = np.asarray(eht.item().get('yzn0'))		
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])		
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+
+        dd = np.asarray(eht.item().get('dd')[intc])		
+        pp = np.asarray(eht.item().get('pp')[intc])
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
+        ddux = np.asarray(eht.item().get('ddux')[intc])
+        dduy = np.asarray(eht.item().get('dduy')[intc])
 		
-        self.dduxuy      = np.asarray(eht.item().get('dduxuy')[intc])
-        self.dduzuz      = np.asarray(eht.item().get('dduzuz')[intc])		
-        self.dduzuzcoty      = np.asarray(eht.item().get('dduzuzcoty')[intc])
-		
-        xzn0 = self.xzn0
-        yzn0 = self.yzn0
+        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])		
+        dduzuzcoty = np.asarray(eht.item().get('dduzuzcoty')[intc])
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 
-        t_dduy    = np.asarray(eht.item().get('dduy')) 		
-
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        pp = self.pp
-        ddux = self.ddux
-        dduy = self.dduy		
-        dduxuy = self.dduxuy
-        dduzuz = self.dduzuz 	
-        dduzuzcoty = self.dduzuzcoty		
+        t_dduy    = np.asarray(eht.item().get('dduy')) 				
 		
         # construct equation-specific mean fields
         fht_ux = ddux/dd  		
         fht_uy = dduy/dd 		
-        ryx = dduxuy - ddux*dduy/dd
+        ryx    = dduxuy - ddux*dduy/dd
 		
         #####################
         # Y MOMENTUM EQUATION 
@@ -91,6 +71,11 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         #########################
         # END Y MOMENTUM EQUATION 
         #########################		
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.dduy        = dduy	
 		
     def plot_momentum_y(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot dduy stratification in the model""" 

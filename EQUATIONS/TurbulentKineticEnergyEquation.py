@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -9,83 +9,47 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,minus_kolmrate,data_prefix):
         super(TurbulentKineticEnergyEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 		
-		
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])		
-		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
-        self.dduz      = np.asarray(eht.item().get('dduz')[intc])		
-		
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy    = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz    = np.asarray(eht.item().get('dduzuz')[intc])
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduxuy    = np.asarray(eht.item().get('dduxuy')[intc])
-        self.dduxuz    = np.asarray(eht.item().get('dduxuz')[intc])
+        # pick pecific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/			
 		
-        self.ddekux	   = np.asarray(eht.item().get('ddekux')[intc])	
-        self.ddek      = np.asarray(eht.item().get('ddek')[intc])		
+        dd    = np.asarray(eht.item().get('dd')[intc])
+        ux    = np.asarray(eht.item().get('ux')[intc])	
+        pp    = np.asarray(eht.item().get('pp')[intc])		
 		
-        self.ppdivu    = np.asarray(eht.item().get('ppdivu')[intc])
-        self.divu      = np.asarray(eht.item().get('divu')[intc])
-        self.ppux      = np.asarray(eht.item().get('ppux')[intc])		
+        ddux  = np.asarray(eht.item().get('ddux')[intc])
+        dduy  = np.asarray(eht.item().get('dduy')[intc])
+        dduz  = np.asarray(eht.item().get('dduz')[intc])		
+		
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
+        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+		
+        ddekux = np.asarray(eht.item().get('ddekux')[intc])	
+        ddek   = np.asarray(eht.item().get('ddek')[intc])		
+		
+        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
+        divu   = np.asarray(eht.item().get('divu')[intc])
+        ppux   = np.asarray(eht.item().get('ppux')[intc])		
 
         ###################################
         # TURBULENT KINETIC ENERGY EQUATION 
         ###################################   		
-		
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        pp = self.pp
-		
-        ddux = self.ddux
-        dduy = self.dduy
-        dduz = self.dduz
-
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz
-
-        dduxux = self.dduxux
-        dduxuy = self.dduxuy
-        dduxuz = self.dduxuz
-		
-        ddek   = self.ddek
-        ddekux = self.ddekux
-        ppux   = self.ppux
-        ppdivu = self.ppdivu
-        divu   = self.divu
-		
-        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
-        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
-        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 		
-
-        xzn0 = self.xzn0
-		
+				
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 
         t_dd      = np.asarray(eht.item().get('dd'))
@@ -104,24 +68,33 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         t_tke = 0.5*(t_uxffuxff+t_uyffuyff+t_uzffuzff)		
 		
-        # construct equation-specific mean fields		
-        tke = 0.5*(uxffuxff + uyffuyff + uzffuzff)
-        self.tke = tke
+        # construct equation-specific mean fields
+        fht_ux = ddux/dd
+        fht_ek = ddek/dd		
 		
+        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
+        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
+        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 
+		
+        tke = 0.5*(uxffuxff + uyffuyff + uzffuzff)
+		
+        fekx = ddekux - fht_ek*fht_ux
+        fpx  = ppux - pp*ux 
+
         # LHS -dq/dt 			
         self.minus_dt_dd_tke = -self.dt(t_dd*t_tke,xzn0,t_timec,intc)
 
         # LHS -div dd ux tke
-        self.minus_div_eht_dd_fht_ux_tke = -self.Div(ddux*tke,xzn0)
+        self.minus_div_eht_dd_fht_ux_tke = -self.Div(dd*fht_ux*tke,xzn0)
 		
         # -div kinetic energy flux
-        self.minus_div_fekx  = -self.Div(dd*(ddekux/dd - (ddux/dd)*(ddek/dd)),xzn0)
+        self.minus_div_fekx  = -self.Div(fekx,xzn0)
 
         # -div acoustic flux		
-        self.minus_div_fpx = -self.Div(ppux - pp*ux,xzn0)		
+        self.minus_div_fpx = -self.Div(fpx,xzn0)		
 		
         # RHS warning ax = overline{+u''_x} 
-        self.plus_ax = -ux + ddux/dd		
+        self.plus_ax = -ux + fht_ux		
 		
         # +buoyancy work
         self.plus_wb = self.plus_ax*self.Grad(pp,xzn0)
@@ -151,8 +124,14 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 													
         #######################################
         # END TURBULENT KINETIC ENERGY EQUATION 
-        #######################################  		
-			
+        #######################################  
+
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.dd          = dd
+        self.tke         = tke
+				
     def plot_tke(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot turbulent kinetic energy stratification in the model""" 
 		
@@ -174,7 +153,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title('turbulent kinetic energy')
-        plt.plot(grd1,plt1,color='brown',label = r'$\frac{1}{2} \widetilde{u''}_i \widetilde{u''}_i$')
+        plt.plot(grd1,plt1,color='brown',label = r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -222,7 +201,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('turbulent kinetic energy equation')
-        plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\widetilde{k})$')
+        plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{k})$')
         plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")	
 		
         plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     

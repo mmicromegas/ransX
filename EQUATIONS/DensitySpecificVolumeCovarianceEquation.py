@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -18,48 +18,33 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         super(DensitySpecificVolumeCovarianceEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])			
-        self.sv        = np.asarray(eht.item().get('sv')[intc])
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-        self.svux      = np.asarray(eht.item().get('svux')[intc])	
-        self.svdivu    = np.asarray(eht.item().get('svdivu')[intc])		
-        self.divu      = np.asarray(eht.item().get('divu')[intc])	
-	
-        xzn0 = self.xzn0
-		
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+
+        dd        = np.asarray(eht.item().get('dd')[intc])
+        ux        = np.asarray(eht.item().get('ux')[intc])			
+        sv        = np.asarray(eht.item().get('sv')[intc])
+        ddux      = np.asarray(eht.item().get('ddux')[intc])		
+        svux      = np.asarray(eht.item().get('svux')[intc])	
+        svdivu    = np.asarray(eht.item().get('svdivu')[intc])		
+        divu      = np.asarray(eht.item().get('divu')[intc])	
+			
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 
         t_sv      = np.asarray(eht.item().get('sv')) 		
-
- 		# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd   = self.dd
-        ux   = self.ux
-        sv   = self.sv
-        ddux = self.ddux
-        svux = self.svux
-        divu = self.divu
-        svdivu = self.svdivu
 		
         # construct equation-specific mean fields		
-        fht_ux = ddux/dd	
-        b = 1.-sv*dd
+        t_b = 1.-t_sv*t_dd		
 
-        t_b = 1.-t_sv*t_dd
+        fht_ux   = ddux/dd	
+        eht_uxff = ux-ddux/dd
+        b        = 1.-sv*dd
 		
         ##################################################
         # DENSITY-SPECIFIC VOLUME COVARIANCE or B EQUATION 
@@ -72,7 +57,7 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_fht_ux_gradx_b = fht_ux*self.Grad(b,xzn0)
 				
         # RHS +sv Div dd uxff 
-        self.plus_eht_sv_div_eht_dd_uxff = sv*self.Div(dd*(ux-ddux/dd),xzn0) 
+        self.plus_eht_sv_div_dd_uxff = sv*self.Div(dd*eht_uxff,xzn0) 
 
         # RHS -eht_dd Div uxf svf
         self.minus_eht_dd_div_uxf_svf = -dd*self.Div(svux-sv*ux,xzn0)
@@ -81,13 +66,19 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_two_eht_dd_eht_svf_df = 2.*dd*(svdivu-sv*divu)
 
         # -res
-        self.minus_resBequation = -(self.minus_dt_b + self.minus_fht_ux_gradx_b + self.plus_eht_sv_div_eht_dd_uxff + \
+        self.minus_resBequation = -(self.minus_dt_b + self.minus_fht_ux_gradx_b + self.plus_eht_sv_div_dd_uxff + \
            self.minus_eht_dd_div_uxf_svf + self.plus_two_eht_dd_eht_svf_df)
         				
         ######################################################
         # END DENSITY-SPECIFIC VOLUME COVARIANCE or B EQUATION 
         ######################################################						
 
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.sv          = sv	
+        self.dd          = dd		
+		
     def plot_b(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot density-specific volume covariance stratification in the model""" 
 		
@@ -137,7 +128,7 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_dt_b
         lhs1 = self.minus_fht_ux_gradx_b
 		
-        rhs0 = self.plus_eht_sv_div_eht_dd_uxff
+        rhs0 = self.plus_eht_sv_div_dd_uxff
         rhs1 = self.minus_eht_dd_div_uxf_svf
         rhs2 = self.plus_two_eht_dd_eht_svf_df
 		

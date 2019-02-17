@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,93 +10,73 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class Properties(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,params):
         ig = params.getForProp('prop')['ig'] # load geometry	
         super(Properties,self).__init__(ig) 
 
-        self.filename = params.getForProp('prop')['eht_data']
+        filename = params.getForProp('prop')['eht_data']
         intc     = params.getForProp('prop')['intc']
 		
         # load data to structured array
-        eht = np.load(self.filename)	
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.xznl      = np.asarray(eht.item().get('xznl'))
-        self.xznr      = np.asarray(eht.item().get('xznr'))		
-        self.nx        = np.asarray(eht.item().get('nx')) 		
-        self.ny        = np.asarray(eht.item().get('ny')) 
-        self.nz        = np.asarray(eht.item().get('nz')) 		
+        timec  = eht.item().get('timec')[intc] 
+        tavg   = np.asarray(eht.item().get('tavg'))	
+        trange = np.asarray(eht.item().get('trange'))
 		
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])		
+        # load grid
+        nx  = np.asarray(eht.item().get('nx')) 	
+        ny  = np.asarray(eht.item().get('ny')) 	
+        nz  = np.asarray(eht.item().get('nz')) 			
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
-        self.dduz      = np.asarray(eht.item().get('dduz')[intc])		
+        xzn0  = np.asarray(eht.item().get('xzn0')) 
+        xznl  = np.asarray(eht.item().get('xznl'))
+        xznr  = np.asarray(eht.item().get('xznr'))
 		
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy    = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz    = np.asarray(eht.item().get('dduzuz')[intc])
+        xbl   = params.getForProp('prop')['xbl']
+        xbr   = params.getForProp('prop')['xbr']		
+        laxis = params.getForProp('prop')['laxis']
+		
+		
+        # pick pecific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/			
+		
+        dd    = np.asarray(eht.item().get('dd')[intc])
+        ux    = np.asarray(eht.item().get('ux')[intc])	
+        pp    = np.asarray(eht.item().get('pp')[intc])		
+		
+        ddux  = np.asarray(eht.item().get('ddux')[intc])
+        dduy  = np.asarray(eht.item().get('dduy')[intc])
+        dduz  = np.asarray(eht.item().get('dduz')[intc])		
+		
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
 
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduxuy    = np.asarray(eht.item().get('dduxuy')[intc])
-        self.dduxuz    = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
+        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
 		
-        self.ddekux	   = np.asarray(eht.item().get('ddekux')[intc])	
-        self.ddek      = np.asarray(eht.item().get('ddek')[intc])		
+        ddekux = np.asarray(eht.item().get('ddekux')[intc])	
+        ddek   = np.asarray(eht.item().get('ddek')[intc])		
 		
-        self.ppdivu    = np.asarray(eht.item().get('ppdivu')[intc])
-        self.divu      = np.asarray(eht.item().get('divu')[intc])
-        self.ppux      = np.asarray(eht.item().get('ppux')[intc])		
+        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
+        divu   = np.asarray(eht.item().get('divu')[intc])
+        ppux   = np.asarray(eht.item().get('ppux')[intc])		
 
-        self.enuc1      = np.asarray(eht.item().get('enuc1')[intc])
-        self.enuc2      = np.asarray(eht.item().get('enuc2')[intc])		
-				
+        enuc1 = np.asarray(eht.item().get('enuc1')[intc])
+        enuc2 = np.asarray(eht.item().get('enuc2')[intc])		
+
+        uxux = np.asarray(eht.item().get('uxux')[intc])		
+		
+        gamma1 = np.asarray(eht.item().get('gamma1')[intc])		
 		
         ###################################
         # TURBULENT KINETIC ENERGY EQUATION 
         ###################################   		
-		
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        pp = self.pp
-		
-        ddux = self.ddux
-        dduy = self.dduy
-        dduz = self.dduz
-
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz
-
-        dduxux = self.dduxux
-        dduxuy = self.dduxuy
-        dduxuz = self.dduxuz
-		
-        ddek   = self.ddek
-        ddekux = self.ddekux
-        ppux   = self.ppux
-        ppdivu = self.ppdivu
-        divu   = self.divu
-		
-        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
-        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
-        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 		
-
-        xzn0 = self.xzn0
-		
+				
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 
         t_dd      = np.asarray(eht.item().get('dd'))
@@ -115,24 +95,33 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
 		
         t_tke = 0.5*(t_uxffuxff+t_uyffuyff+t_uzffuzff)		
 		
-        # construct equation-specific mean fields		
-        tke = 0.5*(uxffuxff + uyffuyff + uzffuzff)
-        self.tke = tke
+        # construct equation-specific mean fields
+        fht_ux = ddux/dd
+        fht_ek = ddek/dd		
 		
+        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
+        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
+        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 
+		
+        tke = 0.5*(uxffuxff + uyffuyff + uzffuzff)
+		
+        fekx = ddekux - fht_ek*fht_ux
+        fpx  = ppux - pp*ux 
+
         # LHS -dq/dt 			
         self.minus_dt_dd_tke = -self.dt(t_dd*t_tke,xzn0,t_timec,intc)
 
         # LHS -div dd ux tke
-        self.minus_div_eht_dd_fht_ux_tke = -self.Div(ddux*tke,xzn0)
+        self.minus_div_eht_dd_fht_ux_tke = -self.Div(dd*fht_ux*tke,xzn0)
 		
         # -div kinetic energy flux
-        self.minus_div_fekx  = -self.Div(dd*(ddekux/dd - (ddux/dd)*(ddek/dd)),xzn0)
+        self.minus_div_fekx  = -self.Div(fekx,xzn0)
 
         # -div acoustic flux		
-        self.minus_div_fpx = -self.Div(ppux - pp*ux,xzn0)		
+        self.minus_div_fpx = -self.Div(fpx,xzn0)		
 		
         # RHS warning ax = overline{+u''_x} 
-        self.plus_ax = -ux + ddux/dd		
+        self.plus_ax = -ux + fht_ux		
 		
         # +buoyancy work
         self.plus_wb = self.plus_ax*self.Grad(pp,xzn0)
@@ -155,14 +144,34 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke + \
                                        self.plus_wb + self.plus_wp + self.minus_div_fekx + \
 	                                   self.minus_div_fpx + self.minus_r_grad_u)
-        
+									   						
         #######################################
         # END TURBULENT KINETIC ENERGY EQUATION 
-        #######################################  		
+        #######################################  
 
-        self.laxis = params.getForProp('prop')['laxis']
-        self.xbl = params.getForProp('prop')['xbl']
-        self.xbr = params.getForProp('prop')['xbr']
+        # assign global data to be shared across whole class	
+        self.xzn0 = xzn0
+        self.xznl = xznl 
+        self.xznr = xznr
+        self.tke  = tke 		
+
+        self.laxis = laxis
+        self.xbl   = xbl
+        self.xbr   = xbr
+        self.nx    = nx
+        self.ny    = ny		
+        self.nz    = nz		
+        self.dd    = dd
+        self.pp    = pp
+        self.uxux  = uxux
+        self.enuc1 = enuc1
+        self.enuc2 = enuc2
+        self.gamma1 = gamma1 		
+		
+        self.filename = filename
+        self.tavg     = tavg
+        self.timec    = timec
+        self.trange   = trange		
 		
     def properties(self,laxis,xbl,xbr):
         """ Print properties of your simulation""" 
@@ -180,6 +189,9 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         # load density and pressure
         dd = self.dd 		
         pp = self.pp
+		
+        # load uxsq		
+        uxux = self.uxux
 		
         # load TKE
         tke = self.tke		
@@ -241,10 +253,11 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         # Total nuclear luminosity
         tenuc = ((dd*(enuc1+enuc2))*Vol)[ind].sum()
 
-        # Pturb over Pgas (work in progress, no gam1 stored in rans_avg)
-        #cs2 = (gam1*pp)/dd
-        #ur2 = uxux
-        #pturb_o_pgas = (gam1*ur2/cs2)[ind].mean()
+        # Pturb over Pgas 
+        gamma1 = self.gamma1
+        cs2 = (gamma1*pp)/dd
+        ur2 = uxux
+        pturb_o_pgas = (gamma1*ur2/cs2)[ind].mean()
     
         # Calculate size of convection zone in pressure scale heights
 
@@ -266,7 +279,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         print 'Averaging time window (in s): %f' % self.tavg
         print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
         print 'Convective turnover timescale (in s)  %.2e' % tc
-        #print 'P_turb o P_gas %.2e' % pturb_o_pgas
+        print 'P_turb o P_gas %.2e' % pturb_o_pgas
         print 'Dissipation length scale (in cm): %.2e' % ld
         print 'Total nuclear luminosity (in erg/s): %.2e' % tenuc
         print 'Rate of TKE dissipation (in erg/s): %.2e' % epsD

@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,51 +10,45 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,tke_diss,tauL,data_prefix):
         super(InternalEnergyVarianceEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
+        eht = np.load(filename)		
+
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0'))
+        nx     = np.asarray(eht.item().get('nx')) 		
+
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+
+        dd  = np.asarray(eht.item().get('dd')[intc])
+        ux  = np.asarray(eht.item().get('ux')[intc])	
+        pp  = np.asarray(eht.item().get('pp')[intc])	
+        ei  = np.asarray(eht.item().get('ei')[intc])	
 		
-        self.data_prefix = data_prefix		
-
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 
-
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])	
-        self.ei        = np.asarray(eht.item().get('ei')[intc])	
+        ddux   = np.asarray(eht.item().get('ddux')[intc])		
+        ddei   = np.asarray(eht.item().get('ddei')[intc])
+        eipp   = np.asarray(eht.item().get('eipp')[intc])		
+        divu   = np.asarray(eht.item().get('divu')[intc])		
+        dddivu = np.asarray(eht.item().get('dddivu')[intc])		
+        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])          
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])		
-        self.ddei      = np.asarray(eht.item().get('ddei')[intc])
-        self.eipp      = np.asarray(eht.item().get('eipp')[intc])		
-        self.divu      = np.asarray(eht.item().get('divu')[intc])		
-        self.dddivu    = np.asarray(eht.item().get('dddivu')[intc])		
-        self.ppdivu    = np.asarray(eht.item().get('ppdivu')[intc])          
-		
-        self.ddenuc1 = np.asarray(eht.item().get('ddenuc1')[intc])		
-        self.ddenuc2 = np.asarray(eht.item().get('ddenuc2')[intc])
+        ddenuc1 = np.asarray(eht.item().get('ddenuc1')[intc])		
+        ddenuc2 = np.asarray(eht.item().get('ddenuc2')[intc])
 
-        self.eiddenuc1 = np.asarray(eht.item().get('eiddenuc1')[intc])		
-        self.eiddenuc2 = np.asarray(eht.item().get('eiddenuc2')[intc])
+        eiddenuc1 = np.asarray(eht.item().get('eiddenuc1')[intc])		
+        eiddenuc2 = np.asarray(eht.item().get('eiddenuc2')[intc])
 
-        self.eippdivu = np.asarray(eht.item().get('eippdivu')[intc])  
-        self.eidivu = np.asarray(eht.item().get('eidivu')[intc])  
+        eippdivu = np.asarray(eht.item().get('eippdivu')[intc])  
+        eidivu  = np.asarray(eht.item().get('eidivu')[intc])  
 
-        self.ddeiei = np.asarray(eht.item().get('ddeiei')[intc]) 		
-        self.ddeiux = np.asarray(eht.item().get('ddeiux')[intc]) 		
-        self.ddeieiux = np.asarray(eht.item().get('ddeieiux')[intc])   		
- 		
-        xzn0 = self.xzn0
+        ddeiei   = np.asarray(eht.item().get('ddeiei')[intc]) 		
+        ddeiux   = np.asarray(eht.item().get('ddeiux')[intc]) 		
+        ddeieiux = np.asarray(eht.item().get('ddeieiux')[intc])   		
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -63,40 +57,17 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_ddeiei  = np.asarray(eht.item().get('ddeiei')) 
 		
         t_sigma_ei	= (t_ddeiei/t_dd) -(t_ddei*t_ddei)/(t_dd*t_dd)	
- 
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        ei = self.ei
-        pp = self.pp
-		
-        ddux   = self.ddux
-        ddei   = self.ddei
-        eipp   = self.eipp
-        dddivu = self.dddivu
-        ppdivu = self.ppdivu
-        
-        ddenuc1 = self.ddenuc1
-        ddenuc2 = self.ddenuc2
-
-        eiddenuc1 = self.eiddenuc1
-        eiddenuc2 = self.eiddenuc2
-
-        eippdivu = self.eippdivu
-        eidivu   = self.eidivu
-        divu     = self.divu
-
-        ddeiei   = self.ddeiei
-        ddeiux   = self.ddeiux		
-        ddeieiux = self.ddeieiux
-		
+ 		
         # construct equation-specific mean fields		
         fht_ux   = ddux/dd
         fht_ei   = ddei/dd
         f_ei     = ddeiux - ddux*ddei/dd
-        sigma_ei = (ddeiei/dd)-(ddei*ddei)/(dd*dd)
+        fht_d    = dddivu/dd
+        sigma_ei = (ddeiei/dd)-(ddei*ddei)/(dd*dd)		
+
+        eht_eiff_ppf = eipp	- ei*pp 	
+        eht_eiff_dff = eidivu - ei*dddivu/dd - divu*ddei/dd + ddei*dddivu/(dd*dd)		
+        eht_eiff_ppf_dff = eippdivu - eidivu*pp - (ddei/dd)*ppdivu + (ddei/dd)*pp*divu - eipp*dddivu/dd + ei*pp*dddivu/dd		
 		
         f_sigma_ei = dd*(ddeieiux/dd - 2.*ddei*ddeiux/(dd*dd)-ddux*ddeiei/(dd*dd) + \
                      2.*(ddei*ddei*ddux)/(dd*dd*dd))
@@ -111,28 +82,28 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_dt_dd_sigma_ei = -self.dt(t_dd*t_sigma_ei,xzn0,t_timec,intc)
 
         # LHS -div dd fht_ux sigma_ss
-        self.minus_div_eht_dd_fht_ux_sigma_ei = -self.Div(ddux*sigma_ei,xzn0)
+        self.minus_div_eht_dd_fht_ux_sigma_ei = -self.Div(dd*fht_ux*sigma_ei,xzn0)
 				
         # RHS -div f_sigma_ei
         self.minus_div_f_sigma_ei = -self.Div(f_sigma_ei,xzn0)
 				
-	# RHS minus_two_f_ei_gradx_fht_ei
+        # RHS minus_two_f_ei_gradx_fht_ei
         self.minus_two_f_ei_gradx_fht_ei = -2.*f_ei*self.Grad(fht_ei,xzn0)
 		
         # RHS -2 eiff eht_pp fht_d
-        self.minus_two_eiff_eht_pp_fht_d = -2.*(ei-ddei/dd)*pp*(dddivu/dd)
+        self.minus_two_eiff_eht_pp_fht_d = -2.*(ei-fht_ei)*pp*fht_d
 
         # RHS -2 eht_pp eht_eiff dff
-        self.minus_two_eht_pp_eht_eiff_dff = -2.*pp*(eidivu - ei*dddivu/dd - divu*ddei/dd + ddei*dddivu/(dd*dd))
+        self.minus_two_eht_pp_eht_eiff_dff = -2.*pp*eht_eiff_dff
 
         # RHS -2 fht_d eht_eiff ppf
-        self.minus_two_fht_d_eht_eiff_ppf = -2.*(dddivu/dd)*(eippdivu - eidivu*pp - (ddei/dd)*ppdivu + (ddei/dd)*pp*divu - eipp*dddivu/dd + ei*pp*dddivu/dd)
+        self.minus_two_fht_d_eht_eiff_ppf = -2.*fht_d*eht_eiff_ppf
 
-	# RHS -2 eht_eiff ppf dff
-        self.minus_two_eht_eiff_ppf_dff =  -2.*(eippdivu - eidivu*pp - (ddei/dd)*ppdivu + (ddei/dd)*pp*divu - eipp*dddivu/dd + ei*pp*dddivu/dd)		
+        # RHS -2 eht_eiff ppf dff
+        self.minus_two_eht_eiff_ppf_dff =  -2.*eht_eiff_ppf_dff		
 		
         # RHS +2 eht_eiff dd enuc
-        self.plus_two_eht_eiff_dd_enuc = 2.*(eiddenuc1+eiddenuc2) - 2.*(ddei/dd)*(ddenuc1+ddenuc2)
+        self.plus_two_eht_eiff_dd_enuc = 2.*(eiddenuc1+eiddenuc2) - 2.*fht_ei*(ddenuc1+ddenuc2)
 
         # RHS +2 eht_eiff_tke_diss_approx
         self.plus_two_eht_eiff_tke_diss_approx = 2.*(ei - ddei/dd)*disstke 	
@@ -143,12 +114,17 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
           self.minus_two_eht_pp_eht_eiff_dff + self.minus_two_fht_d_eht_eiff_ppf + self.minus_two_eht_eiff_ppf_dff + \
           self.plus_two_eht_eiff_dd_enuc + self.plus_two_eht_eiff_tke_diss_approx) 
 		  
-	# Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
+        # Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
         self.minus_sigmaEIkolmdiss = -dd*sigma_ei/tauL	
 		
         ################################################
         # END INTERNAL ENERGY VARIANCE SIGMA EI EQUATION 
         ################################################
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.sigma_ei    = sigma_ei		
 		
     def plot_sigma_ei(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean Favrian internal energy variance stratification in the model""" 
@@ -157,7 +133,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.ddeiei/self.dd-self.ddei*self.ddei/(self.dd*self.dd)
+        plt1 = self.sigma_ei
 				
         # create FIGURE
         plt.figure(figsize=(7,6))

@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -15,37 +15,23 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         super(XtransportEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix
-        self.inuc  = inuc
-        self.element = element
-		
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
+        eht = np.load(filename)		
 
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])	
-        self.ddxi      = np.asarray(eht.item().get('ddx'+inuc)[intc])
-        self.ddxiux    = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
-        self.ddxidot   = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
+
+        dd      = np.asarray(eht.item().get('dd')[intc])
+        ddux    = np.asarray(eht.item().get('ddux')[intc])	
+        ddxi    = np.asarray(eht.item().get('ddx'+inuc)[intc])
+        ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
+        ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
 		
         #######################
         # Xi TRANSPORT EQUATION 
         #######################
-		
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/		
-		
-        dd      = self.dd
-        ddux    = self.ddux
-        ddxi    = self.ddxi
-        ddxiux  = self.ddxiux
-        ddxidot = self.ddxidot
-        xzn0    = self.xzn0
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 	
@@ -58,13 +44,16 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # LHS -dq/dt 		
         self.minus_dt_eht_dd_fht_xi = -self.dt(t_ddxi,xzn0,t_timec,intc)
+		
         # LHS -div(ddXiux)
         self.minus_div_eht_dd_fht_ux_fht_xi = -self.Div(dd*fht_ux*fht_xi,xzn0)
 		
         # RHS -div fxi 
-        self.minus_div_fxi = -self.Div(fxi,self.xzn0) 
+        self.minus_div_fxi = -self.Div(fxi,xzn0) 
+		
         # RHS +ddXidot 
         self.plus_ddxidot = +ddxidot 
+		
         # -res
         self.minus_resXiTransport = -(self.minus_dt_eht_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + \
                                self.minus_div_fxi + self.plus_ddxidot)
@@ -73,13 +62,13 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # END Xi TRANSPORT EQUATION
         ###########################
 		
-        #print('#----------------------------------------------------#')
-        #print('Loading RA-ILES COMPOSITION TRANSPORT EQUATION terms')	
-        #print('Central time (in s): ',round(self.timec,1))
-        #print('Averaging windows (in s): ',self.tavg.item(0))
-        #print('Time range (in s from-to): ',round(self.trange[0],1),round(self.trange[1],1))
-
-				
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0    = xzn0		
+        self.inuc    = inuc
+        self.element = element
+        self.ddxi    = ddxi	
+		
     def plot_Xrho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xrho stratification in the model""" 
 
@@ -174,15 +163,3 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'mean_Xtransport_'+element+'.png')
-
-			
-
-        #for i in range(1,self.nx-1):
-        #    dr = self.xznr[i]-self.xznl[i]
-        #    self.t_mm[:,i] = self.t_dd[:,i]*(4./3.)*np.pi*dr**3
-            #print(i,self.t_mm[:,i])			
-		
-        #self.dmdt = self.dt(self.t_mm,self.xzn0,self.t_timec,intc) 
-        #print(self.dmdt)
-        #self.vexp = -self.dmdt/(4.*np.pi*self.xzn0*self.xzn0*self.dd)			
-			

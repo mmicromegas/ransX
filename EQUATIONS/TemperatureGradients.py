@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -18,16 +18,13 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
         super(TemperatureGradients,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx      = np.asarray(eht.item().get('nx')) 		
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+
+        # pick specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/		
 		
         pp      = np.asarray(eht.item().get('pp')[intc]) 		
         tt      = np.asarray(eht.item().get('tt')[intc]) 
@@ -39,10 +36,18 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
         lntt = np.log(tt)
         lnpp = np.log(pp)
         lnmu = np.log(mu)
+
+        # calculate temperature gradients		
+        nabla = self.deriv(lntt,lnpp) 
+        nabla_ad = (gamma2-1.)/gamma2
+        nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)
 		
-        self.nabla = self.deriv(lntt,lnpp) 
-        self.nabla_ad = (gamma2-1.)/gamma2
-        self.nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0  = xzn0
+        self.nabla = nabla
+        self.nabla_ad = nabla_ad
+        self.nabla_mu = nabla_mu		
 		
     def plot_nablas(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot temperature gradients in the model""" 

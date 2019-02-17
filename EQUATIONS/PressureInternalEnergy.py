@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -18,19 +18,22 @@ class PressureInternalEnergy(calc.CALCULUS,al.ALIMIT,object):
         super(PressureInternalEnergy,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx      = np.asarray(eht.item().get('nx')) 
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+
+        # pick pecific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	 
 		
-        self.pp        = np.asarray(eht.item().get('pp')[intc])
-        self.ei        = np.asarray(eht.item().get('ei')[intc])
+        pp        = np.asarray(eht.item().get('pp')[intc])
+        ei        = np.asarray(eht.item().get('ei')[intc])
+		
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.pp          = pp
+        self.ei          = ei		
 		
     def plot_ppei(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot pressure and internal energy stratification in the model""" 

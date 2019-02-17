@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import CALCULUS as calc
-import ALIMIT as al
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -9,112 +9,83 @@ import ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
-
 class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,minus_kolmrate,data_prefix):
         super(KineticEnergyEquation,self).__init__(ig) 
 	
         # load data to structured array
-        eht = np.load(filename)	
-		
-        self.data_prefix = data_prefix		
+        eht = np.load(filename)		
 
-        # assign global data to be shared across whole class	
-        self.timec     = eht.item().get('timec')[intc] 
-        self.tavg      = np.asarray(eht.item().get('tavg')) 
-        self.trange    = np.asarray(eht.item().get('trange')) 		
-        self.xzn0      = np.asarray(eht.item().get('xzn0')) 
-        self.nx        = np.asarray(eht.item().get('nx')) 		
+        # load grid
+        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+
+        # pick equation-specific Reynolds-averaged mean fields according to:
+        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf		
 		
-        self.dd        = np.asarray(eht.item().get('dd')[intc])
-        self.ux        = np.asarray(eht.item().get('ux')[intc])	
-        self.pp        = np.asarray(eht.item().get('pp')[intc])		
+        dd        = np.asarray(eht.item().get('dd')[intc])
+        ux        = np.asarray(eht.item().get('ux')[intc])	
+        pp        = np.asarray(eht.item().get('pp')[intc])		
 		
-        self.ddux      = np.asarray(eht.item().get('ddux')[intc])
-        self.dduy      = np.asarray(eht.item().get('dduy')[intc])
-        self.dduz      = np.asarray(eht.item().get('dduz')[intc])		
+        ddux      = np.asarray(eht.item().get('ddux')[intc])
+        dduy      = np.asarray(eht.item().get('dduy')[intc])
+        dduz      = np.asarray(eht.item().get('dduz')[intc])		
 		
-        self.dduxux    = np.asarray(eht.item().get('dduxux')[intc])
-        self.dduyuy    = np.asarray(eht.item().get('dduyuy')[intc])
-        self.dduzuz    = np.asarray(eht.item().get('dduzuz')[intc])
-        self.dduxuy    = np.asarray(eht.item().get('dduxuy')[intc])
-        self.dduxuz    = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux    = np.asarray(eht.item().get('dduxux')[intc])
+        dduyuy    = np.asarray(eht.item().get('dduyuy')[intc])
+        dduzuz    = np.asarray(eht.item().get('dduzuz')[intc])
+        dduxuy    = np.asarray(eht.item().get('dduxuy')[intc])
+        dduxuz    = np.asarray(eht.item().get('dduxuz')[intc])
 		
-        self.ddekux	   = np.asarray(eht.item().get('ddekux')[intc])	
-        self.ddek      = np.asarray(eht.item().get('ddek')[intc])		
+        ddekux	   = np.asarray(eht.item().get('ddekux')[intc])	
+        ddek      = np.asarray(eht.item().get('ddek')[intc])		
 		
-        self.ppdivu    = np.asarray(eht.item().get('ppdivu')[intc])
-        self.divu      = np.asarray(eht.item().get('divu')[intc])
-        self.ppux      = np.asarray(eht.item().get('ppux')[intc])		
+        ppdivu    = np.asarray(eht.item().get('ppdivu')[intc])
+        divu      = np.asarray(eht.item().get('divu')[intc])
+        ppux      = np.asarray(eht.item().get('ppux')[intc])		
 
         #########################
         # KINETIC ENERGY EQUATION 
-        #########################  		
-		
- 	# pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
-		
-        dd = self.dd
-        ux = self.ux
-        pp = self.pp
-		
-        ddux = self.ddux
-        dduy = self.dduy
-        dduz = self.dduz
-
-        dduxux = self.dduxux
-        dduyuy = self.dduyuy
-        dduzuz = self.dduzuz
-        dduxuy = self.dduxuy
-        dduxuz = self.dduxuz
-		
-        ddek   = self.ddek
-        ddekux = self.ddekux
-        ppux   = self.ppux
-        ppdivu = self.ppdivu
-        divu   = self.divu
-		
-        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
-        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
-        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 		
-
-        xzn0 = self.xzn0
+        #########################  			
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 
         t_dd      = np.asarray(eht.item().get('dd'))
-		
-        t_ddux    = np.asarray(eht.item().get('ddux')) 
-        t_dduy    = np.asarray(eht.item().get('dduy')) 
-        t_dduz    = np.asarray(eht.item().get('dduz')) 		
+
+        t_ddux = np.asarray(eht.item().get('ddux'))
+        t_dduy = np.asarray(eht.item().get('dduy'))
+        t_dduz = np.asarray(eht.item().get('dduz'))		
 		
         t_dduxux = np.asarray(eht.item().get('dduxux'))
         t_dduyuy = np.asarray(eht.item().get('dduyuy'))
         t_dduzuz = np.asarray(eht.item().get('dduzuz'))
 
-        t_fht_ke = 0.5*(t_dduxux+t_dduyuy+t_dduzuz)/t_dd		
+        t_fht_ek = 0.5*(t_dduxux+t_dduyuy+t_dduzuz)/t_dd		
 		
         # construct equation-specific mean fields		
         fht_ux = ddux/dd
-        fht_ke = 0.5*(dduxux + dduyuy + dduzuz)/dd
-        self.fht_ke = fht_ke
+        fht_ek = 0.5*(dduxux + dduyuy + dduzuz)/dd
+        fekx   = ddekux - dd*fht_ek*fht_ux
+        fpx    = ppux - pp*ux		
+		
+        uxffuxff = (dduxux/dd - ddux*ddux/(dd*dd)) 
+        uyffuyff = (dduyuy/dd - dduy*dduy/(dd*dd)) 
+        uzffuzff = (dduzuz/dd - dduz*dduz/(dd*dd)) 			
 		
         # LHS -dq/dt 			
-        self.minus_dt_eht_dd_fht_ke = -self.dt(t_dd*t_fht_ke,xzn0,t_timec,intc)
+        self.minus_dt_eht_dd_fht_ek = -self.dt(t_dd*t_fht_ek,xzn0,t_timec,intc)
 
-        # LHS -div dd ux tke
-        self.minus_div_eht_dd_fht_ux_fht_ke = -self.Div(dd*fht_ux*fht_ke,xzn0)
+        # LHS -div dd ux ke
+        self.minus_div_eht_dd_fht_ux_fht_ek = -self.Div(dd*fht_ux*fht_ek,xzn0)
 		
         # -div kinetic energy flux
-        self.minus_div_fekx  = -self.Div(dd*(ddekux/dd - (ddux/dd)*(ddek/dd)),xzn0)
+        self.minus_div_fekx  = -self.Div(fekx,xzn0)
 
         # -div acoustic flux		
-        self.minus_div_fpx = -self.Div(ppux - pp*ux,xzn0)		
+        self.minus_div_fpx = -self.Div(fpx,xzn0)		
 		
         # RHS warning ax = overline{+u''_x} 
-        self.plus_ax = -ux + ddux/dd		
+        self.plus_ax = -ux + fht_ux		
 		
         # +buoyancy work
         self.plus_wb = self.plus_ax*self.Grad(pp,xzn0)
@@ -146,7 +117,7 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
              self.Div(dd*fht_ux*(fht_ux**2.+fht_uy**2.+fht_uz**2.),xzn0)
 		
         # -res		
-        self.minus_resKeEquation = - (self.minus_dt_eht_dd_fht_ke + self.minus_div_eht_dd_fht_ux_fht_ke + \
+        self.minus_resKeEquation = - (self.minus_dt_eht_dd_fht_ek + self.minus_div_eht_dd_fht_ux_fht_ek + \
                                       self.plus_wb + self.plus_wp + self.minus_div_fekx + \
 	                                  self.minus_div_fpx + self.minus_r_grad_u + \
                                       self.minus_dd_Dt_fht_ui_fht_ui)
@@ -159,6 +130,13 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # END KINETIC ENERGY EQUATION 
         ############################# 		
 			
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.dd          = dd
+        self.fht_ek      = fht_ek			
+			
+			
     def plot_ke(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot kinetic energy stratification in the model""" 
 		
@@ -166,7 +144,7 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 	
         # load DATA to plot 		
-        plt1 = self.fht_ke
+        plt1 = self.fht_ek
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -195,7 +173,7 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_ke.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_ek.png')		
 
     def plot_ke_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot kinetic energy equation in the model""" 
@@ -203,8 +181,8 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_eht_dd_fht_ke
-        lhs1 = self.minus_div_eht_dd_fht_ux_fht_ke
+        lhs0 = self.minus_dt_eht_dd_fht_ek
+        lhs1 = self.minus_div_eht_dd_fht_ux_fht_ek
 		
         rhs0 = self.plus_wb
         rhs1 = self.plus_wp		
@@ -229,7 +207,7 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('kinetic energy equation')
-        plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\widetilde{\epsilon}_K)$')
+        plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{\epsilon}_K)$')
         plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{\epsilon}_K)$")	
 		
         plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     
@@ -254,7 +232,7 @@ class KineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'ke_eq.png')	
+        plt.savefig('RESULTS/'+self.data_prefix+'ek_eq.png')	
 	
     def tke_dissipation(self):
         return self.minus_resTkeEquation		
