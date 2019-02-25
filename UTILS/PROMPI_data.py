@@ -1,32 +1,34 @@
 import numpy as np
+import sys
 
 class PROMPI_ransdat:
 
-    def __init__(self,filename):
+    def __init__(self,filename,endianness,precision):
 
-#        tdata = open(ftycho,'r')
+#       find first occurence of dd due to header info stored either on 4 or 8 lines, computer arch dependent
 
-#        t_line1 = tdata.readline().split()
-#        nspec = int(t_line1[1])
+        lookup = "dd"
+        iterate = True
+        with open(filename.replace("ransdat","ranshead")) as f:
+            for num, line in enumerate(f,1):
+                if (iterate) and (lookup in line):
+                    #print('found at line:', num)
+                    num_dd = num
+                    iterate = False
 
-#        xnuc = []
-#        for i in range(nspec):
-#            xnuc.append(tdata.readline().split()[0])    
-        
-#        tdata.close()
-        
+
         fhead = open(filename.replace("ransdat","ranshead"),'r') 
-
+				
         header_line1 = fhead.readline().split()
         header_line2 = fhead.readline().split()
         header_line3 = fhead.readline().split()
         header_line4 = fhead.readline().split()
 
-#       Cyril's output + 4 lines		
-        header_line5 = fhead.readline().split()
-        header_line6 = fhead.readline().split()
-        header_line7 = fhead.readline().split()
-        header_line8 = fhead.readline().split()
+        if num_dd == 9:	
+            header_line5 = fhead.readline().split()
+            header_line6 = fhead.readline().split()
+            header_line7 = fhead.readline().split()
+            header_line8 = fhead.readline().split()
 		
         self.nstep       = int(header_line1[0])
         self.rans_tstart = float(header_line1[1])
@@ -45,7 +47,7 @@ class PROMPI_ransdat:
         for line in range(self.nrans):
             line = fhead.readline().strip()
             self.ransl.append(line)
-#            print(self.nrans,line)
+            #print(self.nrans,line)
 			
 #        for inuc in range(nspec):
 #            self.ransl = [field.replace(str(inuc+1),str(xnuc[inuc])) for field in self.ransl]
@@ -83,12 +85,26 @@ class PROMPI_ransdat:
             self.zznr.append(float(line[39:54].strip()))	
 
         frans = open(filename,'rb')
-#        self.data = np.fromfile(frans)		
-        self.data = np.fromfile(frans,dtype='<f8',count=ndims[0]*ndims[1]*ndims[2])
-#        self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='F')	
-#        self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='C')
+		
+        if (endianness == 'little_endian') and (precision == 'single'):			
+            self.data = np.fromfile(frans,dtype='<f4',count=ndims[0]*ndims[1]*ndims[2])
+        elif (endianness == 'little_endian') and (precision == 'double'):		
+            self.data = np.fromfile(frans,dtype='<f8',count=ndims[0]*ndims[1]*ndims[2])
+        elif (endianness == 'big_endian') and (precision == 'single'):			
+            self.data = np.fromfile(frans,dtype='>f4',count=ndims[0]*ndims[1]*ndims[2])
+        elif (endianness == 'big_endian') and (precision == 'double'):		
+            self.data = np.fromfile(frans,dtype='>f8',count=ndims[0]*ndims[1]*ndims[2])
+        else: 
+            print("PROMPI_data.py: Wrong endianness or precision. Check param.tseries")
+            sys.exit()
+
+        # reshape   			
         self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='F')	
 
+#        self.data = np.fromfile(frans)		
+#        self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='F')	
+#        self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='C')		
+		
         self.ransd = {}
 
         nx = {'nx' : self.qqx}
@@ -240,20 +256,20 @@ class PROMPI_blockdat:
         # offset read pointer (argument offset is a byte count)         
         fblock.seek(dstart) 
 
-# https://docs.scipy.org/doc/numpy-1.13.0/reference/arrays.dtypes.html#arrays-dtypes-constructing
+#       https://docs.scipy.org/doc/numpy-1.13.0/reference/arrays.dtypes.html#arrays-dtypes-constructing
         
 #       '<f' little-endian single-precision float
 #       '>f' little-endian single-precision float
 
-# >>> dt = np.dtype('b')  # byte, native byte order
-# >>> dt = np.dtype('>H') # big-endian unsigned short
-# >>> dt = np.dtype('<f') # little-endian single-precision float
-# >>> dt = np.dtype('d')  # double-precision floating-point number
+#       >>> dt = np.dtype('b')  # byte, native byte order
+#       >>> dt = np.dtype('>H') # big-endian unsigned short
+#       >>> dt = np.dtype('<f') # little-endian single-precision float
+#       >>> dt = np.dtype('d')  # double-precision floating-point number
 
-#        self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
+#       self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
         self.data = np.fromfile(fblock,dtype='<f4',count=192)
-#        self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
-#        print(self.data)
+#       self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
+#       print(self.data)
         
         fblock.close()
 
@@ -267,3 +283,17 @@ class PROMPI_blockdat:
 
     def test(self):
         return self.data
+
+#        OBSOLETE CODE		
+		
+#        tdata = open(ftycho,'r')
+
+#        t_line1 = tdata.readline().split()
+#        nspec = int(t_line1[1])
+
+#        xnuc = []
+#        for i in range(nspec):
+#            xnuc.append(tdata.readline().split()[0])    
+        
+#        tdata.close()		
+		

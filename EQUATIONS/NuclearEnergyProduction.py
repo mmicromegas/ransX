@@ -53,11 +53,12 @@ class NuclearEnergyProduction(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('Nuclear energy production')
-        plt.plot(grd1,plt1,color='brown',label = r'$\overline{\varepsilon_{nuc}}$')
+        plt.semilogy(grd1,plt1,color='brown',label = r'$\overline{\varepsilon_{nuc}}$')
+        # plt.plot(grd1,plt1,color='brown',label = r'$\overline{\varepsilon_{nuc}}$')
 		
         # define and show x/y LABELS
         setxlabel = r'r (10$^{8}$ cm)'
-        setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg s$^{-1}$)'		
+        setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'		
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

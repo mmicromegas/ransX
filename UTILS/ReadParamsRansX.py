@@ -1,6 +1,6 @@
 import re # python regular expressions
 
-class ReadParams:
+class ReadParamsRansX:
 
     def __init__(self,filename):
 
@@ -19,7 +19,7 @@ class ReadParams:
 				
     def getForProp(self,param): 
 	
-        match = [s for s in self.input if param in s]
+        match = [s for s in self.input if param in s] # choose only lists identified by param
         eht_data = match[0].split(",")[2]
         prefix   = match[1].split(",")[2]	
         ig       = int(match[2].split(",")[2])
@@ -32,7 +32,7 @@ class ReadParams:
 
     def getForEqs(self,param): 
 	
-        match = [s for s in self.input if param in s]
+        match = [s for s in self.input if param in s] # choose only lists identified by param
         #print(param,match)
         match_split = match[0].split(",")
         #equation = match_split[0]
@@ -47,7 +47,7 @@ class ReadParams:
 
     def getForEqsBar(self,param): 
 	
-        match = [s for s in self.input if param in s]
+        match = [s for s in self.input if param in s] # choose only lists identified by param
         match_split = match[0].split(",")
         #equation = match_split[0]
         plotMee = match_split[1]

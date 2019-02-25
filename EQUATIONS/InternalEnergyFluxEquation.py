@@ -77,12 +77,12 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         fei  = ddeiux - ddux*ddei/dd
         feix = ddeiuxux - ddei*dduxux/dd - 2.*fht_ux*ddeiux + 2.*dd*fht_ux*fht_ei*fht_ux
 
-        eiff = ei - ddei/dd				
-        eiff_gradx_ppf = eigradxpp - ei*self.Grad(pp,xzn0)
+        eht_eiff = ei - ddei/dd				
+        eht_eiff_gradx_ppf = eigradxpp - fht_ei*self.Grad(pp,xzn0)
 		
-        uxff_dd_enuc = (dduxenuc1 + dduxenuc2) - fht_ux*(ddenuc1 + ddenuc2)
+        eht_uxff_dd_enuc = (dduxenuc1 + dduxenuc2) - fht_ux*(ddenuc1 + ddenuc2)
 		
-        uxff_epsilonk_approx = (ux - ddux/dd)*tke_diss
+        eht_uxff_epsilonk_approx = (ux - ddux/dd)*tke_diss
 		
         Grei = -(ddeiuyuy-ddei*dduyuy/dd-2.*(dduy/dd)*(ddeiuy/dd)+2.*ddei*dduy*dduy/(dd*dd*dd))/xzn0- \
                 (ddeiuzuz-ddei*dduzuz/dd-2.*(dduz/dd)*(ddeiuz/dd)+2.*ddei*dduz*dduz/(dd*dd*dd))/xzn0
@@ -105,39 +105,40 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div flux internal energy flux
         self.minus_div_feix = -self.Div(feix,xzn0)
         
-        # RHS -f_ei_gradx_fht_ux
-        self.minus_f_ei_gradx_fht_ux = -fei*self.Grad(fht_ux,xzn0)
+        # RHS -fei_gradx_fht_ux
+        self.minus_fei_gradx_fht_ux = -fei*self.Grad(fht_ux,xzn0)
 		
         # RHS -rxx_gradx_fht_ei
         self.minus_rxx_gradx_fht_ei = -rxx*self.Grad(fht_ei,xzn0)	
 
         # RHS -eht_eiff_gradx_eht_pp
-        self.minus_eht_eiff_gradx_eht_pp = -(ei - fht_ei)*self.Grad(pp,xzn0)
+        self.minus_eht_eiff_gradx_eht_pp = -eht_eiff*self.Grad(pp,xzn0)
 		
         # RHS -eht_eiff_gradx_ppf
-        self.minus_eht_eiff_gradx_ppf = -(eigradxpp - fht_ei*self.Grad(pp,xzn0))
+        self.minus_eht_eiff_gradx_ppf = -(eht_eiff_gradx_ppf)
 		
         # RHS -eht_uxff_pp_divu
         self.minus_eht_uxff_pp_divu = -(uxppdivu - fht_ux*ppdivu)
 
         # RHS eht_uxff_dd_nuc	
-        self.plus_eht_uxff_dd_nuc =  (dduxenuc1 + dduxenuc2) - fht_ux*(ddenuc1+ddenuc2) 
+        self.plus_eht_uxff_dd_nuc =  +(eht_uxff_dd_enuc)
 		
-        # RHS eht_uxff_div_ftt (not calculated)
-        eht_uxff_div_f_tt = np.zeros(nx)  		
-        self.plus_eht_uxff_div_ftt = eht_uxff_div_f_tt
+        # RHS eht_uxff_div_fth (not calculated)
+		# fth is flux due to thermal transport (conduction/radiation)		
+        eht_uxff_div_fth = np.zeros(nx)  		
+        self.plus_eht_uxff_div_fth = +eht_uxff_div_fth
 		
         # RHS eht_uxff_epsilonk_approx	
-        self.plus_eht_uxff_epsilonk_approx =  (ux - fht_ux)*tke_diss 		
+        self.plus_eht_uxff_epsilonk_approx =  +eht_uxff_epsilonk_approx		
 
         # RHS Gei
         self.plus_Gei = -Grei-eiff_GrM	
 
         # -res  
         self.minus_resEiFluxEquation = -(self.minus_dt_fei + self.minus_div_fht_ux_fei + \
-          self.minus_div_feix + self.minus_f_ei_gradx_fht_ux + self.minus_rxx_gradx_fht_ei + \
+          self.minus_div_feix + self.minus_fei_gradx_fht_ux + self.minus_rxx_gradx_fht_ei + \
           self.minus_eht_eiff_gradx_eht_pp + self.minus_eht_eiff_gradx_ppf + self.minus_eht_uxff_pp_divu + \
-          self.plus_eht_uxff_dd_nuc + self.plus_eht_uxff_div_ftt + self.plus_eht_uxff_epsilonk_approx + \
+          self.plus_eht_uxff_dd_nuc + self.plus_eht_uxff_div_fth + self.plus_eht_uxff_epsilonk_approx + \
           self.plus_Gei)
                                        
         ###################################		

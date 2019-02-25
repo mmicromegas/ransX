@@ -162,7 +162,7 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,res]
+        to_plot = [lhs0,lhs1,rhs0,rhs1+rhs2,rhs3,rhs4,rhs5,res]
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
@@ -171,16 +171,17 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs1,color='k',label = r"$-(\widetilde{u}_r \nabla_r \sigma_{\rho})$")	
 		
         plt.plot(grd1,rhs0,color='r',label = r"$-\nabla f_{\sigma_{\rho}}$")     
-        plt.plot(grd1,rhs1,color='c',label = r"$-2 \overline{\rho} \ \overline{\rho' d''}$") 
-        plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 \overline{\rho' u''_r} \partial_r \overline{\rho}$") 
+        #plt.plot(grd1,rhs1,color='c',label = r"$-2 \overline{\rho} \ \overline{\rho' d''}$") 
+        #plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 \overline{\rho' u''_r} \partial_r \overline{\rho}$") 
+        plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 \overline{\rho' u''_r} \partial_r \overline{\rho} - 2 \overline{\rho} \ \overline{\rho' d''}$")
         plt.plot(grd1,rhs3,color='m',label = r"$-2 \widetilde{d} \ \sigma_\rho$")
         plt.plot(grd1,rhs4,color='g',label = r"$-\overline{\rho' \rho' d''}$")
-        plt.plot(grd1,rhs5,color='y',label = r"$-\sigma_\rho / \tau_L$")		
+        plt.plot(grd1,rhs5,color='k',linewidth=0.8,label = r"$-\sigma_\rho / \tau_L$")		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\sigma_\rho}$")
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r""
+        setylabel = r"$\sigma_\rho$ (g$^2$ cm$^{-6}$ s$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

@@ -1,27 +1,35 @@
 import UTILS.PROMPI_data as pt
+import UTILS.ReadParamsTseries as rpt
 import numpy as np
 import os
 import sys
 import matplotlib.pyplot as plt       
+
+
+# read input parameters
 	   
-datadir = 'C:\Users\mmocak\Desktop\simonX\lres-oburn-fullransx-15Feb19\lres-oburn-fullransx-15Feb19\\'
-#datadir = 'C:\Users\mmocak\Desktop\cyrilX\\'
-dataout = 'DATA\TSERIES\\tseries_ransout_oblreznew'
+paramFile = 'param.tseries'
+params = rpt.ReadParamsTseries(paramFile)	   
+	   
+datadir = params.getForTseries('tseries')['datadir']
+endianness = params.getForTseries('tseries')['endianness']
+precision = params.getForTseries('tseries')['precision']
 
-#trange = [650. ,1100.]
-#tavg = 430.
+dataout = params.getForTseries('tseries')['dataout']	
 
-trange = [140. ,340.]
-tavg = 190.
+trange_beg = params.getForTseries('tseries')['trange_beg']	
+trange_end = params.getForTseries('tseries')['trange_end']
+trange = []
+trange.append(trange_beg)
+trange.append(trange_end)
 
-#trange = [200. ,450.]
-#tavg = 200.
+tavg = params.getForTseries('tseries')['tavg']
 
 ransdat = [file for file in os.listdir(datadir) if "ransdat" in file]
 ransdat = [file.replace(file,datadir+file) for file in ransdat]	
 
 filename = ransdat[0]
-ts = pt.PROMPI_ransdat(filename)
+ts = pt.PROMPI_ransdat(filename,endianness,precision)
 
 ransl = ts.rans_list()
 		
@@ -31,7 +39,7 @@ dt  = []
 		
 for filename in ransdat:
     print(filename)
-    ts = pt.PROMPI_ransdat(filename)
+    ts = pt.PROMPI_ransdat(filename,endianness,precision)
     rans_tstart, rans_tend, rans_tavg = ts.rans_header()
     time.append(rans_tend)
     dt.append(rans_tavg)
@@ -77,7 +85,7 @@ if ntc == 0:
 eh = []
 for i in idx[0]:
     filename = ransdat[i]
-    ts = pt.PROMPI_ransdat(filename) 
+    ts = pt.PROMPI_ransdat(filename,endianness,precision) 
     field = [[data for data in ts.rans()[s]] for s in ts.ransl]
     eh.append(field)
 

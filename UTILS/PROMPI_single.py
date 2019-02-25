@@ -8,8 +8,8 @@ from pylab import *
 
 class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
 
-    def __init__(self,filename):
-        super(PROMPI_single,self).__init__(filename) 
+    def __init__(self,filename,endianness,precision):
+        super(PROMPI_single,self).__init__(filename,endianness,precision) 
         self.data = self.rans()	
 
     def SetMatplotlibParams(self):
@@ -637,11 +637,11 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         xzn0 = np.asarray(self.data['xzn0'])
         xznl = np.asarray(self.data['xznl'])
         xznr = np.asarray(self.data['xznr'])        
-	nx = np.asarray(self.data['nx'])
+        nx = np.asarray(self.data['nx'])
 
-	press = np.asarray(self.data['pp'])
-	dd = np.asarray(self.data['dd'])
-        gg = 2.*np.asarray(self.data['grav'])
+        press = np.asarray(self.data['pp'])
+        dd = np.asarray(self.data['dd'])
+        gg = np.asarray(self.data['grav'])
 	
         fig, ax1 = plt.subplots(figsize=(7,6))
 		
@@ -674,17 +674,17 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         xzn0 = np.asarray(self.data['xzn0'])
         xznl = np.asarray(self.data['xznl'])
         xznr = np.asarray(self.data['xznr'])        
-	nx = np.asarray(self.data['nx'])
+        nx = np.asarray(self.data['nx'])
 
-	press = np.asarray(self.data['pp'])
-	dd = np.asarray(self.data['dd'])
+        press = np.asarray(self.data['pp'])
+        dd = np.asarray(self.data['dd'])
         gg = np.asarray(self.data['gg'])
         grav = np.asarray(self.data['grav'])        
         mm = np.asarray(self.data['mm']) 
 
         fig, ax1 = plt.subplots(figsize=(7,6))
 		
-        ax1.axis([xbl,xbr,-0.1,0.1])
+        #ax1.axis([xbl,xbr,-0.1,0.1])
         #ax1.plot(xzn0,f_1*f_2,color='b',label = 'rho g')
         #ax1.plot(xzn0,self.Grad(f_3,rr),color='r',label = 'grad pp')        
 
@@ -726,14 +726,14 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
 
     def plot_nablas(self,xbl,xbr):
         xzn0 = np.asarray(self.data['xzn0'])
-	nx = np.asarray(self.data['nx'])
+        nx = np.asarray(self.data['nx'])
 
-	pp = np.asarray(self.data['pp'])
-	tt = np.asarray(self.data['tt'])
-	mu = np.asarray(self.data['abar'])        
-	chim = np.asarray(self.data['chim'])
-	chit = np.asarray(self.data['chit'])
-	gamma2 = np.asarray(self.data['gamma2'])       
+        pp = np.asarray(self.data['pp'])
+        tt = np.asarray(self.data['tt'])
+        mu = np.asarray(self.data['abar'])        
+        chim = np.asarray(self.data['chim'])
+        chit = np.asarray(self.data['chit'])
+        gamma2 = np.asarray(self.data['gamma2'])       
         
         lntt = np.log(tt)
         lnpp = np.log(pp)

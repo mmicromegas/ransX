@@ -10,10 +10,10 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
+class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
-        super(ContinuityEquation,self).__init__(ig) 
+        super(ContinuityEquationWithMassFlux,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)		
@@ -33,7 +33,7 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         t_dd      = np.asarray(eht.item().get('dd')) 	
 				
         # construct equation-specific mean fields		
-        fht_ux = ddux/dd	
+        fdd = ddux-dd*ux	
 	
         #####################
         # CONTINUITY EQUATION 
@@ -42,14 +42,17 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # LHS -dq/dt 		
         self.minus_dt_dd = -self.dt(t_dd,xzn0,t_timec,intc)
 
-        # LHS -fht_ux Grad dd
-        self.minus_fht_ux_grad_dd = -fht_ux*self.Grad(dd,xzn0)
+        # LHS -ux Grad dd
+        self.minus_ux_grad_dd = -ux*self.Grad(dd,xzn0)
 				
-        # RHS -dd Div fht_ux 
-        self.minus_dd_div_fht_ux = -dd*self.Div(fht_ux,xzn0) 
+        # RHS -Div fdd
+        self.minus_div_fdd = -self.Div(fdd,xzn0)
+				
+        # RHS +dd Div ux 
+        self.minus_dd_div_ux = -dd*self.Div(ux,xzn0) 
 
         # -res
-        self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_dd_div_fht_ux)
+        self.minus_resContEquation = -(self.minus_dt_dd+self.minus_ux_grad_dd+self.minus_div_fdd+self.minus_dd_div_ux)
 		
         #########################	
         # END CONTINUITY EQUATION
@@ -107,9 +110,10 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 
         lhs0 = self.minus_dt_dd
-        lhs1 = self.minus_fht_ux_grad_dd
-		
-        rhs0 = self.minus_dd_div_fht_ux
+        lhs1 = self.minus_ux_grad_dd 
+
+        rhs0 = self.minus_div_fdd		
+        rhs1 = self.minus_dd_div_ux
 		
         res = self.minus_resContEquation
 		
@@ -124,10 +128,11 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('continuity equation')
+        plt.title('continuity equation with mass flux')
         plt.plot(grd1,lhs0,color='g',label = r'$-\partial_t (\overline{\rho})$')
-        plt.plot(grd1,lhs1,color='r',label = r'$- \widetilde{u}_r \partial_r (\overline{\rho})$')		
-        plt.plot(grd1,rhs0,color='b',label=r'$-\overline{\rho} \nabla_r (\widetilde{u}_r)$')
+        plt.plot(grd1,lhs1,color='r',label = r'$- \overline{u}_r \partial_r (\overline{\rho})$')
+        plt.plot(grd1,rhs0,color='m',label = r"$-\nabla_r f_\rho$")		
+        plt.plot(grd1,rhs1,color='b',label=r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS

@@ -7,12 +7,12 @@
 # Date: January/2019
 
 import EQUATIONS.Properties as prop
-import UTILS.ReadParams as rp
+import UTILS.ReadParamsRansX as rp
 import UTILS.MasterPlot as plot
 import ast 
 
-paramFile = 'param.file'
-params = rp.ReadParams(paramFile)
+paramFile = 'param.ransx'
+params = rp.ReadParamsRansX(paramFile)
 
 # get simulation properties
 ransP = prop.Properties(params)
@@ -52,10 +52,14 @@ if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
 # BUOYANCY 
 if str2bool(params.getForEqs('buo')['plotMee']): plt.execBuoyancy()
 
+# RELATIVE RMS FLUCTUATIONS
+if str2bool(params.getForEqs('relrmsflct')['plotMee']): plt.execRelativeRmsFlct()
+
 # CONTINUITY EQUATION
 if str2bool(params.getForEqs('rho')['plotMee']): plt.execRho()					
 if str2bool(params.getForEqs('conteq')['plotMee']): plt.execContEq()
 if str2bool(params.getForEqsBar('conteqBar')['plotMee']): plt.execContEqBar()
+if str2bool(params.getForEqs('conteqfdd')['plotMee']): plt.execContFddEq()
 
 # MOMENTUM X EQUATION
 if str2bool(params.getForEqs('momex')['plotMee']): plt.execMomx()
@@ -104,6 +108,30 @@ if str2bool(params.getForEqs('eiflxeq')['plotMee']): plt.execEiFlxEq(properties[
 # INTERNAL ENERGY VARIANCE EQUATION
 if str2bool(params.getForEqs('eintvar')['plotMee']): plt.execEiVar()
 if str2bool(params.getForEqs('eivareq')['plotMee']): plt.execEiVarEq(properties['tke_diss'],properties['tauL'])
+
+# PRESSURE EQUATION
+if str2bool(params.getForEqs('press')['plotMee']): plt.execPP()
+if str2bool(params.getForEqs('ppeq')['plotMee']): plt.execPPeq(properties['tke_diss'])
+
+# PRESSURE VARIANCE EQUATION
+if str2bool(params.getForEqs('pressvar')['plotMee']): plt.execPPvar()
+if str2bool(params.getForEqs('ppvareq')['plotMee']): plt.execPPvarEq(properties['tke_diss'],properties['tauL'])
+
+# TEMPERATURE EQUATION
+if str2bool(params.getForEqs('temp')['plotMee']): plt.execTT()
+if str2bool(params.getForEqs('tteq')['plotMee']): plt.execTTeq(properties['tke_diss'])
+
+# TEMPERATURE FLUX EQUATION
+if str2bool(params.getForEqs('tempflx')['plotMee']): plt.execTTflx()
+if str2bool(params.getForEqs('ttflxeq')['plotMee']): plt.execTTflxEq(properties['tke_diss'])
+
+# TEMPERATURE VARIANCE EQUATION
+if str2bool(params.getForEqs('tempvar')['plotMee']): plt.execTTvar()
+if str2bool(params.getForEqs('ttvareq')['plotMee']): plt.execTTvarEq(properties['tke_diss'],properties['tauL'])
+
+# ENTHALPY EQUATION
+if str2bool(params.getForEqs('enth')['plotMee']): plt.execHH()
+if str2bool(params.getForEqs('hheq')['plotMee']): plt.execHHeq(properties['tke_diss'])
 
 # ENTROPY EQUATION
 if str2bool(params.getForEqs('entr')['plotMee']): plt.execSS()

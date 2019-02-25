@@ -1,18 +1,33 @@
 import UTILS.PROMPI_single as psg
+import UTILS.ReadParamsSingle as rps
 import warnings
 
 warnings.filterwarnings("ignore")
 
-fl_rans = 'C:\Users\mmocak\Desktop\simonX\lres-oburn-fullransx-15Feb19\lres-oburn-fullransx-15Feb19\ob3d.45.lrez.00002.ransdat' 
+# read input parameters
+	   
+paramFile = 'param.single'
+params = rps.ReadParamsSingle(paramFile)	
+ 
+datafile = params.getForSingle('single')['datafile']
+endianness = params.getForSingle('single')['endianness']
+precision = params.getForSingle('single')['precision']
 
-ransdat = psg.PROMPI_single(fl_rans)
+xbl = params.getForSingle('single')['xbl']
+xbr = params.getForSingle('single')['xbr']
 
-xbl = 3.e8
-xbr = 1.e9
+q2plot = params.getForSingle('single')['q']
+
+ransdat = psg.PROMPI_single(datafile,endianness,precision)
 
 ransdat.SetMatplotlibParams()
 
-# USAGE:
+for q in q2plot:
+    ransdat.plot_lin_q1(xbl,xbr,q,r'r (10$^{8}$ cm)',q,q)
+				   
+ransdat.plot_check_heq1()	   
+ransdat.plot_check_heq2(xbl,xbr)
+#ransdat.plot_nablas(xbl,xbr)
 
 #ransdat.plot_lin_q1q2(xbl,xbr,'dd','tt',\
 #                      r'r (10$^{8}$ cm)',\
@@ -24,9 +39,3 @@ ransdat.SetMatplotlibParams()
 #                       r'$\varepsilon_{nuc}$ (erg $s^{-1}$)',\
 #                       r'$\epsilon$ (ergs)',\
 #                       r'$\varepsilon_{nuc}$',r'$\epsilon$')
-
-#ransdat.plot_nablas(xbl,xbr)
-ransdat.plot_lin_q1(xbl,xbr,'grav',r'r (10$^{8}$ cm)','psi','psi')
-ransdat.plot_lin_q1(xbl,xbr,'ppdivuy',r'r (10$^{8}$ cm)','ux','ux')					   
-ransdat.plot_check_heq1()	   
-#ransdat.plot_lin_q1(xbl,xbr,'uyuz',r'r (10$^{8}$ cm)','ux','ux')

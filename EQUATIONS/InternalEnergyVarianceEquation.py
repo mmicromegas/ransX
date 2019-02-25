@@ -61,7 +61,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # construct equation-specific mean fields		
         fht_ux   = ddux/dd
         fht_ei   = ddei/dd
-        f_ei     = ddeiux - ddux*ddei/dd
+        fei     = ddeiux - ddux*ddei/dd
         fht_d    = dddivu/dd
         sigma_ei = (ddeiei/dd)-(ddei*ddei)/(dd*dd)		
 
@@ -87,8 +87,8 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -div f_sigma_ei
         self.minus_div_f_sigma_ei = -self.Div(f_sigma_ei,xzn0)
 				
-        # RHS minus_two_f_ei_gradx_fht_ei
-        self.minus_two_f_ei_gradx_fht_ei = -2.*f_ei*self.Grad(fht_ei,xzn0)
+        # RHS minus_two_fei_gradx_fht_ei
+        self.minus_two_fei_gradx_fht_ei = -2.*fei*self.Grad(fht_ei,xzn0)
 		
         # RHS -2 eiff eht_pp fht_d
         self.minus_two_eiff_eht_pp_fht_d = -2.*(ei-fht_ei)*pp*fht_d
@@ -110,7 +110,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # -res
         self.minus_resSigmaEIequation = -(self.minus_dt_dd_sigma_ei + self.minus_div_eht_dd_fht_ux_sigma_ei + \
-          self.minus_div_f_sigma_ei + self.minus_two_f_ei_gradx_fht_ei + self.minus_two_eiff_eht_pp_fht_d + \
+          self.minus_div_f_sigma_ei + self.minus_two_fei_gradx_fht_ei + self.minus_two_eiff_eht_pp_fht_d + \
           self.minus_two_eht_pp_eht_eiff_dff + self.minus_two_fht_d_eht_eiff_ppf + self.minus_two_eht_eiff_ppf_dff + \
           self.plus_two_eht_eiff_dd_enuc + self.plus_two_eht_eiff_tke_diss_approx) 
 		  
@@ -175,7 +175,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs1 = self.minus_div_eht_dd_fht_ux_sigma_ei
 		
         rhs0 = self.minus_div_f_sigma_ei
-        #rhs1 = self.minus_two_f_ei_gradx_fht_ei		
+        #rhs1 = self.minus_two_fei_gradx_fht_ei		
         rhs2 = self.minus_two_eiff_eht_pp_fht_d
         #rhs3 = self.minus_two_eht_pp_eht_eiff_dff
         rhs4 = self.minus_two_fht_d_eht_eiff_ppf
@@ -183,7 +183,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs6 = self.plus_two_eht_eiff_dd_enuc
         rhs7 = self.plus_two_eht_eiff_tke_diss_approx 
 		
-        rhs9 = self.minus_two_f_ei_gradx_fht_ei + self.minus_two_eht_pp_eht_eiff_dff
+        rhs9 = self.minus_two_fei_gradx_fht_ei + self.minus_two_eht_pp_eht_eiff_dff
 		
         res = self.minus_resSigmaEIequation
 		
@@ -215,7 +215,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs6,color='b',label = r"$+2\overline{\epsilon''_I \rho \varepsilon_{nuc}} $")	
         plt.plot(grd1,rhs7,color='deeppink',label = r"$+2\overline{\epsilon''_I \varepsilon_{k}} $")	
         plt.plot(grd1,rhs8,color='k',linewidth=0.8,label = r"$-\sigma_\epsilon / \tau_L$")				
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$")
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_\sigma$")
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

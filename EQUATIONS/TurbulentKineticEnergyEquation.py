@@ -19,7 +19,9 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # load grid
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
-
+        xznl   = np.asarray(eht.item().get('xznl'))
+        xznr   = np.asarray(eht.item().get('xznr'))		
+		
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/			
 		
@@ -128,10 +130,15 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
-        self.xzn0        = xzn0
-        self.dd          = dd
-        self.tke         = tke
-				
+        self.xzn0    = xzn0
+        self.xznl    = xznl
+        self.xznr    = xznr		
+        self.dd      = dd
+        self.tke     = tke
+        self.t_timec = t_timec
+        self.t_tke 	 = t_tke
+        self.t_dd 	 = t_dd
+		
     def plot_tke(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot turbulent kinetic energy stratification in the model""" 
 		
@@ -226,7 +233,47 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'tke_eq.png')	
-	
+
+    def plot_tke_evolution(self):
+
+        grd1 = self.t_timec
+
+        plt1 = self.t_tke	
+
+        Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
+
+        # Calculate 
+        tke_int = np.zeros(grd1.size)
+        for i in range(0,grd1.size):
+            dd = self.t_dd[i,:]
+            tke = self.t_tke[i,:]
+            tke_int[i] = (dd*tke*Vol).sum()
+		
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+				
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # plot DATA 
+        plt.title('turbulent kinetic energy evolution')
+        plt.plot(grd1,tke_int,color='r',label = r'$tke$')	
+
+        # define and show x/y LABELS
+        setxlabel = r"t (s)"
+        setylabel = r"ergs"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=1,prop={'size':8})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'tke_evol.png')			
+		
     def tke_dissipation(self):
         return self.minus_resTkeEquation		
 

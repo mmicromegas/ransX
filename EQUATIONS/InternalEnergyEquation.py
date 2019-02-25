@@ -48,40 +48,40 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # construct equation-specific mean fields		
         fht_ux = ddux/dd
         fht_ei = ddei/dd
-        f_ei = ddeiux - ddux*ddei/dd
+        fei = ddeiux - ddux*ddei/dd
 		
         ##########################
         # INTERNAL ENERGY EQUATION 
         ##########################
 
         # LHS -dq/dt 		
-        self.minus_dt_eht_dd_fht_ei = -self.dt(t_dd*t_fht_ei,xzn0,t_timec,intc)	
+        self.minus_dt_dd_fht_ei = -self.dt(t_dd*t_fht_ei,xzn0,t_timec,intc)	
 
-        # LHS -div eht_dd fht_ux fht_ei		
-        self.minus_div_eht_dd_fht_ux_fht_ei = -self.Div(dd*fht_ux*fht_ei,xzn0)
+        # LHS -div dd fht_ux fht_ei		
+        self.minus_div_dd_fht_ux_fht_ei = -self.Div(dd*fht_ux*fht_ei,xzn0)
 		
         # RHS -div fei
-        self.minus_div_fei = -self.Div(f_ei,xzn0)
+        self.minus_div_fei = -self.Div(fei,xzn0)
 		
         # RHS -div ftt (not included) heat flux
         self.minus_div_ftt = -np.zeros(nx)
 		
-        # RHS -P d = - eht_pp Div eht_ux
-        self.minus_eht_pp_div_eht_ux = -pp*self.Div(ux,xzn0)		
+        # RHS -P d = - pp Div ux
+        self.minus_pp_div_ux = -pp*self.Div(ux,xzn0)		
 				
         # RHS -Wp = -eht_ppf_df
         self.minus_eht_ppf_df = -(ppdivu - pp*divu)
 		
         # RHS source + dd enuc
-        self.plus_eht_dd_fht_enuc = ddenuc1+ddenuc2		
+        self.plus_dd_fht_enuc = ddenuc1+ddenuc2		
 		
         # RHS dissipated turbulent kinetic energy
         self.plus_disstke = +tke_diss  	
 
         # -res
-        self.minus_resEiEquation = -(self.minus_dt_eht_dd_fht_ei + self.minus_div_eht_dd_fht_ux_fht_ei + \
-         self.minus_div_fei + self.minus_div_ftt + self.minus_eht_pp_div_eht_ux + self.minus_eht_ppf_df + \
-         self.plus_eht_dd_fht_enuc + self.plus_disstke)
+        self.minus_resEiEquation = -(self.minus_dt_dd_fht_ei + self.minus_div_dd_fht_ux_fht_ei + \
+         self.minus_div_fei + self.minus_div_ftt + self.minus_pp_div_ux + self.minus_eht_ppf_df + \
+         self.plus_dd_fht_enuc + self.plus_disstke)
 		
         ##############################
         # END INTERNAL ENERGY EQUATION 
@@ -137,14 +137,14 @@ class InternalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_eht_dd_fht_ei
-        lhs1 = self.minus_div_eht_dd_fht_ux_fht_ei
+        lhs0 = self.minus_dt_dd_fht_ei
+        lhs1 = self.minus_div_dd_fht_ux_fht_ei
 		
         rhs0 = self.minus_div_fei
         rhs1 = self.minus_div_ftt	
-        rhs2 = self.minus_eht_pp_div_eht_ux
+        rhs2 = self.minus_pp_div_ux
         rhs3 = self.minus_eht_ppf_df
-        rhs4 = self.plus_eht_dd_fht_enuc
+        rhs4 = self.plus_dd_fht_enuc
         rhs5 = self.plus_disstke
 		
         res = self.minus_resEiEquation
