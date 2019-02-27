@@ -55,6 +55,9 @@ if str2bool(params.getForEqs('buo')['plotMee']): plt.execBuoyancy()
 # RELATIVE RMS FLUCTUATIONS
 if str2bool(params.getForEqs('relrmsflct')['plotMee']): plt.execRelativeRmsFlct()
 
+# ABAR and ZBAR 
+if str2bool(params.getForEqs('abzb')['plotMee']): plt.execAbarZbar()
+
 # CONTINUITY EQUATION
 if str2bool(params.getForEqs('rho')['plotMee']): plt.execRho()					
 if str2bool(params.getForEqs('conteq')['plotMee']): plt.execContEq()
@@ -133,6 +136,10 @@ if str2bool(params.getForEqs('ttvareq')['plotMee']): plt.execTTvarEq(properties[
 if str2bool(params.getForEqs('enth')['plotMee']): plt.execHH()
 if str2bool(params.getForEqs('hheq')['plotMee']): plt.execHHeq(properties['tke_diss'])
 
+# ENTHALPY FLUX EQUATION
+if str2bool(params.getForEqs('enthflx')['plotMee']): plt.execHHflx()
+if str2bool(params.getForEqs('hhflxeq')['plotMee']): plt.execHHflxEq(properties['tke_diss'])
+
 # ENTROPY EQUATION
 if str2bool(params.getForEqs('entr')['plotMee']): plt.execSS()
 if str2bool(params.getForEqs('sseq')['plotMee']): plt.execSSeq(properties['tke_diss'])
@@ -161,9 +168,17 @@ if str2bool(params.getForEqs('beq')['plotMee']): plt.execBeq()
 if str2bool(params.getForEqs('abar')['plotMee']): plt.execAbar()
 if str2bool(params.getForEqs('abreq')['plotMee']): plt.execAbarEq()
 
+# ABAR FLUX EQUATION
+if str2bool(params.getForEqs('abflx')['plotMee']): plt.execFabarx()
+if str2bool(params.getForEqs('fabxeq')['plotMee']): plt.execFabarxEq()
+
 # MEAN CHARGE PER ISOTOPE a.k.a ZBAR EQUATION
 if str2bool(params.getForEqs('zbar')['plotMee']): plt.execZbar()
 if str2bool(params.getForEqs('zbreq')['plotMee']): plt.execZbarEq()
+
+# ZBAR FLUX EQUATION
+if str2bool(params.getForEqs('zbflx')['plotMee']): plt.execFzbarx()
+if str2bool(params.getForEqs('fzbxeq')['plotMee']): plt.execFzbarxEq()
 
 # load network
 network = params.getNetwork() 

@@ -102,7 +102,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # LHS -div fht_ux fei
         self.minus_div_fht_ux_fei = -self.Div(fht_ux*fei,xzn0)	 
 		
-        # RHS -div flux internal energy flux
+        # RHS -div internal energy flux
         self.minus_div_feix = -self.Div(feix,xzn0)
         
         # RHS -fei_gradx_fht_ux
@@ -199,13 +199,13 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs1 = self.minus_div_fht_ux_fei
 		
         rhs0 = self.minus_div_feix
-        rhs1 = self.minus_f_ei_gradx_fht_ux
+        rhs1 = self.minus_fei_gradx_fht_ux
         rhs2 = self.minus_rxx_gradx_fht_ei 
         rhs3 = self.minus_eht_uxff_pp_divu
         rhs4 = self.minus_eht_eiff_gradx_eht_pp 
         rhs5 = self.minus_eht_eiff_gradx_ppf
         rhs6 = self.plus_eht_uxff_dd_nuc
-        rhs7 = self.plus_eht_uxff_div_ftt
+        rhs7 = self.plus_eht_uxff_div_fth
         rhs8 = self.plus_eht_uxff_epsilonk_approx
         rhs9 = self.plus_Gei
 	  

@@ -8,9 +8,6 @@ import EQUATIONS.MomentumEquationZ as momz
 import EQUATIONS.ReynoldsStressXXequation as rxx
 import EQUATIONS.ReynoldsStressYYequation as ryy
 import EQUATIONS.ReynoldsStressZZequation as rzz
-#import EQUATIONS.ReynoldsStressXYequation as rxy N/A YET
-#import EQUATIONS.ReynoldsStressXZequation as rxz N/A YET
-#import EQUATIONS.ReynoldsStressYZequation as ryz N/A YET
 
 import EQUATIONS.TurbulentKineticEnergyEquation as tke
 #import EQUATIONS.RadialTurbulentKineticEnergyEquation as rtke N/A YET
@@ -36,7 +33,7 @@ import EQUATIONS.TemperatureFluxEquation as fttx
 import EQUATIONS.TemperatureVarianceEquation as sigmatt
 
 import EQUATIONS.EnthalpyEquation as hh
-#import EQUATIONS.EnthalpyFluxEquation as fhhx N/A YET
+import EQUATIONS.EnthalpyFluxEquation as fhhx 
 #import EQUATIONS.EnthalpyVarianceEquation as sigmahh N/A YET
 
 import EQUATIONS.DensityVarianceEquation as sigmadd
@@ -51,8 +48,8 @@ import EQUATIONS.Xdiffusivity as xdiff
 import EQUATIONS.AbarTransportEquation as abar
 import EQUATIONS.ZbarTransportEquation as zbar
 
-#import EQUATIONS.ABARfluxTransportEquation as fabarx
-#import EQUATIONS.ZBARfluxTransportEquation as fzbarx
+import EQUATIONS.AbarFluxTransportEquation as fabarx
+import EQUATIONS.ZbarFluxTransportEquation as fzbarx
 
 import EQUATIONS.TemperatureDensity as ttdd
 import EQUATIONS.PressureInternalEnergy as ppei
@@ -61,10 +58,9 @@ import EQUATIONS.TemperatureGradients as nablas
 import EQUATIONS.Degeneracy as psi
 import EQUATIONS.Velocities as vel
 import EQUATIONS.RelativeRMSflct as rms
-#import EQUATIONS.Abar_Zbar
+import EQUATIONS.AbarZbar as abarzbar
 import EQUATIONS.BruntVaisalla as bruntv
 import EQUATIONS.Buoyancy as buo
-
 
 import ReadParams as params
 
@@ -503,6 +499,46 @@ class MasterPlot():
 				    params.getForEqs('eiflxeq')['ybd'],\
 				    params.getForEqs('eiflxeq')['ilg'])	
 									  
+    def execHHflx(self):
+						  
+        params = self.params			
+        tke_diss = 0.
+						  
+        # instantiate 		
+        ransHHflx =  fhhx.EnthalpyFluxEquation(params.getForProp('prop')['eht_data'],\
+	                                             params.getForProp('prop')['ig'],\
+					             params.getForProp('prop')['intc'],\
+						     tke_diss,\
+						     params.getForProp('prop')['prefix'])
+								   
+        ransHHflx.plot_fhh(params.getForProp('prop')['laxis'],\
+	                   params.getForEqs('enthflx')['xbl'],\
+			   params.getForEqs('enthflx')['xbr'],\
+			   params.getForEqs('enthflx')['ybu'],\
+			   params.getForEqs('enthflx')['ybd'],\
+			   params.getForEqs('enthflx')['ilg'])
+										  
+										  
+    def execHHflxEq(self,tke_diss):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransHHflx =  fhhx.EnthalpyFluxEquation(params.getForProp('prop')['eht_data'],\
+	                                             params.getForProp('prop')['ig'],\
+					             params.getForProp('prop')['intc'],\
+						     tke_diss,\
+						     params.getForProp('prop')['prefix'])
+
+									   
+        ransHHflx.plot_fhh_equation(params.getForProp('prop')['laxis'],\
+	                            params.getForEqs('hhflxeq')['xbl'],\
+				    params.getForEqs('hhflxeq')['xbr'],\
+				    params.getForEqs('hhflxeq')['ybu'],\
+				    params.getForEqs('hhflxeq')['ybd'],\
+				    params.getForEqs('hhflxeq')['ilg'])	
+									  
+
 									  
     def execEiVar(self):
 						  
@@ -938,7 +974,25 @@ class MasterPlot():
 				 params.getForEqs('relrmsflct')['ybu'],\
 				 params.getForEqs('relrmsflct')['ybd'],\
 				 params.getForEqs('relrmsflct')['ilg'])				 
-				 
+			
+    def execAbarZbar(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransAZ =  abarzbar.AbarZbar(params.getForProp('prop')['eht_data'],\
+	                                                      params.getForProp('prop')['ig'],\
+					                      params.getForProp('prop')['intc'],\
+						              params.getForProp('prop')['prefix'])
+
+									   
+        ransAZ.plot_abarzbar(params.getForProp('prop')['laxis'],\
+	                         params.getForEqs('abzb')['xbl'],\
+				 params.getForEqs('abzb')['xbr'],\
+				 params.getForEqs('abzb')['ybu'],\
+				 params.getForEqs('abzb')['ybd'],\
+				 params.getForEqs('abzb')['ilg'])
+			
     def execKe(self):
 						  
         params = self.params			
@@ -1176,7 +1230,43 @@ class MasterPlot():
 					  params.getForEqs('abreq')['ybu'],\
 					  params.getForEqs('abreq')['ybd'],\
 					  params.getForEqs('abreq')['ilg'])								  
-								  
+					
+    def execFabarx(self):
+	
+        params = self.params
+
+        # instantiate 
+        ransFabarx = fabarx.AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],\
+	                                   params.getForProp('prop')['ig'],\
+					   params.getForProp('prop')['intc'],\
+					   params.getForProp('prop')['prefix'])
+
+        # plot fabarx
+        ransFabarx.plot_abarflux(params.getForProp('prop')['laxis'],\
+	                  params.getForEqs('abflx')['xbl'],\
+		    	  params.getForEqs('abflx')['xbr'],\
+			  params.getForEqs('abflx')['ybu'],\
+			  params.getForEqs('abflx')['ybd'],\
+			  params.getForEqs('abflx')['ilg'])
+
+    def execFabarxEq(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 
+        ransFabarx = fabarx.AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],\
+	                                   params.getForProp('prop')['ig'],\
+					   params.getForProp('prop')['intc'],\
+					   params.getForProp('prop')['prefix'])
+
+        # plot fabarx equation						       
+        ransFabarx.plot_abarflux_equation(params.getForProp('prop')['laxis'],\
+	                                  params.getForEqs('fabxeq')['xbl'],\
+					  params.getForEqs('fabxeq')['xbr'],\
+					  params.getForEqs('fabxeq')['ybu'],\
+					  params.getForEqs('fabxeq')['ybd'],\
+					  params.getForEqs('fabxeq')['ilg'])			
+					
     def execZbar(self):
 	
         params = self.params
@@ -1212,7 +1302,43 @@ class MasterPlot():
 					  params.getForEqs('zbreq')['ybu'],\
 					  params.getForEqs('zbreq')['ybd'],\
 					  params.getForEqs('zbreq')['ilg'])			
-								  
+
+    def execFzbarx(self):
+	
+        params = self.params
+
+        # instantiate 
+        ransFzbarx = fzbarx.ZbarFluxTransportEquation(params.getForProp('prop')['eht_data'],\
+	                                   params.getForProp('prop')['ig'],\
+					   params.getForProp('prop')['intc'],\
+					   params.getForProp('prop')['prefix'])
+
+        # plot fzbarx
+        ransFzbarx.plot_zbarflux(params.getForProp('prop')['laxis'],\
+	                  params.getForEqs('zbflx')['xbl'],\
+		    	  params.getForEqs('zbflx')['xbr'],\
+			  params.getForEqs('zbflx')['ybu'],\
+			  params.getForEqs('zbflx')['ybd'],\
+			  params.getForEqs('zbflx')['ilg'])
+
+    def execFzbarxEq(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 
+        ransFzbarx = fzbarx.ZbarFluxTransportEquation(params.getForProp('prop')['eht_data'],\
+	                                   params.getForProp('prop')['ig'],\
+					   params.getForProp('prop')['intc'],\
+					   params.getForProp('prop')['prefix'])
+
+        # plot fzbarx equation						       
+        ransFzbarx.plot_zbarflux_equation(params.getForProp('prop')['laxis'],\
+	                                  params.getForEqs('fzbxeq')['xbl'],\
+					  params.getForEqs('fzbxeq')['xbr'],\
+					  params.getForEqs('fzbxeq')['ybu'],\
+					  params.getForEqs('fzbxeq')['ybd'],\
+					  params.getForEqs('fzbxeq')['ilg'])
+					  
     def execPP(self):
 						  
         params = self.params			

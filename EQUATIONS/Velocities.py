@@ -35,8 +35,8 @@ class Velocities(calc.CALCULUS,al.ALIMIT,object):
 		
         plus_dt_mm = self.dt(t_mm,xzn0,t_timec,intc)
 		
-        vexp1 = plus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
-        vexp2 = ddux/dd
+        vexp1 = ddux/dd		
+        vexp2 = plus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
         vturb = ((dduxux - ddux*ddux/dd)/dd)**0.5
 		
         # assign global data to be shared across whole class
