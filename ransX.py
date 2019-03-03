@@ -180,6 +180,10 @@ if str2bool(params.getForEqs('zbreq')['plotMee']): plt.execZbarEq()
 if str2bool(params.getForEqs('zbflx')['plotMee']): plt.execFzbarx()
 if str2bool(params.getForEqs('fzbxeq')['plotMee']): plt.execFzbarxEq()
 
+# HYDRODYNAMIC STELLAR STRUCTURE EQUATIONS
+if str2bool(params.getForEqs('cteqhsse')['plotMee']): plt.execHssContEq()
+if str2bool(params.getForEqs('tpeqhsse')['plotMee']): plt.execHssTempEq(properties['tke_diss'])
+
 # load network
 network = params.getNetwork() 
 

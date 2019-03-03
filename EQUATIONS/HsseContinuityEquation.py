@@ -10,10 +10,10 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
+class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
-        super(ContinuityEquationWithMassFlux,self).__init__(ig) 
+        super(HsseContinuityEquation,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)		
@@ -39,11 +39,15 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         #####################
         # CONTINUITY EQUATION 
         #####################
-								
-        # LHS -dq/dt 		
+				
+        # LHS +gradx mm
+        #mm = 
+		
+				
+        # RHS -dq/dt 		
         self.minus_dt_dd = -self.dt(t_dd,xzn0,t_timec,intc)
 
-        # LHS -fht_ux Grad dd
+        # RHS -fht_ux Grad dd
         self.minus_fht_ux_grad_dd = -fht_ux*self.Grad(dd,xzn0)
 				
         # RHS -Div fdd

@@ -71,7 +71,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
 
         uxux = np.asarray(eht.item().get('uxux')[intc])		
 		
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])		
+        gamma1 = np.asarray(eht.item().get('gamma1')[intc])	 
 		
         ###################################
         # TURBULENT KINETIC ENERGY EQUATION 

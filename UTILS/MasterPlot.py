@@ -62,6 +62,10 @@ import EQUATIONS.AbarZbar as abarzbar
 import EQUATIONS.BruntVaisalla as bruntv
 import EQUATIONS.Buoyancy as buo
 
+# import classes for hydrodynamic stellar structure equations
+import EQUATIONS.HsseContinuityEquation as hssecont
+import EQUATIONS.HsseTemperatureEquation as hssetemp
+
 import ReadParams as params
 
 class MasterPlot():
@@ -141,7 +145,45 @@ class MasterPlot():
                                              params.getForEqs('conteqfdd')['ybu'],\
                                              params.getForEqs('conteqfdd')['ybd'],\
                                              params.getForEqs('conteqfdd')['ilg'])
+
+    def execHssContEq(self):
 						  
+        params = self.params						  
+						  
+        # instantiate 
+        ranshssecont = hssecont.HsseContinuityEquation(params.getForProp('prop')['eht_data'],\
+                                                             params.getForProp('prop')['ig'],\
+                                                             params.getForProp('prop')['intc'],\
+                                                             params.getForProp('prop')['prefix'])
+
+        # plot continuity equation						       
+        ranshssecont.plot_continuity_equation(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('cteqhsse')['xbl'],\
+                                             params.getForEqs('cteqhsse')['xbr'],\
+                                             params.getForEqs('cteqhsse')['ybu'],\
+                                             params.getForEqs('cteqhsse')['ybd'],\
+                                             params.getForEqs('cteqhsse')['ilg'])
+
+
+    def execHssTempEq(self,tke_diss):
+						  
+        params = self.params						  
+						
+        # instantiate 
+        ranshssetemp = hssetemp.HsseTemperatureEquation(params.getForProp('prop')['eht_data'],\
+                                                             params.getForProp('prop')['ig'],\
+                                                             params.getForProp('prop')['intc'],\
+                                                             tke_diss,\
+                                                             params.getForProp('prop')['prefix'])
+
+        # plot continuity equation						       
+        ranshssetemp.plot_tt_equation(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('tpeqhsse')['xbl'],\
+                                             params.getForEqs('tpeqhsse')['xbr'],\
+                                             params.getForEqs('tpeqhsse')['ybu'],\
+                                             params.getForEqs('tpeqhsse')['ybd'],\
+                                             params.getForEqs('tpeqhsse')['ilg'])
+											 
     def execXrho(self,inuc,element,x):
 	
     	params = self.params	
