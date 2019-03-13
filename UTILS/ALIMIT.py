@@ -123,7 +123,7 @@ class ALIMIT:
                 maxx = np.max([np.max(to_plot[0][idxl:idxr]),np.max(to_plot[1][idxl:idxr]),np.max(to_plot[2][idxl:idxr]),\
 			    np.max(to_plot[3][idxl:idxr]),np.max(to_plot[4][idxl:idxr]),np.max(to_plot[5][idxl:idxr]),np.max(to_plot[6][idxl:idxr]),np.max(to_plot[7][idxl:idxr])])
                 plt.axis([xbl,xbr,minx,maxx])
-            
+				
         if (number_of_curves == 9):
 
             # limit x/y axis by global min/max from all terms

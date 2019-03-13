@@ -120,7 +120,7 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$\overline{T} (K)$)"
+        setylabel = r"$\overline{T} (K)$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -135,7 +135,7 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 	
 
     def plot_tt_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot temperature equation in the model""" 
+        """Plot temperature equation in the model""" 	
 		
         # load x GRID
         grd1 = self.xzn0
@@ -160,7 +160,7 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 

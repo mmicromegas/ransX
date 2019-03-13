@@ -152,8 +152,8 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 
         term1 = self.minus_dt_dd
-        term2 = self.minus_ux_grad_eht_dd
-        term3 = self.minus_eht_dd_div_fht_ux
+        term2 = self.minus_fht_ux_grad_dd
+        term3 = self.minus_dd_div_fht_ux
         term4 = self.minus_resContEquation
 		
         # calculate INDICES for grid boundaries 

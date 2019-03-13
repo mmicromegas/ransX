@@ -175,7 +175,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$f_I$ (erg cm$^{-2}$)"
+        setylabel = r"$f_I$ (erg cm$^{-2}$ s$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

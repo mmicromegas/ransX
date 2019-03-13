@@ -180,7 +180,7 @@ class PressureVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1+rhs2,rhs4,rhs5,rhs6,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs4,rhs5,rhs6,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
@@ -189,9 +189,9 @@ class PressureVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,-lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r \sigma_P$")	
 		
         plt.plot(grd1,rhs0,color='r',label = r"$-\nabla f_{\sigma P}$")     
-        #plt.plot(grd1,rhs1,color='c',label = r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
-        #plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}$") 
-        plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
+        plt.plot(grd1,rhs1,color='c',label = r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
+        plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}$") 
+        #plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
         plt.plot(grd1,rhs3,color='m',label = r"$+2 \Gamma_1 \widetilde{d} \sigma_P$")
         plt.plot(grd1,rhs4,color='g',label = r"$-2(\Gamma_1 -1)\overline{P'P'd''}$")	
         plt.plot(grd1,rhs5,color='olive',label = r"$+2(\Gamma_3 -1)\overline{P' \rho \varepsilon_{nuc}}$")			

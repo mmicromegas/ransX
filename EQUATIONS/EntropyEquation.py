@@ -35,8 +35,8 @@ class EntropyEquation(calc.CALCULUS,al.ALIMIT,object):
         ddss    = np.asarray(eht.item().get('ddss')[intc])		
         ddssux  = np.asarray(eht.item().get('ddssux')[intc])
 
-        ddenuc1_tt  = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
-        ddenuc2_tt  = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+        ddenuc1_o_tt  = np.asarray(eht.item().get('ddenuc1_o_tt')[intc])		
+        ddenuc2_o_tt  = np.asarray(eht.item().get('ddenuc2_o_tt')[intc])
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -65,7 +65,7 @@ class EntropyEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_div_ftt_T = -np.zeros(nx)
 		
         # RHS +rho enuc / T
-        self.plus_eht_dd_enuc_T = ddenuc1_tt+ddenuc2_tt
+        self.plus_eht_dd_enuc_T = ddenuc1_o_tt+ddenuc2_o_tt
 		
         # RHS approx. +diss tke / T
         self.plus_disstke_T_approx = tke_diss/tt

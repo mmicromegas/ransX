@@ -176,7 +176,7 @@ class ReynoldsStressYYequation(calc.CALCULUS,al.ALIMIT,object):
 
     def plot_ryy_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Reynolds stress ryy equation in the model""" 
-		
+				
         # load x GRID
         grd1 = self.xzn0
 

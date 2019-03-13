@@ -38,7 +38,31 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.nsq         = nsq
+	
+        chim = np.asarray(eht.item().get('chim')[intc]) 
+        chit = np.asarray(eht.item().get('chit')[intc]) 
+        chid = np.asarray(eht.item().get('chid')[intc])
+        mu   = np.asarray(eht.item().get('abar')[intc]) 		
+        tt   = np.asarray(eht.item().get('tt')[intc])
+        gamma2   = np.asarray(eht.item().get('gamma2')[intc])
 		
+        alpha = 1./chid
+        delta = -chit/chid
+        phi   = chid/chim
+        hp    = -pp/self.Grad(pp,xzn0)  		
+	
+        lntt = np.log(tt)
+        lnpp = np.log(pp)
+        lnmu = np.log(mu)
+
+        # calculate temperature gradients		
+        nabla = self.deriv(lntt,lnpp) 
+        nabla_ad = (gamma2-1.)/gamma2
+        nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)	
+		
+		# Kippenhahn and Weigert, p.42 but with opposite (minus) sign at the (phi/delta)*nabla_mu
+        self.nsq_version2 = (gg*delta/hp)*(nabla_ad - nabla - (phi/delta)*nabla_mu) 		
+	
     def plot_bruntvaisalla(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot BruntVaisalla parameter in the model""" 
 
@@ -47,6 +71,7 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
 	
         # load DATA to plot
         plt1 = self.nsq
+        plt2 = self.nsq_version2
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -55,12 +80,13 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [plt1]		
+        to_plot = [plt1,plt2]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 		
         # plot DATA 
         plt.title('Brunt-Vaisalla frequency')
-        plt.plot(grd1,plt1,color='brown',label = r'N$^2$')
+        plt.plot(grd1,plt1,color='r',label = r'N$^2$')
+        plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
 		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

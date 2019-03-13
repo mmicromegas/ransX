@@ -39,11 +39,11 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
         ddssssux    = np.asarray(eht.item().get('ddssssux')[intc])         
 		
-        ddenuc1_tt = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
-        ddenuc2_tt = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+        ddenuc1_o_tt = np.asarray(eht.item().get('ddenuc1_o_tt')[intc])		
+        ddenuc2_o_tt = np.asarray(eht.item().get('ddenuc2_o_tt')[intc])
 
-        ddssenuc1_tt = np.asarray(eht.item().get('ddssenuc1_tt')[intc])		
-        ddssenuc2_tt = np.asarray(eht.item().get('ddssenuc2_tt')[intc])
+        ddssenuc1_o_tt = np.asarray(eht.item().get('ddssenuc1_o_tt')[intc])		
+        ddssenuc2_o_tt = np.asarray(eht.item().get('ddssenuc2_o_tt')[intc])
 
 		
         # store time series for time derivatives
@@ -63,7 +63,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         f_sigma_ss = dd*(ddssssux/dd - 2.*ddss*ddssux/(dd*dd)-ddux*ddsssq/(dd*dd) + \
                      2.*(ddss*ddss*ddux)/(dd*dd*dd))
 
-        disstke_tt = tke_diss/tt
+        disstke_o_tt = tke_diss/tt
 					 
         ###########################		
         # ENTROPY VARIANCE EQUATION
@@ -85,16 +85,16 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_two_ssff_div_ftt_T = +np.zeros(nx)
 		
         # RHS plus_two_ssff_enuc_T	
-        self.plus_two_ssff_enuc_T = +2.*((ddssenuc1_tt+ddssenuc2_tt)- \
-                                (ddss/dd)*(ddenuc1_tt+ddenuc2_tt))	
+        self.plus_two_ssff_enuc_T = +2.*((ddssenuc1_o_tt+ddssenuc2_o_tt)- \
+                                (ddss/dd)*(ddenuc1_o_tt+ddenuc2_o_tt))	
 
-        # RHS plus_two_ssff_epsilonk_tt_approx		
-        self.plus_two_ssff_epsilonk_tt_approx = +2.*(ss-ddss/dd)*disstke_tt
+        # RHS plus_two_ssff_epsilonk_o_tt_approx		
+        self.plus_two_ssff_epsilonk_o_tt_approx = +2.*(ss-ddss/dd)*disstke_o_tt
 		
         # -res 
         self.minus_resSigmaSSequation = -(self.minus_dt_eht_dd_sigma_ss + self.minus_div_eht_dd_fht_ux_sigma_ss + \
          self.minus_div_f_sigma_ss + self.minus_two_f_ss_gradx_fht_ss + self.minus_two_ssff_div_ftt_T + \
-         self.plus_two_ssff_enuc_T + self.plus_two_ssff_epsilonk_tt_approx)
+         self.plus_two_ssff_enuc_T + self.plus_two_ssff_epsilonk_o_tt_approx)
 
         # Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
         self.minus_sigmaSSkolmdiss = -dd*sigma_ss/tauL		 
@@ -159,7 +159,7 @@ class EntropyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs1 = self.minus_two_f_ss_gradx_fht_ss
         rhs2 = self.minus_two_ssff_div_ftt_T		
         rhs3 = self.plus_two_ssff_enuc_T
-        rhs4 = self.plus_two_ssff_epsilonk_tt_approx
+        rhs4 = self.plus_two_ssff_epsilonk_o_tt_approx
 		
         res = self.minus_resSigmaSSequation
 

@@ -27,7 +27,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         dd = np.asarray(eht.item().get('dd')[intc])
         ux = np.asarray(eht.item().get('ux')[intc])	
         pp = np.asarray(eht.item().get('pp')[intc])
-        gg = np.asarray(eht.item().get('grav')[intc])
+        gg = np.asarray(eht.item().get('gg')[intc])
 		
         ddux = np.asarray(eht.item().get('ddux')[intc])		
 
@@ -58,7 +58,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.minus_div_rxx = -self.Div(rxx,xzn0)
 		
         # RHS -G
-        self.minus_G = -(dduyuy+dduzuz)/xzn0
+        self.minus_G = -(-dduyuy-dduzuz)/xzn0
 		
         # RHS -(grad P - rho g)
         self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg   		

@@ -45,8 +45,8 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         self.eht_ttrms = ((ttsq-tt*tt)**0.5)/tt
         self.eht_pprms = ((ppsq-pp*pp)**0.5)/pp		
         self.eht_ssrms = ((sssq-ss*ss)**0.5)/ss
-        self.eht_abarrms = ((abarsq-abar*abar)**0.5)/abar
-        self.eht_zbarrms = ((zbarsq-zbar*zbar)**0.5)/zbar		
+        self.eht_abarrms = ((np.abs(abarsq-abar*abar))**0.5)/abar
+        self.eht_zbarrms = ((np.abs(zbarsq-zbar*zbar))**0.5)/zbar		
 		
         self.ms2 = uxux/sound**2. # mach number squared 
 	
@@ -77,8 +77,8 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [plt1,plt2,plt3,plt4,plt5,plt6,plt7]		
-        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+        #to_plot = [plt1,plt2,plt3,plt4,plt5,plt6,plt7]		
+        #self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 		
         # plot DATA 
         plt.title('relative rms fluctuations')

@@ -641,7 +641,7 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
 
         press = np.asarray(self.data['pp'])
         dd = np.asarray(self.data['dd'])
-        gg = np.asarray(self.data['grav'])
+        gg = np.asarray(self.data['gg'])
 	
         fig, ax1 = plt.subplots(figsize=(7,6))
 		
@@ -699,7 +699,7 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
             ggtest[i] = -kappa*mm[i]/(xznl[i]**2.)
         
         for i in range(nx-2,-1,-1):
-            pp[i] = pp[i+1] - dd[i]*gg[i]*(xznr[i]-xznl[i])
+            pp[i] = pp[i+1] - dd[i]*ggtest[i]*(xznr[i]-xznl[i])
             #print(i,pp[i],dd[i],gg[i],(xznr[i]-xznl[i]))
             #print(i,gg[i],dd[i],pp[i],(xznr[i]-xznl[i])))
 

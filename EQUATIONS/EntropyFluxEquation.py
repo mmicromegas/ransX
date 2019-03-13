@@ -51,11 +51,11 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         divu   = np.asarray(eht.item().get('divu')[intc])		
         ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
 
-        ddenuc1_tt = np.asarray(eht.item().get('ddenuc1_tt')[intc])		
-        ddenuc2_tt = np.asarray(eht.item().get('ddenuc2_tt')[intc])
+        ddenuc1_o_tt = np.asarray(eht.item().get('ddenuc1_o_tt')[intc])		
+        ddenuc2_o_tt = np.asarray(eht.item().get('ddenuc2_o_tt')[intc])
 
-        dduxenuc1_tt = np.asarray(eht.item().get('dduxenuc1_tt')[intc])		
-        dduxenuc2_tt = np.asarray(eht.item().get('dduxenuc2_tt')[intc])
+        dduxenuc1_o_tt = np.asarray(eht.item().get('dduxenuc1_o_tt')[intc])		
+        dduxenuc2_o_tt = np.asarray(eht.item().get('dduxenuc2_o_tt')[intc])
 		
         ssgradxpp = np.asarray(eht.item().get('ssgradxpp')[intc])				
 		
@@ -80,7 +80,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ssff = ss - ddss/dd				
         ssff_gradx_ppf = ssgradxpp - ss*self.Grad(pp,xzn0)
 		
-        uxff_dd_enuc_T = (dduxenuc1_tt + dduxenuc2_tt) - fht_ux*(ddenuc1_tt + ddenuc2_tt)
+        uxff_dd_enuc_T = (dduxenuc1_o_tt + dduxenuc2_o_tt) - fht_ux*(ddenuc1_o_tt + ddenuc2_o_tt)
 		
         uxff_epsilonk_approx = (ux - ddux/dd)*tke_diss
 		
@@ -118,11 +118,11 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_eht_ssff_gradx_ppf = -(ssgradxpp - (ddss/dd)*self.Grad(pp,xzn0))
 
         # RHS eht_uxff_dd_nuc_T	
-        self.plus_eht_uxff_dd_nuc_T =  (dduxenuc1_tt + dduxenuc2_tt) - fht_ux*(ddenuc1_tt+ddenuc2_tt) 		
+        self.plus_eht_uxff_dd_nuc_T =  (dduxenuc1_o_tt + dduxenuc2_o_tt) - fht_ux*(ddenuc1_o_tt+ddenuc2_o_tt) 		
 
         # RHS eht_uxff_div_ftt_T (not calculated)
-        eht_uxff_div_f_tt_T = np.zeros(nx)  		
-        self.plus_eht_uxff_div_ftt_T = eht_uxff_div_f_tt_T
+        eht_uxff_div_f_o_tt_T = np.zeros(nx)  		
+        self.plus_eht_uxff_div_ftt_T = eht_uxff_div_f_o_tt_T
 		
         # RHS eht_uxff_epsilonk_approx_T	
         self.plus_eht_uxff_epsilonk_approx_T =  (ux - fht_ux)*tke_diss/tt 		
@@ -172,7 +172,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$f_s$ (erg K$^{-1}$ cm$^{-2}$)"
+        setylabel = r"$f_s$ (erg K$^{-1}$ cm$^{-2}$ s$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

@@ -140,7 +140,7 @@ class TemperatureVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$\sigma_{T}$ (K$^2$)"
+        setylabel = r"$\sigma_{T}$ (K$^2)$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -181,18 +181,18 @@ class TemperatureVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1+rhs2,rhs4,rhs5,rhs6,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs4,rhs5,rhs6,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
         plt.title('tt variance equation')
-        plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t \sigma_T$')
-        plt.plot(grd1,-lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r \sigma_T$")	
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r'$-\partial_t \sigma_T$')
+        plt.plot(grd1,lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r \sigma_T$")	
 		
         plt.plot(grd1,rhs0,color='r',label = r"$-\nabla f_{\sigma T}$")     
-        #plt.plot(grd1,rhs1,color='c',label = r"$-2 (\Gamma_3-1) \overline{T} \ \overline{T'd''}$")
-        #plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 f_T \partial_r \overline{T}$") 
-        plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_T \partial_r \overline{T}-2 (\Gamma_3-1) \overline{T} \ \overline{T'd''}$")
+        plt.plot(grd1,rhs1,color='c',label = r"$-2 (\Gamma_3-1) \overline{T} \ \overline{T'd''}$")
+        plt.plot(grd1,rhs2,color='#802A2A',label = r"$-2 f_T \partial_r \overline{T}$") 
+        #plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_T \partial_r \overline{T}-2 (\Gamma_3-1) \overline{T} \ \overline{T'd''}$")
         plt.plot(grd1,rhs3,color='m',label = r"$-2 (\Gamma_3-1) \widetilde{d} \sigma_T$")
         plt.plot(grd1,rhs4,color='g',label = r"$+(3 - 2\Gamma_3)\overline{T'T'd''}$")	
         plt.plot(grd1,rhs5,color='olive',label = r"$+2\overline{T' \varepsilon_{nuc}/c_v}$")			
@@ -201,7 +201,7 @@ class TemperatureVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$\sigma_{T}$ (K$^2$ s$^{-1}$)"
+        setylabel = r"$\sigma_{T}$ (K$^2$ s$^{-1})$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -212,7 +212,7 @@ class TemperatureVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'sigma_pp_eq.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'sigma_tt_eq.png')		
 		
 		
 		

@@ -82,7 +82,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_dt_dd_sigma_ei = -self.dt(t_dd*t_sigma_ei,xzn0,t_timec,intc)
 
         # LHS -div dd fht_ux sigma_ss
-        self.minus_div_eht_dd_fht_ux_sigma_ei = -self.Div(dd*fht_ux*sigma_ei,xzn0)
+        self.minus_div_dd_fht_ux_sigma_ei = -self.Div(dd*fht_ux*sigma_ei,xzn0)
 				
         # RHS -div f_sigma_ei
         self.minus_div_f_sigma_ei = -self.Div(f_sigma_ei,xzn0)
@@ -109,7 +109,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_two_eht_eiff_tke_diss_approx = 2.*(ei - ddei/dd)*disstke 	
 		
         # -res
-        self.minus_resSigmaEIequation = -(self.minus_dt_dd_sigma_ei + self.minus_div_eht_dd_fht_ux_sigma_ei + \
+        self.minus_resSigmaEIequation = -(self.minus_dt_dd_sigma_ei + self.minus_div_dd_fht_ux_sigma_ei + \
           self.minus_div_f_sigma_ei + self.minus_two_fei_gradx_fht_ei + self.minus_two_eiff_eht_pp_fht_d + \
           self.minus_two_eht_pp_eht_eiff_dff + self.minus_two_fht_d_eht_eiff_ppf + self.minus_two_eht_eiff_ppf_dff + \
           self.plus_two_eht_eiff_dd_enuc + self.plus_two_eht_eiff_tke_diss_approx) 
@@ -172,7 +172,7 @@ class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 
         lhs0 = self.minus_dt_dd_sigma_ei
-        lhs1 = self.minus_div_eht_dd_fht_ux_sigma_ei
+        lhs1 = self.minus_div_dd_fht_ux_sigma_ei
 		
         rhs0 = self.minus_div_f_sigma_ei
         #rhs1 = self.minus_two_fei_gradx_fht_ei		

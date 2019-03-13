@@ -116,6 +116,10 @@ if str2bool(params.getForEqs('eivareq')['plotMee']): plt.execEiVarEq(properties[
 if str2bool(params.getForEqs('press')['plotMee']): plt.execPP()
 if str2bool(params.getForEqs('ppeq')['plotMee']): plt.execPPeq(properties['tke_diss'])
 
+# PRESSURE FLUX EQUATION
+if str2bool(params.getForEqs('pressflx')['plotMee']): plt.execPPflx()
+if str2bool(params.getForEqs('ppflxeq')['plotMee']): plt.execPPflxEq(properties['tke_diss'])
+
 # PRESSURE VARIANCE EQUATION
 if str2bool(params.getForEqs('pressvar')['plotMee']): plt.execPPvar()
 if str2bool(params.getForEqs('ppvareq')['plotMee']): plt.execPPvarEq(properties['tke_diss'],properties['tauL'])
@@ -139,6 +143,10 @@ if str2bool(params.getForEqs('hheq')['plotMee']): plt.execHHeq(properties['tke_d
 # ENTHALPY FLUX EQUATION
 if str2bool(params.getForEqs('enthflx')['plotMee']): plt.execHHflx()
 if str2bool(params.getForEqs('hhflxeq')['plotMee']): plt.execHHflxEq(properties['tke_diss'])
+
+# ENTHALPY VARIANCE EQUATION
+if str2bool(params.getForEqs('enthvar')['plotMee']): plt.execHHvar()
+if str2bool(params.getForEqs('hhvareq')['plotMee']): plt.execHHvarEq(properties['tke_diss'],properties['tauL'])
 
 # ENTROPY EQUATION
 if str2bool(params.getForEqs('entr')['plotMee']): plt.execSS()
