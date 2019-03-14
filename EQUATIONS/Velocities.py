@@ -33,10 +33,10 @@ class Velocities(calc.CALCULUS,al.ALIMIT,object):
         t_timec = np.asarray(eht.item().get('timec'))		
         t_mm    = np.asarray(eht.item().get('mm')) 		
 		
-        plus_dt_mm = self.dt(t_mm,xzn0,t_timec,intc)
+        minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
 		
         vexp1 = ddux/dd		
-        vexp2 = plus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
+        vexp2 = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
         vturb = ((dduxux - ddux*ddux/dd)/dd)**0.5
 		
         # assign global data to be shared across whole class
@@ -73,7 +73,7 @@ class Velocities(calc.CALCULUS,al.ALIMIT,object):
         plt.title('velocities')
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{u}_r$')
         plt.plot(grd1,plt2,color='red',label = r'$\widetilde{u}_r$')
-        plt.plot(grd1,plt3,color='green',label = r'$\overline{v}_{exp} = \dot{M}/(4 \pi r^2 \rho)$')		
+        plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')		
         plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 		
         # define and show x/y LABELS
