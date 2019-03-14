@@ -20,10 +20,13 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # load grid
         xzn0 = np.asarray(eht.item().get('xzn0')) 	
-
+        xznl = np.asarray(eht.item().get('xznl')) 
+        xznr = np.asarray(eht.item().get('xznr')) 
+		
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 
+        mm    = np.asarray(eht.item().get('mm')[intc])			
         dd    = np.asarray(eht.item().get('dd')[intc])
         ux    = np.asarray(eht.item().get('ux')[intc])			
         ddux  = np.asarray(eht.item().get('ddux')[intc])		
@@ -40,28 +43,31 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # CONTINUITY EQUATION 
         #####################
 				
-        # LHS +gradx mm
-        #mm = 
+        # LHS -gradx mm
+        self.minus_gradx_mm = -self.Grad(mm,xzn0)
 		
-				
-        # RHS -dq/dt 		
-        self.minus_dt_dd = -self.dt(t_dd,xzn0,t_timec,intc)
+        # RHS +4 pi r^2 dd
+        self.plus_four_pi_rsq_dd = +4.*np.pi*(xzn0**2.)*dd
 
-        # RHS -fht_ux Grad dd
-        self.minus_fht_ux_grad_dd = -fht_ux*self.Grad(dd,xzn0)
-				
-        # RHS -Div fdd
-        self.minus_div_fdd = -self.Div(fdd,xzn0)
-				
-        # RHS +fdd_o_dd gradx dd				
-        self.plus_fdd_o_dd_gradx_dd = +(fdd/dd)*self.Grad(dd,xzn0)
+        # scale factor +4 pi r^3/ 3 fht_ux
+        self.plus_four_pi_rcu_o_three_fht_ux = 4.*np.pi*(xzn0**3)/(3.*fht_ux)        		
+
+        # RHS -4 pi r^3/ 3 fht_ux Div fdd
+        self.minus_four_pi_rcu_o_three_fht_ux_div_fdd = -self.plus_four_pi_rcu_o_three_fht_ux*self.Div(fdd,xzn0)
 		
-        # RHS +dd Div ux 
-        self.minus_dd_div_ux = -dd*self.Div(ux,xzn0) 
+        # RHS +4 pi r^3/ 3 fht_ux fdd_o_dd gradx dd				
+        self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd = +self.plus_four_pi_rcu_o_three_fht_ux*(fdd/dd)*self.Grad(dd,xzn0)		
+
+        # RHS +4 pi r^3/ 3 fht_ux dd Div ux 
+        self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux = -self.plus_four_pi_rcu_o_three_fht_ux*dd*self.Div(ux,xzn0) 
+		
+        # RHS -dq/dt 		
+        self.minus_four_pi_rcu_o_three_fht_ux_dt_dd = -self.plus_four_pi_rcu_o_three_fht_ux*self.dt(t_dd,xzn0,t_timec,intc)
 
         # -res
-        self.minus_resContEquation = -(self.minus_dt_dd+self.minus_fht_ux_grad_dd+self.minus_div_fdd+\
-                                       self.plus_fdd_o_dd_gradx_dd+self.minus_dd_div_ux)
+        self.minus_resContEquation = -(self.minus_gradx_mm+self.plus_four_pi_rsq_dd+self.plus_four_pi_rcu_o_three_fht_ux+\
+          self.minus_four_pi_rcu_o_three_fht_ux_div_fdd+self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd+\
+           self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux+self.minus_four_pi_rcu_o_three_fht_ux_dt_dd)
 		
         #########################	
         # END CONTINUITY EQUATION
@@ -118,12 +124,13 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_dd
-        lhs1 = self.minus_fht_ux_grad_dd 
-
-        rhs0 = self.minus_div_fdd
-        rhs1 = self.plus_fdd_o_dd_gradx_dd		
-        rhs2 = self.minus_dd_div_ux
+        lhs0 = self.minus_gradx_mm
+		
+        rhs0 = self.plus_four_pi_rcu_o_three_fht_ux		
+        rhs1 = self.minus_four_pi_rcu_o_three_fht_ux_div_fdd
+        rhs2 = self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd
+        rhs3 = self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux
+        rhs4 = self.minus_four_pi_rcu_o_three_fht_ux_dt_dd		
 		
         res = self.minus_resContEquation
 		
@@ -134,21 +141,22 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,res]		
+        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,rhs4,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('continuity equation with mass flux')
-        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_t (\overline{\rho})$')
-        plt.plot(grd1,lhs1,color='r',label = r'$-\widetilde{u}_r \partial_r (\overline{\rho})$')
-        plt.plot(grd1,rhs0,color='c',label = r"$-\nabla_r f_\rho$")		
-        plt.plot(grd1,rhs1,color='m',label = r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
-        plt.plot(grd1,rhs2,color='b',label=r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
+        plt.title('hsse continuity equation')
+        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{M})$')
+        plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+        plt.plot(grd1,rhs1,color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
+        plt.plot(grd1,rhs2,color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
+        plt.plot(grd1,rhs3,color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
+        plt.plot(grd1,rhs4,color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
+        setylabel = r"g cm$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -159,89 +167,4 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq.png')
-
-    def plot_continuity_equation_bar(self,laxis,xbl,xbr,ybu,ybd):
-        """Plot continuity equation in the model""" 
-		
-        # load x GRID
-        grd1 = self.xzn0
-
-        term1 = self.minus_dt_dd
-        term2 = self.minus_ux_grad_eht_dd
-        term3 = self.minus_eht_dd_div_fht_ux
-        term4 = self.minus_resContEquation
-		
-        # calculate INDICES for grid boundaries 
-        if laxis == 1:
-            idxl, idxr = self.idx_bndry(xbl,xbr)
-        else:
-            idxl = 0
-            idxr = self.nx-1
-		
-        term1_sel = term1[idxl:idxr]
-        term2_sel = term2[idxl:idxr]
-        term3_sel = term3[idxl:idxr]
-        term4_sel = term4[idxl:idxr]
-   
-        rc = self.xzn0[idxl:idxr]
-
-        Sr = 4.*np.pi*rc**2
-
-        int_term1 = integrate.simps(term1_sel*Sr,rc)
-        int_term2 = integrate.simps(term2_sel*Sr,rc)
-        int_term3 = integrate.simps(term3_sel*Sr,rc) 
-        int_term4 = integrate.simps(term4_sel*Sr,rc)     
-
-        fig = plt.figure(figsize=(7,6))
-    
-        ax = fig.add_subplot(1,1,1)
-        ax.yaxis.grid(color='gray', linestyle='dashed')
-        ax.xaxis.grid(color='gray', linestyle='dashed')
-     
-        fc = 1.
-    
-        # note the change: I'm only supplying y data.
-        y = [int_term1/fc,int_term2/fc,int_term3/fc,int_term4/fc]
-
-        # Calculate how many bars there will be
-        N = len(y)
- 
-        # Generate a list of numbers, from 0 to N
-        # This will serve as the (arbitrary) x-axis, which
-        # we will then re-label manually.
-        ind = range(N)
- 
-        # See note below on the breakdown of this command
-        ax.bar(ind, y, facecolor='#0000FF',
-               align='center', ecolor='black')
- 
-        #Create a y label
-        ax.set_ylabel(r'g s$^{-1}$')
- 
-        # Create a title, in italics
-        # ax.set_title('continuity equation')
- 
-        # This sets the ticks on the x axis to be exactly where we put
-        # the center of the bars.
-        ax.set_xticks(ind)
- 
-        # Labels for the ticks on the x axis.  It needs to be the same length
-        # as y (one label for each bar)
-        group_labels = [r"$-\overline{\rho} \nabla_r \widetilde{u}_r$",r"$-\partial_t \overline{\rho}$",r"$-\widetilde{u}_r \partial_r \overline{\rho}$",'res']
-                         
-        # Set the x tick labels to the group_labels defined above.
-        ax.set_xticklabels(group_labels,fontsize=16)
- 
-        # Extremely nice function to auto-rotate the x axis labels.
-        # It was made for dates (hence the name) but it works
-        # for any long x tick labels
-        fig.autofmt_xdate()
-        
-        # display PLOT
-        plt.show(block=False)
-
-        # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq_bar.png')		
-		
-		
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq.png')

@@ -9,10 +9,10 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
+class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,inuc,element,intc,data_prefix):
-        super(XtransportEquation,self).__init__(ig) 
+        super(HsseXtransportEquation,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)		
@@ -29,14 +29,14 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
         ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
 		
-        #######################
-        # Xi TRANSPORT EQUATION 
-        #######################
+        ############################
+        # HSSE Xi TRANSPORT EQUATION 
+        ############################
 		
         # store time series for time derivatives
-        t_timec   = np.asarray(eht.item().get('timec')) 	
-        t_dd      = np.asarray(eht.item().get('dd')) 
-        t_ddxi    = np.asarray(eht.item().get('ddx'+inuc))	
+        t_timec   = np.asarray(eht.item().get('timec'))
+        t_dd      = np.asarray(eht.item().get('dd'))		
+        t_ddxi    = np.asarray(eht.item().get('ddx'+inuc))			
         t_fht_xi  = t_ddxi/t_dd		
 		
         # construct equation-specific mean fields
@@ -45,24 +45,24 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         fxi    = ddxiux - ddxi*ddux/dd
 		
         # LHS -dq/dt 		
-        self.minus_dt_dd_fht_xi = -self.dt(t_dd*t_fht_xi,xzn0,t_timec,intc)
+        self.minus_dt_fht_xi = -self.dt(t_fht_xi,xzn0,t_timec,intc)
 		
-        # LHS -div(ddXiux)
-        self.minus_div_eht_dd_fht_ux_fht_xi = -self.Div(dd*fht_ux*fht_xi,xzn0)
+        # RHS +fht Xidot 
+        self.plus_fht_xidot = +ddxidot/dd 		
+
+        # RHS -(1/dd)div fxi 
+        self.minus_one_o_dd_div_fxi = -(1./dd)*self.Div(fxi,xzn0)
 		
-        # RHS -div fxi 
-        self.minus_div_fxi = -self.Div(fxi,xzn0) 
-		
-        # RHS +ddXidot 
-        self.plus_ddxidot = +ddxidot 
+        # LHS -fht_ux gradx fht_xi
+        self.minus_div_eht_dd_fht_ux_fht_xi = -fht_ux*self.Grad(fht_xi,xzn0)
 		
         # -res
-        self.minus_resXiTransport = -(self.minus_dt_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + \
-                               self.minus_div_fxi + self.plus_ddxidot)
+        self.minus_resXiTransport = -(self.minus_dt_fht_xi+self.plus_fht_xidot+self.minus_one_o_dd_div_fxi+\
+         self.minus_div_eht_dd_fht_ux_fht_xi)
 		
-        ###########################		
-        # END Xi TRANSPORT EQUATION
-        ###########################
+        ################################		
+        # END HSSE Xi TRANSPORT EQUATION
+        ################################
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -124,12 +124,12 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # load x GRID
         grd1 = self.xzn0
 				
-        lhs0 = self.minus_dt_dd_fht_xi
-        lhs1 = self.minus_div_eht_dd_fht_ux_fht_xi 
+        lhs0 = self.minus_dt_fht_xi 
 		
-        rhs0 = self.minus_div_fxi
-        rhs1 = self.plus_ddxidot
-		
+        rhs0 = self.plus_fht_xidot
+        rhs1 = self.minus_one_o_dd_div_fxi
+        rhs2 = self.minus_div_eht_dd_fht_ux_fht_xi		
+
         res = self.minus_resXiTransport
 		
         # create FIGURE
@@ -139,20 +139,21 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,res]		
+        to_plot = [lhs0,rhs0,rhs1,rhs2,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 				
         # plot DATA 
-        plt.title('rhoX transport for '+element)
-        plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
-        plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')		
-        plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f$')
-        plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
+        plt.title('hsse rhoX transport for '+element)
+        plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}$')
+        plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}$')
+        plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f$')
+        plt.plot(grd1,rhs2,color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_\alpha$")
+
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
+        setylabel = r"s$^{-1}$"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

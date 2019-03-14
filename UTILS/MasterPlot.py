@@ -64,7 +64,10 @@ import EQUATIONS.Buoyancy as buo
 
 # import classes for hydrodynamic stellar structure equations
 import EQUATIONS.HsseContinuityEquation as hssecont
+import EQUATIONS.HsseMomentumEquationX as hssemomx
 import EQUATIONS.HsseTemperatureEquation as hssetemp
+import EQUATIONS.HsseLuminosityEquation as hsselumi
+import EQUATIONS.HsseXtransportEquation as hssecomp
 
 import ReadParams as params
 
@@ -164,7 +167,25 @@ class MasterPlot():
                                              params.getForEqs('cteqhsse')['ybd'],\
                                              params.getForEqs('cteqhsse')['ilg'])
 
+    def execHssMomxEq(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 
+        ranshssemomx = hssemomx.HsseMomentumEquationX(params.getForProp('prop')['eht_data'],\
+                                                             params.getForProp('prop')['ig'],\
+                                                             params.getForProp('prop')['intc'],\
+                                                             params.getForProp('prop')['prefix'])
 
+        # plot hsse momentm equation						       
+        ranshssemomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'],\
+                                              params.getForEqs('mxeqhsse')['xbl'],\
+                                              params.getForEqs('mxeqhsse')['xbr'],\
+                                              params.getForEqs('mxeqhsse')['ybu'],\
+                                              params.getForEqs('mxeqhsse')['ybd'],\
+                                              params.getForEqs('mxeqhsse')['ilg'])
+											 
+											 
     def execHssTempEq(self,tke_diss):
 						  
         params = self.params						  
@@ -176,13 +197,68 @@ class MasterPlot():
                                                              tke_diss,\
                                                              params.getForProp('prop')['prefix'])
 
-        # plot continuity equation						       
+        # plot hsse temperature equation						       
         ranshssetemp.plot_tt_equation(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('tpeqhsse')['xbl'],\
                                              params.getForEqs('tpeqhsse')['xbr'],\
                                              params.getForEqs('tpeqhsse')['ybu'],\
                                              params.getForEqs('tpeqhsse')['ybd'],\
                                              params.getForEqs('tpeqhsse')['ilg'])
+											 
+    def execHssLumiEq(self,tke_diss):
+						  
+        params = self.params						  
+						
+        # instantiate 
+        ranshsselumi = hsselumi.HsseLuminosityEquation(params.getForProp('prop')['eht_data'],\
+                                                             params.getForProp('prop')['ig'],\
+                                                             params.getForProp('prop')['intc'],\
+                                                             tke_diss,\
+                                                             params.getForProp('prop')['prefix'])
+
+        # plot hsse temperature equation						       
+        ranshsselumi.plot_luminosity_equation(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('lueqhsse')['xbl'],\
+                                             params.getForEqs('lueqhsse')['xbr'],\
+                                             params.getForEqs('lueqhsse')['ybu'],\
+                                             params.getForEqs('lueqhsse')['ybd'],\
+                                             params.getForEqs('lueqhsse')['ilg'])											 
+											 
+    def execHssCompEq(self):
+						  
+        params = self.params						  
+						
+        # instantiate 
+        ranshssecomp = hssecomp.HsseXtransportEquation(params.getForProp('prop')['eht_data'],\
+                                                             params.getForProp('prop')['ig'],\
+                                                             params.getForProp('prop')['intc'],\
+                                                             params.getForProp('prop')['prefix'])
+
+        # plot hsse X transport equation						       
+        ranshssecomp.plot_Xtransport_equation(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('coeqhsse')['xbl'],\
+                                             params.getForEqs('coeqhsse')['xbr'],\
+                                             params.getForEqs('coeqhsse')['ybu'],\
+                                             params.getForEqs('coeqhsse')['ybd'],\
+                                             params.getForEqs('coeqhsse')['ilg'])											 
+
+    def execHssCompEq(self,inuc,element,x):
+
+        params = self.params
+	
+        # instantiate 
+        ranshssecomp = hssecomp.HsseXtransportEquation(params.getForProp('prop')['eht_data'],\
+                                                       params.getForProp('prop')['ig'],\
+                                                       inuc,element,\
+                                                       params.getForProp('prop')['intc'],\
+                                                       params.getForProp('prop')['prefix'])
+							
+        ranshssecomp.plot_Xtransport_equation(params.getForProp('prop')['laxis'],\
+                                              params.getForEqs(x)['xbl'],\
+                                              params.getForEqs(x)['xbr'],\
+                                              params.getForEqs(x)['ybu'],\
+                                              params.getForEqs(x)['ybd'],\
+                                              params.getForEqs(x)['ilg'])
 											 
     def execXrho(self,inuc,element,x):
 	

@@ -190,7 +190,9 @@ if str2bool(params.getForEqs('fzbxeq')['plotMee']): plt.execFzbarxEq()
 
 # HYDRODYNAMIC STELLAR STRUCTURE EQUATIONS
 if str2bool(params.getForEqs('cteqhsse')['plotMee']): plt.execHssContEq()
+if str2bool(params.getForEqs('mxeqhsse')['plotMee']): plt.execHssMomxEq()
 if str2bool(params.getForEqs('tpeqhsse')['plotMee']): plt.execHssTempEq(properties['tke_diss'])
+if str2bool(params.getForEqs('lueqhsse')['plotMee']): plt.execHssLumiEq(properties['tke_diss'])
 
 # load network
 network = params.getNetwork() 
@@ -205,3 +207,7 @@ for elem in network[1:-1]: # skip network identifier in the list
     if str2bool(params.getForEqs('xvar_'+elem)['plotMee']): plt.execXvar(inuc,elem,'xvar_'+elem)	
     if str2bool(params.getForEqs('xvareq_'+elem)['plotMee']): plt.execXvarEq(inuc,elem,'xvareq_'+elem,properties['tauL'])	
     if str2bool(params.getForEqs('xdiff_'+elem)['plotMee']): plt.execDiff(inuc,elem,'xdiff_'+elem,properties['lc'],properties['uconv'])
+    # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION	
+    if str2bool(params.getForEqs('coeqhsse_'+elem)['plotMee']): plt.execHssCompEq(inuc,elem,'xrho_'+elem)
+	
+	
