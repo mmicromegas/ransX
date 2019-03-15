@@ -57,8 +57,8 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         # LHS -dq/dt 		
         self.minus_dt_tt = -self.dt(t_tt,xzn0,t_timec,intc)	
 
-        # LHS -fht_ux grad T		
-        self.minus_fht_ux_grad_tt = -fht_ux*self.Grad(tt,xzn0)
+        # LHS -ux grad T		
+        self.minus_ux_grad_tt = -ux*self.Grad(tt,xzn0)
 		
         # RHS -div ftt
         self.minus_div_ftt = -self.Div(ftt,xzn0)
@@ -67,7 +67,7 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_one_minus_gamma3_tt_div_ux = +(1.-gamma3)*tt*self.Div(ux,xzn0)		
 				
         # RHS +(2-gamma3) Wt = +(2-gamma3) eht_ttf_df
-        self.plus_two_minus_gamma3_eht_ttf_df = +(1.-gamma1)*(ttdivu - tt*divu)
+        self.plus_two_minus_gamma3_eht_ttf_df = +(2.-gamma3)*(ttdivu - tt*divu)
 		
         # RHS source +enuc/cv
         self.plus_enuc_o_cv = enuc1_o_cv+enuc2_o_cv		
@@ -79,12 +79,12 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_div_ftt_o_dd_cv = np.zeros(nx)		
 
         # RHS +viscous tensor grad u / dd cv
-        self.plus_tau_grad_u_o_dd_cv = np.zeros(nx)		
+        #self.plus_tau_grad_u_o_dd_cv = np.zeros(nx)		
 		
         # -res
-        self.minus_resTTequation = -(self.minus_dt_tt+self.minus_fht_ux_grad_tt+\
+        self.minus_resTTequation = -(self.minus_dt_tt+self.minus_ux_grad_tt+\
          self.minus_div_ftt+self.plus_one_minus_gamma3_tt_div_ux+self.plus_two_minus_gamma3_eht_ttf_df+\
-         self.plus_enuc_o_cv+self.plus_disstke_o_cv + self.plus_div_ftt_o_dd_cv + self.plus_tau_grad_u_o_dd_cv)
+         self.plus_enuc_o_cv+self.plus_disstke_o_cv + self.plus_div_ftt_o_dd_cv)
 		
         ##########################
         # END TEMPERATURE EQUATION 
@@ -141,7 +141,7 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 
         lhs0 = self.minus_dt_tt
-        lhs1 = self.minus_fht_ux_grad_tt
+        lhs1 = self.minus_ux_grad_tt
 		
         rhs0 = self.minus_div_ftt
         rhs1 = self.plus_one_minus_gamma3_tt_div_ux 
@@ -149,7 +149,6 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs3 = self.plus_enuc_o_cv
         rhs4 = self.plus_disstke_o_cv
         rhs5 = self.plus_div_ftt_o_dd_cv 
-        rhs6 = self.plus_tau_grad_u_o_dd_cv
 		
         res = self.minus_resTTequation
 				
@@ -160,22 +159,20 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
         plt.title('temperature equation')
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})$")
-        plt.plot(grd1,lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r \overline{T}$")	
+        plt.plot(grd1,lhs1,color='k',label = r"$-\overline{u}_r \partial_r \overline{T}$")	
 		
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_T $")     
         plt.plot(grd1,rhs1,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}$") 
-        plt.plot(grd1,rhs2,color='r',label = r"$+(2-\Gamma_3) W_T$")
+        plt.plot(grd1,rhs2,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'}$")
         plt.plot(grd1,rhs3,color='b',label = r"$+\overline{\epsilon_{nuc} / cv}$")
         plt.plot(grd1,rhs4,color='g',label = r"$+\overline{\varepsilon / cv}$")
-
-        plt.plot(grd1,rhs5,color='m',label = r"+$\nabla \cdot F_T/ \rho c_v$")
-        plt.plot(grd1,rhs6,color='pink',label = r"+$\tau_{ij} \partial_i u_j / \rho c_v$")		
+        plt.plot(grd1,rhs5,color='m',label = r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")	
 		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")
  

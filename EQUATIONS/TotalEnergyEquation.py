@@ -118,7 +118,7 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_wb = self.plus_ax*self.Grad(pp,xzn0)
 		
         # RHS -P d = - eht_pp Div eht_ux
-        self.minus_eht_pp_div_eht_ux = -pp*self.Div(ux,xzn0)
+        self.minus_pp_div_ux = -pp*self.Div(ux,xzn0)
 				
         # -R grad u
 		
@@ -130,7 +130,7 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
                                 rxy*self.Grad(dduy/dd,xzn0) + \
                                 rxz*self.Grad(dduz/dd,xzn0))
 		
-        # -dd Dt ke
+        # +dd Dt fht_ui_fht_ui_o_two
         t_fht_ux = t_ddux/t_dd		
         t_fht_uy = t_dduy/t_dd	
         t_fht_uz = t_dduz/t_dd	
@@ -139,18 +139,18 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         fht_uy = dduy/dd	
         fht_uz = dduz/dd
 		
-        self.minus_dd_Dt_fht_ui_fht_ui = \
-            -self.dt(t_dd*(t_fht_ux**2.+t_fht_uy**2.+t_fht_uz**2.),xzn0,t_timec,intc) - \
-             self.Div(dd*fht_ux*(fht_ux**2.+fht_uy**2.+fht_uz**2.),xzn0)
+        self.plus_dd_Dt_fht_ui_fht_ui_o_two = \
+            +self.dt(t_dd*(t_fht_ux**2.+t_fht_uy**2.+t_fht_uz**2.),xzn0,t_timec,intc) - \
+             self.Div(dd*fht_ux*(fht_ux**2.+fht_uy**2.+fht_uz**2.),xzn0)/2.
 		
         # RHS source + dd enuc
-        self.plus_eht_dd_fht_enuc = ddenuc1+ddenuc2				
+        self.plus_dd_fht_enuc = ddenuc1+ddenuc2				
 		
         # -res		
         self.minus_resTeEquation = - (self.minus_dt_eht_dd_fht_et + self.minus_div_eht_dd_fht_ux_fht_et + \
                                       self.minus_div_fei + self.minus_div_ftt + self.minus_div_fekx + \
-                                      self.minus_div_fpx + self.minus_r_grad_u + self.minus_eht_pp_div_eht_ux + \
-                                      self.plus_wb + self.plus_eht_dd_fht_enuc + self.minus_dd_Dt_fht_ui_fht_ui)
+                                      self.minus_div_fpx + self.minus_r_grad_u + self.minus_pp_div_ux + \
+                                      self.plus_wb + self.plus_dd_fht_enuc + self.plus_dd_Dt_fht_ui_fht_ui_o_two)
 
         ###########################
         # END TOTAL ENERGY EQUATION 
@@ -214,9 +214,10 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs2 = self.minus_div_fekx
         rhs3 = self.minus_div_fpx
         rhs4 = self.minus_r_grad_u		
-        rhs5 = self.minus_eht_pp_div_eht_ux
+        rhs5 = self.minus_pp_div_ux
         rhs6 = self.plus_wb
-        rhs7 = self.plus_eht_dd_fht_enuc
+        rhs7 = self.plus_dd_fht_enuc
+        rhs8 = self.plus_dd_Dt_fht_ui_fht_ui_o_two
 
         res = self.minus_resTeEquation
 				
@@ -243,6 +244,7 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs5,color='#802A2A',label = r"$-\bar{P} \bar{d}$") 		
         plt.plot(grd1,rhs6,color='r',label = r'$+W_b$')  
         plt.plot(grd1,rhs7,color='b',label = r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
+        plt.plot(grd1,rhs8,color='g',label = r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\epsilon_t}$")
  

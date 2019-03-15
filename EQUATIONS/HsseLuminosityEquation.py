@@ -84,6 +84,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         t_fht_ek = 0.5*(t_dduxux+t_dduyuy+t_dduzuz)/t_dd
         t_fht_ei = t_ddei/t_dd			
+        t_fht_et = t_fht_ek + t_fht_ei
 		
         t_fht_ux = t_ddux/t_dd 
         t_fht_uy = t_dduy/t_dd
@@ -103,7 +104,8 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         fei   = ddeiux - ddux*ddei/dd
         fekx  = ddekux - fht_ux*fht_ek
-        fpx   = ppux - pp*ux		
+        fpx   = ppux - pp*ux
+        fekx  = ddekux - fht_ux*fht_ek		
 				
         fht_lum = 4.*np.pi*(xzn0**2)*dd*fht_ux*fht_et 				
 				
@@ -120,46 +122,68 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_gradx_fht_lum = -self.Grad(fht_lum,xzn0)             
 	  
         # RHS +4 pi r^2 dd fht_enuc
-        self.plus_four_pi_rsq_dd_fht_enuc = sps*dd*fht_enuc		
-	  
-        # RHS -4 pi r^2 dd cp dt tt
-        self.minus_four_pi_rsq_dd_cp_dt_tt = -sps*dd*cp*self.dt(t_tt,xzn0,t_timec,intc)		
-	  
-        # RHS +4 pi r^2 delta dt pp
-        self.plus_four_pi_rsq_delta_dt_pp = +sps*delta*self.dt(t_pp,xzn0,t_timec,intc)		
-	  
-        # RHS +4 pi r^2 dd fht_ux gradx fht_et
-        self.plus_four_pi_rsq_dd_fht_ux_gradx_fht_et = +sps*dd*fht_ux*self.Grad(fht_et,xzn0)
-
-        # RHS +4 pi r^2 dd Dt fht_ui fht_ui/2 
-        self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two	= +sps*dd*(self.dt(t_fht_ui_fht_ui,xzn0,t_timec,intc) + fht_ux*self.Grad(fht_ui_fht_ui,xzn0))/2.
-		
-        # RHS -4 pi r^2 delta dt pp 
-        self.minus_four_pi_rsq_delta_dt_pp = -sps*delta*self.dt(t_pp,xzn0,t_timec,intc)			  
-	  
-        # RHS -4 pi r^2 div fei
-        self.minus_four_pi_rsq_div_fei = -sps*self.Div(fei,xzn0)
-		
-        # RHS -4 pi r^2 div ftt (not included) heat flux
-        self.minus_four_pi_rsq_div_ftt = -sps*np.zeros(nx)		
-											  		
-        # RHS -4 pi r^2 P d = - 4 pi r^2 eht_pp Div eht_ux
-        self.minus_four_pi_rsq_pp_div_ux = -sps*pp*self.Div(ux,xzn0)
-
+        self.plus_four_pi_rsq_dd_fht_enuc = +sps*dd*fht_enuc		
+	  	 
         # RHS +4 pi r^2 dd tke_diss
-        self.plus_four_pi_rsq_dd_tke_diss = -sps*tke_diss        
+        self.plus_four_pi_rsq_dd_tke_diss = -sps*tke_diss
+
+        # RHS -4 pi r^2 div fei
+        self.minus_four_pi_rsq_div_fei = -sps*self.Div(fei,xzn0)		
+
+        # RHS -4 pi r^2 div ftt (not included) heat flux
+        self.minus_four_pi_rsq_div_fth = -sps*np.zeros(nx)	
 		
-        # RHS +fht_et gradx dd fht_ux +4 pi r^2 		
-        self.plus_fht_et_gradx_dd_fht_ux_four_pi_rsq = +fht_et*self.Grad(dd*fht_ux*sps,xzn0)		
+        # RHS -4 pi r^2 div fekx
+        self.minus_four_pi_rsq_div_fekx = -sps*self.Div(fekx,xzn0) 			
 		
+        # RHS -4 pi r^2 div fpx
+        self.minus_four_pi_rsq_div_fpx = -sps*self.Div(fpx,xzn0) 		
 		
+        # RHS -4 pi r^2 P d = - 4 pi r^2 eht_pp Div eht_ux
+        self.minus_four_pi_rsq_pp_div_ux = -sps*pp*self.Div(ux,xzn0)		
+		
+        # -R grad u
+		
+        rxx = dduxux - ddux*ddux/dd
+        rxy = dduxuy - ddux*dduy/dd
+        rxz = dduxuz - ddux*dduz/dd
+		
+        self.minus_four_pi_rsq_r_grad_u = -sps*(rxx*self.Grad(ddux/dd,xzn0) + \
+                                rxy*self.Grad(dduy/dd,xzn0) + \
+                                rxz*self.Grad(dduz/dd,xzn0))		
+			  		
+        # RHS warning ax = overline{+u''_x} 
+        self.plus_ax = -ux + fht_ux		
+		
+        # +buoyancy work
+        self.plus_four_pi_rsq_wb = +sps*self.plus_ax*self.Grad(pp,xzn0)												
+											
+        # +dd Dt fht_ui_fht_ui_o_two
+        t_fht_ux = t_ddux/t_dd		
+        t_fht_uy = t_dduy/t_dd	
+        t_fht_uz = t_dduz/t_dd	
+
+        fht_ux = ddux/dd		
+        fht_uy = dduy/dd	
+        fht_uz = dduz/dd
+		
+        self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two = \
+            +sps*self.dt(t_dd*(t_fht_ux**2.+t_fht_uy**2.+t_fht_uz**2.),xzn0,t_timec,intc) - \
+             self.Div(dd*fht_ux*(fht_ux**2.+fht_uy**2.+fht_uz**2.),xzn0)/2.
+		
+        # RHS -4 pi r^2 dd dt et
+        self.minus_four_pi_rsq_dd_dt_et = -sps*dd*self.dt(t_fht_et,xzn0,t_timec,intc)		
+		
+        # RHS +fht_et gradx +4 pi r^2 dd fht_ux
+        self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et*self.Grad(sps*dd*fht_ux,xzn0) 		
+
         # -res		
         self.minus_resTeEquation = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+\
-         self.minus_four_pi_rsq_dd_cp_dt_tt+self.plus_four_pi_rsq_delta_dt_pp+\
-         self.plus_four_pi_rsq_dd_fht_ux_gradx_fht_et+self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two+\
-         self.minus_four_pi_rsq_delta_dt_pp+self.minus_four_pi_rsq_div_fei+\
-         self.minus_four_pi_rsq_div_ftt+self.minus_four_pi_rsq_pp_div_ux+self.minus_four_pi_rsq_pp_div_ux+\
-         self.plus_four_pi_rsq_dd_tke_diss+self.plus_fht_et_gradx_dd_fht_ux_four_pi_rsq)
+         self.plus_four_pi_rsq_dd_tke_diss+self.minus_four_pi_rsq_div_fei+self.minus_four_pi_rsq_div_fth+\
+         self.minus_four_pi_rsq_div_fekx+self.minus_four_pi_rsq_div_fpx+self.minus_four_pi_rsq_pp_div_ux+\
+         self.minus_four_pi_rsq_r_grad_u+self.plus_four_pi_rsq_wb+\
+         self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two+self.minus_four_pi_rsq_dd_dt_et+\
+         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux)
 
         #############################
         # END HSS LUMINOSITY EQUATION 
@@ -218,17 +242,18 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_gradx_fht_lum
 		
         rhs0 = self.plus_four_pi_rsq_dd_fht_enuc
-        rhs1 = self.minus_four_pi_rsq_dd_cp_dt_tt
-        rhs2 = self.plus_four_pi_rsq_delta_dt_pp
-        rhs3 = self.plus_four_pi_rsq_dd_fht_ux_gradx_fht_et
-        rhs4 = self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two
-        rhs5 = self.minus_four_pi_rsq_delta_dt_pp
-        rhs6 = self.minus_four_pi_rsq_div_fei
-        rhs7 = self.minus_four_pi_rsq_div_ftt 
-        rhs8 = self.minus_four_pi_rsq_pp_div_ux
-        rhs9 = self.plus_four_pi_rsq_dd_tke_diss
-        rhs10 = self.plus_fht_et_gradx_dd_fht_ux_four_pi_rsq    
- 	
+        rhs1 = self.plus_four_pi_rsq_dd_tke_diss
+        rhs2 = self.minus_four_pi_rsq_div_fei
+        rhs3 = self.minus_four_pi_rsq_div_fth
+        rhs4 = self.minus_four_pi_rsq_div_fekx
+        rhs5 = self.minus_four_pi_rsq_div_fpx
+        rhs6 = self.minus_four_pi_rsq_pp_div_ux		
+        rhs7 = self.minus_four_pi_rsq_r_grad_u
+        rhs8 = self.plus_four_pi_rsq_wb
+        rhs9 = self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two
+        rhs10 = self.minus_four_pi_rsq_dd_dt_et
+        rhs11 = self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux
+  	
         res = self.minus_resTeEquation
 				
         # create FIGURE
@@ -238,7 +263,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,rhs9,rhs10,res]		
+        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,rhs9,rhs10,rhs11,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
@@ -246,17 +271,18 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
  
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
-        plt.plot(grd1,rhs1,color='y',label = r"$-4 \pi r^2 \rho c_p \partial_t \overline{T}$") 
-        plt.plot(grd1,rhs2,color='silver',label = r"$+4 \pi r^2 \delta \partial_t \overline{P}$")     
-        plt.plot(grd1,rhs3,color='c',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{u}_r \partial_r \widetilde{\epsilon}_t$") 		
-        plt.plot(grd1,rhs4,color='m',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i /2$")		
-        plt.plot(grd1,rhs5,color='#802A2A',label = r"$-4 \pi r^2 \delta \partial_t \overline{P}$") 		
-        plt.plot(grd1,rhs6,color='r',label = r"$-4 \pi r^2 \nabla_r f_I$") 
-        plt.plot(grd1,rhs7,color='gray',label = r"$-4 \pi r^2 \nabla_r f_{th}$ (not incl.)") 		
-        plt.plot(grd1,rhs8,color='b',label = r"$-4 \pi r^2 \overline{P} \ \overline{d}$")
-        plt.plot(grd1,rhs9,color='green',label = r"$+4 \pi r^2 \overline{\rho} \varepsilon_k$")		
-        plt.plot(grd1,rhs10,color='pink',label = r"$+4 \pi r^2 \widetilde{\epsilon}_t \partial_r \overline{\rho} \widetilde{u}_r 4 \pi r^2 $")	
-	
+        plt.plot(grd1,rhs1,color='y',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
+        plt.plot(grd1,rhs2,color='g',label = r"$-4 \pi r^2 \nabla_r f_I$") 		
+        plt.plot(grd1,rhs3,color='gray',label = r"$-4 \pi r^2 \nabla_r f_{th}$ (not incl.)")
+        plt.plot(grd1,rhs4,color='#802A2A',label = r"$-4 \pi r^2  \nabla_r f_{K}$") 		
+        plt.plot(grd1,rhs5,color='darkmagenta',label = r"$-4 \pi r^2 \nabla_r f_{P}$") 
+        plt.plot(grd1,rhs6,color='b',label=r"$-4 \pi r^2 \overline{P} \ \overline{d}$")		
+        plt.plot(grd1,rhs7,color='pink',label=r"$-4 \pi r^2 \widetilde{R}_{ir} \partial_r \widetilde{u}_i$")		
+        plt.plot(grd1,rhs8,color='r',label=r"$+4 \pi r^2 W_b$")
+        plt.plot(grd1,rhs9,color='m',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i /2$")		 
+        plt.plot(grd1,rhs10,color='chartreuse',label = r"$-4 \pi r^2 \overline{\rho} \partial_t \widetilde{\epsilon}_t$") 
+        plt.plot(grd1,rhs11,color='olive',label = r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \widetilde{u}_r$")		
+		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N$")
  
         # define and show x/y LABELS

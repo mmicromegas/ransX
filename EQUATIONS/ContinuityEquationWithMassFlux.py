@@ -52,7 +52,7 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         # RHS +fdd_o_dd gradx dd				
         self.plus_fdd_o_dd_gradx_dd = +(fdd/dd)*self.Grad(dd,xzn0)
 		
-        # RHS +dd Div ux 
+        # RHS -dd Div ux 
         self.minus_dd_div_ux = -dd*self.Div(ux,xzn0) 
 
         # -res

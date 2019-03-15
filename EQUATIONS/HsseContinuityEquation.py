@@ -44,13 +44,13 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         #####################
 				
         # LHS -gradx mm
-        self.minus_gradx_mm = -self.Grad(mm,xzn0)
-		
+        self.minus_gradx_mm = -self.Grad(dd*(4./3.)*np.pi*(xzn0**3),xzn0)
+				
         # RHS +4 pi r^2 dd
         self.plus_four_pi_rsq_dd = +4.*np.pi*(xzn0**2.)*dd
-
+    		
         # scale factor +4 pi r^3/ 3 fht_ux
-        self.plus_four_pi_rcu_o_three_fht_ux = 4.*np.pi*(xzn0**3)/(3.*fht_ux)        		
+        self.plus_four_pi_rcu_o_three_fht_ux = (4./3.)*np.pi*(xzn0**3)/fht_ux  		
 
         # RHS -4 pi r^3/ 3 fht_ux Div fdd
         self.minus_four_pi_rcu_o_three_fht_ux_div_fdd = -self.plus_four_pi_rcu_o_three_fht_ux*self.Div(fdd,xzn0)
@@ -58,7 +58,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS +4 pi r^3/ 3 fht_ux fdd_o_dd gradx dd				
         self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd = +self.plus_four_pi_rcu_o_three_fht_ux*(fdd/dd)*self.Grad(dd,xzn0)		
 
-        # RHS +4 pi r^3/ 3 fht_ux dd Div ux 
+        # RHS -4 pi r^3/ 3 fht_ux dd Div ux 
         self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux = -self.plus_four_pi_rcu_o_three_fht_ux*dd*self.Div(ux,xzn0) 
 		
         # RHS -dq/dt 		
@@ -126,7 +126,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = self.minus_gradx_mm
 		
-        rhs0 = self.plus_four_pi_rcu_o_three_fht_ux		
+        rhs0 = self.plus_four_pi_rsq_dd		
         rhs1 = self.minus_four_pi_rcu_o_three_fht_ux_div_fdd
         rhs2 = self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd
         rhs3 = self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux
@@ -161,7 +161,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':12})
+        plt.legend(loc=ilg,prop={'size':9})
 
         # display PLOT
         plt.show(block=False)

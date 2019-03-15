@@ -59,18 +59,15 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # RHS -dq/dt o ux 		
         self.minus_dt_tt_o_ux = -self.dt(t_tt,xzn0,t_timec,intc)/ux	
-
-        # RHS -fht_ux grad T		
-        self.minus_fht_ux_grad_tt_o_ux = -fht_ux*self.Grad(tt,xzn0)/ux
 		
-        # RHS -div ftt
+        # RHS -div ftt o ux
         self.minus_div_ftt_o_ux = -self.Div(ftt,xzn0)/ux
 		
         # RHS +(1-gamma3) T d = +(1-gamma3) tt Div eht_ux
         self.plus_one_minus_gamma3_tt_div_ux_o_ux = +(1.-gamma3)*tt*self.Div(ux,xzn0)/ux		
 				
         # RHS +(2-gamma3) Wt = +(2-gamma3) eht_ttf_df
-        self.plus_two_minus_gamma3_eht_ttf_df_o_ux = +(1.-gamma1)*(ttdivu - tt*divu)/ux
+        self.plus_two_minus_gamma3_eht_ttf_df_o_ux = +(2.-gamma3)*(ttdivu - tt*divu)/ux
 		
         # RHS source +enuc/cv
         self.plus_enuc_o_cv_o_ux = enuc1_o_cv/ux+enuc2_o_cv/ux		
@@ -79,17 +76,13 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_disstke_o_cv_o_ux = +(tke_diss/(dd*cv))/ux  	
 		
         # RHS +div ftt/dd cv (not included)	
-        self.plus_div_ftt_o_dd_cv_o_ux = np.zeros(nx)/ux		
-
-        # RHS +viscous tensor grad u / dd cv
-        self.plus_tau_grad_u_o_dd_cv_o_ux = np.zeros(nx)/ux		
+        self.plus_div_ftt_o_dd_cv_o_ux = np.zeros(nx)/ux			
 		
         # -res
-        self.minus_resHSSTTequation = -(self.minus_gradx_tt+self.minus_dt_tt_o_ux+self.minus_fht_ux_grad_tt_o_ux+\
+        self.minus_resHSSTTequation = -(self.minus_gradx_tt+self.minus_dt_tt_o_ux+\
          self.minus_div_ftt_o_ux+self.plus_one_minus_gamma3_tt_div_ux_o_ux+\
          self.plus_two_minus_gamma3_eht_ttf_df_o_ux+self.plus_enuc_o_cv_o_ux+\
-         self.plus_disstke_o_cv_o_ux + self.plus_div_ftt_o_dd_cv_o_ux + \
-         self.plus_tau_grad_u_o_dd_cv_o_ux)
+         self.plus_disstke_o_cv_o_ux + self.plus_div_ftt_o_dd_cv_o_ux)
 		
         ##########################
         # END TEMPERATURE EQUATION 
@@ -148,15 +141,13 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_gradx_tt
 
         rhs0 = self.minus_dt_tt_o_ux
-        rhs1 = self.minus_fht_ux_grad_tt_o_ux
-        rhs2 = self.minus_div_ftt_o_ux
-        rhs3 = self.plus_one_minus_gamma3_tt_div_ux_o_ux 
-        rhs4 = self.plus_two_minus_gamma3_eht_ttf_df_o_ux
-        rhs5 = self.plus_enuc_o_cv_o_ux
-        rhs6 = self.plus_disstke_o_cv_o_ux
-        rhs7 = self.plus_div_ftt_o_dd_cv_o_ux 
-        rhs8 = self.plus_tau_grad_u_o_dd_cv_o_ux
-		
+        rhs1 = self.minus_div_ftt_o_ux
+        rhs2 = self.plus_one_minus_gamma3_tt_div_ux_o_ux 
+        rhs3 = self.plus_two_minus_gamma3_eht_ttf_df_o_ux
+        rhs4 = self.plus_enuc_o_cv_o_ux
+        rhs5 = self.plus_disstke_o_cv_o_ux
+        rhs6 = self.plus_div_ftt_o_dd_cv_o_ux 
+
         res = self.minus_resHSSTTequation
 				
         # create FIGURE
@@ -166,21 +157,19 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,res]		
+        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
         plt.title('hss temperature equation')
         plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
         plt.plot(grd1,rhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})/ \overline{u}_r$")
-        plt.plot(grd1,rhs1,color='k',label = r"$-\widetilde{u}_r \partial_r \overline{T}/ \overline{u}_r$")	
-        plt.plot(grd1,rhs2,color='#FF8C00',label = r"$-\nabla_r f_T/ \overline{u}_r $")     
-        plt.plot(grd1,rhs3,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}/ \overline{u}_r$") 
-        plt.plot(grd1,rhs4,color='r',label = r"$+(2-\Gamma_3) W_T/ \overline{u}_r$")
-        plt.plot(grd1,rhs5,color='b',label = r"$+(\overline{\epsilon_{nuc} / cv}/ \overline{u}_r$")
-        plt.plot(grd1,rhs6,color='g',label = r"$+(\overline{\varepsilon / cv})/ \overline{u}_r$")
-        plt.plot(grd1,rhs7,color='m',label = r"+$(\nabla \cdot F_T/ \rho c_v)/ \overline{u}_r$")
-        plt.plot(grd1,rhs8,color='pink',label = r"+$(\tau_{ij} \partial_i u_j / \rho c_v)/ \overline{u}_r$")		
+        plt.plot(grd1,rhs1,color='#FF8C00',label = r"$-\nabla_r f_T/ \overline{u}_r $")     
+        plt.plot(grd1,rhs2,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}/ \overline{u}_r$") 
+        plt.plot(grd1,rhs3,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'} / \overline{u}_r$")
+        plt.plot(grd1,rhs4,color='b',label = r"$+(\overline{\epsilon_{nuc} / cv}/ \overline{u}_r$")
+        plt.plot(grd1,rhs5,color='g',label = r"$+(\overline{\varepsilon / cv})/ \overline{u}_r$")
+        plt.plot(grd1,rhs6,color='m',label = r"+$(\nabla \cdot F_T/ \rho c_v)/ \overline{u}_r$ (not incl.)")
 		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")
  
