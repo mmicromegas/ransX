@@ -208,6 +208,6 @@ for elem in network[1:-1]: # skip network identifier in the list
     if str2bool(params.getForEqs('xvareq_'+elem)['plotMee']): plt.execXvarEq(inuc,elem,'xvareq_'+elem,properties['tauL'])	
     if str2bool(params.getForEqs('xdiff_'+elem)['plotMee']): plt.execDiff(inuc,elem,'xdiff_'+elem,properties['lc'],properties['uconv'])
     # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION	
-    if str2bool(params.getForEqs('coeqhsse_'+elem)['plotMee']): plt.execHssCompEq(inuc,elem,'xrho_'+elem)
+    if str2bool(params.getForEqs('coeqhsse_'+elem)['plotMee']): plt.execHssCompEq(inuc,elem,'coeqhsse_'+elem)
 	
 	

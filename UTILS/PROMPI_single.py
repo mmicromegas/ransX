@@ -759,6 +759,39 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         
         plt.show(block=False)
 		
+    def plot_mm(self,xbl,xbr):
+        xzn0 = np.asarray(self.data['xzn0'])
+        xznl = np.asarray(self.data['xznl'])
+        xznr = np.asarray(self.data['xznr'])		
+        nx = np.asarray(self.data['nx'])
+
+        mm = np.asarray(self.data['mm'])
+        dd = np.asarray(self.data['dd'])
+
+        fig, ax1 = plt.subplots(figsize=(7,6))        
+        idxl, idxr = self.idx_bndry(xbl,xbr)
+		        
+        #ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
+        #ax1.axis([xbl,xbr,-1.,1.])
+        
+		
+        pmass = 2.106e33		
+        mmint = np.zeros(nx)
+        mmint[0] = pmass
+		
+        for i in range(1,nx):
+            mmint[i] = mmint[i-1] + 4.*np.pi*(xzn0[i]**2)*dd[i]*(xznr[i]-xznl[i])
+		
+        ax1.plot(xzn0,mm,color='r',label = r"$mm$")
+        #ax1.plot(xzn0,(4./3.)*np.pi*(xzn0**3)*dd,color='g',label = r"$V \rho$")
+        ax1.plot(xzn0,mmint,color='g',linestyle='--',label = r"$mmint$")     
+
+        ax1.set_xlabel("r")
+        ax1.set_ylabel("mass")
+        ax1.legend(loc=1,prop={'size':18})
+        
+        plt.show(block=False)		
+		
     def idx_bndry(self,xbl,xbr):
         rr = np.asarray(self.data['xzn0'])
         xlm = np.abs(rr-xbl)
