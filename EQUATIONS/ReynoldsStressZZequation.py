@@ -196,13 +196,13 @@ class ReynoldsStressZZequation(calc.CALCULUS,al.ALIMIT,object):
 		
         res = self.minus_resRzzEquation
 		
-        rhs4 = self.minus_onethrd_kolmrate*self.dd		
+        #rhs4 = self.minus_onethrd_kolmrate*self.dd		
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 		
         # format AXIS, make sure it is exponential
@@ -217,7 +217,7 @@ class ReynoldsStressZZequation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs1,color='#802A2A',label = r"$-\nabla_r 2 f_k^p$") 
         plt.plot(grd1,rhs2,color='b',label = r"$-\widetilde{R}_{\phi r}\partial_r \widetilde{u_\phi}$")		
         plt.plot(grd1,rhs3,color='y',label=r"$2 \mathcal{G}_k^p$")
-        plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")		
+        #plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{Rpp}$")
  
         # define and show x/y LABELS
