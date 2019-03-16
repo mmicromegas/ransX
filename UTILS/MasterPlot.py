@@ -1,5 +1,5 @@
-import EQUATIONS.ContinuityEquation as cont
 import EQUATIONS.ContinuityEquationWithMassFlux as contfdd
+import EQUATIONS.ContinuityEquationWithFavrianDilatation as cont
 
 import EQUATIONS.MomentumEquationX as momx
 import EQUATIONS.MomentumEquationY as momy
@@ -82,7 +82,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = cont.ContinuityEquation(params.getForProp('prop')['eht_data'],\
+        ransCONT = cont.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
@@ -100,7 +100,7 @@ class MasterPlot():
         params = self.params						  
 						  
         # instantiate 
-        ransCONT = cont.ContinuityEquation(params.getForProp('prop')['eht_data'],\
+        ransCONT = cont.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
@@ -118,7 +118,7 @@ class MasterPlot():
         params = self.params
 	
         # instantiate 
-        ransCONT = cont.ContinuityEquation(params.getForProp('prop')['eht_data'],\
+        ransCONT = cont.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
@@ -223,6 +223,14 @@ class MasterPlot():
                                              params.getForEqs('lueqhsse')['ybu'],\
                                              params.getForEqs('lueqhsse')['ybd'],\
                                              params.getForEqs('lueqhsse')['ilg'])											 
+
+        # plot hsse temperature equation exact						       
+        ranshsselumi.plot_luminosity_equation_exact(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('lueqhsse')['xbl'],\
+                                             params.getForEqs('lueqhsse')['xbr'],\
+                                             params.getForEqs('lueqhsse')['ybu'],\
+                                             params.getForEqs('lueqhsse')['ybd'],\
+                                             params.getForEqs('lueqhsse')['ilg'])
 											 
     def execHssCompEq(self):
 						  
@@ -444,10 +452,10 @@ class MasterPlot():
 								   
         ransMomx.plot_momentum_x(params.getForProp('prop')['laxis'],\
                                  params.getForEqs('momex')['xbl'],\
-                                 params.getForEqs('momx')['xbr'],\
-                                 params.getForEqs('momx')['ybu'],\
-                                 params.getForEqs('momx')['ybd'],\
-                                 params.getForEqs('momx')['ilg'])
+                                 params.getForEqs('momex')['xbr'],\
+                                 params.getForEqs('momex')['ybu'],\
+                                 params.getForEqs('momex')['ybd'],\
+                                 params.getForEqs('momex')['ilg'])
 										  
     def execMomxEq(self):
 						  
