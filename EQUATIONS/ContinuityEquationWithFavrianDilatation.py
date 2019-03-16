@@ -10,17 +10,18 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
+class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,data_prefix):
-        super(ContinuityEquation,self).__init__(ig) 
+        super(ContinuityEquationWithFavrianDilatation,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)		
 
         # load grid
         xzn0 = np.asarray(eht.item().get('xzn0')) 	
-
+        nx = np.asarray(eht.item().get('nx')) 
+		
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 
@@ -59,6 +60,7 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.dd        = dd	
+        self.nx        = nx	
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -124,7 +126,7 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('continuity equation')
+        plt.title('continuity equation with Favrian dilatation')
         plt.plot(grd1,lhs0,color='g',label = r'$-\partial_t (\overline{\rho})$')
         plt.plot(grd1,lhs1,color='r',label = r'$- \widetilde{u}_r \partial_r (\overline{\rho})$')		
         plt.plot(grd1,rhs0,color='b',label=r'$-\overline{\rho} \nabla_r (\widetilde{u}_r)$')
@@ -157,7 +159,7 @@ class ContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         term4 = self.minus_resContEquation
 		
         # calculate INDICES for grid boundaries 
-        if laxis == 1:
+        if laxis == 1 or laxis == 2:
             idxl, idxr = self.idx_bndry(xbl,xbr)
         else:
             idxl = 0

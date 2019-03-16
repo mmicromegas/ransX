@@ -161,7 +161,7 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('hss temperature equation')
+        plt.title('hsse temperature equation')
         plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
         plt.plot(grd1,rhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})/ \overline{u}_r$")
         plt.plot(grd1,rhs1,color='#FF8C00',label = r"$-\nabla_r f_T/ \overline{u}_r $")     
@@ -186,7 +186,7 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'tt_eq.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_temperature_eq.png')		
 		
 		
 		

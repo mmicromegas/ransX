@@ -178,7 +178,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et*self.Grad(sps*dd*fht_ux,xzn0) 		
 
         # -res		
-        self.minus_resTeEquation = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+\
+        self.minus_resLumEquation = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+\
          self.plus_four_pi_rsq_dd_tke_diss+self.minus_four_pi_rsq_div_fei+self.minus_four_pi_rsq_div_fth+\
          self.minus_four_pi_rsq_div_fekx+self.minus_four_pi_rsq_div_fpx+self.minus_four_pi_rsq_pp_div_ux+\
          self.minus_four_pi_rsq_r_grad_u+self.plus_four_pi_rsq_wb+\
@@ -188,6 +188,24 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         #############################
         # END HSS LUMINOSITY EQUATION 
         #############################  
+
+        ################################
+        # HSSE LUMINOSITY EQUATION EXACT
+        ################################ 		
+		
+        # RHS -4 pi r^2 dd dt tt
+        self.minus_four_pi_rsq_dd_cp_dt_tt = -sps*dd*cp*self.dt(t_tt,xzn0,t_timec,intc)
+  
+        # RHS -4 pi r^2 delta dt p
+        self.minus_four_pi_rsq_delta_dt_pp = -sps*delta*self.dt(t_pp,xzn0,t_timec,intc)		
+		
+        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+\
+         self.plus_four_pi_rsq_dd_tke_diss+self.minus_four_pi_rsq_dd_cp_dt_tt+\
+         self.minus_four_pi_rsq_delta_dt_pp)		 
+		
+        ###################################
+        # END HSS LUMINOSITY EQUATION EXACT 
+        ################################### 
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -254,7 +272,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs10 = self.minus_four_pi_rsq_dd_dt_et
         rhs11 = self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux
   	
-        res = self.minus_resTeEquation
+        res = self.minus_resLumEquation
 				
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -267,7 +285,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('hss luminosity equation')
+        plt.title('hsse luminosity equation')
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
  
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
@@ -287,7 +305,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r""
+        setylabel = r"erg s$^{-1}$ cm$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -299,6 +317,57 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'hsse_luminosity_eq.png')		
+		
+    def plot_luminosity_equation_exact(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot luminosity equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_gradx_fht_lum
+		
+        rhs0 = self.plus_four_pi_rsq_dd_fht_enuc
+        rhs1 = self.plus_four_pi_rsq_dd_tke_diss
+        rhs2 = self.minus_four_pi_rsq_dd_cp_dt_tt
+        rhs3 = self.minus_four_pi_rsq_delta_dt_pp
+		
+        res = self.minus_resLumExactEquation
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('hsse luminosity equation ')
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
+ 
+        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
+        plt.plot(grd1,rhs1,color='b',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
+        plt.plot(grd1,rhs2,color='r',label=r"$-4 \pi r^2 \overline{\rho} c_P \partial_t \overline{T}$")
+        plt.plot(grd1,rhs3,color='g',label=r"$-4 \pi r^2 \delta \partial_t \overline{P}$")	
+	
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N$")
+ 
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"erg s$^{-1}$ cm$^{-1}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':8})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_luminosity_exact_eq.png')		
 		
 		
 		

@@ -165,4 +165,4 @@ class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xtransport_'+element+'.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_mean_Xtransport_'+element+'.png')

@@ -96,7 +96,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [plt1,plt2]		
+        to_plot = [plt1]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 			
         # plot DATA 

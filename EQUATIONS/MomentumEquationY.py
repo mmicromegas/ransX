@@ -33,6 +33,8 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
         dduzuz = np.asarray(eht.item().get('dduzuz')[intc])		
         dduzuzcoty = np.asarray(eht.item().get('dduzuzcoty')[intc])
+
+        gradypp = np.asarray(eht.item().get('gradypp')[intc])
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -60,13 +62,13 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         # RHS -G
         self.minus_G = -(dduxuy - dduzuzcoty)/xzn0
 		
-        # RHS -1/r gradx_pp		
-        self.minus_1or_gradx_pp = -(1./xzn0)*self.Grad(pp,xzn0) 
+        # RHS -1/r grady_pp		
+        self.minus_1_o_grady_pp = -(1./xzn0)*gradypp 
 		
         # -res
         self.minus_resResYmomentumEquation = \
           -(self.minus_dt_dduy + self.minus_div_eht_dd_fht_ux_fht_uy + self.minus_div_ryx \
-            + self.minus_G + self.minus_1or_gradx_pp)
+            + self.minus_G + self.minus_1_o_grady_pp)
 		
         #########################
         # END Y MOMENTUM EQUATION 
@@ -127,7 +129,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
 		
         rhs0 = self.minus_div_ryx 
         rhs1 = self.minus_G
-        rhs2 = self.minus_1or_gradx_pp
+        rhs2 = self.minus_1_o_grady_pp
 		
         res = self.minus_resResYmomentumEquation
 				
@@ -147,7 +149,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\theta ) $")		
         plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\theta r})$")
         plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\theta}$")
-        plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \partial_r \overline{P}$")		
+        plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \overline{\partial_\theta P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS

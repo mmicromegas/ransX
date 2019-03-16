@@ -191,13 +191,13 @@ class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
 		
         res = self.minus_resRxxEquation
 		
-        rhs6 = self.minus_onethrd_kolmrate*self.dd		
+        #rhs6 = self.minus_onethrd_kolmrate*self.dd		
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
 		
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 		
         # format AXIS, make sure it is exponential
@@ -214,7 +214,7 @@ class ReynoldsStressXXequation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs3,color='m',label = r"$-\nabla_r 2 f_P$")
         plt.plot(grd1,rhs4,color='b',label = r"$-\widetilde{R}_{rr}\partial_r \widetilde{u_r}$")		
         plt.plot(grd1,rhs5,color='y',label=r"$2 \mathcal{G}_k^r$")
-        plt.plot(grd1,rhs6,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")		
+        #plt.plot(grd1,rhs6,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{Rrr}$")
  
         # define and show x/y LABELS
