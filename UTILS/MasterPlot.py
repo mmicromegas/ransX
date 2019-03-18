@@ -766,11 +766,11 @@ class MasterPlot():
                                      params.getForProp('prop')['prefix'])
   
         ransSS.plot_ss_equation(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('eieq')['xbl'],\
-                                params.getForEqs('eieq')['xbr'],\
-                                params.getForEqs('eieq')['ybu'],\
-                                params.getForEqs('eieq')['ybd'],\
-                                params.getForEqs('eieq')['ilg'])
+                                params.getForEqs('sseq')['xbl'],\
+                                params.getForEqs('sseq')['xbr'],\
+                                params.getForEqs('sseq')['ybu'],\
+                                params.getForEqs('sseq')['ybd'],\
+                                params.getForEqs('sseq')['ilg'])
 	
     def execSSflx(self):
 						  

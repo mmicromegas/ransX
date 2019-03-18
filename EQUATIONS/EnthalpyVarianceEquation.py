@@ -134,7 +134,7 @@ class EnthalpyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title(r'ENTHALPY variance')
+        plt.title(r'enthalpy variance')
         plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{\sigma}_{h}$')
 
         # define and show x/y LABELS

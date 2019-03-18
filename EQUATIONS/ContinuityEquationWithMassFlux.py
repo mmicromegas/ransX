@@ -155,7 +155,7 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq.eps')
 
     def plot_continuity_equation_bar(self,laxis,xbl,xbr,ybu,ybd):
         """Plot continuity equation in the model""" 
