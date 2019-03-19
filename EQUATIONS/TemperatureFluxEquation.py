@@ -236,20 +236,20 @@ class TemperatureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs3,rhs2+rhs4,rhs5,rhs6,rhs7,rhs8,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs3,rhs2,rhs4,rhs5,rhs6,rhs7,rhs8,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 		
         # plot DATA 
-        plt.title('temperature flux equation - work in progress')
+        plt.title('temperature flux equation')
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t f_T$")
         plt.plot(grd1,lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r f_T$)")	
 		
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_T^r $")     
         plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_T \partial_r \widetilde{u}_r$") 
-        #plt.plot(grd1,rhs2,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}$") 
+        plt.plot(grd1,rhs2,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}$") 
         plt.plot(grd1,rhs3,color='firebrick',label = r"$-\overline{T'\partial_r P / \rho}$") 
-        #plt.plot(grd1,rhs4,color='c',label = r"$-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
-        plt.plot(grd1,rhs2+rhs4,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$") 		
+        plt.plot(grd1,rhs4,color='c',label = r"$-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
+        #plt.plot(grd1,rhs2+rhs4,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$") 		
         plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$-(\Gamma_3 -1)\widetilde{d} f_T$")
         plt.plot(grd1,rhs6,color='b',label = r"$+\Gamma_3 \overline{u'_r T' d''}$")
         plt.plot(grd1,rhs7,color='g',label = r"$+\overline{u'_r \varepsilon_{nuc} / c_v }$")		
