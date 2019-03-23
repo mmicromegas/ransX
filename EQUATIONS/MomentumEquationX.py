@@ -19,8 +19,10 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         eht = np.load(filename)		
 
         # load grid
+        nx   = np.asarray(eht.item().get('nx'))
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
+		
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 		
@@ -28,7 +30,8 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         ux = np.asarray(eht.item().get('ux')[intc])	
         pp = np.asarray(eht.item().get('pp')[intc])
         gg = np.asarray(eht.item().get('gg')[intc])
-		
+
+        #ddgg = np.asarray(eht.item().get('ddgg')[intc])			
         ddux = np.asarray(eht.item().get('ddux')[intc])		
 
         dduxux = np.asarray(eht.item().get('dduxux')[intc])
@@ -62,7 +65,13 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         # RHS -(grad P - rho g)
         self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg   		
-		
+        #self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) + ddgg 	
+        
+        #for i in range(nx):
+        #    print(2.*ddgg[i],dd[i]*gg[i])		
+	
+	
+	
         # -res
         self.minus_resResXmomentumEquation = \
           -(self.minus_dt_ddux + self.minus_div_eht_dd_fht_ux_fht_ux + self.minus_div_rxx \

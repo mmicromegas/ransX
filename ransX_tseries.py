@@ -43,7 +43,8 @@ for filename in ransdat:
     rans_tstart, rans_tend, rans_tavg = ts.rans_header()
     time.append(rans_tend)
     dt.append(rans_tavg)
-
+    #print(rans_tend,rans_tavg)
+	
 # convert to array
 
 time = np.asarray(time)
@@ -186,11 +187,12 @@ np.save(dataout+'.npy',eht)
 	
 #print(ts.ransl)
 
-#fld = 'enuc1'
+#fld = 'ux'
 #a = eht[fld]
-#intc = ntc - 1
+##intc = ntc - 1
+#intc = 11
 #b = a[:][intc]
-#xx = eht['rr']
+#xx = eht['xzn0']
 
 #print(b)
 
@@ -198,8 +200,10 @@ np.save(dataout+'.npy',eht)
 
 #for i in range(nt):
 #    filename = ransdat[i]
-#    ts = pt.PROMPI_ransdat(filename)
+#    ts = pt.PROMPI_ransdat(filename,'little_endian','double')
 #    plt.plot(xx,ts.rans()[fld])
 
 #ax1.plot(xx,b,color='k')
+
+#plt.show()
 

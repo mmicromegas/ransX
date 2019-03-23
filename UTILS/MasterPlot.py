@@ -167,6 +167,14 @@ class MasterPlot():
                                              params.getForEqs('cteqhsse')['ybd'],\
                                              params.getForEqs('cteqhsse')['ilg'])
 
+        # plot continuity equation						       
+        ranshssecont.plot_continuity_equation_2(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('cteqhsse')['xbl'],\
+                                             params.getForEqs('cteqhsse')['xbr'],\
+                                             params.getForEqs('cteqhsse')['ybu'],\
+                                             params.getForEqs('cteqhsse')['ybd'],\
+                                             params.getForEqs('cteqhsse')['ilg'])											 
+											 
     def execHssMomxEq(self):
 						  
         params = self.params						  

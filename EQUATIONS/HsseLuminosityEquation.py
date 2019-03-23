@@ -66,7 +66,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         t_timec   = np.asarray(eht.item().get('timec')) 
         t_dd      = np.asarray(eht.item().get('dd'))
         t_tt      = np.asarray(eht.item().get('tt'))
-        t_pp      = np.asarray(eht.item().get('pp'))		
+        t_pp      = np.asarray(eht.item().get('pp'))			
 		
         t_ddei    = np.asarray(eht.item().get('ddei')) 		
 		
@@ -92,10 +92,14 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         t_fht_ui_fht_ui = t_fht_ux*t_fht_ux+t_fht_uy*t_fht_uy+t_fht_uz*t_fht_uz 		
 		
+        #t_mm    = np.asarray(eht.item().get('mm')) 		
+        #minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)			
+        #fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)		
+		
         # construct equation-specific mean fields			
         #fht_ek = 0.5*(dduxux + dduyuy + dduzuz)/dd	
         fht_ek = ddek/dd		
-        fht_ux = ddux/dd
+        fht_ux = ddux/dd			
         fht_uy = dduy/dd
         fht_uz = dduz/dd		
         fht_ei = ddei/dd
@@ -123,9 +127,6 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 	  
         # RHS +4 pi r^2 dd fht_enuc
         self.plus_four_pi_rsq_dd_fht_enuc = +sps*dd*fht_enuc		
-	  	 
-        # RHS +4 pi r^2 dd tke_diss
-        self.plus_four_pi_rsq_dd_tke_diss = -sps*tke_diss
 
         # RHS -4 pi r^2 div fei
         self.minus_four_pi_rsq_div_fei = -sps*self.Div(fei,xzn0)		
@@ -179,7 +180,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # -res		
         self.minus_resLumEquation = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+\
-         self.plus_four_pi_rsq_dd_tke_diss+self.minus_four_pi_rsq_div_fei+self.minus_four_pi_rsq_div_fth+\
+         self.minus_four_pi_rsq_div_fei+self.minus_four_pi_rsq_div_fth+\
          self.minus_four_pi_rsq_div_fekx+self.minus_four_pi_rsq_div_fpx+self.minus_four_pi_rsq_pp_div_ux+\
          self.minus_four_pi_rsq_r_grad_u+self.plus_four_pi_rsq_wb+\
          self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two+self.minus_four_pi_rsq_dd_dt_et+\
@@ -200,7 +201,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_four_pi_rsq_delta_dt_pp = -sps*delta*self.dt(t_pp,xzn0,t_timec,intc)		
 		
         self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+\
-         self.plus_four_pi_rsq_dd_tke_diss+self.minus_four_pi_rsq_dd_cp_dt_tt+\
+         self.minus_four_pi_rsq_dd_cp_dt_tt+\
          self.minus_four_pi_rsq_delta_dt_pp)		 
 		
         ###################################
@@ -260,7 +261,6 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_gradx_fht_lum
 		
         rhs0 = self.plus_four_pi_rsq_dd_fht_enuc
-        rhs1 = self.plus_four_pi_rsq_dd_tke_diss
         rhs2 = self.minus_four_pi_rsq_div_fei
         rhs3 = self.minus_four_pi_rsq_div_fth
         rhs4 = self.minus_four_pi_rsq_div_fekx
@@ -281,7 +281,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,rhs9,rhs10,rhs11,res]		
+        to_plot = [lhs0,rhs0,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,rhs9,rhs10,rhs11,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
@@ -289,7 +289,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
  
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
-        plt.plot(grd1,rhs1,color='y',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
+        #plt.plot(grd1,rhs1,color='y',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
         plt.plot(grd1,rhs2,color='g',label = r"$-4 \pi r^2 \nabla_r f_I$") 		
         plt.plot(grd1,rhs3,color='gray',label = r"$-4 \pi r^2 \nabla_r f_{th}$ (not incl.)")
         plt.plot(grd1,rhs4,color='#802A2A',label = r"$-4 \pi r^2  \nabla_r f_{K}$") 		
@@ -327,7 +327,6 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_gradx_fht_lum
 		
         rhs0 = self.plus_four_pi_rsq_dd_fht_enuc
-        rhs1 = self.plus_four_pi_rsq_dd_tke_diss
         rhs2 = self.minus_four_pi_rsq_dd_cp_dt_tt
         rhs3 = self.minus_four_pi_rsq_delta_dt_pp
 		
@@ -340,7 +339,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0,rhs0,rhs1,rhs2,rhs3,res]		
+        to_plot = [lhs0,rhs0,rhs2,rhs3,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
@@ -348,7 +347,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
  
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
-        plt.plot(grd1,rhs1,color='b',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
+        #plt.plot(grd1,rhs1,color='b',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
         plt.plot(grd1,rhs2,color='r',label=r"$-4 \pi r^2 \overline{\rho} c_P \partial_t \overline{T}$")
         plt.plot(grd1,rhs3,color='g',label=r"$-4 \pi r^2 \delta \partial_t \overline{P}$")	
 	

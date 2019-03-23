@@ -19,6 +19,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         eht = np.load(filename)		
 
         # load grid
+        nx = np.asarray(eht.item().get('nx'))
         xzn0 = np.asarray(eht.item().get('xzn0')) 	
         xznl = np.asarray(eht.item().get('xznl')) 
         xznr = np.asarray(eht.item().get('xznr')) 
@@ -31,13 +32,23 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         ux    = np.asarray(eht.item().get('ux')[intc])			
         ddux  = np.asarray(eht.item().get('ddux')[intc])		
 		
+        dduxux    = np.asarray(eht.item().get('dduxux')[intc])
+        uxdivu    = np.asarray(eht.item().get('uxdivu')[intc])
+        divu    = np.asarray(eht.item().get('divu')[intc])
+		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 	
-				
+	
+        #t_mm    = np.asarray(eht.item().get('mm')) 		
+        #minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
+        #fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)	
+	
         # construct equation-specific mean fields
-        fht_ux = ddux/dd		
-        fdd = ddux-dd*ux	
+        fht_ux = ddux/dd			
+        fdd = ddux-dd*ux
+        fht_rxx = dduxux - ddux*ddux/dd
+        fdil = (uxdivu - ux*divu) 		
 	
         #####################
         # CONTINUITY EQUATION 
@@ -72,6 +83,21 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         #########################	
         # END CONTINUITY EQUATION
         #########################
+		
+        #################################
+        # ALTERNATIVE CONTINUITY EQUATION 
+        #################################		
+		
+        # RHS -4 pi r^2 dd
+        self.minus_four_pi_rsq_dd = -4.*np.pi*(xzn0**2.)*dd		
+        #self.minus_four_pi_rsq_dd = np.zeros(nx)		
+		
+		
+        # RHS +mm_dd_eht_fdil/fht_rxx  		
+        self.plus_mm_dd_fdil_o_fht_rxx = +(4./3)*np.pi*(xzn0**3.)*dd*dd*fdil/fht_rxx		
+		
+        # -res		
+        self.minus_resContEquation2 = -(self.minus_gradx_mm+self.minus_four_pi_rsq_dd+self.plus_mm_dd_fdil_o_fht_rxx)		
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -168,3 +194,51 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq.png')
+		
+		
+    def plot_continuity_equation_2(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot continuity equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_gradx_mm
+		
+        rhs0 = self.minus_four_pi_rsq_dd		
+        rhs1 = self.plus_mm_dd_fdil_o_fht_rxx
+		
+		
+        res = self.minus_resContEquation2
+		
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,rhs0,rhs1,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('hsse continuity equation version 2')
+        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{M})$')
+        plt.plot(grd1,rhs0,color='r',label = r"$-4 \pi r^2 \overline{\rho}$")
+        plt.plot(grd1,rhs1,color='b',label = r"$+\overline{M} \overline{\rho} \overline{u'r d''} / \widetilde{R}_{rr}$")		
+        plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")		
+		
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"g cm$^{-1}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':9})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_2.png')		
+		

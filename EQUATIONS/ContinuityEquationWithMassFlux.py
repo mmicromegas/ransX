@@ -32,8 +32,12 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 	
 				
+        #t_mm    = np.asarray(eht.item().get('mm')) 		
+        #minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)						
+        #fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)				
+				
         # construct equation-specific mean fields
-        fht_ux = ddux/dd		
+        fht_ux = ddux/dd			
         fdd = ddux-dd*ux	
 	
         #####################
