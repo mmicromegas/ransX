@@ -69,7 +69,7 @@ import EQUATIONS.HsseTemperatureEquation as hssetemp
 import EQUATIONS.HsseLuminosityEquation as hsselumi
 import EQUATIONS.HsseXtransportEquation as hssecomp
 
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt 
 
 class MasterPlot():
 
