@@ -70,6 +70,7 @@ import EQUATIONS.HsseLuminosityEquation as hsselumi
 import EQUATIONS.HsseXtransportEquation as hssecomp
 
 import ReadParams as params
+import matplotlib.pyplot as plt
 
 class MasterPlot():
 
@@ -167,13 +168,22 @@ class MasterPlot():
                                              params.getForEqs('cteqhsse')['ybd'],\
                                              params.getForEqs('cteqhsse')['ilg'])
 
-        # plot continuity equation						       
+        # plot continuity equation alternative						       
         ranshssecont.plot_continuity_equation_2(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('cteqhsse')['xbl'],\
                                              params.getForEqs('cteqhsse')['xbr'],\
                                              params.getForEqs('cteqhsse')['ybu'],\
                                              params.getForEqs('cteqhsse')['ybd'],\
                                              params.getForEqs('cteqhsse')['ilg'])											 
+
+        # plot continuity equation alternative simplified						       
+        ranshssecont.plot_continuity_equation_3(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('cteqhsse')['xbl'],\
+                                             params.getForEqs('cteqhsse')['xbr'],\
+                                             params.getForEqs('cteqhsse')['ybu'],\
+                                             params.getForEqs('cteqhsse')['ybd'],\
+                                             params.getForEqs('cteqhsse')['ilg'])
+
 											 
     def execHssMomxEq(self):
 						  
@@ -193,6 +203,22 @@ class MasterPlot():
                                               params.getForEqs('mxeqhsse')['ybd'],\
                                               params.getForEqs('mxeqhsse')['ilg'])
 											 
+        # plot hsse momentm equation alternative						       
+        ranshssemomx.plot_momentum_equation_x_2(params.getForProp('prop')['laxis'],\
+                                              params.getForEqs('mxeqhsse')['xbl'],\
+                                              params.getForEqs('mxeqhsse')['xbr'],\
+                                              params.getForEqs('mxeqhsse')['ybu'],\
+                                              params.getForEqs('mxeqhsse')['ybd'],\
+                                              params.getForEqs('mxeqhsse')['ilg'])
+
+        # plot hsse momentm equation alternative simplified						       
+        ranshssemomx.plot_momentum_equation_x_3(params.getForProp('prop')['laxis'],\
+                                              params.getForEqs('mxeqhsse')['xbl'],\
+                                              params.getForEqs('mxeqhsse')['xbr'],\
+                                              params.getForEqs('mxeqhsse')['ybu'],\
+                                              params.getForEqs('mxeqhsse')['ybd'],\
+                                              params.getForEqs('mxeqhsse')['ilg'])											  
+											  
 											 
     def execHssTempEq(self,tke_diss):
 						  
@@ -207,6 +233,22 @@ class MasterPlot():
 
         # plot hsse temperature equation						       
         ranshssetemp.plot_tt_equation(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('tpeqhsse')['xbl'],\
+                                             params.getForEqs('tpeqhsse')['xbr'],\
+                                             params.getForEqs('tpeqhsse')['ybu'],\
+                                             params.getForEqs('tpeqhsse')['ybd'],\
+                                             params.getForEqs('tpeqhsse')['ilg'])
+
+        # plot hsse temperature equation alternative						       
+        ranshssetemp.plot_tt_equation_2(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('tpeqhsse')['xbl'],\
+                                             params.getForEqs('tpeqhsse')['xbr'],\
+                                             params.getForEqs('tpeqhsse')['ybu'],\
+                                             params.getForEqs('tpeqhsse')['ybd'],\
+                                             params.getForEqs('tpeqhsse')['ilg'])
+
+        # plot hsse temperature equation alternative simplified						       
+        ranshssetemp.plot_tt_equation_3(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('tpeqhsse')['xbl'],\
                                              params.getForEqs('tpeqhsse')['xbr'],\
                                              params.getForEqs('tpeqhsse')['ybu'],\
@@ -239,6 +281,23 @@ class MasterPlot():
                                              params.getForEqs('lueqhsse')['ybu'],\
                                              params.getForEqs('lueqhsse')['ybd'],\
                                              params.getForEqs('lueqhsse')['ilg'])
+
+        # plot hsse temperature equation alternative						       
+        ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('lueqhsse')['xbl'],\
+                                             params.getForEqs('lueqhsse')['xbr'],\
+                                             params.getForEqs('lueqhsse')['ybu'],\
+                                             params.getForEqs('lueqhsse')['ybd'],\
+                                             params.getForEqs('lueqhsse')['ilg'])	
+
+        # plot hsse temperature equation alternative simplified						       
+        ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('lueqhsse')['xbl'],\
+                                             params.getForEqs('lueqhsse')['xbr'],\
+                                             params.getForEqs('lueqhsse')['ybu'],\
+                                             params.getForEqs('lueqhsse')['ybd'],\
+                                             params.getForEqs('lueqhsse')['ilg'])
+
 											 
     def execHssCompEq(self):
 						  
@@ -1776,5 +1835,21 @@ class MasterPlot():
                                 params.getForEqs('hheq')['ybd'],\
                                 params.getForEqs('hheq')['ilg'])			  
 				
+				
+    def SetMatplotlibParams(self):
+        """ This routine sets some standard values for matplotlib """ 
+        """ to obtain publication-quality figures """
+
+        # plt.rc('text',usetex=True)
+        # plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+        plt.rc('font',**{'family':'serif','serif':['Times New Roman']})
+        plt.rc('font',size=14.)
+        plt.rc('lines',linewidth=2,markeredgewidth=2.,markersize=10)
+        plt.rc('axes',linewidth=1.5)
+        plt.rcParams['xtick.major.size']=8.
+        plt.rcParams['xtick.minor.size']=4.
+        plt.rcParams['figure.subplot.bottom']=0.15
+        plt.rcParams['figure.subplot.left']=0.17		
+        plt.rcParams['figure.subplot.right']=0.85				
 				
 				

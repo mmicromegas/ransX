@@ -21,6 +21,9 @@ properties = ransP.execute()
 # instantiate master plot 								 
 plt = plot.MasterPlot(params)								 
 
+# obtain publication quality figures
+plt.SetMatplotlibParams()
+
 # define useful functions
 def str2bool(param):
     # True/False strings to proper boolean

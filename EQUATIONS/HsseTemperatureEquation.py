@@ -29,13 +29,18 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         ux     = np.asarray(eht.item().get('ux')[intc])	
         tt     = np.asarray(eht.item().get('tt')[intc])
         cv     = np.asarray(eht.item().get('cv')[intc])
+        gg     = np.asarray(eht.item().get('gg')[intc])
+        pp     = np.asarray(eht.item().get('pp')[intc])
 		
         ddux = np.asarray(eht.item().get('ddux')[intc])		
         ttux = np.asarray(eht.item().get('ttux')[intc])
+
+        dduxux = np.asarray(eht.item().get('dduxux')[intc])	
 		
         divu   = np.asarray(eht.item().get('divu')[intc])		
         ttdivu = np.asarray(eht.item().get('ttdivu')[intc])
-
+        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
+		
         enuc1_o_cv = np.asarray(eht.item().get('enuc1_o_cv')[intc])		
         enuc2_o_cv = np.asarray(eht.item().get('enuc2_o_cv')[intc])
 		
@@ -48,11 +53,16 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         #t_mm    = np.asarray(eht.item().get('mm')) 		
         #minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)		
-        #fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)		
+        #fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)			
 		
         # construct equation-specific mean fields		
         fht_ux = ddux/dd		
         ftt    = ttux - tt*ux
+
+        fht_rxx = dduxux - ddux*ddux/dd
+        fdil = (uxdivu - ux*divu) 	
+		
+        gg = -gg		
 		
         ##########################
         # HSS TEMPERATURE EQUATION 
@@ -91,6 +101,31 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         ##########################
         # END TEMPERATURE EQUATION 
         ##########################			
+		
+        #################################
+        # ALTERNATIVE CONTINUITY EQUATION 
+        #################################		
+
+        self.minus_gamma3_minus_one_tt_dd_fdil_o_fht_rxx = -(gamma3-1.)*tt*dd*fdil/fht_rxx
+		
+        self.minus_resHSSTTequation2 = -(self.minus_gradx_tt+self.minus_gamma3_minus_one_tt_dd_fdil_o_fht_rxx)		
+		
+        #####################################
+        # END ALTERNATIVE CONTINUITY EQUATION 
+        #####################################		
+		
+        ############################################
+        # ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
+        ############################################		
+
+        self.minus_gamma3_minus_one_dd_tt_gg_o_gamma1_pp = -(gamma3-1.)*dd*tt*gg/(gamma1*pp)
+		
+        self.minus_resHSSTTequation3 = -(self.minus_gradx_tt+self.minus_gamma3_minus_one_dd_tt_gg_o_gamma1_pp)		
+		
+        ################################################
+        # END ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
+        ################################################			
+		
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -192,5 +227,92 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'hsse_temperature_eq.png')		
 		
+    def plot_tt_equation_2(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot temperature equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_gradx_tt
+
+        rhs0 = self.minus_gamma3_minus_one_tt_dd_fdil_o_fht_rxx
+
+        res = self.minus_resHSSTTequation2
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,rhs0,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('alternative hsse temperature equation')
+        plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
+        plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
+		
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+ 
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"K cm$^{-1}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_temperature_eq_alternative.png')	
+		
+    def plot_tt_equation_3(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot temperature equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_gradx_tt
+
+        rhs0 = self.minus_gamma3_minus_one_dd_tt_gg_o_gamma1_pp
+
+        res = self.minus_resHSSTTequation3
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,rhs0,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('alternative hsse temperature equation simp')
+        plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
+        plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{g}_r / \Gamma_1 \overline{P}$")
+		
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+ 
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"K cm$^{-1}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_temperature_eq_alternative_simplified.png')			
 		
 		
