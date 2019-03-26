@@ -1,1 +1,1 @@
-# rans(eXtreme) Analysis framework for compressible hydrodynamic simulations.
+# rans(eXtreme) Analysis framework for compressible multi-fluid hydrodynamic simulations.
