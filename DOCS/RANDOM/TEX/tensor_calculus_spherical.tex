@@ -1,0 +1,442 @@
+\title{Tensor calculus in spherical geometry}
+\author{
+        Miroslav Moc\'ak \\
+               Los Alamos National Laboratory           
+}
+\date{\today}
+
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage[textwidth=19cm,textheight=24cm]{geometry}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\newcommand{\eht}{\overline}    
+\newcommand{\fht}{\widetilde}    
+\newcommand{\dr}{\frac{\partial}{\partial r}}
+\newcommand{\dt}{\frac{\partial}{\partial t}}
+\newcommand{\dth}{\frac{\partial}{\partial \theta}}
+\newcommand{\dph}{\frac{\partial}{\partial \phi}}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+{\bf{BACKGROUND READING:}} \\
+
+\vspace{0.3cm}
+
+\noindent
+CONTINUUM MECHANICS (Lecture Notes) \\
+Zdenek Martinec \\
+Department of Geophysics \\
+Faculty of Mathematics and Physics Charles University in Prague \\
+V Holesovickach 2, 180 00 Prague 8 Czech Republic \\
+e-mail: zm at karel.troja.mff.cuni.cz \\
+
+\section{Geometry and scale factors}
+
+\begin{align}
+& x_1 = r & & x_2 = \theta & & x_3 = \phi & & \mbox{(coordinates)} \\
+& {\bf{e_1 = e_r}} & &  {\bf{e_2 = e_\theta}} & & {\bf{e_3 = e_\phi}} && \mbox{(unit base vectors)} \\
+& h_1 = h_r = 1 & &  h_2 = h_\theta = r & & h_3 = h_\phi = r \sin{\theta} & & \mbox{(scale factors)}
+\end{align}
+
+\section{Christoffel symbols}
+
+\begin{align}
+\begin{pmatrix}
+\Gamma_{r\theta}^\theta = \ 1  &  \Gamma_{r\phi}^\phi = \ \sin{\theta} & \Gamma_{\theta \phi}^{\phi} = \ \cos{\theta}   \\
+\Gamma_{\theta \theta}^r = -1   &  \Gamma_{\phi \phi}^r = -\sin{\theta}  & \Gamma_{\phi \phi}^{\theta} = -\cos{\theta}  
+\end{pmatrix}
+\end{align}
+
+%\section{grad $\alpha$ := ${\bf{\nabla}} \alpha$ where $\alpha = \alpha (r,\theta,\phi)$ is a scalar}
+
+%\begin{equation}
+%{\bf{\nabla}} \phi = \frac{\partial \phi}{\partial \xi^i}\bf{g^i}
+%\end{equation}
+
+%\begin{align}
+%\nabla \alpha = & \ \frac{1}{h_1}\frac{\partial \alpha}{\partial x_1} {\bf{e_1}} +  \frac{1}{h_2}\frac{\partial \alpha}{\partial x_2} {\bf{e_2}} +  \frac{1}{h_3}\frac{\partial \alpha}{\partial x_3} {\bf{e_3}} \\
+%\nabla \alpha = & \  \frac{\partial \alpha}{\partial r} {\bf{e_r}} +  \frac{1}{r}\frac{\partial \alpha}{\partial u_\theta} {\bf{e_\theta}} +  \frac{1}{r\sin{\theta}}\frac{\partial \alpha}{\partial u_\phi} {\bf{e_\phi}} 
+%\end{align}
+
+\section{div {\bf{V}}:= ${\bf{\nabla} . V}$ where ${\bf{V}} = \sum_i V_i {\bf{{e_i}}}$ is a vector}
+
+%\begin{equation}
+%{\bf{\nabla v}} = \left( \frac{\partial v_i}{\partial \xi^i} - v_k \Gamma^k_{ii} \right)
+%\end{equation}
+
+\begin{align}
+{\bf{\nabla} . V} = & \ \frac{1}{r^2} \frac{\partial (r^2 V_r) }{\partial_r} + \frac{1}{r \sin{\theta}}\frac{\partial}{\partial \theta}(V_\theta \sin{\theta}) + \frac{1}{r \sin{\theta}} \frac{\partial V_\phi}{\partial \phi}
+\end{align}
+
+%{\bf{\nabla} . V} = & \ \frac{1}{h_1 h_2 h_3} \left[\frac{\partial}{\partial x_1} (h_2 h_3 V_1)  + \frac{\partial}{\partial x_2} (h_3 h_1 V_2) + \frac{\partial}{\partial x_3} (h_1 h_2 V_3) \right] \\
+
+\section{div {\bf{S}}:= $\nabla .$ {\bf{S}} where {\bf{S}} = $\sum_{ij} S_{ij} ({\bf{e_i}} \otimes {\bf{e_i}})$ is second order tensor}
+
+
+%\begin{align}
+%(\nabla . {\bf{S}})_l = & \ \frac{1}{h_1 h_2 h_3} \left[\frac{\partial}{\partial x_1} (h_2 h_3 S_{1l})  + \frac{\partial}{\partial x_2} (h_3 h_1 S_{2l}) + \frac{\partial}{\partial x_3} (h_1 h_2 S_{3l}) \right] + \sum_{k} \frac{1}{h_k h_l} \left( \frac{\partial h_l}{\partial x_k} S_{lk} - \frac{\partial h_k}{\partial x_l} S_{kk} \right)
+%\end{align}
+
+%\begin{equation}
+%{\bf{\nabla S}} = \left( \frac{\partial S_{ik}}{\partial \xi^i} - S_{lk}\Gamma^l_{ii} - S_{il}\Gamma^l_{ik} \right){\bf{g^k}}
+%\end{equation}
+
+\begin{align}
+S_r ({\bf{e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{rr}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi r}}{\partial \phi} - \frac{S_{\theta\theta}}{r} - \frac{S_{\phi\phi}}{r} \\
+S_\theta ({\bf{e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{r \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta\theta}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi \theta}}{\partial \phi} + \frac{S_{\theta r}}{r} - \frac{S_{\phi\phi} \cos{\theta}}{r\sin{\theta}} \\
+S_\phi ({\bf{e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{r \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi\phi}}{\partial \phi} + \frac{S_{\phi r}}{r} + \frac{S_{\phi \theta} \cos{\theta}}{r\sin{\theta}}
+\end{align}
+
+
+\section{div {\bf{T}} := $\nabla .$ {\bf{T}} where {\bf{T}} = $\sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}} )$ is third order tensor}
+
+\begin{align}
+T_{r r} : & \\
+T_{r \theta} : & \\
+T_{r \phi} : & \\
+T_{\theta r} : & \\
+T_{\theta \theta} : & \\
+T_{\theta \phi} : & \\
+T_{\phi r} : & \\
+T_{\phi \theta} : & \\
+T_{\phi \phi} : & 
+\end{align}
+
+
+\section{Random notes and details}
+
+\begin{align}
+y_l = & \ (y_1,y_2,y_3) = \ (x,y,z) && \mbox{(cartesian coordinates)} \\
+x_k = & \ (x_1,x_2,x_3) = \ (r,\theta,\phi) && \mbox{(spherical coordinates)}
+\end{align}
+
+\begin{align}
+\vec{p} = \sum_k y_k \vec{i}_k && \mbox{(vector in cartesian coordinates)}
+\end{align}
+
+\subsection{Scale factors}
+
+\begin{align}
+h_k = \sqrt{\frac{\partial \vec{p}}{\partial x_k}.\frac{\partial \vec{p}}{\partial x_k}}
+\end{align}
+
+\noindent
+Scale factors are introduced to satisfy orthonormality condition for directional cosines.
+
+\subsection{Christoffel symbols}
+
+\begin{align}
+\Gamma_{kl}^m = \frac{1}{h_k} \frac{\partial h_l}{\partial x_k} \delta_{lm} - \frac{1}{h_m}\frac{\partial h_k}{\partial x_m} \delta_{kl}
+\end{align}
+
+\noindent
+Unit base vectors $\vec{e_k}$ are function of position and vary in direction as the curvilinear coordinates vary. Hence:
+
+\begin{align}
+\frac{\partial \vec{e_k}}{\partial y_l} = \sum_{m=1}^3 \Gamma_{kl}^m \ \vec{e_m}
+\end{align}
+
+\subsection{Dyadic product}
+
+\begin{align}
+{\bf{a}} = & (a_1,a_2,a_3) \\
+{\bf{b}} = & (b_1,b_2,b_3)
+\end{align}
+
+\begin{align}
+{\bf{a}} \otimes {\bf{b}} = 
+       \begin{pmatrix}
+ a_1 b_1 & a_1 b_2 & a_1 b_3 \\
+ a_2 b_1 & a_2 b_2 & a_2 b_3 \\
+ a_3 b_1 & a_3 b_2 & a_3 b_3 
+       \end{pmatrix}
+\end{align}
+
+\subsection{Definition of a vector {\bf{V}}}
+
+\begin{align}
+{\bf{V}} = \sum_k V_k {\bf{{e_k}}}
+\end{align}
+
+\subsection{Derivatives of a vector {\bf{V}}}
+
+\begin{align}
+V_{k;l} = \frac{\partial V_k}{\partial x_l} + \sum_m \Gamma_{ml}^k V_m
+\end{align}
+
+\[ \left( \begin{array}{cclcc}
+          & & dr & d\theta & d\phi\\
+          & &      &           &       \\
+dV_r    & & \dfrac{\partial V_r}{\partial r} & \left(\dfrac{\partial V_r}{\partial \theta} - V_\theta \right)\dfrac{1}{r} & \left( \dfrac{1}{\sin{\theta}}\dfrac{\partial V_r}{\partial \phi} - V_\phi \right)\dfrac{1}{r}\\
+dV_\theta & & \dfrac{\partial V_\theta}{\partial r}  & \left(\dfrac{\partial V_\theta}{\partial \theta} + V_r \right)\dfrac{1}{r}  & \left(\dfrac{1}{\sin{\theta}} \dfrac{\partial V_\theta}{\partial \phi} - \dfrac{V_\phi}{\tan{\theta}} \right)\dfrac{1}{r}\\
+dV_\phi  & & \dfrac{\partial V_\phi}{\partial r} & \dfrac{\partial V_\phi}{\partial \theta}\dfrac{1}{r} & \left( \dfrac{\partial V_\phi}{\partial \phi} + V_r \sin{\theta} + V_\theta \cos{\theta} \right)\dfrac{1}{r\sin{\theta}}\\
+\end{array} \right)\] 
+
+\subsection{Divergence of a vector  {\bf{V}}}
+
+\begin{align}
+\nabla . {\bf{V}} = \sum_k \frac{{\bf{e_k}}}{h_k}\frac{\partial {\bf{V}}}{\partial x_k} =  \sum_k \frac{{\bf{e_k}}}{\partial h_k} \sum_l V_{l;k} {\bf{e_l}} = \sum_k \frac{V_{k;k}}{h_k} = \sum_k \frac{1}{h_k} \left[ \frac{\partial V_k}{\partial x_k} + \sum_m \Gamma_{mk}^k V_m \right] 
+\end{align}
+
+\subsection{Definition of second order tensor S}
+
+\begin{align}
+{\bf{S}} = \sum_{kl} S_{kl} ({\bf{e_k}} \otimes {\bf{e_l}}) = & \
+\begin{pmatrix}
+ S_{11} &  S_{12} &  S_{13}  \\
+ S_{21} &  S_{22} &  S_{23} \\
+ S_{31} &  S_{32} &  S_{33} 
+\end{pmatrix}
+\end{align}
+
+\begin{align}
+\sum_{kl} S_{kl} ({\bf{e_k}} \otimes {\bf{e_l}}) = & \\
+&  \ S_{11} ({\bf{e_1}} \otimes {\bf{e_1}}) +  S_{12} ({\bf{e_1}} \otimes {\bf{e_2}}) +  S_{13} ({\bf{e_1}} \otimes {\bf{e_3}}) + \\
+ & \  S_{21} ({\bf{e_2}} \otimes {\bf{e_1}}) +  S_{22} ({\bf{e_2}} \otimes {\bf{e_2}}) +  S_{23} ({\bf{e_2}} \otimes {\bf{e_3}}) + \\
+ & \  S_{31} ({\bf{e_3}} \otimes {\bf{e_1}}) +  S_{32} ({\bf{e_3}} \otimes {\bf{e_2}}) +  S_{33} ({\bf{e_3}} \otimes {\bf{e_3}}) 
+\end{align}
+
+
+\begin{align}
+\sum_{kl} S_{kl} ({\bf{e_k}} \otimes {\bf{e_l}}) = & \
+  S_{11}\begin{pmatrix}
+ 1 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +        
+  S_{12}\begin{pmatrix}
+ 0 & 1 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +
+  S_{13}\begin{pmatrix}
+ 0 & 0 & 1 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} + \\
+  & \ S_{21}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 1 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +        
+  S_{22}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 1 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +
+  S_{23}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 1 \\
+ 0 & 0 & 0 
+       \end{pmatrix} + \\
+ & \ S_{31}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 1 & 0 & 0 
+       \end{pmatrix} +        
+  S_{32}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 1 & 0 
+       \end{pmatrix} +
+  S_{33}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 1 
+       \end{pmatrix} 
+\end{align}
+
+
+\begin{align}
+\sum_m \frac{{\bf{e_m}}}{h_m} . \sum_{kl} S_{kl;m} ({\bf{e_k}} \otimes {\bf{e_l}}) = & \ \sum_m \frac{{\bf{e_m}}}{h_m} .
+\begin{pmatrix}
+ S_{11;m} &  S_{12;m} &  S_{13;m}  \\
+ S_{21,m} &  S_{22;m} &  S_{23;m} \\
+ S_{31;m} &  S_{32;m} &  S_{33;m} 
+\end{pmatrix} = 
+\end{align}
+
+\begin{align}
+= \frac{{\bf{e_1}}}{h_1}
+\begin{pmatrix}
+ S_{11;1} &  S_{12;1} &  S_{13;1}  \\
+ S_{21,1} &  S_{22;1} &  S_{23;1} \\
+ S_{31;1} &  S_{32;1} &  S_{33;1} 
+\end{pmatrix} +
+\frac{{\bf{e_2}}}{h_2}
+\begin{pmatrix}
+ S_{11;2} &  S_{12;2} &  S_{13;2}  \\
+ S_{21,2} &  S_{22;2} &  S_{23;2} \\
+ S_{31;2} &  S_{32;2} &  S_{33;2} 
+\end{pmatrix} +
+\frac{{\bf{e_3}}}{h_3}
+\begin{pmatrix}
+ S_{11;3} &  S_{12;3} &  S_{13;3}  \\
+ S_{21,3} &  S_{22;3} &  S_{23;3} \\
+ S_{31;3} &  S_{32;3} &  S_{33;3} 
+\end{pmatrix} =
+\end{align}
+
+\begin{align}
+= \frac{(1 \ 0 \ 0)}{h_1}
+\begin{pmatrix}
+ S_{11;1} &  S_{12;1} &  S_{13;1}  \\
+ S_{21,1} &  S_{22;1} &  S_{23;1} \\
+ S_{31;1} &  S_{32;1} &  S_{33;1} 
+\end{pmatrix} +
+\frac{(0 \ 1 \ 0)}{h_2}
+\begin{pmatrix}
+ S_{11;2} &  S_{12;2} &  S_{13;2}  \\
+ S_{21,2} &  S_{22;2} &  S_{23;2} \\
+ S_{31;2} &  S_{32;2} &  S_{33;2} 
+\end{pmatrix} +
+\frac{(0 \ 0 \ 1)}{h_3}
+\begin{pmatrix}
+ S_{11;3} &  S_{12;3} &  S_{13;3}  \\
+ S_{21,3} &  S_{22;3} &  S_{23;3} \\
+ S_{31;3} &  S_{32;3} &  S_{33;3} 
+\end{pmatrix} = 
+\end{align}
+
+\begin{align}
+= \left( \frac{S_{11;1}}{h_1} \ \frac{S_{12;1}}{h_1} \ \frac{S_{13;1}}{h_1} \right) + \left( \frac{S_{21;2}}{h_2} \ \frac{S_{22;2}}{h_2} \ \frac{S_{23;2}}{h_2} \right) + \left( \frac{S_{31;3}}{h_3} \ \frac{S_{32;1}}{h_3} \ \frac{S_{33;3}}{h_3} \right) = 
+\end{align}
+
+\begin{align}
+= \sum_{kl} \frac{S_{kl;k}}{h_k}{\bf{e_l}}
+\end{align}
+
+\subsection{Derivatives of second order tensor S}
+
+\begin{align}
+\frac{\partial {\bf{S}}}{\partial x_m} = \sum_{kl} T_{kl;m} ({\bf{e_k}} \otimes {\bf{e_l}})
+\end{align}
+
+\begin{align}
+S_{kl;m} = \frac{\partial S_{kl}}{\partial x_m} + \sum_n \Gamma_{nm}^k S_{nl} + \sum_n \Gamma_{nm}^l S_{kn}
+\end{align}
+
+\begin{align}
+S_{kl;k} = \frac{\partial S_{kl}}{\partial x_k} + \sum_m \Gamma_{mk}^k S_{ml} + \sum_m \Gamma_{mk}^l S_{km}
+\end{align}
+
+\subsection{Divergence of second order tensor S}
+
+\begin{align}
+\mbox{div} \ {\bf{S}} = & \nabla . {\bf{S}} = \sum_m \frac{{\bf{e_m}}}{h_m} \frac{{\partial \bf{S}}}{\partial x_m} = \sum_m \frac{{\bf{e_m}}}{h_m} \sum_{kl} S_{kl;m} ({\bf{e_k}} \otimes {\bf{e_l}}) = \sum_{klm} \frac{S_{kl;m}}{h_m} {\bf{e_m}}({\bf{e_k}} \otimes {\bf{e_l}}) = \\
+& = \sum_{klm} \frac{S_{kl;m}}{h_m} ({\bf{e_m}}{\bf{e_k}}) {\bf{e_l}} = \sum_{klm} \frac{S_{kl;m}}{h_m} \delta_{mk} {\bf{e_l}} =  \sum_{kl} \frac{S_{kl;k}}{h_k}{\bf{e_l}} = \\
+= & \sum_{kl} \frac{1}{h_k} \left[ \frac{\partial S_{kl}}{\partial x_k} + \sum_m \Gamma_{mk}^k S_{ml} + \sum_m \Gamma_{mk}^l S_{km} \right] {\bf{e_l}}
+\end{align}
+
+\subsection{Definition of third order tensor T}
+
+\begin{align}
+{\bf{T}} = \sum_{jkl} T_{jkl} ({\bf{e_j}} \otimes {\bf{e_k}} \otimes {\bf{e_l}})
+\end{align}
+
+\subsection{Derivatives of third order tensor T}
+
+\begin{align}
+\frac{\partial {\bf{T}}}{\partial x_m} = \sum_{jkl} T_{jkl;m} ({\bf{e_j}} \otimes {\bf{e_k}} \otimes {\bf{e_l}}) 
+\end{align}
+
+\begin{align}
+T_{jkl;m} = \frac{\partial T_{jkl}}{\partial x_m} + \sum_n \Gamma_{nm}^j T_{nkl} + \sum_n \Gamma_{nm}^k T_{jnl} + \sum_n \Gamma_{nm}^l T_{jkn}
+\end{align}
+
+\begin{align}
+T_{jkl;j} = \frac{\partial T_{jkl}}{\partial x_j} + \sum_n \Gamma_{nj}^j T_{nkl} + \sum_n \Gamma_{nj}^k T_{jnl} + \sum_n \Gamma_{nj}^l T_{jkn}
+\end{align}
+
+\subsection{Divergence of third order tensor T}
+
+%\begin{align}
+%\Gamma_{kl}^m = \frac{1}{h_k} \frac{\partial h_l}{\partial x_k} \delta_{lm} - \frac{1}{h_m}\frac{\partial h_k}{\partial x_m} \delta_{kl}
+%\end{align}
+
+\begin{align}
+\nabla . {\bf{T}} = & \sum_m \frac{{\bf{e_m}}}{h_m} \frac{\partial T}{\partial x_m} = \sum_m \frac{{\bf{e_m}}}{h_m} \sum_{jkl} T_{jkl;m} ({\bf{e_j}} \otimes {\bf{e_k}} \otimes {\bf{e_l}}) = \sum_{jklm} \frac{T_{jkl;m}}{h_m} {\bf{e_m}}({\bf{e_j}} \otimes {\bf{e_k}} \otimes {\bf{e_l}}) = \\
+& = \sum_{jklm} \frac{T_{jkl;m}}{h_m} ({\bf{e_m}}{\bf{e_j}}){\bf{e_k}} \otimes {\bf{e_l}} = \sum_{jkl} \frac{T_{jkl;j}}{h_j} ({\bf{e_k}} \otimes {\bf{e_l}}) = \\ 
+& = \sum_{jkl} \frac{1}{h_j} \left[ \frac{\partial T_{jkl}}{\partial x_j} + \sum_n \Gamma_{nj}^j T_{nkl} + \sum_n \Gamma_{nj}^k T_{jnl} + \sum_n \Gamma_{nj}^l T_{jkn} \right]  ({\bf{e_k}} \otimes {\bf{e_l}})
+\end{align}
+
+% = \\
+%& = \sum_{jkl} \frac{1}{h_j} \left[ \frac{\partial T_{jkl}}{\partial x_j} + \sum_n \left( \frac{1}{h_n}\frac{\partial h_j}{\partial x_n} \right) T_{nkl} \right] ({\bf{e_k}} \otimes {\bf{e_l}}) + \\ 
+%& +  \sum_{jkl} \frac{1}{h_j} \left[ \sum_n \left(\frac{1}{h_n}\frac{\partial h_j}{\partial x_n} \delta_{jk} - \frac{1}{h_k} \frac{\partial h_n}{\partial x_k} \delta_{nj} \right) T_{jnl} \right] ({\bf{e_k}} \otimes {\bf{e_l}}) + \\
+%& + \sum_{jkl} \frac{1}{h_j} \left[ \sum_n \left(\frac{1}{h_n}\frac{\partial h_j}{\partial x_n}\delta_{jl} - \frac{1}{h_l}\frac{\partial h_n}{\partial x_l}\delta_{nj} \right)T_{jkn} \right] ({\bf{e_k}} \otimes {\bf{e_l}}) 
+
+\subsection{Summary (indices changed to i,j,k)}
+
+\begin{align}
+\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n}
+\end{align}
+
+\begin{align}
+{\bf{V}} = &  \sum_i V_i {\bf{{e_i}}} \\
+{\bf{S}} = &  \sum_{ij} S_{ij} ({\bf{e_i}} \otimes {\bf{e_j}}) \\
+{\bf{T}} = &  \sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}})
+\end{align}
+
+\begin{align}
+\nabla . {\bf{V}} = & \sum_i \frac{1}{h_i} \left[ \frac{\partial V_i}{\partial x_i} + \sum_m \Gamma_{mi}^i V_m \right] \\
+\nabla . {\bf{S}} = & \sum_{ij} \frac{1}{h_i} \left[ \frac{\partial S_{ij}}{\partial x_i} + \sum_m \Gamma_{mi}^i S_{mj} + \sum_m \Gamma_{mi}^j S_{im} \right] {\bf{e_j}} \\
+\nabla . {\bf{T}} = & \sum_{ijk} \frac{1}{h_i} \left[ \frac{\partial T_{ijk}}{\partial x_i} + \sum_m \Gamma_{mi}^i T_{mjk} + \sum_m \Gamma_{mi}^j T_{imk} + \sum_m \Gamma_{mi}^k T_{ijm} \right]  ({\bf{e_j}} \otimes {\bf{e_k}})
+\end{align}
+
+
+\begin{align}
+\nabla . {\bf{V}} = & \sum_i \frac{1}{h_i} \left[ \frac{\partial V_i}{\partial x_i} + \sum_m \Gamma_{mi}^i V_m \right] = \\
+ & = \frac{1}{h_r} \left[\frac{\partial V_r}{\partial r} + \sum_m \Gamma_{mr}^r V_m \right] + \frac{1}{h_\theta} \left[\frac{\partial V_\theta}{\partial \theta} + \sum_m \Gamma_{m\theta}^\theta V_m \right] +\frac{1}{h_\phi} \left[\frac{\partial V_\phi}{\partial \phi} + \sum_m \Gamma_{m\phi}^\phi V_m \right] = \\
+& = \frac{1}{h_r} \left[\frac{\partial V_r}{\partial r} + \Gamma_{rr}^r V_r + \Gamma_{\theta r}^r V_\theta + \Gamma_{\phi r}^r V_\phi \right] + \\
+& = \frac{1}{h_\theta} \left[\frac{\partial V_\theta}{\partial \theta} + {\color{red} \Gamma_{r\theta}^\theta V_r} + \Gamma_{\theta \theta}^\theta V_\theta + \Gamma_{\phi \theta}^\theta V_\phi \right] + \\
+& = \frac{1}{h_\phi}  \left[\frac{\partial V_\phi}{\partial \phi} + {\color{red} \Gamma_{r\phi}^\phi V_r} + {\color{red} \Gamma_{\theta \phi}^\phi V_\theta} + \Gamma_{\phi \phi}^\phi V_\phi \right] = \\
+& = \frac{1}{1} \left[\frac{\partial V_r}{\partial r} + 0 + 0 + 0 \right] + \frac{1}{r} \left[\frac{\partial V_\theta}{\partial \theta} + V_r + 0 + 0 \right] + \frac{1}{r \sin{\theta}}  \left[\frac{\partial V_\phi}{\partial \phi} + \sin{\theta} V_r + \cos{\theta} V_\theta + 0 \right] = \\
+& = \left[\frac{\partial V_r}{\partial r} + \frac{2 V_r}{r} \right] + \left[\frac{1}{r}\frac{\partial V_\theta}{\partial \theta} + \frac{\cos{\theta} V_\theta}{r \sin{\theta}} \right] + \frac{1}{r \sin{\theta}} \frac{\partial V_\phi}{\partial \phi} = \\
+& = {\color{blue} \frac{1}{r^2} \frac{\partial (r^2 V_r) }{\partial_r} + \frac{1}{r \sin{\theta}}\frac{\partial}{\partial \theta}(V_\theta \sin{\theta}) + \frac{1}{r \sin{\theta}} \frac{\partial V_\phi}{\partial \phi} }
+\end{align}
+
+\begin{align}
+\nabla . {\bf{S}} & =  \sum_{ij} \frac{1}{h_i} \left[ \frac{\partial S_{ij}}{\partial x_i} + \sum_m \Gamma_{mi}^i S_{mj} + \sum_m \Gamma_{mi}^j S_{im} \right] {\bf{e_j}} \\
+ & = \sum_j \frac{1}{h_r} \left[ \frac{\partial S_{rj}}{\partial r} + \sum_m \Gamma_{mr}^r S_{mj} + \sum_m \Gamma_{mr}^j S_{rm} \right]{\bf{e_j}} + \\
+ & + \sum_j \frac{1}{h_\theta} \left[ \frac{\partial S_{\theta j}}{\partial \theta} + \sum_m \Gamma_{m \theta}^\theta S_{mj} + \sum_m \Gamma_{m \theta}^j S_{\theta m} \right]{\bf{e_j}} + \\
+ & + \sum_j \frac{1}{h_\phi} \left[ \frac{\partial S_{\phi j}}{\partial \phi} + \sum_m \Gamma_{m\phi}^\phi S_{mj} + \sum_m \Gamma_{m \phi}^j S_{\phi m} \right]{\bf{e_j}} = \\
+& = \frac{1}{h_r} \left[ \frac{\partial S_{rr}}{\partial r} + \sum_m \Gamma_{mr}^r S_{mr} + \sum_m \Gamma_{mr}^r S_{rm} \right]{\bf{e_r}} + \\
+& + \frac{1}{h_r} \left[ \frac{\partial S_{r\theta}}{\partial r} + \sum_m \Gamma_{mr}^r S_{m\theta} + \sum_m \Gamma_{mr}^\theta S_{rm} \right]{\bf{e_\theta}} + \\
+& + \frac{1}{h_r} \left[ \frac{\partial S_{r\phi}}{\partial r} + \sum_m \Gamma_{mr}^r S_{m\phi} + \sum_m \Gamma_{mr}^\phi S_{rm} \right]{\bf{e_\phi}} + \\
+& + \frac{1}{h_\theta} \left[ \frac{\partial S_{\theta r}}{\partial \theta} + \sum_m \Gamma_{m\theta}^\theta S_{mr} + \sum_m \Gamma_{m\theta}^r S_{\theta m} \right]{\bf{e_r}} +\\
+& + \frac{1}{h_\theta} \left[ \frac{\partial S_{\theta \theta}}{\partial \theta} + \sum_m \Gamma_{m\theta}^\theta S_{m \theta} + \sum_m \Gamma_{m\theta}^\theta S_{\theta m} \right]{\bf{e_\theta}} + \\
+& + \frac{1}{h_\theta} \left[ \frac{\partial S_{\theta \phi}}{\partial \theta} + \sum_m \Gamma_{m\theta}^\theta S_{m \phi} + \sum_m \Gamma_{m\theta}^\phi S_{\theta m} \right]{\bf{e_\phi}} + 
+\end{align}
+
+\begin{align}
+& + \frac{1}{h_\phi} \left[ \frac{\partial S_{\phi r}}{\partial \phi} + \sum_m \Gamma_{m\phi}^\phi S_{mr} + \sum_m \Gamma_{m\phi}^r S_{\phi m} \right]{\bf{e_r}} + \\
+& + \frac{1}{h_\phi} \left[ \frac{\partial S_{\phi \theta}}{\partial \phi} + \sum_m \Gamma_{m\phi}^\phi S_{m\theta} + \sum_m \Gamma_{m\phi}^\theta S_{\phi m} \right]{\bf{e_\theta}} + \\
+& + \frac{1}{h_\phi} \left[ \frac{\partial S_{\phi \phi}}{\partial \phi} + \sum_m \Gamma_{m\phi}^\phi S_{m\phi} + \sum_m \Gamma_{m\phi}^\phi S_{\phi m} \right]{\bf{e_\phi}} = \\
+& = \frac{1}{h_r} \left\{ \left[ \frac{\partial S_{rr}}{\partial r} + \left(\Gamma_{rr}^r S_{rr} + \Gamma_{\theta r}^r S_{\theta r} + \Gamma_{\phi r}^r S_{\phi r} \right) + \left(\Gamma_{rr}^r S_{rr} + \Gamma_{\theta r}^r S_{r\theta} + \Gamma_{\phi r}^r S_{r \phi} \right) \right] \right\}{\bf{e_r}} + \\
+& + \frac{1}{h_r} \left\{ \left[ \frac{\partial S_{r\theta}}{\partial r} + \left(\Gamma_{rr}^r S_{r\theta} + \Gamma_{\theta r}^r S_{\theta \theta} + \Gamma_{\phi r}^r S_{\phi \theta} \right) + \left(\Gamma_{rr}^\theta S_{rr} + \Gamma_{\theta r}^\theta S_{r\theta} + \Gamma_{\phi r}^\theta S_{r \phi} \right) \right] \right\}{\bf{e_\theta}} + \\
+& + \frac{1}{h_r} \left\{ \left[ \frac{\partial S_{r\phi}}{\partial r} + \left(\Gamma_{rr}^r S_{r\phi} + \Gamma_{\theta r}^r S_{\theta \phi} + \Gamma_{\phi r}^r S_{\phi \phi} \right) + \left(\Gamma_{rr}^\phi S_{rr} + \Gamma_{\theta r}^\phi S_{r\theta} + \Gamma_{\phi r}^\phi S_{r \phi} \right) \right] \right\}{\bf{e_\phi}} + \\
+& + \frac{1}{h_\theta} \left\{ \left[ \frac{\partial S_{\theta r}}{\partial \theta} + \left( {\color{red}\Gamma_{r\theta}^\theta S_{rr} } + \Gamma_{\theta \theta}^\theta S_{\theta r} + \Gamma_{\phi \theta}^\theta S_{\phi r} \right) + \left(\Gamma_{r\theta}^r S_{\theta r} + {\color{red}\Gamma_{\theta \theta}^r S_{\theta \theta} } + \Gamma_{\phi \theta}^r S_{\theta \phi} \right) \right] \right\}{\bf{e_r}} + \\
+& + \frac{1}{h_\theta} \left\{ \left[ \frac{\partial S_{\theta \theta}}{\partial \theta} + \left( {\color{red} \Gamma_{r\theta}^\theta S_{r\theta}} + \Gamma_{\theta \theta}^\theta S_{\theta \theta} + \Gamma_{\phi \theta}^\theta S_{\phi \theta} \right) + \left( {\color{red} \Gamma_{r\theta}^\theta S_{\theta r} } + \Gamma_{\theta \theta}^\theta S_{\theta \theta} + \Gamma_{\phi \theta}^\theta S_{\theta \phi} \right) \right] \right\}{\bf{e_\theta}} + \\
+& + \frac{1}{h_\theta} \left\{ \left[ \frac{\partial S_{\theta \phi}}{\partial \theta} + \left( {\color{red} \Gamma_{r\theta}^\theta S_{r\phi}} + \Gamma_{\theta \theta}^\theta S_{\theta \phi} + \Gamma_{\phi \theta}^\theta S_{\phi \phi} \right) + \left(\Gamma_{r\theta}^\phi S_{\theta r} + \Gamma_{\theta \theta}^\phi S_{\theta \theta} + \Gamma_{\phi \theta}^\phi S_{\theta \phi} \right) \right] \right\}{\bf{e_\phi}} + \\
+& + \frac{1}{h_\phi} \left\{ \left[ \frac{\partial S_{\phi r}}{\partial \phi} + \left({\color{red} \Gamma_{r\phi}^\phi S_{rr}} + {\color{red} \Gamma_{\theta \phi}^\phi S_{\theta r}} + \Gamma_{\phi \phi}^\phi S_{\phi r} \right) + \left(\Gamma_{r\phi}^r S_{\phi r} + \Gamma_{\theta \phi}^r S_{\phi \theta} + {\color{red} \Gamma_{\phi \phi}^r S_{\phi \phi}} \right) \right] \right\}{\bf{e_r}} + \\
+& + \frac{1}{h_\phi} \left\{ \left[ \frac{\partial S_{\phi \theta}}{\partial \phi} + \left( {\color{red} \Gamma_{r\phi}^\phi S_{r\theta}}  + {\color{red} \Gamma_{\theta \phi}^\phi S_{\theta \theta}} + \Gamma_{\phi \phi}^\phi S_{\phi \theta} \right) + \left(\Gamma_{r\phi}^\theta S_{\phi r} + \Gamma_{\theta \phi}^\theta S_{\phi \theta} + {\color{red} \Gamma_{\phi \phi}^\theta S_{\phi \phi}} \right) \right] \right\}{\bf{e_\theta}} + \\
+& + \frac{1}{h_\phi} \left\{ \left[ \frac{\partial S_{\phi \phi}}{\partial \phi} + \left( {\color{red} \Gamma_{r\phi}^\phi S_{r\phi}} + {\color{red} \Gamma_{\theta \phi}^\phi S_{\theta \phi} } + \Gamma_{\phi \phi}^\phi S_{\phi \phi} \right) + \left( {\color{red} \Gamma_{r\phi}^\phi S_{\phi r}} + {\color{red} \Gamma_{\theta \phi}^\phi S_{\phi \theta} } + \Gamma_{\phi \phi}^\phi S_{\phi \phi} \right) \right] \right\}{\bf{e_\phi}} = \\ 
+& = \frac{\partial S_{rr}}{\partial r}{\bf{e_r}} + \left[\frac{1}{r} \left( \frac{\partial S_{\theta r}}{\partial \theta} + S_{rr} + S_{\theta \theta} \right) \right]{\bf{e_r}} + \left[\frac{1}{r\sin{\theta}} \left(\frac{\partial S_{\phi r}}{\partial \phi} + \sin{\theta} S_{rr} + \cos{\theta}S_{\theta r} - \sin{\theta}S_{\phi \phi} \right) \right] {\bf{e_r}} + \\
+& + \frac{\partial S_{r\theta}}{\partial r}{\bf{e_\theta}} + \left[\frac{1}{r} \left(\frac{\partial S_{\theta \theta}}{\partial \theta} + S_{r\theta} + S_{\theta r} \right) \right]{\bf{e_\theta}} + \left[\frac{1}{r\sin{\theta}} \left(\frac{\partial S_{\phi \theta}}{\partial \phi} + \sin{\theta}S_{r\phi} + \cos{\theta}S_{\theta \theta} - \cos{\theta} S_{\phi \phi} \right) \right]{\bf{e_\theta}} + \\
+& + \frac{\partial S_{r\phi}}{\partial r} {\bf{e_\phi}} + \left[\frac{1}{r} \left(\frac{\partial S_{\theta \phi}}{\partial \theta} + S_{r\phi} \right)  \right]{\bf{e_\phi}} + \left[\frac{1}{r\sin{\theta}} \left(\frac{\partial S_{\phi \phi}}{\partial \phi} + \sin{\theta}S_{r\phi} + \cos{\theta}S_{\theta \phi} + \sin{\theta} S_{\phi r} + \cos{\theta}S_{\phi \theta} \right) \right]{\bf{e_\phi}} = \\
+& = \left[\left(\frac{\partial S_{rr}}{\partial r} + \frac{2 S_{rr}}{r} \right) + \left(\frac{1}{r} \frac{\partial S_{\theta r}}{\partial \theta} + \frac{\cos{\theta} S_{\theta r}}{r \sin{\theta}} \right) + \left( \frac{1}{r\sin{\theta}} \frac{\partial S_{\phi r}}{\partial \phi} \right) - \frac{S_{\theta \theta}}{r} - \frac{S_{\phi \phi}}{r} \right]{\bf{e_r}} + \\
+& + \left[ \left(\frac{\partial S_{r\theta}}{\partial r} + \frac{2 S_{r\theta}}{r} \right) + \left(\frac{1}{r}\frac{\partial S_{\theta \theta}}{\partial \theta} + \frac{\cos{\theta} S_{\theta \theta}}{r\sin{\theta}} \right) + \left(\frac{1}{r\sin{\theta}}\frac{\partial S_{\phi \theta}}{\partial \phi} \right) + \frac{S_{\theta r}}{r} - \frac{\cos{\theta} S_{\phi \phi}}{r\sin{\theta}} \right]{\bf{e_\theta}} + \\
+& + \left[\left(\frac{\partial S_{r\phi}}{\partial r} + \frac{2 S_{r\phi}}{r} \right) + \left(\frac{1}{r} \frac{\partial S_{\theta \phi}}{\partial \theta} + \frac{\cos{\theta}S_{\theta \phi}}{r\sin{\theta}} \right) + \left( \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi \phi}}{\partial \phi} \right) + \frac{S_{\phi r}}{r} + \frac{\cos{\theta}S_{\phi \theta}}{r\sin{\theta}} \right]{\bf{e_\phi}} = \\
+& = {\color{blue} \left[ \frac{1}{r^2}\dr (r^2 S_{rr}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi r}}{\partial \phi} - \frac{S_{\theta\theta}}{r} - \frac{S_{\phi\phi}}{r} \right]{\bf{e_r}} + } \\
+& {\color{blue} + \left[ \frac{1}{r^2}\dr (r^2 S_{r \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta\theta}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi \theta}}{\partial \phi}  + \frac{S_{\theta r}}{r} - \frac{S_{\phi\phi} \cos{\theta}}{r\sin{\theta}} \right]{\bf{e_\theta}} + }\\
+& {\color{blue} + \left[ \frac{1}{r^2}\dr (r^2 S_{r \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial  S_{\phi\phi}}{\partial \phi} + \frac{S_{\phi r}}{r} + \frac{S_{\phi \theta} \cos{\theta}}{r\sin{\theta}} \right]{\bf{e_\phi}} }
+\end{align}
+
+\end{document}
+  

@@ -1,0 +1,261 @@
+\title{Divergence of tensors in spherical geometry up to third order (DETAILS of computation)}
+\author{
+        Miroslav Moc\'ak \\
+               Los Alamos National Laboratory           
+}
+\date{\today}
+
+\documentclass[11pt]{article}
+\usepackage{pdflscape}
+\usepackage{nopageno}
+\usepackage{amsmath}
+\usepackage[textwidth=19cm,textheight=25cm]{geometry}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\newcommand{\eht}{\overline}    
+\newcommand{\fht}{\widetilde}    
+\newcommand{\dr}{\frac{\partial}{\partial r}}
+\newcommand{\dt}{\frac{\partial}{\partial t}}
+\newcommand{\dth}{\frac{\partial}{\partial \theta}}
+\newcommand{\dph}{\frac{\partial}{\partial \phi}}
+
+\begin{document}
+
+\begin{landscape}
+\maketitle
+
+\vspace{-0.6cm}
+
+\noindent
+{\bf{BACKGROUND READING:}} \\
+
+\vspace{0.3cm}
+
+\noindent
+CONTINUUM MECHANICS (Lecture Notes) \\
+Zdenek Martinec, Department of Geophysics, Faculty of Mathematics and Physics, Charles University in Prague \\
+
+\vspace{-0.3cm}
+
+\noindent
+{{\bf{Divergence of first order tensor}} $\nabla \cdot {\bf{V}}$}
+
+\begin{align}
+\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n} \ \ \mbox{: nabla operator} \nonumber
+\end{align}
+
+\begin{align}
+{\bf{V}} = &  \sum_i V_i {\bf{{e_i}}} \ \ \mbox{: tensor of first order (vector)} & V_{i;n} = \frac{\partial V_i}{\partial x_n} + \sum_m \Gamma_{mn}^i V_m \ \ \mbox{: derivatives} \nonumber
+\end{align}
+ 
+\begin{align}
+\nabla \cdot {\bf{V}} = & \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial {\bf{V}}}{\partial x_n} = \sum_n \frac{{\bf{e_n}}}{h_n} \sum_i V_{i;n} {\bf{e_i}} = \sum_{ni} \frac{V_{i;n}}{h_n} \underbrace{{\bf{e_n}}{\bf{e_i}}}_\text{$\delta_{ni}$} = \sum_i \frac{V_{i;i}}{h_i} = \sum_i \frac{1}{h_i} \left[ \frac{\partial V_i}{\partial x_i} + \sum_m \Gamma_{mi}^i V_m \right]
+\end{align}
+
+
+\begin{align}
+\frac{\partial {\bf{V}}}{\partial x_n} & = \frac{\partial}{\partial x_n} \sum_i V_i {\bf{e_i}} = \sum_i \frac{\partial}{\partial x_n} (V_i {\bf{e_i}}) = \sum_i \left(\frac{\partial V_i}{\partial x_n} {\bf{e_i}} + V_i \frac{\partial {\bf{e_i}}}{\partial x_n} \right) = \sum_i \left(\frac{\partial V_i}{\partial x_n} {\bf{e_i}} + V_i \sum_m \Gamma_{in}^m {\bf{e_m}} \right) =  \sum_i \left(\frac{\partial V_i}{\partial x_n} {\bf{e_i}} + \sum_m \Gamma_{mn}^i V_m {\bf{e_i}} \right) = \nonumber \\
+& = \sum_i \left(\frac{\partial V_i}{\partial x_n} + \sum_m \Gamma_{mn}^i V_m \right) {\bf{e_i}} = \sum_i V_{i;n} {\bf{e_i}}
+\end{align}
+
+\newpage
+
+\noindent
+{{\bf{Divergence of second order tensor}} $\nabla \cdot {\bf{S}}$}
+
+\begin{align}
+\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n} \ \ \mbox{: nabla operator} \nonumber
+\end{align}
+
+\begin{align}
+{\bf{S}} = &  \sum_{ij} S_{ij} ({\bf{{e_i}} \otimes \bf{{e_j}}}) \ \  \mbox{: tensor of second order} & S_{ij;n} = \frac{\partial S_{ij}}{\partial x_n} + \sum_m \Gamma_{mn}^i S_{mj} + \sum_m \Gamma_{mn}^j S_{im} \ \  \mbox{: derivatives} \nonumber
+\end{align}
+
+\begin{align}
+\nabla \cdot {\bf{S}} & = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial {\bf{S}}}{\partial x_n} = \sum_n \frac{{\bf{e_n}}}{h_n} \sum_{ij} S_{ij;n} ({\bf{e_i}} \otimes {\bf{e_j}}) = \sum_{nij} \frac{S_{ij;n}}{h_n} {\bf{e_n}}({\bf{e_i}} \otimes {\bf{e_j}}) = \sum_{nij} \frac{S_{ij;n}}{h_n} (\underbrace{{\bf{e_n}}{\bf{e_i}}}_\text{$\delta_{ni}$}){\bf{e_j}} =  \sum_{ij} \frac{S_{ij;i}}{h_i} = \nonumber \\ 
+& = \sum_{ij} \frac{1}{h_i} \left(\frac{\partial S_{ij}}{\partial x_i} + \sum_m \Gamma_{mi}^i S_{mj} + \sum_m \Gamma_{mi}^j S_{im} \right){\bf{e_j}}
+\end{align}
+
+\begin{align}
+\frac{\partial {\bf{S}}}{\partial x_n} & = \frac{\partial}{\partial x_n} \sum_{ij} S_{ij} ({\bf{e_i}} \otimes {\bf{e_j}}) = \sum_{ij} \frac{\partial}{\partial x_n} S_{ij} ({\bf{e_i}} \otimes {\bf{e_j}}) = \sum_{ij} \left[\frac{\partial S_{ij}}{\partial x_n}({\bf{e_i}} \otimes {\bf{e_j}}) + S_{ij}\frac{\partial}{\partial x_n}({\bf{e_i}} \otimes {\bf{e_j}}) \right] = \nonumber \\
+& = \sum_{ij} \left[\frac{\partial S_{ij}}{\partial x_n}({\bf{e_i}} \otimes {\bf{e_j}}) + S_{ij}\frac{\partial {\bf{e_i}}}{\partial x_n} \otimes {\bf{e_j}} + S_{ij} \otimes {\bf{e_i}} \frac{\partial {\bf{e_j}}}{\partial x_n}\right] = \\ 
+& = \sum_{ij} \left[\frac{\partial S_{ij}}{\partial x_n}({\bf{e_i}} \otimes {\bf{e_j}}) + S_{ij} \sum_m \Gamma_{in}^m ({\bf{e_m}} \otimes {\bf{e_j}}) + S_{ij} \sum_m \Gamma_{jn}^m ({\bf{e_i}} \otimes {\bf{e_m}}) \right] = \nonumber \\
+& \mbox{: interchaning indices m $\leftrightarrow$ i in the second term; m $\leftrightarrow$ j in the third term (see Identity 12)} \nonumber \\
+& = \sum_{ij} \left[\frac{\partial S_{ij}}{\partial x_n}({\bf{e_i}} \otimes {\bf{e_j}}) + \sum_m \Gamma_{mn}^i S_{mj} ({\bf{e_i}} \otimes {\bf{e_j}}) + \sum_m \Gamma_{nm}^j S_{im} ({\bf{e_i}} \otimes {\bf{e_j}}) \right] = \sum_{ij} \left[\frac{\partial S_{ij}}{\partial x_n} + \sum_m \Gamma_{mn}^i S_{mj} + \sum_m \Gamma_{nm}^j S_{im} \right] ({\bf{e_i}} \otimes {\bf{e_j}}) = \nonumber \\
+& = \sum_{ij} S_{ij;n} ({\bf{e_i}} \otimes {\bf{e_j}}) 
+\end{align}
+
+\newpage
+
+\noindent
+{{\bf{Divergence of third order tensor}} $\nabla \cdot {\bf{T}}$}
+
+\begin{align}
+\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n} \ \ \mbox{: nabla operator} \nonumber
+\end{align}
+
+\begin{align}
+{\bf{T}} = &  \sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) \ \mbox{: tensor of third order} && T_{ijk;n} = \frac{\partial T_{ijk}}{\partial x_n} + \sum_m \Gamma_{mn}^i T_{mjk} + \sum_m \Gamma_{mn}^j T_{imk} + \sum_m \Gamma_{mn}^k T_{ijm} \ \mbox{: derivatives} \nonumber
+\end{align}
+
+\begin{align}
+\nabla \cdot {\bf{T}} & = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial {\bf{T}}}{\partial x_n} = \sum_n \frac{{\bf{e_n}}}{h_n} \sum_{ijk} T_{ijk;n} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) = \sum_{nijk} \frac{T_{ijk;n}}{h_n} {\bf{e_n}}({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) = \sum_{nijk} \frac{T_{ijk;n}}{h_n} (\underbrace{{\bf{e_n}}{\bf{e_i}}}_\text{$\delta_{ni}$})({\bf{e_j}}\otimes {\bf{e_k}}) =  \sum_{ijk} \frac{T_{ijk;i}}{h_i} = \nonumber \\ 
+& = \sum_{ijk} \frac{1}{h_i} \left(\frac{\partial T_{ijk}}{\partial x_i} + \sum_m \Gamma_{mi}^i T_{mjk} + \sum_m \Gamma_{mi}^j T_{imk} + \sum_m \Gamma_{mi}^k T_{ijm} \right)({\bf{e_j}} \otimes {\bf{e_k}})
+\end{align}
+
+\begin{align}
+\frac{\partial {\bf{T}}}{\partial x_n} & = \frac{\partial}{\partial x_n} \sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) = \sum_{ijk} \frac{\partial}{\partial x_n} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) = \sum_{ijk} \left[ \frac{\partial T_{ijk}}{\partial x_n} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) + T_{ijk} \frac{\partial}{\partial x_n}({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}})  \right] = \nonumber \\
+& = \sum_{ijk} \left[ \frac{\partial T_{ijk}}{\partial x_n} \big( {\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}} \big) + T_{ijk} \big( \frac{\partial {\bf{e_i}}}{\partial x_n} \otimes {\bf{e_j}} \otimes {\bf{e_k}} \big) + T_{ijk} \big( {\bf{e_i}} \otimes \frac{\partial {\bf{e_j}}}{x_n}) \otimes {\bf{e_k}} \big) + T_{ijk} \big( {\bf{e_i}} \otimes {\bf{e_j}} \otimes \frac{\partial {\bf{e_k}}}{\partial x_n} \big)  \right] = \nonumber \\
+& = \sum_{ijk} \left[ \frac{\partial T_{ijk}}{\partial x_n} \big( {\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}} \big) + T_{ijk} \sum_m \Gamma_{in}^m ({\bf{e_m}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) + T_{ijk} \sum_m \Gamma_{jn}^m ({\bf{e_i}} \otimes {\bf{e_m}} \otimes {\bf{e_k}}) + T_{ijk} \sum_m \Gamma_{kn}^m ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_m}})  \right] = \nonumber \\
+& \mbox{: interchaning indices m $\leftrightarrow$ i in second term; m $\leftrightarrow$ j in the third term; m $\leftrightarrow$ k in fourth term (see Identity 13)} \nonumber \\
+& = \sum_{ijk} \left[ \frac{\partial T_{ijk}}{\partial x_n} \big( {\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}} \big) + \sum_m \Gamma_{mn}^i T_{mjk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) + \sum_m \Gamma_{mn}^j T_{imk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) + \sum_m \Gamma_{mn}^k T_{ijm} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}})  \right] = \nonumber \\
+& = \sum_{ijk} \left[\frac{\partial T_{ijk}}{\partial x_n} + \sum_m \Gamma_{mn}^i T_{mjk} + \sum_m \Gamma_{mn}^j T_{imk} + \sum_m \Gamma_{mn}^k T_{ijm} \right]({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) = \nonumber \\ 
+& = \sum_{ijk} T_{ijk;n} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}})
+\end{align}
+
+\newpage 
+
+\noindent
+{{\bf{Used identities}}}
+
+\begin{align}
+\frac{\partial {\bf{e_i}}}{\partial x_n} & = \sum_m \Gamma_{in}^m {\bf{e_m}} \\
+\nonumber \\
+{\bf{e_n}}.({\bf{e_i}} \otimes {\bf{e_j}}) & = ({\bf{e_n}}.{\bf{e_i}}).{\bf{e_j}} \\
+\nonumber \\
+{\bf{e_n}}.({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) & = ({\bf{e_n}}.{\bf{e_i}})({\bf{e_j}} \otimes {\bf{e_k}}) \\
+\nonumber \\
+V_i \sum_m \Gamma_{in}^m {\bf{e_m}} = & \sum_m \Gamma_{mn}^i V_m {\bf{e_i}} \\
+\nonumber \\
+S_{ij} \sum_m \Gamma_{in}^m ({\bf{e_m}} \otimes {\bf{e_j}}) = & \sum_m \Gamma_{mn}^i S_{mj} ({\bf{e_i}} \otimes {\bf{e_j}}) \\
+\nonumber \\
+T_{ijk} \sum_m \Gamma_{in}^m ({\bf{e_m}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) = & \sum_m \Gamma_{mn}^i T_{mjk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}})
+\end{align}
+
+\noindent
+{{\bf{Tensor of second order expressed by dyadic products}}}
+
+\begin{align}
+\sum_{kl} S_{kl} ({\bf{e_k}} \otimes {\bf{e_l}}) = & \
+  S_{11}\begin{pmatrix}
+ 1 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +        
+  S_{12}\begin{pmatrix}
+ 0 & 1 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +
+  S_{13}\begin{pmatrix}
+ 0 & 0 & 1 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} + \\
+  & \ S_{21}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 1 & 0 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +        
+  S_{22}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 1 & 0 \\
+ 0 & 0 & 0 
+       \end{pmatrix} +
+  S_{23}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 1 \\
+ 0 & 0 & 0 
+       \end{pmatrix} + \\
+ & \ S_{31}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 1 & 0 & 0 
+       \end{pmatrix} +        
+  S_{32}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 1 & 0 
+       \end{pmatrix} +
+  S_{33}\begin{pmatrix}
+ 0 & 0 & 0 \\
+ 0 & 0 & 0 \\
+ 0 & 0 & 1 
+       \end{pmatrix} 
+\end{align}
+
+
+
+
+\newpage
+
+\noindent
+{{\bf{Geometry, scale factors and Christoffel symbols}}}
+
+\begin{align}
+& x_1 = r & & x_2 = \theta & & x_3 = \phi & & \mbox{(coordinates)} \\
+& {\bf{e_1 = e_r}} & &  {\bf{e_2 = e_\theta}} & & {\bf{e_3 = e_\phi}} && \mbox{(unit base vectors)} \\
+& h_1 = h_r = 1 & &  h_2 = h_\theta = r & & h_3 = h_\phi = r \sin{\theta} & & \mbox{(scale factors)}
+\end{align}
+
+\begin{align}
+\begin{pmatrix}
+\Gamma_{r\theta}^\theta = \ 1  &  \Gamma_{r\phi}^\phi = \ \sin{\theta} & \Gamma_{\theta \phi}^{\phi} = \ \cos{\theta}   \\
+\Gamma_{\theta \theta}^r = -1   &  \Gamma_{\phi \phi}^r = -\sin{\theta}  & \Gamma_{\phi \phi}^{\theta} = -\cos{\theta}  
+\end{pmatrix}
+\end{align}
+
+\noindent
+{{\bf{Summary}}}
+
+\begin{align}
+\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n} \ \ \ \ \mbox{: nabla operator} & & {\bf{V}} = &  \sum_i V_i {\bf{{e_i}}} & & \mbox{: tensor of first order (vector)}\\
+& & {\bf{S}} = &  \sum_{ij} S_{ij} ({\bf{e_i}} \otimes {\bf{e_j}}) & & {\mbox{: tensor of second order}}\\
+& & {\bf{T}} = &  \sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) & & \mbox{: tensor of third order}
+\end{align}
+
+\begin{align}
+\nabla . {\bf{V}} = & \sum_i \frac{1}{h_i} \left[ \frac{\partial V_i}{\partial x_i} + \sum_m \Gamma_{mi}^i V_m \right] & & \mbox{: div of first order tensor (vector)} \\
+\nabla . {\bf{S}} = & \sum_{ij} \frac{1}{h_i} \left[ \frac{\partial S_{ij}}{\partial x_i} + \sum_m \Gamma_{mi}^i S_{mj} + \sum_m \Gamma_{mi}^j S_{im} \right] {\bf{e_j}} & & \mbox{: div of second order tensor} \\
+\nabla . {\bf{T}} = & \sum_{ijk} \frac{1}{h_i} \left[ \frac{\partial T_{ijk}}{\partial x_i} + \sum_m \Gamma_{mi}^i T_{mjk} + \sum_m \Gamma_{mi}^j T_{imk} + \sum_m \Gamma_{mi}^k T_{ijm} \right]  ({\bf{e_j}} \otimes {\bf{e_k}}) & & \mbox{: div of third order tensor}
+\end{align}
+
+\newpage
+
+\noindent
+{{\bf{Divergence of first order tensor}} $\nabla \cdot {\bf{V}}$}
+
+\begin{align}
+\frac{1}{r^2} \frac{\partial (r^2 V_r) }{\partial_r} + \frac{1}{r \sin{\theta}}\frac{\partial}{\partial \theta}(V_\theta \sin{\theta}) + \frac{1}{r \sin{\theta}} \frac{\partial V_\phi}{\partial \phi}
+\end{align}
+
+\noindent
+{{\bf{Divergence of second order tensor}} $\nabla \cdot {\bf{S}}$}
+
+\begin{align}
+S_r ({\bf{e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{rr}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi r}}{\partial \phi} - \frac{S_{\theta\theta}}{r} - \frac{S_{\phi\phi}}{r} \\
+S_\theta ({\bf{e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{r \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta\theta}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi \theta}}{\partial \phi} + \frac{S_{\theta r}}{r} - \frac{S_{\phi\phi} \cos{\theta}}{r\sin{\theta}} \\
+S_\phi ({\bf{e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{r \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi\phi}}{\partial \phi} + \frac{S_{\phi r}}{r} + \frac{S_{\phi \theta} \cos{\theta}}{r\sin{\theta}}
+\end{align}
+
+\noindent
+{{\bf{Divergence of third order tensor}} $\nabla \cdot {\bf{T}}$}
+
+
+\begin{align}
+T_{rr} \ ({\bf{e_r \otimes e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{rrr}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta rr}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi rr}}{\partial \phi} - \frac{T_{\theta\theta r}}{r} - \frac{T_{\theta r \theta}}{r} -\frac{T_{\phi\phi r}}{r} - \frac{T_{\phi r \phi}}{r} \\
+T_{r\theta} \ ({\bf{e_r \otimes e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{rr \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta r \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi r \theta}}{\partial \phi} - \frac{T_{\theta \theta \theta}}{r} + \frac{T_{\theta rr}}{r} - \frac{T_{\phi \phi \theta}}{r} - \frac{T_{\phi r \phi} \cos{\theta}}{r\sin{\theta}} \\
+T_{r \phi} \ ({\bf{e_r \otimes e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{rr \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta r \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi r \phi}}{\partial \phi} + \frac{T_{\theta \theta \phi}}{r} - \frac{T_{\phi \phi \phi}}{r} + \frac{T_{\phi r \phi} \cos{\theta}}{r\sin{\theta}} \\
+T_{\theta r} \ ({\bf{e_\theta \otimes e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \theta r}}{\partial \phi} + \frac{T_{\theta rr}}{r} - \frac{T_{\theta \theta \theta}}{r} - \frac{T_{\phi \phi r} \cos{\theta}}{r \sin{\theta}} - \frac{T_{\phi \theta \phi}}{r}  \\
+T_{\theta \theta} \ ({\bf{e_\theta \otimes e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \theta \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \theta \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \theta \theta}}{\partial \phi} + \frac{T_{\theta r \theta}}{r} + \frac{T_{\theta \theta r}}{r} - \frac{T_{\phi \phi \theta} \cos{\theta}}{r\sin{\theta}} - \frac{T_{\phi \theta \phi} \cos{\theta}}{r\sin{\theta}} \\
+T_{\theta \phi} \ ({\bf{e_\theta \otimes e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \theta \phi}}{\partial \phi} + \frac{T_{\theta r \phi}}{r} + \frac{T_{\phi \theta r}}{r} + \frac{T_{\phi \theta \theta} \cos{\theta}}{r\sin{\theta}} \\
+T_{\phi r} \ ({\bf{e_\phi \otimes e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \phi r}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \phi r}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \phi r}}{\partial \phi} - \frac{T_{\theta \phi \theta}}{r} + \frac{T_{\phi rr}}{r} + \frac{T_{\phi \theta r} \cos{\theta}}{r\sin{\theta}} - \frac{T_{\phi \phi \phi}}{r} \\
+T_{\phi \theta} \ ({\bf{e_\phi \otimes e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \phi \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \phi \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \phi \theta}}{\partial \phi} + \frac{T_{\theta \phi r}}{r} + \frac{T_{\phi r \theta}}{r} + \frac{T_{\phi \theta \theta} \cos{\theta}}{r\sin{\theta}} - \frac{T_{\phi \theta \phi} \cos{\theta}}{r\sin{\theta}}  \\
+T_{\phi \phi} \ ({\bf{e_\phi \otimes e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \phi \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \phi \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \phi \phi}}{\partial \phi} + \frac{T_{\phi r \phi}}{r} + \frac{T_{\phi \theta \phi} \cos{\theta}}{r\sin{\theta}} + \frac{T_{\phi \phi r}}{r} + \frac{T_{\phi \phi \theta} \cos{\theta}}{r\sin{\theta}}
+\end{align}
+
+\end{landscape}
+
+\end{document}

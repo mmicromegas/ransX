@@ -1,0 +1,98 @@
+\title{Divergence of tensors in spherical geometry up to third order}
+\author{
+        Miroslav Moc\'ak \\
+               Los Alamos National Laboratory           
+}
+\date{\today}
+
+\documentclass[11pt]{article}
+\usepackage{pdflscape}
+\usepackage{nopageno}
+\usepackage{amsmath}
+\usepackage[textwidth=19cm,textheight=25cm]{geometry}
+\usepackage{color}
+\usepackage{graphics}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\newcommand{\eht}{\overline}    
+\newcommand{\fht}{\widetilde}    
+\newcommand{\dr}{\frac{\partial}{\partial r}}
+\newcommand{\dt}{\frac{\partial}{\partial t}}
+\newcommand{\dth}{\frac{\partial}{\partial \theta}}
+\newcommand{\dph}{\frac{\partial}{\partial \phi}}
+
+\begin{document}
+
+\begin{landscape}
+\maketitle
+
+\noindent
+{\bf{BACKGROUND READING:}} \\
+
+\vspace{0.3cm}
+
+\noindent
+CONTINUUM MECHANICS (Lecture Notes) \\
+Zdenek Martinec, Department of Geophysics, Faculty of Mathematics and Physics, Charles University in Prague 
+
+%\vspace{-1.cm}
+
+%\begin{align}
+%{\bf{T}} = &  \sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}})
+%\end{align}
+
+%\begin{align}
+%\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n}
+%\end{align}
+
+\begin{align}
+\nabla (.) = \sum_n \frac{{\bf{e_n}}}{h_n}\frac{\partial (.)}{\partial x_n} \ \ \ \ \mbox{: nabla operator} & & {\bf{V}} = &  \sum_i V_i {\bf{{e_i}}} & & \mbox{: tensor of first order (vector)}\\
+& & {\bf{S}} = &  \sum_{ij} S_{ij} ({\bf{e_i}} \otimes {\bf{e_j}}) & & {\mbox{: tensor of second order}}\\
+& & {\bf{T}} = &  \sum_{ijk} T_{ijk} ({\bf{e_i}} \otimes {\bf{e_j}} \otimes {\bf{e_k}}) & & \mbox{: tensor of third order}
+\end{align}
+
+\begin{align}
+\nabla \cdot {\bf{V}} = & \sum_i \frac{1}{h_i} \left[ \frac{\partial V_i}{\partial x_i} + \sum_m \Gamma_{mi}^i V_m \right] & & \mbox{: div of first order tensor (vector)} \\
+\nabla \cdot {\bf{S}} = & \sum_{ij} \frac{1}{h_i} \left[ \frac{\partial S_{ij}}{\partial x_i} + \sum_m \Gamma_{mi}^i S_{mj} + \sum_m \Gamma_{mi}^j S_{im} \right] {\bf{e_j}} & & \mbox{: div of second order tensor} \\
+\nabla \cdot {\bf{T}} = & \sum_{ijk} \frac{1}{h_i} \left[ \frac{\partial T_{ijk}}{\partial x_i} + \sum_m \Gamma_{mi}^i T_{mjk} + \sum_m \Gamma_{mi}^j T_{imk} + \sum_m \Gamma_{mi}^k T_{ijm} \right]  ({\bf{e_j}} \otimes {\bf{e_k}}) & & \mbox{: div of third order tensor}
+\end{align}
+
+\newpage
+
+\noindent
+{{\bf{Divergence of first order tensor}} $\nabla \cdot {\bf{V}}$}
+
+\begin{align}
+\frac{1}{r^2} \frac{\partial (r^2 V_r) }{\partial_r} + \frac{1}{r \sin{\theta}}\frac{\partial}{\partial \theta}(V_\theta \sin{\theta}) + \frac{1}{r \sin{\theta}} \frac{\partial V_\phi}{\partial \phi}
+\end{align}
+
+\noindent
+{{\bf{Divergence of second order tensor}} $\nabla \cdot {\bf{S}}$}
+
+\begin{align}
+S_r ({\bf{e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{rr}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi r}}{\partial \phi} - \frac{S_{\theta\theta}}{r} - \frac{S_{\phi\phi}}{r} \\
+S_\theta ({\bf{e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{r \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta\theta}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi \theta}}{\partial \phi} + \frac{S_{\theta r}}{r} - \frac{S_{\phi\phi} \cos{\theta}}{r\sin{\theta}} \\
+S_\phi ({\bf{e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 S_{r \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ S_{\theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial S_{\phi\phi}}{\partial \phi} + \frac{S_{\phi r}}{r} + \frac{S_{\phi \theta} \cos{\theta}}{r\sin{\theta}}
+\end{align}
+
+\noindent
+{{\bf{Divergence of third order tensor}} $\nabla \cdot {\bf{T}}$}
+
+
+\begin{align}
+T_{rr} \ ({\bf{e_r \otimes e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{rrr}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta rr}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi rr}}{\partial \phi} - \frac{T_{\theta\theta r}}{r} - \frac{T_{\theta r \theta}}{r} -\frac{T_{\phi\phi r}}{r} - \frac{T_{\phi r \phi}}{r} \\
+T_{r\theta} \ ({\bf{e_r \otimes e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{rr \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta r \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi r \theta}}{\partial \phi} - \frac{T_{\theta \theta \theta}}{r} + \frac{T_{\theta rr}}{r} - \frac{T_{\phi \phi \theta}}{r} - \frac{T_{\phi r \phi} \cos{\theta}}{r\sin{\theta}} \\
+T_{r \phi} \ ({\bf{e_r \otimes e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{rr \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta r \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi r \phi}}{\partial \phi} + \frac{T_{\theta \theta \phi}}{r} - \frac{T_{\phi \phi \phi}}{r} + \frac{T_{\phi r \phi} \cos{\theta}}{r\sin{\theta}} \\
+T_{\theta r} \ ({\bf{e_\theta \otimes e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \theta r}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \theta r}}{\partial \phi} + \frac{T_{\theta rr}}{r} - \frac{T_{\theta \theta \theta}}{r} -\frac{T_{\phi \phi r} \cos{\theta}}{r \sin{\theta}} - \frac{T_{\phi \theta \phi}}{r}  \\
+T_{\theta \theta} \ ({\bf{e_\theta \otimes e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \theta \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \theta \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \theta \theta}}{\partial \phi} + \frac{T_{\theta r \theta}}{r} + \frac{T_{\theta \theta r}}{r} - \frac{T_{\phi \phi \theta} \cos{\theta}}{r\sin{\theta}} - \frac{T_{\phi \theta \phi} \cos{\theta}}{r\sin{\theta}} \\
+T_{\theta \phi} \ ({\bf{e_\theta \otimes e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \theta \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \theta \phi}}{\partial \phi} + \frac{T_{\theta r \phi}}{r} + \frac{T_{\phi \theta r}}{r} + \frac{T_{\phi \theta \theta} \cos{\theta}}{r\sin{\theta}} \\
+T_{\phi r} \ ({\bf{e_\phi \otimes e_r}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \phi r}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \phi r}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \phi r}}{\partial \phi} - \frac{T_{\theta \phi \theta}}{r} + \frac{T_{\phi rr}}{r} + \frac{T_{\phi \theta r} \cos{\theta}}{r\sin{\theta}} - \frac{T_{\phi \phi \phi}}{r} \\
+T_{\phi \theta} \ ({\bf{e_\phi \otimes e_\theta}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \phi \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \phi \theta}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \phi \theta}}{\partial \phi} + \frac{T_{\theta \phi r}}{r} + \frac{T_{\phi r \theta}}{r} + \frac{T_{\phi \theta \theta} \cos{\theta}}{r\sin{\theta}} - \frac{T_{\phi \theta \phi} \cos{\theta}}{r\sin{\theta}}  \\
+T_{\phi \phi} \ ({\bf{e_\phi \otimes e_\phi}}): & \hspace{1cm} \frac{1}{r^2}\dr (r^2 T_{r \phi \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial}{\partial \theta} (\sin{\theta} \ T_{\theta \phi \phi}) + \frac{1}{r\sin{\theta}}\frac{\partial T_{\phi \phi \phi}}{\partial \phi} + \frac{T_{\phi r \phi}}{r} + \frac{T_{\phi \theta \phi} \cos{\theta}}{r\sin{\theta}} + \frac{T_{\phi \phi r}}{r} + \frac{T_{\phi \phi \theta} \cos{\theta}}{r\sin{\theta}}
+\end{align}
+
+
+
+\end{landscape}
+
+\end{document}
