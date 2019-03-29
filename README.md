@@ -2,7 +2,7 @@
 
 # Overview
 
-ransX framework implements mean field Reynolds-Averaged Navier-Stokes (a.k.a RANS) transport/flux/variance equations mass, momenta, kinetic/internal/total energies, temperature, enthalpy, pressure and composition densities.
+ransX framework implements mean field Reynolds-Averaged Navier-Stokes (a.k.a RANS) transport/flux/variance equations for mass, momenta, kinetic/internal/total energies, temperature, enthalpy, pressure and composition densities.
 
 # Prerequisities
 
@@ -21,4 +21,4 @@ git clone https://github.com/mmicromegas/ransX
 
 1. cd ransX
 2. start ipython
-3. >run ransx.py
+3. run ransx.py
