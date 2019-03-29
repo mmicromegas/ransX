@@ -20,7 +20,8 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
 
         # load grid
         xzn0 = np.asarray(eht.item().get('xzn0')) 	
-
+        nx   = np.asarray(eht.item().get('nx')) 
+		
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
 
@@ -70,7 +71,8 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
-        self.dd        = dd	
+        self.dd          = dd
+        self.nx          = nx		
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -143,7 +145,7 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,lhs1,color='r',label = r'$-\widetilde{u}_r \partial_r (\overline{\rho})$')
         plt.plot(grd1,rhs0,color='c',label = r"$-\nabla_r f_\rho$")		
         plt.plot(grd1,rhs1,color='m',label = r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
-        plt.plot(grd1,rhs2,color='b',label=r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
+        plt.plot(grd1,rhs2,color='b',label = r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
         # define and show x/y LABELS
@@ -161,19 +163,22 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq.png')
 
-    def plot_continuity_equation_bar(self,laxis,xbl,xbr,ybu,ybd):
-        """Plot continuity equation in the model""" 
+    def plot_continuity_equation_integral_budget(self,laxis,xbl,xbr,ybu,ybd):
+        """Plot integral budgets of continuity equation in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
+        nx = self.nx
 
         term1 = self.minus_dt_dd
-        term2 = self.minus_ux_grad_eht_dd
-        term3 = self.minus_eht_dd_div_fht_ux
-        term4 = self.minus_resContEquation
+        term2 = self.minus_fht_ux_grad_dd
+        term3 = self.minus_div_fdd
+        term4 = self.plus_fdd_o_dd_gradx_dd
+        term5 = self.minus_dd_div_ux
+        term6 = self.minus_resContEquation 
 		
         # calculate INDICES for grid boundaries 
-        if laxis == 1:
+        if laxis == 1 or laxis == 2:
             idxl, idxr = self.idx_bndry(xbl,xbr)
         else:
             idxl = 0
@@ -183,7 +188,9 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         term2_sel = term2[idxl:idxr]
         term3_sel = term3[idxl:idxr]
         term4_sel = term4[idxl:idxr]
-   
+        term5_sel = term5[idxl:idxr]
+        term6_sel = term6[idxl:idxr]
+		
         rc = self.xzn0[idxl:idxr]
 
         Sr = 4.*np.pi*rc**2
@@ -192,17 +199,22 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         int_term2 = integrate.simps(term2_sel*Sr,rc)
         int_term3 = integrate.simps(term3_sel*Sr,rc) 
         int_term4 = integrate.simps(term4_sel*Sr,rc)     
-
+        int_term5 = integrate.simps(term5_sel*Sr,rc)
+        int_term6 = integrate.simps(term6_sel*Sr,rc)
+		
         fig = plt.figure(figsize=(7,6))
     
         ax = fig.add_subplot(1,1,1)
         ax.yaxis.grid(color='gray', linestyle='dashed')
         ax.xaxis.grid(color='gray', linestyle='dashed')
+		
+        if laxis == 2:		
+            plt.ylim([ybd,ybu])	 			
      
         fc = 1.
     
         # note the change: I'm only supplying y data.
-        y = [int_term1/fc,int_term2/fc,int_term3/fc,int_term4/fc]
+        y = [int_term1/fc,int_term2/fc,int_term3/fc,int_term4/fc,int_term5/fc,int_term6/fc]
 
         # Calculate how many bars there will be
         N = len(y)
@@ -220,7 +232,7 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         ax.set_ylabel(r'g s$^{-1}$')
  
         # Create a title, in italics
-        # ax.set_title('continuity equation')
+        ax.set_title('continuity with mass flux integral budget')
  
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.
@@ -228,7 +240,9 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
  
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
-        group_labels = [r"$-\overline{\rho} \nabla_r \widetilde{u}_r$",r"$-\partial_t \overline{\rho}$",r"$-\widetilde{u}_r \partial_r \overline{\rho}$",'res']
+        group_labels = [r'$-\partial_t (\overline{\rho})$',r'$-\widetilde{u}_r \partial_r (\overline{\rho})$',\
+                        r"$-\nabla_r f_\rho$",r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$",\
+                        r'$-\overline{\rho} \nabla_r (\overline{u}_r)$','res']
                          
         # Set the x tick labels to the group_labels defined above.
         ax.set_xticklabels(group_labels,fontsize=16)

@@ -147,8 +147,8 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq.png')
 
-    def plot_continuity_equation_bar(self,laxis,xbl,xbr,ybu,ybd):
-        """Plot continuity equation in the model""" 
+    def plot_continuity_equation_integral_budget(self,laxis,xbl,xbr,ybu,ybd):
+        """Plot integral budgets of continuity equation in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
@@ -184,7 +184,10 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         ax = fig.add_subplot(1,1,1)
         ax.yaxis.grid(color='gray', linestyle='dashed')
         ax.xaxis.grid(color='gray', linestyle='dashed')
-     
+		
+        if laxis == 2:		
+            plt.ylim([ybd,ybu])	 		
+		     
         fc = 1.
     
         # note the change: I'm only supplying y data.
@@ -206,7 +209,7 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         ax.set_ylabel(r'g s$^{-1}$')
  
         # Create a title, in italics
-        # ax.set_title('continuity equation')
+        ax.set_title(r"continuity with $\widetilde{d}$ integral budget")
  
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.

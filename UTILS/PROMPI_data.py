@@ -85,6 +85,18 @@ class PROMPI_ransdat:
             self.zznr.append(float(line[39:54].strip()))	
 
         frans = open(filename,'rb')
+
+        #irecl_float = 4		
+		
+        #recl = np.fromfile(frans, count=(512))
+        #frans.seek(4)
+
+        #print(recl)
+		
+		
+        #frans.close()
+        #fhead.close()			
+        #sys.exit()		
 		
         if (endianness == 'little_endian') and (precision == 'single'):			
             self.data = np.fromfile(frans,dtype='<f4',count=ndims[0]*ndims[1]*ndims[2])
@@ -98,6 +110,7 @@ class PROMPI_ransdat:
             print("PROMPI_data.py: Wrong endianness or precision. Check param.tseries")
             sys.exit()
 
+					
         # reshape   			
         self.data = np.reshape(self.data,(ndims[0],ndims[1],ndims[2]),order='F')	
 
@@ -170,14 +183,31 @@ class PROMPI_blockdat:
 
     def __init__(self,filename,dat):
 
-        fhead = open(filename.replace("blockdat","blockhead"),'r')
-#        fhead = open(filename.replace("bindata","header"),'r')        
+#       find first occurence of dd due to header info stored either on 4 or 8 lines, computer arch dependent
+
+        lookup = "density"
+        iterate = True
+        with open(filename.replace("blockdat","blockhead")) as f:
+            for num, line in enumerate(f,1):
+                if (iterate) and (lookup in line):
+                    #print('found at line:', num)
+                    num_density = num
+                    iterate = False		
+
+        fhead = open(filename.replace("blockdat","blockhead"),'r')      
 
         header_line1 = fhead.readline().split()
         header_line2 = fhead.readline().split()
         header_line3 = fhead.readline().split()
         header_line4 = fhead.readline().split()
-
+					
+        if num_density == 10:	
+            header_line5 = fhead.readline().split()
+            header_line6 = fhead.readline().split()
+            header_line7 = fhead.readline().split()
+            header_line8 = fhead.readline().split()		
+            header_line9 = fhead.readline().split()	
+			
         self.nstep  = int(header_line1[0])
         self.time   = float(header_line1[1])
         
@@ -187,13 +217,6 @@ class PROMPI_blockdat:
         self.nnuc   = int(header_line2[3])
         self.nvar   = int(header_line2[4])
 
-#        header_line5 = fhead.readline().split()
-#        header_line6 = fhead.readline().split()
-#        header_line7 = fhead.readline().split()
-#        header_line8 = fhead.readline().split()
-
-        
-        
         ndims = [self.qqx,self.qqy,self.qqz]
 
         self.varl = []		
@@ -226,10 +249,11 @@ class PROMPI_blockdat:
         ir_r = 54
         
         for line in range(self.qqx):
-            line = fhead.readline().strip()        
+            line = fhead.readline().strip()			
             xznl.append(float(line[il_l:il_r].strip()))
             xzn0.append(float(line[i0_l:i0_r].strip()))
             xznr.append(float(line[ir_l:ir_r].strip()))
+			
 			
         for line in range(self.qqy):
             line = fhead.readline().strip()        
@@ -266,9 +290,22 @@ class PROMPI_blockdat:
 #       >>> dt = np.dtype('<f') # little-endian single-precision float
 #       >>> dt = np.dtype('d')  # double-precision floating-point number
 
-#       self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
-        self.data = np.fromfile(fblock,dtype='<f4',count=192)
-#       self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
+        nproc = 8
+
+#        self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
+
+        kk = -1
+        self.data = np.empty((self.qqx,self.qqy,self.qqz))
+        for k in range(0,self.qqz):
+            kk += 1;
+            jj = -1 			
+            for j in range(0,self.qqy):
+                jj += 1;		
+                #print(jj,kk)			
+                chunk = np.fromfile(fblock,dtype='<f4',count=self.qqx/nproc)
+                self.data[0:self.qqx/nproc,jj,kk] = chunk
+
+#        self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
 #       print(self.data)
         
         fblock.close()

@@ -1,5 +1,5 @@
 import EQUATIONS.ContinuityEquationWithMassFlux as contfdd
-import EQUATIONS.ContinuityEquationWithFavrianDilatation as cont
+import EQUATIONS.ContinuityEquationWithFavrianDilatation as contfdil
 
 import EQUATIONS.MomentumEquationX as momx
 import EQUATIONS.MomentumEquationY as momy
@@ -82,7 +82,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = cont.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
+        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
@@ -100,7 +100,7 @@ class MasterPlot():
         params = self.params						  
 						  
         # instantiate 
-        ransCONT = cont.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
+        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
@@ -118,17 +118,17 @@ class MasterPlot():
         params = self.params
 	
         # instantiate 
-        ransCONT = cont.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
+        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
 
-        # plot continuity equation bar						       
-        ransCONT.plot_continuity_equation_bar(params.getForProp('prop')['laxis'],\
-                                              params.getForEqsBar('conteqBar')['xbl'],\
-                                              params.getForEqsBar('conteqBar')['xbr'],\
-                                              params.getForEqsBar('conteqBar')['ybu'],\
-                                              params.getForEqsBar('conteqBar')['ybd'])
+        # plot continuity equation integral budget					       
+        ransCONT.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'],\
+                                                          params.getForEqsBar('conteqBar')['xbl'],\
+                                                          params.getForEqsBar('conteqBar')['xbr'],\
+                                                          params.getForEqsBar('conteqBar')['ybu'],\
+                                                          params.getForEqsBar('conteqBar')['ybd'])
 
 
     def execContFddEq(self):
@@ -148,7 +148,24 @@ class MasterPlot():
                                              params.getForEqs('conteqfdd')['ybu'],\
                                              params.getForEqs('conteqfdd')['ybd'],\
                                              params.getForEqs('conteqfdd')['ilg'])
+											 
+    def execContFddEqBar(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 
+        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],\
+                                                             params.getForProp('prop')['ig'],\
+                                                             params.getForProp('prop')['intc'],\
+                                                             params.getForProp('prop')['prefix'])
 
+        # plot continuity equation integral budget					       
+        ransCONTfdd.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'],\
+                                                          params.getForEqsBar('conteqfddBar')['xbl'],\
+                                                          params.getForEqsBar('conteqfddBar')['xbr'],\
+                                                          params.getForEqsBar('conteqfddBar')['ybu'],\
+                                                          params.getForEqsBar('conteqfddBar')['ybd'])		
+														  
     def execHssContEq(self):
 						  
         params = self.params						  
@@ -369,7 +386,27 @@ class MasterPlot():
                                           params.getForEqs(x)['ybu'],\
                                           params.getForEqs(x)['ybd'],\
                                           params.getForEqs(x)['ilg'])	
+										  										  
 
+    def execXtrsEqBar(self,inuc,element,x):
+
+        params = self.params
+	
+        # instantiate 
+        ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],\
+                                           params.getForProp('prop')['ig'],\
+                                           inuc,element,\
+                                           params.getForProp('prop')['intc'],\
+                                           params.getForProp('prop')['prefix'])
+																	  
+        # plot X transport equation integral budget					       
+        ransXtra.plot_Xtransport_equation_integral_budget(params.getForProp('prop')['laxis'],\
+                                                          params.getForEqsBar(x)['xbl'],\
+                                                          params.getForEqsBar(x)['xbr'],\
+                                                          params.getForEqsBar(x)['ybu'],\
+                                                          params.getForEqsBar(x)['ybd'])
+										  
+										  
     def execXflx(self,inuc,element,x):
 	
     	params = self.params	
@@ -1849,6 +1886,7 @@ class MasterPlot():
         plt.rcParams['xtick.minor.size']=4.
         plt.rcParams['figure.subplot.bottom']=0.15
         plt.rcParams['figure.subplot.left']=0.17		
-        plt.rcParams['figure.subplot.right']=0.85				
+        plt.rcParams['figure.subplot.right']=0.85
+        plt.rcParams.update({'figure.max_open_warning': 0})		
 				
 				

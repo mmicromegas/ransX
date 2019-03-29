@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
@@ -19,7 +20,8 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # load grid
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
-
+        nx   = np.asarray(eht.item().get('nx'))
+		
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
 
@@ -66,7 +68,8 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
-        self.xzn0    = xzn0		
+        self.xzn0    = xzn0
+        self.nx      = nx		
         self.inuc    = inuc
         self.element = element
         self.ddxi    = ddxi	
@@ -165,3 +168,98 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'mean_Xtransport_'+element+'.png')
+		
+    def plot_Xtransport_equation_integral_budget(self,laxis,xbl,xbr,ybu,ybd):
+        """Plot integral budgets of composition transport equation in the model""" 
+
+        element = self.element
+		
+        # load x GRID
+        grd1 = self.xzn0
+        nx = self.nx		
+
+        term1 = self.minus_dt_dd_fht_xi 
+        term2 = self.minus_div_eht_dd_fht_ux_fht_xi
+        term3 = self.minus_div_fxi
+        term4 = self.plus_ddxidot
+        term5 = self.minus_resXiTransport
+		
+        # calculate INDICES for grid boundaries 
+        if laxis == 1 or laxis == 2:
+            idxl, idxr = self.idx_bndry(xbl,xbr)
+        else:
+            idxl = 0
+            idxr = self.nx-1
+		
+        term1_sel = term1[idxl:idxr]
+        term2_sel = term2[idxl:idxr]
+        term3_sel = term3[idxl:idxr]
+        term4_sel = term4[idxl:idxr]
+        term5_sel = term5[idxl:idxr]
+		
+        rc = self.xzn0[idxl:idxr]
+
+        Sr = 4.*np.pi*rc**2
+
+        int_term1 = integrate.simps(term1_sel*Sr,rc)
+        int_term2 = integrate.simps(term2_sel*Sr,rc)
+        int_term3 = integrate.simps(term3_sel*Sr,rc) 
+        int_term4 = integrate.simps(term4_sel*Sr,rc)     
+        int_term5 = integrate.simps(term5_sel*Sr,rc)
+		
+        fig = plt.figure(figsize=(7,6))
+    
+        ax = fig.add_subplot(1,1,1)
+        ax.yaxis.grid(color='gray', linestyle='dashed')
+        ax.xaxis.grid(color='gray', linestyle='dashed')
+
+        if laxis == 2:		
+            plt.ylim([ybd,ybu])	 
+	 
+        fc = 1.
+    
+        # note the change: I'm only supplying y data.
+        y = [int_term1/fc,int_term2/fc,int_term3/fc,int_term4/fc,int_term5/fc]
+
+        # Calculate how many bars there will be
+        N = len(y)
+ 
+        # Generate a list of numbers, from 0 to N
+        # This will serve as the (arbitrary) x-axis, which
+        # we will then re-label manually.
+        ind = range(N)
+ 
+        # See note below on the breakdown of this command
+        ax.bar(ind, y, facecolor='#0000FF',
+               align='center', ecolor='black')
+ 
+        #Create a y label
+        ax.set_ylabel(r'g s$^{-1}$')
+ 
+        # Create a title, in italics
+        ax.set_title('rhoX transport budget for '+element)
+ 
+        # This sets the ticks on the x axis to be exactly where we put
+        # the center of the bars.
+        ax.set_xticks(ind)
+ 
+        # Labels for the ticks on the x axis.  It needs to be the same length
+        # as y (one label for each bar)
+        group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{X})$',\
+                        r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$',\
+                        r'$-\nabla_r f$',r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$','res']
+                         
+        # Set the x tick labels to the group_labels defined above.
+        ax.set_xticklabels(group_labels,fontsize=16)
+ 
+        # Extremely nice function to auto-rotate the x axis labels.
+        # It was made for dates (hence the name) but it works
+        # for any long x tick labels
+        fig.autofmt_xdate()
+        
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'xtransport_'+element+'_eq_bar.png')				
+		
