@@ -10,8 +10,9 @@ ransX requires python 2.7 and the following modules to work:
 
 1. numpy
 2. scipy
-3. ast
-4. sys
+3. matplotlib
+4. ast
+5. sys
 
 # Installation
 
