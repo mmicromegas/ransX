@@ -294,7 +294,7 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('alternative hsse temperature equation simp')
+        #plt.title('alternative hsse temperature equation simp')
         plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
         plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{g}_r / \Gamma_1 \overline{P}$")
 		
@@ -307,12 +307,12 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':12})
+        plt.legend(loc=ilg,prop={'size':14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_temperature_eq_alternative_simplified.png')			
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_temperature_eq_alternative_simplified.eps')			
 		
 		

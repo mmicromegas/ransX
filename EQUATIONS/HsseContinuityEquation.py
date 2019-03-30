@@ -287,7 +287,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('alternative hsse continuity equation simp')
+        #plt.title('alternative hsse continuity equation simp')
         plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{M})$')
         plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")		
         plt.plot(grd1,rhs1,color='b',label = r"$-\overline{\rho} \ \overline{M} \ \overline{g}_r / \Gamma_1 \overline{P}$")		
@@ -300,11 +300,11 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':12})
+        plt.legend(loc=ilg,prop={'size':14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_alternative_simplified.png')					
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_alternative_simplified.eps')					
 				

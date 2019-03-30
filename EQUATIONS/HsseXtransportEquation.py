@@ -143,7 +143,8 @@ class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 				
         # plot DATA 
-        plt.title('hsse rhoX transport for '+element)
+        #plt.title('hsse rhoX transport for '+element)
+        plt.title(element)
         plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}$')
         plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}$')
         plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f$')
@@ -159,10 +160,10 @@ class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':12})
+        plt.legend(loc=ilg,prop={'size':14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_mean_Xtransport_'+element+'.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_mean_Xtransport_'+element+'.eps')

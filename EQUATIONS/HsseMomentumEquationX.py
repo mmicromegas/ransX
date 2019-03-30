@@ -267,7 +267,7 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('alternative hsse x momentum equation simp')
+        #plt.title('alternative hsse x momentum equation simp')
         plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
         plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
 		
@@ -280,12 +280,12 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':12})
+        plt.legend(loc=ilg,prop={'size':14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_momentum_x_eq_alternative_simplified.png')				
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_momentum_x_eq_alternative_simplified.eps')				
 		
 		

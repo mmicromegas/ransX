@@ -1879,8 +1879,8 @@ class MasterPlot():
         # plt.rc('text',usetex=True)
         # plt.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
         plt.rc('font',**{'family':'serif','serif':['Times New Roman']})
-        plt.rc('font',size=14.)
-        plt.rc('lines',linewidth=2,markeredgewidth=2.,markersize=10)
+        plt.rc('font',size=16.)
+        plt.rc('lines',linewidth=2,markeredgewidth=2.,markersize=12)
         plt.rc('axes',linewidth=1.5)
         plt.rcParams['xtick.major.size']=8.
         plt.rcParams['xtick.minor.size']=4.
