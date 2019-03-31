@@ -41,9 +41,9 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         fht_ux = ddux/dd			
         fdd = ddux-dd*ux	
 	
-        #####################
-        # CONTINUITY EQUATION 
-        #####################
+        ####################################
+        # CONTINUITY EQUATION WITH MASS FLUX
+        ####################################
 								
         # LHS -dq/dt 		
         self.minus_dt_dd = -self.dt(t_dd,xzn0,t_timec,intc)
@@ -64,9 +64,9 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         self.minus_resContEquation = -(self.minus_dt_dd+self.minus_fht_ux_grad_dd+self.minus_div_fdd+\
                                        self.plus_fdd_o_dd_gradx_dd+self.minus_dd_div_ux)
 		
-        #########################	
-        # END CONTINUITY EQUATION
-        #########################
+        ########################################	
+        # END CONTINUITY EQUATION WITH MASS FLUX
+        ########################################
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		

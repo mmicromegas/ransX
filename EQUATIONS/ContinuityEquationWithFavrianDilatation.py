@@ -36,9 +36,9 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         # construct equation-specific mean fields		
         fht_ux = ddux/dd	
 	
-        #####################
-        # CONTINUITY EQUATION 
-        #####################
+        #############################################
+        # CONTINUITY EQUATION WITH FAVRIAN DILATATION
+        #############################################
 								
         # LHS -dq/dt 		
         self.minus_dt_dd = -self.dt(t_dd,xzn0,t_timec,intc)
@@ -52,9 +52,9 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         # -res
         self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_dd_div_fht_ux)
 		
-        #########################	
-        # END CONTINUITY EQUATION
-        #########################
+        #################################################	
+        # END CONTINUITY EQUATION WITH FAVRIAN DILATATION
+        #################################################
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
