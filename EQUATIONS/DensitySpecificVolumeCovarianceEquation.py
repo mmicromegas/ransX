@@ -43,7 +43,6 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         t_b = 1.-t_sv*t_dd		
 
         fht_ux   = ddux/dd	
-        eht_uxff = ux-ddux/dd
         b        = 1.-sv*dd
 		
         ##################################################
@@ -53,20 +52,20 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # LHS -db/dt 		
         self.minus_dt_b = self.dt(t_b,xzn0,t_timec,intc)
 
-        # LHS -fht_ux Grad b
-        self.minus_fht_ux_gradx_b = fht_ux*self.Grad(b,xzn0)
+        # LHS -ux Grad b
+        self.minus_ux_gradx_b = ux*self.Grad(b,xzn0)
 				
         # RHS +sv Div dd uxff 
-        self.plus_eht_sv_div_dd_uxff = sv*self.Div(dd*eht_uxff,xzn0) 
+        self.plus_eht_sv_div_dd_uxff = sv*self.Div(dd*(ux-fht_ux),xzn0) 
 
         # RHS -eht_dd Div uxf svf
         self.minus_eht_dd_div_uxf_svf = -dd*self.Div(svux-sv*ux,xzn0)
 
         # RHS +2 eht_dd eht svf df
-        self.plus_two_eht_dd_eht_svf_df = 2.*dd*(svdivu-sv*divu)
+        self.plus_two_eht_dd_eht_svf_df = +2.*dd*(svdivu-sv*divu)
 
         # -res
-        self.minus_resBequation = -(self.minus_dt_b + self.minus_fht_ux_gradx_b + self.plus_eht_sv_div_dd_uxff + \
+        self.minus_resBequation = -(self.minus_dt_b + self.minus_ux_gradx_b + self.plus_eht_sv_div_dd_uxff + \
            self.minus_eht_dd_div_uxf_svf + self.plus_two_eht_dd_eht_svf_df)
         				
         ######################################################
@@ -126,7 +125,7 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 
         lhs0 = self.minus_dt_b
-        lhs1 = self.minus_fht_ux_gradx_b
+        lhs1 = self.minus_ux_gradx_b
 		
         rhs0 = self.plus_eht_sv_div_dd_uxff
         rhs1 = self.minus_eht_dd_div_uxf_svf
@@ -147,7 +146,7 @@ class DensitySpecificVolumeCovarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         # plot DATA 
         plt.title('b equation')
         plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t b$")
-        plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r b $")		
+        plt.plot(grd1,lhs1,color='m',label = r"$-\overline{u}_r \partial_r b $")		
         plt.plot(grd1,rhs0,color='b',label=r"$+v \nabla_r (\overline{v} \overline{u''_r})$")
         plt.plot(grd1,rhs1,color='g',label=r"$-v \nabla_r (\overline{\rho} \overline{(u'_r v'})$")
         plt.plot(grd1,rhs2,color='r',label=r"$+2 \overline{\rho} \overline{v'd'}$")		

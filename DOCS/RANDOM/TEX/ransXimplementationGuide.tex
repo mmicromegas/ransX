@@ -1,0 +1,509 @@
+
+\documentclass[11pt,paper=a4]{report}
+
+\usepackage[a4paper,landscape]{geometry}
+
+
+%Chapter caption is somewhere in the center of the page, so move the shit ;)
+%\renewcommand*\chapterheadstartvskip{\vspace*{-1cm}}
+
+%If you have a new chapter, the pagestyle will be plain (only pagenumber) according to koma
+%To use ur setting redefine the chaperstyle
+%\renewcommand*{\chapterpagestyle}{scrheadings} 
+
+%Settings for head and foot
+
+%\usepackage[myheadings]{fullpage}
+%\pagestyle{myheadings}
+
+\usepackage{fancyhdr}
+%\fancyhead{}
+%\fancyhead[CO,CE]{---Draft---}
+\pagestyle{fancy}
+\rhead{}
+
+
+%\usepackage{scrpage2} 
+%\clearscrheadfoot
+%\pagestyle{scrheadings}
+
+%\ihead{top left}
+%\chead{top center}
+%\ohead{top right}       
+
+%\ifoot{bottom left} 
+%\cfoot{bottom center}
+%\ofoot{bottom right}
+
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{cancel}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{chngcntr}
+\usepackage{natbib}
+
+\usepackage{hyperref}
+\hypersetup{
+        colorlinks = true,
+        linkcolor = blue,
+        anchorcolor = red,
+        citecolor = blue,
+        filecolor = red,
+        urlcolor = red
+} 
+
+
+\newcommand{\Msun}{\mbox{M$_\odot$\,}}         % M_sun 
+
+\newcommand{\eht}{\overline}    
+\newcommand{\fht}{\widetilde}    
+\newcommand{\dr}{\frac{\partial}{\partial r}}
+\newcommand{\dt}{\frac{\partial}{\partial t}}
+\newcommand{\dth}{\frac{\partial}{\partial \theta}}
+\newcommand{\dph}{\frac{\partial}{\partial \phi}}
+
+\newcommand{\fav}{\widetilde}    
+\newcommand{\av}{\overline}  
+
+\def\ef#1{#1'}
+\def\ff#1{#1''}
+\def\fhtc#1{\left\{#1\right\}}
+\def\erho{\eht{\rho}}
+
+\newcommand{\dgr}{\mbox{$^\circ$}}           % degrees 
+
+\counterwithout{section}{chapter}
+
+\usepackage{titling}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+
+\title{{\bf ransX framework}}
+\subtitle{Implementation Guide}
+\author{
+        Miroslav Moc\'ak, Casey Meakin, Simon Campbell, Cyril Georgy, Maxime Viallet, Dave Arnett
+}
+
+\date{\today}
+
+\begin{document}
+
+\bibliographystyle{plainnat}
+%\begin{landscape}
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+This implementation guide describes all parts of our analysis framework for multi-fluid compressible hydrodynamic simulation targeted at all of you, who wants to implement it to your hydrodynamic codes and use our post-processing software to display its results.\\
+
+ransX or rans(eXtreme) framework is a theoretical and programmatic suite allowing for comprehensive analysis of statistical averages of all sort of hydrodynamic properties from 3D simulations in spherical and Cartesian geometry. It consists of three main parts:
+
+\begin{itemize}
+\item theoretical derivation of 1D Reynolds-averaged Navier-Stokes (RANS) mean-field equations for transport/flux/variance of momentums, kinetic/internal/total energies, temperature, enthalpy, pressure and chemical composition (see ransXtheoryGuide.pdf for more details)
+\item calculation of required mean-fields for construction of terms in the RANS equations at runtime of hydrodynamic simulations
+\item construction of terms in the RANS equations and their plotting  
+\end{itemize}
+
+\par We obtain our 1D RANS equations by introducing two types of averaging:  statistical averaging and  horizontal averaging \citep{Besnard1992,VialletMeakin2013}. In practice, statistical averages are computed by performing a time average. Therefore, the combined average of a quantity $q$ is defined for spherical geometry as
+
+\begin{align}\label{eq:eht}
+\eht{q}(r,t) = \frac{1}{T\Delta\Omega}\int_{t- T/2}^{t+T/2} q(r,\theta,\phi,t')~d\Omega~dt'
+\end{align}
+
+\noindent where $d \Omega = \sin \theta d \theta d \phi$ is the solid angle in spherical coordinates, $T$ is the averaging time period, and $\Delta\Omega$ is total solid angle being averaged over. The quantity $q$ is defined for cartesian geometry as
+
+\begin{align}\label{eq:eht}
+\eht{q}(x,t) = \frac{1}{T \Delta y \Delta z}\int_{t- T/2}^{t+T/2} q(x,y,z,t')~dy~dz~dt'
+\end{align}
+
+\noindent where $\Delta y$ and $\Delta z$ is total number of grid zones in $y$ and $z$ direction.\\
+
+\par The flow variables are then decomposed into mean and fluctuation $q = \eht{q} + q'$, noting that $\eht{q'} = 0$ by construction. Similarly, we introduce Favre (or density weighted) averaged quantities by 
+
+\begin{align}
+\fht{q} = \frac{\eht{\rho q}}{\eht{\rho}}
+\end{align}
+
+\noindent which defines a complimentary decomposition of the flow into mean and fluctuations according to $q = \fht{q} + \ff{q}$. Here, $\ff{q}$ is the Favrian fluctuation and its mean is zero when Favre averaged $\fht{\ff{q}} = 0$. For a more complete elaboration on the algebra of these averaging procedures we refer the reader to \citet{Chassaing2010}
+
+\section{Calculation of ransX mean fields}
+
+We perform the calculation of required mean-fields at runtime of hydrodynamic simulations and exploit various identities between terms in our RANS equations and space-time averaged thermodynamic quantities or their products. For example, mass flux $\eht{\rho'u'_r} = \eht{\rho u_r} - \eht{\rho} \ \eht{u_r} $, so in order to calculate the mass flux, we need $\eht{\rho u_r}$, $\eht{\rho}$, $\eht{u_r}$. The following subsections describe this methodology implemented to the multi-fluid compressible hydrodynamic code PROMPI of \citep{MeakinArnett2007} and post-processing tool tailored for its output written in Python \href{https://github.com/mmicromegas/ransX}{https://github.com/mmicromegas/ransX}. This github repository contains also PROMPI subroutines that deal with RANS averaging and storage located in direcotry UTILS/FOR\_YOUR\_HYDRO. Feel free to use them in your hydrodynamic codes as well. We hope it speeds up integration of our ransX framework to your research projects. 
+
+\subsection{Initialization and calculation in hydrodynamic code PROMPI}
+
+Our main array for storage of space-time averages between two consecutives data dumps is called $havg$. It is a three dimensional array declared as $havg(4,nrans,qqx)$. First index referes to identification position of horizontal averages of three-dimensional thermodynamic quantities required either at initialization or update stage of hydrodynamic simulation. The seconds index is number RANS mean-fields we calculate. The third index is number of grid points in radial or $x$ direction (depending on geometry).
+
+The main subroutine, where we calculate $havg$ is called {\bf rans\_avg.f90}. It requires an input of one parameter called $imode$, which tells it where in hydrodynamic simulation it is and whether it should be initializing $havg$ or updating it (Fig.\ref{havg:init}). If in initialization mode ($imode.eq.0$) it initializes also an array called $ransname$ (Fig.\ref{havg:calc}), which holds name of horizontally-averaged variables. The $havg$ data is stored in a binary file with extension ransdat, whether variables like $ransname$ to a text file with extension ranshead together with other variables like resolution and dump times. 
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{initialize_havg.png}}
+\caption{Initialization of $havg$ array in {\bf rans\_avg.f90}}
+\label{havg:init}
+\end{figure}
+
+After the initialization, horizontal averages are being computed as show in the example in Fig.\ref{havg:calc} according to Equation \ref{eq:horizontal}  and stored in the $havg$ array where the identification position index is set to 2 e.g. $havg(2,ifield,i)$. The scaling factor in case of spherical geometry $\sin \theta d \theta d \phi / \Delta \Omega$ is the variable $fsteradjk$. In case of cartesian geometry, this factor will be equal to one.  
+
+\begin{align}
+\label{eq:horizontal}
+\langle q \rangle (r,t) = \frac{1}{\Delta \Omega} \int \int q(r,\theta,\phi,t)~\sin \theta d \theta d \phi
+\end{align}
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{rans_avg_snippet.png}}
+\caption{Demonstration loop of horizontal averaging (Eq.\ref{eq:horizontal}), where $\langle q \rangle$(r,t) is $havg(2,ifield,i)$ taking geometry into account with scaling variable $fsteradjk$}
+\label{havg:calc}
+\end{figure}
+
+After calculation of these horizontal averages, they are turned into a variable that we call running averages defined in Equation \ref{eq:runaverage} and stored in $havg$ array with identification position index set to 3 e.g $havg(3,ifield,i)$ (Fig.\ref{fig:runaverage}). These running averages are horizontal averages, that are additionally averaged further taking into account previous hydro sweep stored in $havg$ with identification position index set to 1 and updated as shown in Fig.\ref{havg:init}. 
+%\begin{figure}[!h]
+%\centerline{
+%\includegraphics{prompi_havg_detail.png}}
+%\caption{Calculation of running average }
+%\end{figure}
+
+\begin{align}
+  q_{\mbox{run}} = \sum_i \left(\langle q^n \rangle_i + \langle q^n \rangle_{i-1} \right) \ 0.5 \ \Delta t_i
+\label{eq:runaverage}  
+\end{align}  
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{update_running_average.png}}
+\caption{Calculation of running averages (Eq.\ref{eq:runaverage}), where $q_{\mbox{run}}$ is $havg(3,n,i)$.}
+\label{fig:runaverage}
+\end{figure}
+
+The running averages are later used in a subroutine {\bf write\_rans\_data.f90} to calculate statistical average according to Equation \ref{eq:stataverage} at the time of data dump as show in the Figure \ref{fig:stataverage}.  
+
+\begin{align}
+  \overline{q} =  \frac{q_{\mbox{run}}}{\sum_i \Delta t_i}
+\label{eq:stataverage}  
+\end{align}  
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{prompi_havg.png}}
+\caption{Calculation of statistical average (Eq.\ref{eq:stataverage}), where $\overline{q}$ is $havg\_sum\_tot\_global(3,k,i)$. $rans\_tavg$ calculation is shown in Figure \ref{fig:runaverage}.}
+\label{fig:stataverage}
+\end{figure}
+
+
+\subsection{Post-processing in Python}
+
+The statistical averages calculated according to Eq.\ref{eq:stataverage} are only between two consecutives data dumps, that typically cover time much shorter than a convective turnover timescale (TO). In order to get robust statistical averages, we need to calculate the averages over at least three TOs. For that we use python script called $rans\_tseries.py$, that is using calculated $q$s stored in ransdat files accoriding to Equation \ref{eq:tseries} shown in Figure \ref{fig:tseries}. 
+
+The script takes advantage of ranshead files, that contain names of the RANS mean fields in exact order as they are stored in $havg$ array and stores the final mean fields in a dictionary variable called $eht$. The dictionary is at the end stored in python's $npy$ file, that can be easily read by RANS equations classes, which calculate and plot terms of ransX framework equations.
+
+\begin{align}
+  \overline{Q} = \frac{\overline{q} \ \Delta t_{\mbox{dumps}}}{\sum_{\mbox{dumps}} \Delta t_{\mbox{dumps}}}
+\label{eq:tseries}  
+\end{align}
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{tseries_averaging.png}}
+\caption{Statistical averages as calculated by {\bf ransx\_tseries.py} and Eq.\ref{eq:tseries} over time interval between $timec[i]-tavg/2$ and $timec[i]+tavg/2$. The $timec[i]$ is central time around which we can calculate statistical average over time specified by $tavg$. The $eht$ is $\overline{Q}$, the $q$ is loaded into a list called $eh$, the time between consecutives dumps is $dt$, the total time over which we need the statistical average is $sumdt$.}
+\label{fig:tseries}
+\end{figure}
+
+\section{Implementation of ransX equations}
+
+Mean-fields RANS equations are in our framework implemented using python classes each dedicated to one equation. All the classes are stored in directory EQUATIONS. Every class has almost the same structure inheriting some methods from classes CALCULUS.py and ALIMIT.py and consisting of a constructor method $\_init\_$, where we initialize whole class with data read from the $npy$ file and use them to construct all terms in RANS equations using various identities as shown in Section \ref{sect:usefulidentities} at the end of this document. The second method plots mean-field thermodynamic quantity for which we want to see RANS equation implemented in the class. Terms in these equations are then shown by third method \footnote{Warning: Labels of plot lines are not adjusted for simulation in Cartesian geometry yet.}. Sometimes, such a class contains fourth method, that calculates integral budget for each of the mean-field of the equations according to volume integral Equation \ref{eq:integralbudget}
+
+\begin{align}
+  I_{\mbox{budget}} = \int_r 4 \pi r^2 \ \overline{Q}_{\mbox{RANS}} / dr
+\label{eq:integralbudget}  
+\end{align}
+
+Next subsections contain description of some EQUATIONs classes and implementation/calculation of RANS equations terms for hydrodynamic simulation in spherical geometry.  The folder EQUATIONS contain also classes for plotting of some background quantities like temperature gradient, degeneracy or Brunt-Vaisalla frequency, but we skip those for now.
+
+\subsection{Continuity Equation with Mass FLux}
+
+Following lines describe exact mapping between actual physical mean-fields and their counterparts in the ContinuityEquationWithMassFlux.py. A snippet of the code is shown in Figure \ref{fig:cont_mass_flux}.
+
+\begin{align}
+  \fht{D}_t \eht{\rho} = & - \nabla_r f_\rho + (f_\rho / \eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d} \\
+  \partial_t \eht{\rho} + \fht{u}_r \partial_r \eht{\rho} = & -\nabla_r \eht{\rho'u'_r} + ( \eht{\rho'u'_r}/\eht{\rho})\partial_r \eht{\rho} - \eht{\rho} \nabla_r \eht{u}_r) \nonumber \\
+  \partial_t t\_dd + ddux/dd \partial_r dd = & -\nabla_r (ddux - dd*ux) + ((ddux-dd*ux)/dd) \partial_r dd - dd \nabla_r ux) \nonumber  \\
+  \partial_t t\_dd + fht\_ux \ \partial_r dd = & -\nabla_r fdd + (fdd/dd) \ \partial_r dd - dd \nabla_r ux) \nonumber   
+\end{align}
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{ransx_continuity_with_mass_flux.png}}
+\caption{Continuity equation with mass flux $f_\rho$ as programmed into ContinuityEquationWithMassFlux.py}
+\label{fig:cont_mass_flux}
+\end{figure}
+
+\subsection{Continuity Equation with Favrian Dilatation}
+
+Following lines describe exact mapping between actual physical mean-fields and their counterparts in the ContinuityEquationWithFavrianDilatation.py. A snippet of the code is shown in Figure \ref{fig:cont_dil}.
+
+\begin{table}[!h]
+\label{tab:rans-xtrans}
+\begin{align}
+% continuity equation
+  \fht{D}_t \eht{\rho} = & -\eht{\rho}\fht{d} \\
+  \partial_t \eht{\rho} + \fht{u}_r \partial_r \eht{\rho} = & -\eht{\rho}\fht{d} \nonumber \\
+  \partial_t t\_dd + ddux/dd \ \partial_r dd = & -dd * \nabla_r \ ddux/dd \nonumber \\
+  \partial_t t\_dd + fht\_ux \ \partial_r dd = & -dd * \nabla_r \ fht\_ux \nonumber   
+\end{align}
+\end{table}
+
+\begin{figure}[!h]
+\centerline{
+\includegraphics{ransx_continuity_with_favrian_dilatation.png}}
+\caption{Continuity equation with favrian dilatation $\fht{q}$ as programmed into ContinuityEquationWithFavrianDilatation.py}
+\label{fig:cont_dil}
+\end{figure}
+
+
+%\subsection{Momentum Equation X}
+
+%\subsection{Momentum Equation Y}
+
+%\subsection{Momentum Equation Z}
+
+%\subsection{Reynolds Stress XX}
+
+%\subsection{Reynolds Stress YY}
+
+%\subsection{Reynolds Stress ZZ}
+
+%\subsection{Turbulent Kinetic Energy Equation}
+
+%\subsection{Radial Turbulent Kinetic Energy Equation}
+
+%\subsection{Horizontal Turbulent Kinetic Energy Equation}
+
+%\subsection{Internal Energy Equation}
+
+%\subsection{Internal Energy Flux Equation}
+
+%\subsection{Internal Energy Variance Equation}
+
+%\subsection{Kinetic Energy Equation}
+
+%\subsection{Total Energy Equation}
+
+%\subsection{Entropy Equation}
+
+%\subsection{Entropy Flux Equation}
+
+%\subsection{Entropy Variance Equation}
+
+%\subsection{Pressure Equation}
+
+%\subsection{Pressure Flux Equation}
+
+%\subsection{Pressure Variance Equation}
+
+%\subsection{Temperature Equation}
+
+%\subsection{Temperature Flux Equation}
+
+%\subsection{Temperature Variance Equation}
+
+%\subsection{Enthalpy Equation}
+
+%\subsection{Enthalpy Flux Equation}
+
+%\subsection{Enthalpy Variance Equation}
+
+%\subsection{Density Variance Equation}
+
+%\subsection{Turbulent Mass Flux Equation}
+
+%\subsection{Density-specific Volume Covariance Equation}
+
+
+\subsection{Composition Transport Equation}
+\label{sect:xtranseq}
+
+XtransportEquation.py
+
+\begin{align}
+% composition transport
+\erho\fav{D}_t \fav{X}_i = & -\nabla_r f_i + \erho \fav{\dot{X}}_i^{\rm nuc} \\
+\erho\partial_t \fav{X}_i + \erho \fav{u}_r \partial_r \fav{X}_i = & -\nabla_r \erho \fav{X''_i u''_r} +  \erho \fav{\dot{X}}_i^{\rm nuc} \nonumber \\
+\partial_t \erho \fav{X}_i + \partial_r \erho \fav{u}_r \fav{X}_i = & -\nabla_r \erho \fav{X''_i u''_r} +  \erho \fav{\dot{X}}_i^{\rm nuc} \nonumber \\
+\partial_t \erho \fav{X}_i + \partial_r \erho \fav{u}_r \fav{X}_i = & -\nabla_r \erho (\fav{X_i u_r} - \fav{X_i}\fav{u_r}) +  \erho \fav{\dot{X}}_i^{\rm nuc} \nonumber \\
+\partial_t \ \erho \ \eht{\rho X_i}/\eht{\rho} + \partial_r \ \erho \ \eht{\rho u_r}/\eht{\rho} \ \eht{\rho X_i}/\eht{\rho} = & -\nabla_r \left(\eht{\rho X_i u_r} - \eht{\rho X_i}\eht{\rho u_r}/\eht{\rho} \right) +  \eht{\rho \dot{X}_i^{\rm nuc}} \nonumber \\
+\partial_t \left( t\_dd * t\_ddxi/t\_dd \right) + \partial_r \left( dd * ddux/dd * ddxi/dd \right) = & -\nabla_r \left(ddxiux - ddxi*ddux/dd  \right) + ddxidot \nonumber \\
+\partial_t \left( t\_dd * t\_fht\_xi \right) + \partial_r \left( dd * fht\_ux * fht\_xi \right) = & -\nabla_r fxi + ddxidot \nonumber
+\end{align}
+
+
+%\subsection{Composition Flux Equation}
+%\label{sect:xflxeq}
+
+%\begin{align}
+  % composition flux
+%\erho \fav{D}_t (f_i / \eht{\rho}) = &  -\nabla_r f_i^r  - f_i \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{X}_i -\eht{X''_i} \partial_r \eht{P} - \eht{X''_i \partial_r P'} + \overline{u''_r \rho \dot{X}_i^{\rm nuc}} + {\mathcal G_i} \\
+%\eht{\rho} \partial_t \fht{X''_i u''_r} + \eht{\rho}\fht{u}_r \partial_r \fht{X''_i u''_r} = &  -\nabla_r \eht{\rho} \fht{X''_i u''_r u''_r} - \eht{\rho}\fht{X''_i u''_r}\partial_r \fht{u_r} - \eht{\rho}\fht{u''_r u''_r}\partial_r \fht{X}_i - \eht{X''_i} \partial_r \eht{P} - \eht{X''_i \partial_r P'} + \eht{u''_r \rho \dot{X}_i^{\rm nuc}} + \eht{G_r^i} - \eht{X''_i G_r^M} \nonumber \\
+%\eht{\rho} \partial_t \fht{X''_i u''_r} + \eht{\rho}\fht{u}_r \partial_r \fht{X''_i u''_r} = &  -\nabla_r \eht{\rho} \fht{X''_i u''_r u''_r} - \eht{\rho}\fht{X''_i u''_r}\partial_r \fht{u_r} - \eht{\rho}\fht{u''_r u''_r}\partial_r \fht{X}_i - \eht{X''_i} \partial_r \eht{P} - \eht{X''_i \partial_r P'} + \eht{u''_r \rho \dot{X}_i^{\rm nuc}} \nonumber \\
+%& - \eht{\rho X''_i u''_\theta u''_\theta/r} - \eht{\rho X''_i u''_\phi u''_\phi/r} + \eht{\rho X''_i u_\theta u_\theta/r} + \eht{\rho X''_i u_\phi u_\phi/r} \nonumber \\
+%\eht{\rho} \partial_t (\fht{X_i u_r} - \fht{X_i} \fht{u}_r) + \eht{\rho}\fht{u}_r \partial_r (\fht{X_i u_r} - \fht{X_i} \fht{u_r})  = &  -\nabla_r (\eht{\rho X_i u_r u_r} -\fht{X_i}\eht{\rho u_r u_r} - 2 \fht{u_r} \eht{\rho X_i u_r} + 2\eht{\rho}\fht{X_i}\fht{u_r}\fht{u_r}) \nonumber \\
+%& - \eht{\rho}(\fht{X_i u_r} -\fht{X_i}\fht{u}_r)\partial_r \fht{u}_r - \eht{\rho}(\fht{u_r u_r} - \fht{u}_r \fht{u}_r)\partial_r \fht{X}_i \nonumber \\
+%& - (\eht{X_i} \partial_r \eht{P} - \fht{X_i} \partial_r \eht{P}) - (\eht{X_i \partial_r P} - \eht{X_i}\partial_r \eht{P})  + (\eht{u_r \rho \dot{X}_i^{\rm nuc}} - \fht{u_r} \eht{\rho \dot{X}_i^{\rm nuc}}) \nonumber \\
+%& - (\eht{\rho X_i u_\theta u_\theta} -\fht{X_i}\eht{\rho u_\theta u_\theta} - 2 \fht{u}_\theta \eht{\rho X_i u_\theta} + 2\eht{\rho}\fht{X_i}\fht{u}_\theta\fht{u}_\theta)/r \nonumber \\
+%& - (\eht{\rho X_i u_\phi u_\phi} -\fht{X_i}\eht{\rho u_\phi u_\phi} - 2 \fht{u}_\phi \eht{\rho X_i u_\phi} + 2\eht{\rho}\fht{X_\phi}\fht{u}_\phi\fht{u}_\phi)/r \nonumber \\
+%& + (\eht{\rho X_i u_\theta u_\theta} - \fht{X_i} \eht{\rho u_\theta u_\theta})/r \nonumber \\
+%& + (\eht{\rho X_i u_\phi u_\phi} - \fht{X_i} \eht{\rho u_\phi u_\phi})/r \nonumber
+%\end{align}
+
+%\begin{align}
+%dd \ \partial_t (ddxiux/dd - ddxi*ddux/dd*dd) + ddux \ \partial_r (ddxiux/dd - ddxi*ddux/dd*dd) = \nonumber \\
+%- \nabla_r (ddxiuxux - ddxi/dd*dduxux - 2*ddux/dd*ddxiux +2*ddxi*ddux*ddux/dd*dd) \nonumber \\
+%- (ddxiux - ddxi*ddux/dd) * \partial_r ddux/dd - (dduxux - ddux*ddux/dd) * \partial_r ddxi/dd \nonumber \\
+%- (xi \ \partial_r \ pp - ddxi/dd \ \partial_r \ pp) - (xigradxpp - xi \ \partial_r \ pp) + (ddxidotux - ddux/dd * ddxidot) \nonumber \\
+%- (ddxiuyuy - ddxi/dd*dduyuy - 2*dduy/dd*ddxiuy + 2*ddxi*dduy*dduy/dd*dd)/r \nonumber \\
+%- (ddxiuzuz - ddxi/dd*dduzuz - 2*dduz/dd*ddxiuz + 2*ddxi*dduz*dduz/dd*dd)/r \nonumber \\
+%+ (ddxiuyuy - ddxi/dd*dduyuy)/r \nonumber \\
+%+ (ddxiuzuz - ddxi/dd*dduzuz)/r \nonumber
+%\end{align}
+
+
+%\subsection{Composition Variance Equation}
+%\label{sect:xvareq}
+
+%\begin{table}[!h]
+%\label{tab:rans-xvar}
+  
+%\begin{align}
+% composition sigma
+%\eht{\rho} \fht{D}_t \sigma_i = & -\nabla_r f_i^r - 2 f_i \partial_r \fht{X}_i + 2 \eht{X''_i \rho \dot{X}_i^{\rm nuc}} \\
+%\eht{\rho} \fht{D}_t \fht{X''_i X''_i} = & -\nabla_r (\eht{\rho X''_i X''_i u''_r} ) - 2 \eht{\rho}\fht{X''_i u''_r} \partial_r \fht{X}_i + 2 \eht{X''_i \rho \dot{X}_i^{\rm nuc}} \nonumber \\
+%\eht{\rho} \partial_t (\fht{X_i X_i} - \fht{X_i}\fht{X_i}) + \eht{\rho}\fht{u}_r \partial_r (\fht{X_i X_i} - \fht{X_i}\fht{X_i}) = &  -\nabla_r (\eht{\rho X_i X_i u_r} - 2 \fht{X_i} \eht{\rho X_i u_r} - \fht{u}_r \eht{\rho X_i X_i} + 2 \fht{X}_i \fht{X}_i \eht{\rho u_r} ) \nonumber \\
+%& - 2 \eht{\rho} (\fht{X_i u_r} - \fht{X}_i \fht{u}_r) \partial_r \fht{X}_i + (\eht{X_i \rho \dot{X}_i} - \fht{X}_i \eht{\rho \dot{X}_i}) \nonumber \\
+%dd \ \partial_t \ (ddxisq/dd - ddxi*ddxi/dd*dd) & \nonumber \\
+%+ \ ddux \ \partial_r \ (ddxisq/dd - ddxi*ddxi/dd*dd) = & -\nabla_r (ddxisqux - 2*ddxi/dd*ddxiux - ddux/dd*ddxisq + 2*ddxi*ddxi*ddux/dd*dd) \nonumber \\
+%& - \ 2*dd \ (ddxiux/dd - ddxi*ddux/dd*dd) * \partial_r \ ddxi/dd \nonumber \\
+%& + 2 * (ddxixidot - ddxi/dd * ddxidot) \nonumber
+%\end{align}
+%\end{table}
+
+
+\subsection{Density-specific Volume Covariance}
+
+DensitySpecificVolumeCovarianceEquation.py 
+
+\begin{align}
+  \eht{D}_t b = &  +\eht{v} \nabla_r \eht{\rho} \eht{u''_r} -\eht{\rho}\nabla_r (\eht{u'_r v'}) + 2\eht{\rho}\eht{v'd'} \label{eq:rans_b}  \\
+  \partial_t b + \eht{u}_r \partial_r b = & \ \eht{v} \nabla_r \eht{\rho}(\eht{u}_r - \fht{u}_r) - \eht{\rho} \nabla_r (\eht{u_r v} - \eht{u}_r \eht{v}) + 2 \eht{\rho} (\eht{vd} -\eht{v}\eht{d}) \nonumber \\
+  \partial_t \eht{v'\rho'} + \eht{u}_r \partial_r (\eht{v'\rho'}) = & \ \eht{v} \nabla_r \eht{\rho}(\eht{u}_r - \fht{u}_r) - \eht{\rho} \nabla_r (\eht{u_r v} - \eht{u}_r \eht{v}) + 2 \eht{\rho} (\eht{vd} -\eht{v}\eht{d})  \nonumber \\
+  \partial_t (\underbrace{\eht{v \rho}}_\text{1} - \eht{v} \ \eht{\rho}) + \eht{u}_r \partial_r (\underbrace{\eht{v \rho}}_\text{1} - \eht{v} \ \eht{\rho}) = & \ \eht{v} \nabla_r \eht{\rho}(\eht{u}_r - \fht{u}_r) - \eht{\rho} \nabla_r (\eht{u_r v} - \eht{u}_r \eht{v}) + 2 \eht{\rho} (\eht{vd} -\eht{v}\eht{d})   \nonumber \\
+  -\partial_t (\eht{v} \ \eht{\rho}) - \eht{u}_r \partial_r (\eht{v} \ \eht{\rho}) = & \ \eht{v} \nabla_r \eht{\rho}(\eht{u}_r - \fht{u}_r) - \eht{\rho} \nabla_r (\eht{u_r v} - \eht{u}_r \eht{v}) + 2 \eht{\rho} (\eht{vd} -\eht{v}\eht{d})  \nonumber \\
+  \partial_t (1-t\_sv*t\_dd) - ux \ \partial_r (1-sv*dd) = & \ sv * \nabla_r dd*(ux - ddux/dd) - dd \ \nabla_r (svux - sv*ux) + 2*dd*(svdivu - sv*divu)  \nonumber \\
+  \partial_t \ t\_b - ux \ \partial_r \ b = & \ sv * \nabla_r \ dd*(ux - ddux/dd) - dd \ \nabla_r (svux - sv*ux) + 2*dd*(svdivu - sv*divu)  \nonumber \\
+   \partial_t \ t\_b - ux \ \partial_r \ b = & \ sv * \nabla_r \ dd*(ux - fht\_ux) - dd \ \nabla_r (svux - sv*ux) + 2*dd*(svdivu - sv*divu)  \nonumber  
+\end{align}  
+
+
+
+%\subsection{Density Variance Equation}
+
+%\begin{align}
+% sigma density
+%  \fht{D}_t \sigma_\rho =  &  - \nabla_r \eht{(\rho' \rho ' u''_r)}  - 2\eht{\rho} \ \eht{\rho'd''} - 2 \eht{\rho'u''_r} \partial_r \eht{\rho} - 2 \fht{d} \ \sigma_\rho - \eht{\rho'\rho'd''} \\
+%  \partial_t \eht{\rho'\rho'} + \fht{u}_r \partial_r \eht{\rho'\rho'} =  &  - \nabla_r \eht{(\rho' \rho ' u''_r)}  - 2\eht{\rho} \ \eht{\rho'd''} - 2 \eht{\rho'u''_r} \partial_r \eht{\rho} - 2 \fht{d}\eht{\rho'\rho'}  - \eht{\rho'\rho'd''} \\
+%  \partial_t (\eht{\rho\rho} - \eht{\rho} \ \eht{\rho}) + \fht{u}_r \partial_r (\eht{\rho\rho} - \eht{\rho} \ \eht{\rho}) = & -\nabla_r (\eht{\rho \rho u_r} - 2\eht{\rho u_r} \ \eht{\rho} + \eht{\rho} \eht{\rho} \ \eht{u_r} - \eht{\rho \rho}\fht{u}_r + \eht{\rho} \ \eht{\rho} \fht{d}) \\
+%  & -2\eht{\rho}(\eht{\rho d} - \eht{\rho}\fht{d} - \eht{\rho} \ \eht{d} + \eht{\rho}\fht{d}) \\
+%  & -2(\eht{\rho u_r} - \eht{\rho}\fht{u}_r - \eht{\rho} \ \eht{u}_r + \eht{\rho}\fht{u}_r)\partial_r \eht{\rho} \\
+%  & -2 \fht{d} (\eht{\rho \rho} - \eht{\rho} \ \eht{\rho}) - (\eht{\rho \rho u_r} - 2\eht{\rho u_r} \ \eht{\rho}+ \eht{\rho} \ \eht{\rho} \eht{u}_r -\eht{\rho \rho}\fht{u}_r + \eht{\rho} \ \eht{\rho} \fht{d}) \\
+%  \partial_t (ddsq - dd*dd) & \\
+%  + ddux/dd \partial_r (ddsq - dd*dd) = & \nonumber \\
+%  & - \nabla_r (ddddux - 2*ddux*dd + ddsq*ux - ddsq*ddux/dd + dd*dd*ddux/dd) \nonumber \\
+%  & -2*dd*(-dd*divu + dddivu) -2*(-dd*ux + ddux) \partial_r dd \nonumber \\
+%  & -2*dddivu/dd * (ddsq - dd*dd) \nonumber \\
+%  & -(dddddivu - 2*dddivu*dd + ddsq*divu - ddsq*dddivu/dd + dd*dddivu) \nonumber
+%\end{align}  
+  
+%\subsection{Internal Energy Variance Equation}
+
+%\begin{align}
+% sigma internal energy
+%  \eht{\rho} \fht{D}_t \sigma_{\epsilon I} = &  -\nabla_r (\eht{\rho \epsilon''_I \epsilon''_I u''_r} ) - 2 f_I \partial_r \fht{\epsilon_I} - 2\overline{\epsilon''_I}\ \eht{P} \ \fht{d} - 2\eht{P} \ \eht{\epsilon''_I d''} - 2\fht{d} \ \eht{\epsilon''_I P'} - 2\overline{\epsilon''_I P' d''} + 2\eht{\epsilon''_I {\mathcal S}} \\
+%  \eht{\rho} \fht{D}_t \fht{\epsilon''_I \epsilon''_I} = &  -\nabla_r (\eht{\rho \epsilon''_I \epsilon''_I u''_r} ) - 2 \eht{\rho} \fht{\epsilon''_I u''_r} \partial_r \fht{\epsilon_I} - 2\overline{\epsilon''_I}\ \eht{P} \ \fht{d} - 2\eht{P} \ \eht{\epsilon''_I d''} - 2\fht{d} \ \eht{\epsilon''_I P'} - 2\overline{\epsilon''_I P' d''} + 2\eht{\epsilon''_I \rho \varepsilon_{nuc}} \\
+%  \eht{\rho} \partial_t \fht{\epsilon''_I \epsilon''_I} + \eht{\rho} \fht{u_r} \nabla_r (\fht{\epsilon''_I \epsilon''_I})  = &  -\nabla_r (\eht{\rho \epsilon''_I \epsilon''_I u''_r} ) - 2 \eht{\rho} \fht{\epsilon''_I u''_r} \partial_r \fht{\epsilon_I} - 2\overline{\epsilon''_I}\ \eht{P} \ \fht{d} - 2\eht{P} \ \eht{\epsilon''_I d''} - 2\fht{d} \ \eht{\epsilon''_I P'} - 2\overline{\epsilon''_I P' d''} + 2\eht{\epsilon''_I \rho \varepsilon_{nuc}}
+%\end{align}
+
+%\begin{align}  
+%  dd*\partial_t (ddeiei/dd - ddei*ddei/(dd*dd)) + & \nonumber \\
+%  ddux*\nabla_r  (ddeiei/dd - ddei*ddei/(dd*dd)) & = \nonumber \\
+%  & -\nabla_r (ddeieiux/dd - 2 * ddei/dd * ddeiux/dd - ddux/dd*ddeiei/dd \nonumber \\
+%  & + 2*ddei*ddei*ddux/(dd*dd*dd)) \nonumber \\
+%  & -2*dd*(ddeiux/dd - ddei*ddux/(dd*dd))\partial_r ddei/dd \nonumber \\
+%  & -2*(ei - ddei/dd)*pp*dddivu/dd \nonumber \\
+%  & -2*pp*(eidd - ei*dddivu/dd - ddei/dd*divu + ddei*dddivu/dd) \nonumber \\
+%  & -2*dddivu/dd*(eippdivu - eidivu*pp - ddei/dd*ppdivu \nonumber \\
+%  & + ddei/dd*pp*dd - eipp*dddivu/dd + ei*pp*dddivu/dd) \nonumber \\
+%  & + 2*(eiddenuc - ddei/dd*(ddenuc1+ddenuc2))
+%\end{align}
+
+
+%\subsection{Mean Number of Nucleon per Isotope a.k.a Abar Equation}
+
+%\subsection{Mean Number of Nucleon per Isotope Flux a.k.a Abar Flux Equation}
+
+%\subsection{Mean Charge per Isotope a.k.a Zbar Equation}
+
+%\subsection{Mean Charge per Isotope Flux a.k.a Zbar Flux Equation}
+
+%\subsection{Hydrodynamic Stellar Structure Equations}
+
+%\subsubsection{Continuity Equation}
+
+%\subsubsection{Momentum Equation}
+
+%\subsubsection{Luminosity Equation}
+
+%\subsubsection{Temperature Equation}
+
+%\subsubsection{Composition Equation}
+
+
+%\subsection{MLT Velocity}
+
+%\begin{align}
+%u_{MLT} \equiv (u'_{rms}) & = \frac{F_c}{\alpha_E c_P (T'_{rms})} = \frac{\erho \fht{h''u''_r}}{\alpha_E \fht{c_P} (\fht{TT} - \fht{T}\fht{T})^{1/2}} \sim \frac{\erho \eht{h'u'_r}}{\alpha_E \eht{c_P} (\eht{TT} - \eht{T} \ \eht{T})^{1/2}} \mbox{?} \\
+%u_{MLT} \equiv (u'_{rms}) & = \frac{\erho (\fht{h u_r} - \fht{h}\fht{u_r})}{\alpha_E \fht{c_P} (\fht{TT} - \fht{T}\fht{T})^{1/2}} \sim \frac{\erho (\eht{h u_r} -\eht{h} \eht{u_r})}{\alpha_E \eht{c_P} (\eht{TT} - \eht{T} \ \eht{T})^{1/2}} \nonumber \\
+%u_{MLT} \equiv (u'_{rms}) & = \frac{ddhhux - ddhh*ddux/dd}{\alpha_E * ddcp/dd \ (ddttsq/dd - ddtt*ddtt/dd*dd)^{1/2}} \sim \frac{dd*hhux - dd*hh*ux}{\alpha_E * cp \ (ttsq - tt*tt)^{1/2}} \nonumber
+%\end{align}
+
+\subsection{Usefull Identities}
+\label{sect:usefulidentities}
+
+\begin{align}
+\eht{a''} = & \ \eht{a - \fht{a}} = \eht{a} - \fht{a}   \\
+\fht{a''b''} = & \ \fht{(a-\fht{a})*(b-\fht{b})} = \fht{ab} - \fht{a}\fht{b} \\
+\eht{a'b'} = & \ \eht{(a - \eht{a})*(b-\eht{b})} = \eht{ab}-\eht{a}\eht{b} = \eht{a'b''}\\
+\fht{a''b''c''} = & \ \fht{(a-\fht{a})*(b-\fht{b})*(c-\fht{c})} = \fht{abc} - \fht{a}\fht{bc} - \fht{b}\fht{ac} - \fht{c}\fht{ab} + 2\fht{a}\fht{b}\fht{c} \\
+\eht{a'b'c''} = & \eht{(a-\eht{a})*(b-\eht{b})*(c-\fht{c})} = \eht{abc} - \eht{ac} \ \eht{b} - \eht{a} \ \eht{bc} + \eht{a} \ \eht{b} \ \eht{c} - \eht{ab} \ \fht{c} + \eht{a} \ \eht{b} \fht{c} \\
+\eht{a''b'c''} = & \eht{(a-\fht{a})*(b-\eht{b})*(c-\fht{c})} = \eht{abc} - \eht{ac}\eht{b} - \fht{a}\eht{bc} + \fht{a}\eht{b}\eht{c} - \eht{ab}\fht{c} + \eht{a}\eht{b}\fht{c} \\
+\eht{a''bc} = & \ \eht{(a-\fht{a})bc} = \eht{abc} - \fht{a}\eht{bc} \\
+\eht{a''\partial_r b'} = & \ \eht{(a-\fht{a})\partial_r b'} = \eht{a \partial_r b'} - \cancelto{0}{\fht{a}\partial_r \eht{b'}} = \eht{a \partial_r b} - \eht{a}\partial_r\eht{b}   
+\end{align}
+
+%\section{Definitions}
+
+%- only for basic quantities, without overbar e.g dd is density, ux is x velocity, ei internal energy etc. 
+
+
+\bibliography{referenc}
+
+\end{document}
+
+
