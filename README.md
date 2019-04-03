@@ -27,3 +27,13 @@ git clone https://github.com/mmicromegas/ransX
 # Available Documentation
 
 Available documentation encompassing ransX theory/user/implenetation and developer's guide can be found in the DOCS folder.
+
+RansXtheoryGuide.pdf
+
+RansXinstallationGuide.pdf
+
+RansXimplementationGuide.pdf
+
+RansXdevelopersGuide.pdf
+
+RansXuserGuide.pdf
