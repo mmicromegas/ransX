@@ -23,3 +23,7 @@ git clone https://github.com/mmicromegas/ransX
 1. cd ransX
 2. start ipython
 3. run ransx.py
+
+# Available Documentation
+
+Available documentation encompassing ransX theory/user/implenetation and developer's guide can be found in the DOCS folder.
