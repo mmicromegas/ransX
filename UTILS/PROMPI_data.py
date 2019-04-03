@@ -179,7 +179,7 @@ class PROMPI_ransdat:
     def ransdict(self):
         print self.eh.keys()
 
-class PROMPI_blockdat:
+class PROMPI_bindata:
 
     def __init__(self,filename,dat):
 
@@ -187,26 +187,27 @@ class PROMPI_blockdat:
 
         lookup = "density"
         iterate = True
-        with open(filename.replace("blockdat","blockhead")) as f:
+        with open(filename.replace("bindata","header")) as f:
             for num, line in enumerate(f,1):
                 if (iterate) and (lookup in line):
                     #print('found at line:', num)
                     num_density = num
                     iterate = False		
 
-        fhead = open(filename.replace("blockdat","blockhead"),'r')      
+        fhead = open(filename.replace("bindata","header"),'r')      
 
         header_line1 = fhead.readline().split()
         header_line2 = fhead.readline().split()
         header_line3 = fhead.readline().split()
         header_line4 = fhead.readline().split()
 					
-        if num_density == 10:	
+        if num_density == 9:	
             header_line5 = fhead.readline().split()
             header_line6 = fhead.readline().split()
             header_line7 = fhead.readline().split()
             header_line8 = fhead.readline().split()		
-            header_line9 = fhead.readline().split()	
+            #header_line9 = fhead.readline().split()
+
 			
         self.nstep  = int(header_line1[0])
         self.time   = float(header_line1[1])
@@ -218,11 +219,12 @@ class PROMPI_blockdat:
         self.nvar   = int(header_line2[4])
 
         ndims = [self.qqx,self.qqy,self.qqz]
-
+            
         self.varl = []		
         for line in range(self.nvar):
             line = fhead.readline().strip()
             self.varl.append(line)
+            print(line)
 
         self.interior_mass = float(fhead.readline())
             
@@ -290,22 +292,9 @@ class PROMPI_blockdat:
 #       >>> dt = np.dtype('<f') # little-endian single-precision float
 #       >>> dt = np.dtype('d')  # double-precision floating-point number
 
-        nproc = 8
+        self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
 
-#        self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
-
-        kk = -1
-        self.data = np.empty((self.qqx,self.qqy,self.qqz))
-        for k in range(0,self.qqz):
-            kk += 1;
-            jj = -1 			
-            for j in range(0,self.qqy):
-                jj += 1;		
-                #print(jj,kk)			
-                chunk = np.fromfile(fblock,dtype='<f4',count=self.qqx/nproc)
-                self.data[0:self.qqx/nproc,jj,kk] = chunk
-
-#        self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
+        self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
 #       print(self.data)
         
         fblock.close()
