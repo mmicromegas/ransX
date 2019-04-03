@@ -122,7 +122,8 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
-        self.dd        = dd	
+        self.dd          = dd
+        self.fdil        = fdil		
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -306,5 +307,44 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_alternative_simplified.eps')					
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_alternative_simplified.eps')		
+
+    def plot_dilatation_flux(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot continuity equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.dd*self.fdil
+		
+
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('dilatation flux')
+        plt.plot(grd1,lhs0,color='r',label = r"$\overline{\rho} \overline{u'_r d''}$")
+	
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"$g \ cm^{-2} \ s^{-2}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':14})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'dilatation_flux.eps')	
+		
 				

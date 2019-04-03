@@ -200,6 +200,13 @@ class MasterPlot():
                                              params.getForEqs('cteqhsse')['ybd'],\
                                              params.getForEqs('cteqhsse')['ilg'])
 
+
+        ranshssecont.plot_dilatation_flux(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('cteqhsse')['xbl'],\
+                                             params.getForEqs('cteqhsse')['xbr'],\
+                                             params.getForEqs('cteqhsse')['ybu'],\
+                                             params.getForEqs('cteqhsse')['ybd'],\
+                                             params.getForEqs('cteqhsse')['ilg'])
 											 
     def execHssMomxEq(self):
 						  
