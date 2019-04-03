@@ -1,0 +1,17 @@
+THESE SUBROUTINES CONTAIN CODE USED IN PROMPI TO CALCULATE AND STORE RANS DATA
+
+prompi.f90 - main code tells you when to calculate rans fields using rans_avg.f90 and store the rans data using dumpdata.f90
+
+rans_avg.f90 - main subroutines for calculation of rans mean fields
+
+dumpdata.f90 - dumpdata subroutine. rans data are written by write_rans_files.f90
+
+write_rans_files.f90 - writes ranshead and ransdat data (needed by our python's post-processing)
+
+write_rans_header.f90 - writes ranshead files
+
+write_rans_data.f90 - write ransdat files
+
+burnf.f90 - burn subroutine containing calculation of the xnucdot required by the rans_avg.f90
+
+
