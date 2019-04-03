@@ -2,7 +2,7 @@ THESE SUBROUTINES CONTAIN CODE USED IN PROMPI TO CALCULATE AND STORE RANS DATA
 
 prompi.f90 - main code tells you when to calculate rans fields using rans_avg.f90 and store the rans data using dumpdata.f90
 
-rans_avg.f90 - main subroutines for calculation of rans mean fields
+rans_avg.f90 - main subroutine for calculation of rans mean fields
 
 dumpdata.f90 - dumpdata subroutine. rans data are written by write_rans_files.f90
 
