@@ -19,7 +19,7 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         eht = np.load(filename)	
 		
         # pick specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/		
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
         # assign global data to be shared across whole class
 
         self.dd     = np.asarray(eht.item().get('dd')[intc])

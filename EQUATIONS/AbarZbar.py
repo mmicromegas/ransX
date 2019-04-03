@@ -24,7 +24,7 @@ class AbarZbar(calc.CALCULUS,al.ALIMIT,object):
         self.xzn0 = np.asarray(eht.item().get('xzn0')) 		
 		
         # pick specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 		
         self.abar = np.asarray(eht.item().get('abar')[intc]) 
         self.zbar = np.asarray(eht.item().get('zbar')[intc]) 

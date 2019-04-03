@@ -24,7 +24,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 
 		
         # pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 		
         dd = np.asarray(eht.item().get('dd')[intc])
         ux = np.asarray(eht.item().get('ux')[intc])	

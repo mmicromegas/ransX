@@ -22,7 +22,7 @@ class NuclearEnergyProduction(calc.CALCULUS,al.ALIMIT,object):
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
         # pick pecific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 		
         enuc = np.asarray(eht.item().get('enuc1')[intc]) + \
                np.asarray(eht.item().get('enuc2')[intc])

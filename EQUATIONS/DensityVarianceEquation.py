@@ -10,7 +10,7 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-# https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
+# https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
 class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
@@ -24,7 +24,7 @@ class DensityVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
         # pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
         dd        = np.asarray(eht.item().get('dd')[intc])
         ux        = np.asarray(eht.item().get('ux')[intc])	

@@ -22,7 +22,7 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
 
         # pick specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/ 
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 
 		
         dd        = np.asarray(eht.item().get('dd')[intc]) 
         pp        = np.asarray(eht.item().get('pp')[intc]) 

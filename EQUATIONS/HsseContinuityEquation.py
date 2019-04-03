@@ -25,7 +25,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         xznr = np.asarray(eht.item().get('xznr')) 
 		
         # pick equation-specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/ransXtoPROMPI.pdf/	
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
         mm    = np.asarray(eht.item().get('mm')[intc])			
         dd    = np.asarray(eht.item().get('dd')[intc])
