@@ -286,6 +286,6 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_momentum_x_eq_alternative_simplified.eps')				
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_momentum_x_eq_alternative_simplified.png')				
 		
 		

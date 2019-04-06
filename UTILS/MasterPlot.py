@@ -319,26 +319,7 @@ class MasterPlot():
                                              params.getForEqs('lueqhsse')['xbr'],\
                                              params.getForEqs('lueqhsse')['ybu'],\
                                              params.getForEqs('lueqhsse')['ybd'],\
-                                             params.getForEqs('lueqhsse')['ilg'])
-
-											 
-    def execHssCompEq(self):
-						  
-        params = self.params						  
-						
-        # instantiate 
-        ranshssecomp = hssecomp.HsseXtransportEquation(params.getForProp('prop')['eht_data'],\
-                                                             params.getForProp('prop')['ig'],\
-                                                             params.getForProp('prop')['intc'],\
-                                                             params.getForProp('prop')['prefix'])
-
-        # plot hsse X transport equation						       
-        ranshssecomp.plot_Xtransport_equation(params.getForProp('prop')['laxis'],\
-                                             params.getForEqs('coeqhsse')['xbl'],\
-                                             params.getForEqs('coeqhsse')['xbr'],\
-                                             params.getForEqs('coeqhsse')['ybu'],\
-                                             params.getForEqs('coeqhsse')['ybd'],\
-                                             params.getForEqs('coeqhsse')['ilg'])											 
+                                             params.getForEqs('lueqhsse')['ilg'])											 
 
     def execHssCompEq(self,inuc,element,x):
 
