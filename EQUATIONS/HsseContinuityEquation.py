@@ -307,7 +307,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_alternative_simplified.eps')		
+        plt.savefig('RESULTS/'+self.data_prefix+'hsse_continuity_eq_alternative_simplified.png')		
 
     def plot_dilatation_flux(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot continuity equation in the model""" 
@@ -345,6 +345,6 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'dilatation_flux.eps')	
+        plt.savefig('RESULTS/'+self.data_prefix+'dilatation_flux.png')	
 		
 				

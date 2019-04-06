@@ -181,7 +181,7 @@ class PROMPI_ransdat:
 
 class PROMPI_bindata:
 
-    def __init__(self,filename,dat):
+    def __init__(self,filename,ldat):
 
 #       find first occurence of dd due to header info stored either on 4 or 8 lines, computer arch dependent
 
@@ -269,18 +269,21 @@ class PROMPI_bindata:
             zzn0.append(float(line[i0_l:i0_r].strip()))
             zznr.append(float(line[ir_l:ir_r].strip()))	
         
+        self.datadict = {}
+		
+        for dat in ldat:		
+		
+            ivar   = self.varl.index(dat)
+            irecl  = self.qqx*self.qqy*self.qqz
+            nbyte  = irecl*4
+            dstart = int(ivar*nbyte)
 
-        ivar   = self.varl.index(dat)
-        irecl  = self.qqx*self.qqy*self.qqz
-        nbyte  = irecl*4
-        dstart = int(ivar*nbyte)
-
-        print(ivar,irecl,nbyte,dstart,self.qqx,self.qqy,self.qqz)
+            #print(ivar,irecl,nbyte,dstart,self.qqx,self.qqy,self.qqz)
         
-        fblock = open(filename,'rb')
+            fblock = open(filename,'rb')
 
-        # offset read pointer (argument offset is a byte count)         
-        fblock.seek(dstart) 
+            # offset read pointer (argument offset is a byte count)         
+            fblock.seek(dstart) 
 
 #       https://docs.scipy.org/doc/numpy-1.13.0/reference/arrays.dtypes.html#arrays-dtypes-constructing
         
@@ -292,15 +295,17 @@ class PROMPI_bindata:
 #       >>> dt = np.dtype('<f') # little-endian single-precision float
 #       >>> dt = np.dtype('d')  # double-precision floating-point number
 
-        self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
+            self.data = np.fromfile(fblock,dtype='<f4',count=irecl)
 
-        self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
-#       print(self.data)
+            self.data = np.reshape(self.data,(self.qqx,self.qqy,self.qqz),order='F')	
+#           print(self.data)
         
-        fblock.close()
-
-    def dt(self):
-        return self.data
+            fblock.close()
+            
+            self.datadict.update({dat : self.data})             			
+			
+    def datadict(self):
+        return self.datadict
         
     def eh(self):
         for i in range(self.qqx):
@@ -309,6 +314,9 @@ class PROMPI_bindata:
 
     def test(self):
         return self.data
+		
+    def grid(self):							
+        return {'nx' : self.qqx, 'ny' : self.qqy, 'nz' : self.qqz}		
 
 #        OBSOLETE CODE		
 		

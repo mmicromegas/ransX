@@ -678,8 +678,8 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
 
         press = np.asarray(self.data['pp'])
         dd = np.asarray(self.data['dd'])
-        gg = np.asarray(self.data['gg'])
-        grav = np.asarray(self.data['grav'])        
+        ddgg = np.asarray(self.data['ddgg'])
+        gg = np.asarray(self.data['gg'])       
         mm = np.asarray(self.data['mm']) 
 
         fig, ax1 = plt.subplots(figsize=(7,6))
@@ -699,7 +699,8 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
             ggtest[i] = -kappa*mm[i]/(xznl[i]**2.)
         
         for i in range(nx-2,-1,-1):
-            pp[i] = pp[i+1] - dd[i]*ggtest[i]*(xznr[i]-xznl[i])
+            #pp[i] = pp[i+1] - dd[i]*ggtest[i]*(xznr[i]-xznl[i])
+            pp[i] = pp[i+1] - ddgg[i]*(xznr[i]-xznl[i])			
             #print(i,pp[i],dd[i],gg[i],(xznr[i]-xznl[i]))
             #print(i,gg[i],dd[i],pp[i],(xznr[i]-xznl[i])))
 
@@ -711,9 +712,12 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         #    print(i,(press[i]-pp[i])/pp[i],press[i],pp[i])
         #    print(i,grav[i],dd[i],pp[i],(xznr[i]-xznl[i]),mm[i],xzn0[i])            
             
-        ax1.plot(xzn0,(press-pp)/pp,color='r',label = 'press-hse/hse')       
+        #ax1.plot(xzn0,(press-pp)/pp,color='r',label = 'press-hse/hse')       
         #ax1.semilogy(xzn0,pp,color='r',label = 'hse') 
 
+        ax1.plot(xzn0,self.Grad(pp,xzn0),color='r',label='grad')
+        ax1.plot(xzn0,ddgg,color='b',label='dd')
+		
         rd = (press-pp)/pp
         #print(np.sum(rd))
         
