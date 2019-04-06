@@ -1,0 +1,9 @@
+6/April/2019
+
+- add proper error handling
+
+- validation of parameter files 
+
+- add configuration for file type of output plots
+
+- add density scale height calculation to Properties.py
