@@ -7,3 +7,5 @@
 - add configuration for file type of output plots
 
 - add density scale height calculation to Properties.py
+
+- complete documentation
