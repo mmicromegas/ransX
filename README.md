@@ -22,7 +22,7 @@ git clone https://github.com/mmicromegas/ransX
 
 1. cd ransX
 2. start ipython
-3. run ransx.py
+3. run ransX.py
 
 # Available Documentation
 
