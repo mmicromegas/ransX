@@ -486,7 +486,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        #plt.title("alternative hsse luminosity equation simp")
+        plt.title("alternative hsse luminosity eq simp")
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{g}_r / \Gamma_1$")     	
         plt.plot(grd1,rhs1,color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
