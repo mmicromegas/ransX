@@ -9,3 +9,6 @@
 - add density scale height calculation to Properties.py
 
 - complete documentation
+
+- introduce vertical markers for convection zone boundaries
+ 
