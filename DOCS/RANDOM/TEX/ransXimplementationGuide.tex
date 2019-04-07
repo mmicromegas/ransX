@@ -108,7 +108,7 @@ This implementation guide describes all parts of our analysis framework for mult
 ransX or rans(eXtreme) framework is a theoretical and programmatic suite allowing for comprehensive analysis of statistical averages of all sort of hydrodynamic properties from 3D simulations in spherical and Cartesian geometry. It consists of three main parts:
 
 \begin{itemize}
-\item theoretical derivation of 1D Reynolds-averaged Navier-Stokes (RANS) mean-field equations for transport/flux/variance of momentums, kinetic/internal/total energies, temperature, enthalpy, pressure and chemical composition (see ransXtheoryGuide.pdf for more details)
+\item theoretical derivation of 1D Reynolds-averaged Navier-Stokes (RANS) mean-field equations for transport/flux/variance of mass, momenta, kinetic/internal/total energy, temperature, enthalpy, pressure and chemical composition (see ransXtheoryGuide.pdf for more details)
 \item calculation of required mean-fields for construction of terms in the RANS equations at runtime of hydrodynamic simulations
 \item construction of terms in the RANS equations and their plotting  
 \end{itemize}
@@ -137,13 +137,13 @@ ransX or rans(eXtreme) framework is a theoretical and programmatic suite allowin
 
 \section{Calculation of ransX mean fields}
 
-We perform the calculation of required mean-fields at runtime of hydrodynamic simulations and exploit various identities between terms in our RANS equations and space-time averaged thermodynamic quantities or their products. For example, mass flux $\eht{\rho'u'_r} = \eht{\rho u_r} - \eht{\rho} \ \eht{u_r} $, so in order to calculate the mass flux, we need $\eht{\rho u_r}$, $\eht{\rho}$, $\eht{u_r}$. The following subsections describe this methodology implemented to the multi-fluid compressible hydrodynamic code PROMPI of \citep{MeakinArnett2007} and post-processing tool tailored for its output written in Python \href{https://github.com/mmicromegas/ransX}{https://github.com/mmicromegas/ransX}. This github repository contains also PROMPI subroutines that deal with RANS averaging and storage located in direcotry UTILS/FOR\_YOUR\_HYDRO. Feel free to use them in your hydrodynamic codes as well. We hope it speeds up integration of our ransX framework to your research projects. 
+We perform the calculation of required mean-fields at runtime of hydrodynamic simulations and exploit various identities between terms in our RANS equations and space-time averaged thermodynamic quantities or their products. For example, mass flux $\eht{\rho'u'_r} = \eht{\rho u_r} - \eht{\rho} \ \eht{u_r} $, so in order to calculate the mass flux, we need $\eht{\rho u_r}$, $\eht{\rho}$, $\eht{u_r}$. The following subsections describe this methodology implemented to the multi-fluid compressible hydrodynamic code PROMPI of \citep{MeakinArnett2007} and post-processing tool tailored for its output written in Python \href{https://github.com/mmicromegas/ransX}{https://github.com/mmicromegas/ransX}. This github repository contains also PROMPI's subroutines that deal with RANS averaging and storage located in directory UTILS/FOR\_YOUR\_HYDRO. {\bf Feel free to use them in your hydrodynamic codes as well. We hope it speeds up integration of our ransX framework to your research projects.} The directory contains also README file, that will provide you with more details about how and where we use the subroutines in PROMPI.  
 
 \subsection{Initialization and calculation in hydrodynamic code PROMPI}
 
-Our main array for storage of space-time averages between two consecutives data dumps is called $havg$. It is a three dimensional array declared as $havg(4,nrans,qqx)$. First index referes to identification position of horizontal averages of three-dimensional thermodynamic quantities required either at initialization or update stage of hydrodynamic simulation. The seconds index is number RANS mean-fields we calculate. The third index is number of grid points in radial or $x$ direction (depending on geometry).
+Our main array for storage of space-time averages between two consecutives data dumps is called $havg$. It is a three dimensional array declared as $havg(4,nrans,qqx)$. First index referes to identification position of horizontal averages of three-dimensional thermodynamic quantities required either at initialization or update stage of hydrodynamic simulation. The seconds index is the number of RANS mean-fields we calculate. The third index is number of grid points in radial or $x$ direction (depending on geometry).
 
-The main subroutine, where we calculate $havg$ is called {\bf rans\_avg.f90}. It requires an input of one parameter called $imode$, which tells it where in hydrodynamic simulation it is and whether it should be initializing $havg$ or updating it (Fig.\ref{havg:init}). If in initialization mode ($imode.eq.0$) it initializes also an array called $ransname$ (Fig.\ref{havg:calc}), which holds name of horizontally-averaged variables. The $havg$ data is stored in a binary file with extension ransdat, whether variables like $ransname$ to a text file with extension ranshead together with other variables like resolution and dump times. 
+The main subroutine, where we calculate $havg$ is called {\bf rans\_avg.f90}. It requires an input of one parameter called $imode$, which tells it where in hydrodynamic simulation it is being called and whether it should be initializing $havg$ or updating it (Fig.\ref{havg:init}). If in initialization mode ($imode.eq.0$), it initializes also an array called $ransname$ (Fig.\ref{havg:calc}), which holds names of horizontally-averaged variables. The $havg$ data is stored in a binary file with extension ransdat, whether variables like $ransname$ to a text file with extension ranshead together with other variables like resolution and dump times. 
 
 \begin{figure}[!h]
 \centerline{
@@ -152,7 +152,7 @@ The main subroutine, where we calculate $havg$ is called {\bf rans\_avg.f90}. It
 \label{havg:init}
 \end{figure}
 
-After the initialization, horizontal averages are being computed as show in the example in Fig.\ref{havg:calc} according to Equation \ref{eq:horizontal}  and stored in the $havg$ array where the identification position index is set to 2 e.g. $havg(2,ifield,i)$. The scaling factor in case of spherical geometry $\sin \theta d \theta d \phi / \Delta \Omega$ is the variable $fsteradjk$. In case of cartesian geometry, this factor will be equal to one.  
+After the initialization, horizontal averages are being computed as show in the example in Fig.\ref{havg:calc} according to Equation \ref{eq:horizontal}  and stored in the $havg$ array where the identification position index is set to 2 i.e. $havg(2,ifield,i)$. The scaling factor in case of spherical geometry $\sin \theta d \theta d \phi / \Delta \Omega$ is the variable $fsteradjk$. In case of cartesian geometry, this factor will be equal to one.  
 
 \begin{align}
 \label{eq:horizontal}
@@ -166,7 +166,7 @@ After the initialization, horizontal averages are being computed as show in the 
 \label{havg:calc}
 \end{figure}
 
-After calculation of these horizontal averages, they are turned into a variable that we call running averages defined in Equation \ref{eq:runaverage} and stored in $havg$ array with identification position index set to 3 e.g $havg(3,ifield,i)$ (Fig.\ref{fig:runaverage}). These running averages are horizontal averages, that are additionally averaged further taking into account previous hydro sweep stored in $havg$ with identification position index set to 1 and updated as shown in Fig.\ref{havg:init}. 
+After calculation of these horizontal averages, they are turned into a variable that we call running averages defined in Equation \ref{eq:runaverage} and stored in $havg$ array with identification position index set to 3 i.e. $havg(3,ifield,i)$ (Fig.\ref{fig:runaverage}). These running averages are horizontal averages, that are additionally averaged further taking into account previous hydro sweep stored in $havg$ with identification position index set to 1 and updated as shown in Fig.\ref{havg:init}. 
 %\begin{figure}[!h]
 %\centerline{
 %\includegraphics{prompi_havg_detail.png}}
@@ -202,7 +202,7 @@ The running averages are later used in a subroutine {\bf write\_rans\_data.f90} 
 
 \subsection{Post-processing in Python}
 
-The statistical averages calculated according to Eq.\ref{eq:stataverage} are only between two consecutives data dumps, that typically cover time much shorter than a convective turnover timescale (TO). In order to get robust statistical averages, we need to calculate the averages over at least three TOs. For that we use python script called $rans\_tseries.py$, that is using calculated $q$s stored in ransdat files accoriding to Equation \ref{eq:tseries} shown in Figure \ref{fig:tseries}. 
+The statistical averages calculated according to Eq.\ref{eq:stataverage} are only between two consecutives data dumps, that typically cover time much shorter than a convective turnover timescale (TO). In order to get robust statistical averages, we need to calculate the averages over at least three TOs. For that we use python script called $rans\_tseries.py$, that is using calculated $q$s stored in ransdat files according to Equation \ref{eq:tseries} shown in Figure \ref{fig:tseries}. 
 
 The script takes advantage of ranshead files, that contain names of the RANS mean fields in exact order as they are stored in $havg$ array and stores the final mean fields in a dictionary variable called $eht$. The dictionary is at the end stored in python's $npy$ file, that can be easily read by RANS equations classes, which calculate and plot terms of ransX framework equations.
 
