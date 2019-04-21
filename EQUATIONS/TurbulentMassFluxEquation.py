@@ -39,6 +39,9 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
         dduzuz = np.asarray(eht.item().get('dduzuz')[intc])	
 
+        uyuy = np.asarray(eht.item().get('uyuy')[intc])
+        uzuz = np.asarray(eht.item().get('uzuz')[intc])		
+		
         svdduyuy = np.asarray(eht.item().get('svdduyuy')[intc])
         svdduzuz = np.asarray(eht.item().get('svdduzuz')[intc])		
 		
@@ -57,7 +60,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         fht_ux = ddux/dd
         rxx    = dduxux - ddux*ddux/dd
 
-        eht_ddf_uxf_uxf = dduxux - ux*ddux - dd*uxux + dd*ux*ux
+        eht_ddf_uxf_uxf = dduxux - 2.*ux*ddux - dd*uxux + 2.*dd*ux*ux
         eht_b = 1.-sv*dd
 
         # a is turbulent mass flux
@@ -76,11 +79,11 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # LHS -div eht_dd fht_ux a
         self.minus_div_eht_dd_fht_ux_eht_a = -self.Div(dd*fht_ux*eht_a,xzn0)
 		
-        # RHS minus_ddf_uxf_uxf_dd_gradx_eht_dd
-        self.minus_ddf_uxf_uxf_dd_gradx_eht_dd = -(eht_ddf_uxf_uxf/dd)*self.Grad(dd,xzn0)
+        # RHS minus_ddf_uxf_uxf_o_dd_gradx_eht_dd
+        self.minus_ddf_uxf_uxf_o_dd_gradx_eht_dd = -(eht_ddf_uxf_uxf/dd)*self.Grad(dd,xzn0)
 
-        # RHS -rxx_dd_gradx_eht_dd
-        self.minus_rxx_dd_gradx_eht_dd = -(rxx/dd)*self.Grad(dd,xzn0)        
+        # RHS +rxx_o_dd_gradx_eht_dd
+        self.plus_rxx_o_dd_gradx_eht_dd = +(rxx/dd)*self.Grad(dd,xzn0)        
 
         # RHS -eht_dd_div_a_a
         self.minus_eht_dd_div_a_a = -dd*self.Div(eht_a*eht_a,xzn0)
@@ -107,16 +110,15 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # RHS -eht_b_gradx_pp
         self.minus_eht_b_gradx_pp = -eht_b*self.Grad(pp,xzn0)
 		
-        # RHS +eht_ddf_sv_gradx_ppf
-        self.plus_eht_ddf_sv_gradx_ppf = -dd*svgradxpp + dd*sv*self.Grad(pp,xzn0)		
+        # RHS +eht_ddf_sv_gradx_ppf = -eht_dd*svgradxpp
+        self.plus_eht_ddf_sv_gradx_ppf = +dd*(svgradxpp-sv*self.Grad(pp,xzn0))		
 		
         # RHS +Ga
-        self.plus_Ga = -svdddduyuy/xzn0 - dd*svdduyuy/xzn0 - svdddduzuz/xzn0 \
-                       -dd*svdduzuz/xzn0
+        self.plus_Ga = -dduyuy/xzn0 - dduzuz/xzn0 + dd*(uyuy/xzn0+uzuz/xzn0)
 
         # RHS minus_resAequation
         self.minus_resAequation = -(self.minus_dt_eht_dd_a + self.minus_div_eht_dd_fht_ux_eht_a +\
-		  self.minus_ddf_uxf_uxf_dd_gradx_eht_dd + self.minus_rxx_dd_gradx_eht_dd  + \
+		  self.minus_ddf_uxf_uxf_o_dd_gradx_eht_dd + self.plus_rxx_o_dd_gradx_eht_dd  + \
 		  self.minus_eht_dd_div_a_a + self.plus_div_eht_ddf_uxf_uxf + self.minus_eht_dd_eht_a_div_eht_ux + \
 		  self.plus_eht_dd_eht_uxf_dff + self.minus_eht_b_gradx_pp + self.plus_eht_ddf_sv_gradx_ppf + \
 		  self.plus_Ga) 			 
@@ -181,8 +183,8 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_dt_eht_dd_a
         lhs1 = self.minus_div_eht_dd_fht_ux_eht_a
 		
-        rhs0 = self.minus_ddf_uxf_uxf_dd_gradx_eht_dd
-        rhs1 = self.minus_rxx_dd_gradx_eht_dd		
+        rhs0 = self.minus_ddf_uxf_uxf_o_dd_gradx_eht_dd
+        rhs1 = self.plus_rxx_o_dd_gradx_eht_dd		
         rhs2 = self.minus_eht_dd_div_a_a
         rhs3 = self.plus_div_eht_ddf_uxf_uxf
         #rhs0 = self.plus_div_rxx
@@ -209,12 +211,12 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('turbulent mass flux equation')
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r'$-\partial_t (\rho \overline{u''_r})$')
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \overline{u''_r})$')
         plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \overline{u''_r})$")	
 		
-        plt.plot(grd1,rhs0,color='r',label = r"$-(\overline{\rho' \rho' u'_r} / \overline{\rho} \partial_r \overline{\rho})$")     
-        plt.plot(grd1,rhs1,color='c',label = r"$+\widetilde{R}_{rr}/\overline{\rho}\partial_r \overline{\rho} $") 
-        plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\overline{\rho} \nabla_r (\overline{u''_r} \ \overline{u''_r}) $") 
+        plt.plot(grd1,rhs0,color='r',label = r"$-(\overline{\rho' u'_r u'_r} / \overline{\rho} \partial_r \overline{\rho})$")     
+        plt.plot(grd1,rhs1,color='#802A2A',label = r"$+\widetilde{R}_{rr}/\overline{\rho}\partial_r \overline{\rho} $") 
+        plt.plot(grd1,rhs2,color='c',label = r"$-\overline{\rho} \nabla_r (\overline{u''_r} \ \overline{u''_r}) $") 
         plt.plot(grd1,rhs3,color='m',label = r"$+\nabla_r \overline{\rho' u'_r u'_r}$")
         
         #plt.plot(grd1,rhs0,color='r',label = r"$+\nabla \widetilde{R}_{xx}$")		
@@ -235,7 +237,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':8})
+        plt.legend(loc=ilg,prop={'size':10})
 
         # display PLOT
         plt.show(block=False)
