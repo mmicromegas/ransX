@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -31,7 +32,8 @@ class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0 = xzn0
         self.dd   = dd
-        self.tt   = tt		
+        self.tt   = tt
+        self.ig   = ig		
 		
     def plot_ttdd(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot temperature and density stratification in the model""" 
@@ -42,10 +44,16 @@ class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
         to_plt1 = np.log10(self.tt)
         to_plt2 = np.log10(self.dd)
 	
-        xlabel_1 = r'r (10$^{8}$ cm)'
-		
+        if (self.ig == 1):	
+            xlabel_1 = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            xlabel_1 = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 			
+	
         ylabel_1 = r'log $\overline{\rho}$ (g cm$^{-3}$)'
-        ylabel_2 = r'log $\overline{T}$ (K)'
+        ylabel_2 = r'log $\overline{T}$ (K)'	
 	
         plabel_1 = r'$\overline{\rho}$'
         plabel_2 = r'$\overline{T}$'

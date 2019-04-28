@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
@@ -11,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,minus_kolmrate,data_prefix):
+    def __init__(self,filename,ig,intc,minus_kolmrate,bconv,tconv,data_prefix):
         super(TurbulentKineticEnergyEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -138,6 +139,10 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         self.t_timec = t_timec
         self.t_tke 	 = t_tke
         self.t_dd 	 = t_dd
+        self.bconv   = bconv
+        self.tconv	 = tconv
+        self.ig      = ig 		
+		
 		
     def plot_tke(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot turbulent kinetic energy stratification in the model""" 
@@ -163,7 +168,14 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt1,color='brown',label = r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -208,19 +220,47 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('turbulent kinetic energy equation')
-        plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-        plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")	
+        if (self.ig == 1):			
+            plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{k})$')
+            plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")	
 		
-        plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     
-        plt.plot(grd1,rhs1,color='c',label = r'$+W_p$') 
-        plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\nabla_r f_k$") 
-        plt.plot(grd1,rhs3,color='m',label = r"$-\nabla_r f_P$")
-        plt.plot(grd1,rhs4,color='b',label = r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$")		
-        plt.plot(grd1,rhs5,color='k',linewidth=0.7,label = r"$-\overline{\rho} u^{'3}_{rms}/l_c$")		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$")
+            plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     
+            plt.plot(grd1,rhs1,color='c',label = r'$+W_p$') 
+            plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\nabla_x f_k$") 
+            plt.plot(grd1,rhs3,color='m',label = r"$-\nabla_x f_P$")
+            plt.plot(grd1,rhs4,color='b',label = r"$-\widetilde{R}_{ri}\partial_x \widetilde{u_i}$")		
+            plt.plot(grd1,rhs5,color='k',linewidth=0.7,label = r"$-\overline{\rho} u^{'3}_{rms}/l_c$")		
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$")
+        elif (self.ig == 2): 
+            plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{k})$')
+            plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")	
+		
+            plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     
+            plt.plot(grd1,rhs1,color='c',label = r'$+W_p$') 
+            plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\nabla_r f_k$") 
+            plt.plot(grd1,rhs3,color='m',label = r"$-\nabla_r f_P$")
+            plt.plot(grd1,rhs4,color='b',label = r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$")		
+            plt.plot(grd1,rhs5,color='k',linewidth=0.7,label = r"$-\overline{\rho} u^{'3}_{rms}/l_c$")		
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$") 
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+ 
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')	 
+ 
+ 
  
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"erg cm$^{-3}$ s$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

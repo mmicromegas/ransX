@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
@@ -11,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,element,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,bconv,tconv,intc,data_prefix):
         super(XfluxEquation,self).__init__(ig) 
 					
         # load data to structured array
@@ -46,6 +47,26 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ddxiuzuz  = np.asarray(eht.item().get('ddx'+inuc+'uzuz')[intc])		
 
         xigradxpp = np.asarray(eht.item().get('x'+inuc+'gradxpp')[intc]) 
+
+        # Reynolds-averaged mean fields for flux modelling:
+        ddcp = np.asarray(eht.item().get('ddcp')[intc])
+        ddtt = np.asarray(eht.item().get('ddtt')[intc])
+        ddhh = np.asarray(eht.item().get('ddhh')[intc])
+        ddhhux = np.asarray(eht.item().get('ddhhux')[intc])
+        ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
+
+        #uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
+        uxdivu = np.asarray(eht.item().get('ux')[intc])
+		
+        divu = np.asarray(eht.item().get('divu')[intc])
+        #gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        #gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+		
+        gamma1 = np.asarray(eht.item().get('ux')[intc])
+        gamma3 = np.asarray(eht.item().get('ux')[intc])		
+		
+        fht_rxx = dduxux - ddux*ddux/dd
+        fdil = (uxdivu - ux*divu) 
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 
@@ -107,12 +128,73 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # END Xi FLUX EQUATION 
         ######################	
 
+        # variance of temperature fluctuations		
+        sigmatt = (ddttsq-ddtt*ddtt/dd)/dd        		
+				
+        # enthalpy flux 
+        fhh = ddhhux - ddhh*ddux/dd				
+				
+        # heat capacity		
+        fht_cp = ddcp/dd 		
+		
+        # mlt velocity		
+        alphae = 1.		
+        u_mlt = fhh/(alphae*fht_cp*sigmatt)
+		
+        self.minus_ddxiumlt = -dd*xi*u_mlt	
+		
+        # models
+        self.model_1 = self.minus_rxx_gradx_fht_xi	
+        self.model_2 = self.minus_ddxiumlt		
+
+        # grad models		
+        self.plus_gradx_fxi = +self.Grad(fxi,xzn0)
+        cnst = gamma1
+        self.minus_cnst_dd_fxi_fdil_o_fht_rxx = -cnst*dd*fxi*fdil/fht_rxx		
+        
+		
+        hp = 2.5e8		
+		
+        # Dgauss gradient model	
+        dir = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\'		
+        data = np.loadtxt(dir+'imodel.tycho',skiprows=26)		
+        nxmax = 500
+		
+        rr = data[1:nxmax,2]
+        vmlt = data[1:nxmax,8]		
+        u_mlt = np.interp(xzn0,rr,vmlt)		
+		
+        #Dumlt1     = (1./3.)*u_mlt*lc		
+		
+        alpha = 1.5
+        Dumlt2 = (1./3.)*u_mlt*alpha*hp        
+
+        alpha = 1.6
+        Dumlt3 = (1./3.)*u_mlt*alpha*hp  		
+		
+        def gauss(x,a,x0,sigma):
+            return a*np.exp(-(x-x0)**2/(2*(sigma**2)))		
+		
+        Dmlt = Dumlt3		
+		
+        ampl = max(Dmlt)
+        xx0 = (bconv+0.46e8+tconv)/2.
+        width = 4.e7
+
+        Dgauss = gauss(xzn0,ampl,xx0,width)		
+		
+        self.model_3 = -Dgauss*dd*self.Grad(fht_xi,xzn0)		
+        self.model_4 = -Dumlt3*dd*self.Grad(fht_xi,xzn0)
+		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0    = xzn0		
         self.inuc    = inuc
         self.element = element
         self.fxi     = fxi		
+        self.bconv   = bconv
+        self.tconv	 = tconv 	
+		
 		
     def plot_Xflux(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xflux stratification in the model""" 
@@ -126,6 +208,10 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # load and calculate DATA to plot
         plt1 = self.fxi
+        plt2 = self.model_1
+        plt3 = self.model_2
+        plt4 = self.model_3
+        plt5 = self.model_4		
 		
         # create FIGURE
         plt.figure(figsize=(7,6))	
@@ -134,15 +220,35 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))			
 		
         # set plot boundaries   
-        to_plot = [plt1]		
+        to_plot = [plt1,plt2,plt3,plt4,plt5]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 					
         # plot DATA 
         plt.title('Xflux for '+self.element)
         plt.plot(grd1,plt1,color='k',label = r'f')
+        #plt.plot(grd1,plt2,color='c',label=r"$-\widetilde{R}_{rr} \partial_r \widetilde{X}$")
+        #plt.plot(grd1,plt3,color='g',label=r"$-\overline{\rho} \ \overline{X} \ u_{mlt}$")
+        plt.plot(grd1,plt4,color='r',label=r"$-D_{gauss} \ \partial_r \widetilde{X}$")
+        plt.plot(grd1,plt5,color='b',label=r"$-D_{mlt} \ \partial_r \widetilde{X}$",linewidth=0.7)
+		
 
+        # convective boundary markers
+        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+		
+        # convective boundary markers		
+        #plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        #plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')  				
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"$\overline{\rho} \widetilde{X''_i u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -156,9 +262,70 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'mean_Xflux_'+element+'.png')
 		
+    def plot_Xflux_gradient(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot Xflux stratification in the model""" 
+
+        # convert nuc ID to string
+        xnucid = str(self.inuc)
+        element = self.element
+		
+        # load x GRID
+        grd1 = self.xzn0		
+		
+        # load and calculate DATA to plot
+        plt1 = self.plus_gradx_fxi
+        plt2 = self.minus_cnst_dd_fxi_fdil_o_fht_rxx
+
+        # create FIGURE
+        plt.figure(figsize=(7,6))	
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))			
+		
+        # set plot boundaries   
+        to_plot = [plt1,plt2]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
+					
+        # plot DATA 
+        plt.title('grad Xflux for '+self.element)
+        plt.plot(grd1,plt1,color='k',label = r"$+\partial_r f$")
+        plt.plot(grd1,plt2,color='r',label=r"$.$")
+
+
+        # convective boundary markers
+        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+		
+        # convective boundary markers		
+        #plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        #plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')  		
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
+        setylabel = r"$\partial_r \overline{\rho} \widetilde{X''_i u''_r}$ (g cm$^{-3}$ s$^{-1}$)"
+		
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_model_Xflux_'+element+'.png')		
+		
     def plot_Xflux_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xi flux equation in the model""" 
-
+ 
         # convert nuc ID to string
         xnucid = str(self.inuc)
         element = self.element
@@ -190,24 +357,50 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title('Xflux equation for '+self.element)
-        plt.plot(grd1,lhs0,color='#8B3626',label = r'$-\partial_t f_i$')
-        plt.plot(grd1,lhs1,color='#FF7256',label = r'$-\nabla_r (\widetilde{u}_r f)$')		
-        plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f^r_i$')
-        plt.plot(grd1,rhs1,color='g',label=r'$-f \partial_r \widetilde{u}_r$')
-        plt.plot(grd1,rhs2,color='r',label=r'$-R_{rr} \partial_r \widetilde{X}$')	
-        plt.plot(grd1,rhs3,color='cyan',label=r'$-\overline{X^{,,}} \partial_r \overline{P} - \overline{X^{,,} \partial_r P^{,}}$')
-        plt.plot(grd1,rhs4,color='purple',label=r'$+\overline{u^{,,}_r \rho \dot{X}}$')
-        plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
-
+        if (self.ig == 1):
+            plt.plot(grd1,lhs0,color='#8B3626',label = r'$-\partial_t f_i$')
+            plt.plot(grd1,lhs1,color='#FF7256',label = r'$-\nabla_x (\widetilde{u}_x f)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_x f^r_i$')
+            plt.plot(grd1,rhs1,color='g',label=r'$-f_i \partial_x \widetilde{u}_x$')
+            plt.plot(grd1,rhs2,color='r',label=r'$-R_{rr} \partial_x \widetilde{X}$')	
+            plt.plot(grd1,rhs3,color='cyan',label=r"$-\overline{X''} \partial_x \overline{P} - \overline{X'' \partial_x P'}$")
+            plt.plot(grd1,rhs4,color='purple',label=r"$+\overline{u''_x \rho \dot{X}}$")
+            #plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        elif (self.ig == 2):
+            plt.plot(grd1,lhs0,color='#8B3626',label = r'$-\partial_t f_i$')
+            plt.plot(grd1,lhs1,color='#FF7256',label = r'$-\nabla_r (\widetilde{u}_r f)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f^r_i$')
+            plt.plot(grd1,rhs1,color='g',label=r'$-f_i \partial_r \widetilde{u}_r$')
+            plt.plot(grd1,rhs2,color='r',label=r'$-R_{rr} \partial_r \widetilde{X}$')	
+            plt.plot(grd1,rhs3,color='cyan',label=r"$-\overline{X''} \partial_r \overline{P} - \overline{X'' \partial_r P'}$")
+            plt.plot(grd1,rhs4,color='purple',label=r"$+\overline{u''_r \rho \dot{X}}$")
+            plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')		
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+		
+        # convective boundary markers		
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k') 		
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"g cm$^{-2}$ s$^{-2}$"
+		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':8})
+        plt.legend(loc=ilg,prop={'size':10})
 
         # display PLOT
         plt.show(block=False)

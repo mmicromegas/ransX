@@ -43,7 +43,7 @@ for filename in ransdat:
     rans_tstart, rans_tend, rans_tavg = ts.rans_header()
     time.append(rans_tend)
     dt.append(rans_tavg)
-    #print(rans_tend,rans_tavg)
+    #print(rans_tend,rans_tavg)	
 	
 # convert to array
 
@@ -109,8 +109,8 @@ for s in ts.ransl:
             tmp1 += np.asarray(eh[:][j][idx])*dt[j]
         tmp2.append(tmp1/sumdt)
     field = {str(s) : tmp2}  		
-    eht.update(field)     
-
+    eht.update(field)     	
+	
 # store grid 
 	
 nx = {'nx' : ts.rans()['nx']}

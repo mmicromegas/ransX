@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -12,7 +13,7 @@ import UTILS.ALIMIT as al
 
 class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,element,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,bconv,tconv,intc,data_prefix):
         super(XtransportEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -26,10 +27,24 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
         dd      = np.asarray(eht.item().get('dd')[intc])
+        ux      = np.asarray(eht.item().get('ux')[intc])
         ddux    = np.asarray(eht.item().get('ddux')[intc])	
+        dduxux  = np.asarray(eht.item().get('dduxux')[intc])
         ddxi    = np.asarray(eht.item().get('ddx'+inuc)[intc])
         ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
         ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
+		
+        #uxdivu = np.asarray(eht.item().get('uxdivu')[intc])		
+        divu = np.asarray(eht.item().get('divu')[intc])
+        #gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        #gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+		
+        uxdivu = np.asarray(eht.item().get('ux')[intc])		
+        gamma1 = np.asarray(eht.item().get('ux')[intc])
+        gamma3 = np.asarray(eht.item().get('ux')[intc])		
+		
+        fht_rxx = dduxux - ddux*ddux/dd
+        fdil = (uxdivu - ux*divu) 		
 		
         #######################
         # Xi TRANSPORT EQUATION 
@@ -66,6 +81,11 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # END Xi TRANSPORT EQUATION
         ###########################
 		
+        # grad models		
+        self.plus_gradx_fht_xi = +self.Grad(fht_xi,xzn0)
+        cnst = gamma1
+        self.minus_cnst_dd_fht_xi_fdil_o_fht_rxx = -cnst*dd*fht_xi*fdil/fht_rxx			
+		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0    = xzn0
@@ -73,6 +93,11 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         self.inuc    = inuc
         self.element = element
         self.ddxi    = ddxi	
+        self.fht_xi  = fht_xi
+		
+        self.bconv   = bconv
+        self.tconv	 = tconv 		
+        self.ig      = ig		
 		
     def plot_Xrho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xrho stratification in the model""" 
@@ -85,7 +110,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.ddxi
+        plt1 = self.ddxi		
 				
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -100,9 +125,16 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # plot DATA 
         plt.title('rhoX for '+element)
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{\rho} \widetilde{X}$')
-
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"$\overline{\rho} \widetilde{X}$ (g cm$^{-3}$)"
 
         plt.xlabel(setxlabel)
@@ -116,6 +148,116 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'mean_rhoX_'+element+'.png')
+	
+    def plot_X(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot X stratification in the model""" 
+
+        # convert nuc ID to string
+        #xnucid = str(self.inuc)
+        element = self.element
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.fht_xi
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+
+        # set plot boundaries   
+        to_plot = [plt1]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+	
+        # plot DATA 
+        plt.title('X for '+element)
+        plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{X}$')
+
+        # convective boundary markers
+        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')			
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
+        setylabel = r"$\widetilde{X}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_X_'+element+'.png')	
+	
+    def plot_gradX(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot grad X stratification in the model""" 
+
+        # convert nuc ID to string
+        #xnucid = str(self.inuc)
+        element = self.element
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.plus_gradx_fht_xi
+        plt2 = self.minus_cnst_dd_fht_xi_fdil_o_fht_rxx		
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+
+        # set plot boundaries   
+        to_plot = [plt1,plt2]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+	
+        # plot DATA 
+        plt.title('X for '+element)
+        plt.plot(grd1,plt1,color='brown',label = r'$\partial_r \widetilde{X}$')
+        plt.plot(grd1,plt2,color='r',label = r'$.$')
+		
+        # convective boundary markers
+        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')			
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
+        setylabel = r"$\partial_r \widetilde{X}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_gradX_'+element+'.png')	
 	
     def plot_Xtransport_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xrho transport equation in the model""" 
@@ -147,14 +289,35 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title('rhoX transport for '+element)
-        plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
-        plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')		
-        plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f$')
-        plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
-
+        if (self.ig == 1):
+            plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
+            plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_x f$')
+            plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        elif (self.ig == 2):
+            plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
+            plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f$')
+            plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')		
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+		
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
 
         plt.xlabel(setxlabel)

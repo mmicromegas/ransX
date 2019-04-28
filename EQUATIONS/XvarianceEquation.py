@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
@@ -11,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,element,tauL,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,tauL,bconv,tconv,intc,data_prefix):
         super(XvarianceEquation,self).__init__(ig) 
 		
         # load data to structured array
@@ -105,6 +106,10 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         self.dd      = dd		
         self.sigmai  = sigmai			
 				
+        self.bconv   = bconv
+        self.tconv	 = tconv
+        self.ig      = ig		
+				
     def plot_Xvariance(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xvariance stratification in the model""" 
 
@@ -133,8 +138,16 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.semilogy(grd1,plt1,color='b',label = r"$\sigma_i$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"$\widetilde{X''_i X''_i}$"
+		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -184,17 +197,40 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title('Xvariance equation for '+self.element)
-        plt.plot(grd1,lhs0,color='cyan',label = r'$-\partial_t (\overline{\rho} \sigma)$')
-        plt.plot(grd1,lhs1,color='purple',label = r'$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma)$')		
-        plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f^\sigma$')
-        plt.plot(grd1,rhs1,color='g',label=r'$-2 f \partial_r \widetilde{X}$')
-        plt.plot(grd1,rhs2,color='r',label=r'$+2 \overline{\rho X^{,,} \dot{X}}$')		
-        plt.plot(grd1,rhs3,color='k',linewidth=0.8,label=r'$- \overline{\rho} \sigma / \tau_L$')		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
-
+        if (self.ig == 1):		
+            plt.plot(grd1,lhs0,color='cyan',label = r'$-\partial_t (\overline{\rho} \sigma)$')
+            plt.plot(grd1,lhs1,color='purple',label = r'$-\nabla_x (\overline{\rho} \widetilde{u}_x \sigma)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_x f^\sigma$')
+            plt.plot(grd1,rhs1,color='g',label=r'$-2 f_i \partial_x \widetilde{X}$')
+            plt.plot(grd1,rhs2,color='r',label=r'$+2 \overline{\rho X'' \dot{X}}$')		
+            plt.plot(grd1,rhs3,color='k',linewidth=0.8,label=r'$- \overline{\rho} \sigma / \tau_L$')		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        elif (self.ig == 2):
+            plt.plot(grd1,lhs0,color='cyan',label = r'$-\partial_t (\overline{\rho} \sigma)$')
+            plt.plot(grd1,lhs1,color='purple',label = r'$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f^\sigma$')
+            plt.plot(grd1,rhs1,color='g',label=r'$-2 f_i \partial_r \widetilde{X}$')
+            plt.plot(grd1,rhs2,color='r',label=r'$+2 \overline{\rho X'' \dot{X}}$')		
+            plt.plot(grd1,rhs3,color='k',linewidth=0.8,label=r'$- \overline{\rho} \sigma / \tau_L$')		
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+		
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
+		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

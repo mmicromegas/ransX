@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -72,7 +73,8 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.dd          = dd
-        self.nx          = nx		
+        self.nx          = nx
+        self.ig          = ig		
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -99,7 +101,14 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{\rho}$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
         setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
 
         plt.xlabel(setxlabel)
@@ -141,15 +150,33 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('continuity equation with mass flux')
-        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_t (\overline{\rho})$')
-        plt.plot(grd1,lhs1,color='r',label = r'$-\widetilde{u}_r \partial_r (\overline{\rho})$')
-        plt.plot(grd1,rhs0,color='c',label = r"$-\nabla_r f_\rho$")		
-        plt.plot(grd1,rhs1,color='m',label = r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
-        plt.plot(grd1,rhs2,color='b',label = r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
-
+        if (self.ig == 1):		
+            plt.plot(grd1,lhs0,color='g',label = r'$-\partial_t (\overline{\rho})$')
+            plt.plot(grd1,lhs1,color='r',label = r'$-\widetilde{u}_x \partial_x (\overline{\rho})$')
+            plt.plot(grd1,rhs0,color='c',label = r"$-\nabla_x f_\rho$")		
+            plt.plot(grd1,rhs1,color='m',label = r"$+f_\rho / \overline{\rho} \partial_x \overline{\rho}$")
+            plt.plot(grd1,rhs2,color='b',label = r'$-\overline{\rho} \nabla_x (\overline{u}_x)$')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        elif (self.ig == 2):  
+            plt.plot(grd1,lhs0,color='g',label = r'$-\partial_t (\overline{\rho})$')
+            plt.plot(grd1,lhs1,color='r',label = r'$-\widetilde{u}_r \partial_r (\overline{\rho})$')
+            plt.plot(grd1,rhs0,color='c',label = r"$-\nabla_r f_\rho$")		
+            plt.plot(grd1,rhs1,color='m',label = r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
+            plt.plot(grd1,rhs2,color='b',label = r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -161,7 +188,7 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'continuityWithMassFlux_eq.png')
 
     def plot_continuity_equation_integral_budget(self,laxis,xbl,xbr,ybu,ybd):
         """Plot integral budgets of continuity equation in the model""" 
@@ -256,6 +283,6 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'continuity_eq_bar.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'continuityWithMassFlux_eq_bar.png')		
 		
 		

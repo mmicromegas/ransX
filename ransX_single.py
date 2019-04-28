@@ -29,6 +29,7 @@ for q in q2plot:
 #ransdat.plot_check_heq2(xbl,xbr)
 #ransdat.plot_nablas(xbl,xbr)
 #ransdat.plot_mm(xbl,xbr)
+ransdat.PlotNucEnergyGen(xbl,xbr)
 
 #ransdat.plot_lin_q1q2(xbl,xbr,'dd','tt',\
 #                      r'r (10$^{8}$ cm)',\
@@ -40,3 +41,4 @@ for q in q2plot:
 #                       r'$\varepsilon_{nuc}$ (erg $s^{-1}$)',\
 #                       r'$\epsilon$ (ergs)',\
 #                       r'$\varepsilon_{nuc}$',r'$\epsilon$')
+
