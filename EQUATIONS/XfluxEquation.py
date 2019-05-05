@@ -55,12 +55,11 @@ class XfluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ddhhux = np.asarray(eht.item().get('ddhhux')[intc])
         ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
 
-        #uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        uxdivu = np.asarray(eht.item().get('ux')[intc])
+        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
 		
         divu = np.asarray(eht.item().get('divu')[intc])
-        #gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        #gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
 		
         gamma1 = np.asarray(eht.item().get('ux')[intc])
         gamma3 = np.asarray(eht.item().get('ux')[intc])		

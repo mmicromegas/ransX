@@ -70,9 +70,8 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         enuc2 = np.asarray(eht.item().get('enuc2')[intc])		
 
         uxux = np.asarray(eht.item().get('uxux')[intc])		
-		
-        gamma1 = np.asarray(eht.item().get('ux')[intc])			
-        #gamma1 = np.asarray(eht.item().get('gamma1')[intc])	 
+				
+        gamma1 = np.asarray(eht.item().get('gamma1')[intc])	 
 		
         ###################################
         # TURBULENT KINETIC ENERGY EQUATION 

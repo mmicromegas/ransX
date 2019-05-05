@@ -90,6 +90,6 @@ class VelocitiesMeanExp(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 	
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_velocities.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_velocities_mean.png')
 	
 	

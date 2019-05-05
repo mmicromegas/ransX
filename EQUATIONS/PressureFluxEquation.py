@@ -206,7 +206,7 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_p^r $")     
         plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_p \partial_r \overline{u}_r$") 
         plt.plot(grd1,rhs2,color='r',label = r"$+\overline{u'_r u''_r} \partial_r \overline{P}$") 
-        plt.plot(grd1,rhs3,color='firebrick',label = r"$-\Gamma_1 \overline{u'_r P d}$") 
+        plt.plot(grd1,rhs3,color='firebrick',label = r"$+\Gamma_1 \overline{u'_r P d}$") 
         plt.plot(grd1,rhs4,color='c',label = r"$+(\Gamma_3-1)\overline{u'_r \rho \epsilon_{nuc}}$")
         plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$+\overline{P'u''_rd''}$")
         plt.plot(grd1,rhs6,color='b',label = r"$+\overline{P' G_r^M/ \rho}$")
@@ -228,3 +228,5 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'fpp_eq.png')	
+        plt.savefig('RESULTS/'+self.data_prefix+'fpp_eq.eps')
+		

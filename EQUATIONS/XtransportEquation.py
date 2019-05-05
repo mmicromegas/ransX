@@ -34,10 +34,10 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
         ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
 		
-        #uxdivu = np.asarray(eht.item().get('uxdivu')[intc])		
+        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])		
         divu = np.asarray(eht.item().get('divu')[intc])
-        #gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        #gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
 		
         uxdivu = np.asarray(eht.item().get('ux')[intc])		
         gamma1 = np.asarray(eht.item().get('ux')[intc])
@@ -300,7 +300,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')		
             plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f$')
             plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
-            plt.plot(grd1,res,color='k',linestyle='--',label='res')		
+            #plt.plot(grd1,res,color='k',linestyle='--',label='res')		
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()		

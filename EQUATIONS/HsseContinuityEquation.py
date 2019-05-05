@@ -43,6 +43,10 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
         t_dd      = np.asarray(eht.item().get('dd')) 	
+        t_ux      = np.asarray(eht.item().get('ux')) 
+        t_ddux    = np.asarray(eht.item().get('ddux')) 		
+		
+        t_eht_uxff = (t_ddux-t_dd*t_ux)/t_dd 	
 	
         #t_mm    = np.asarray(eht.item().get('mm')) 		
         #minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
@@ -80,7 +84,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_four_pi_rcu_o_three_fht_ux_dt_dd = -self.plus_four_pi_rcu_o_three_fht_ux*self.dt(t_dd,xzn0,t_timec,intc)
 
         # -res
-        self.minus_resContEquation = -(self.minus_gradx_mm+self.plus_four_pi_rsq_dd+self.plus_four_pi_rcu_o_three_fht_ux+\
+        self.minus_resContEquation = -(self.minus_gradx_mm+self.plus_four_pi_rsq_dd+\
           self.minus_four_pi_rcu_o_three_fht_ux_div_fdd+self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd+\
            self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux+self.minus_four_pi_rcu_o_three_fht_ux_dt_dd)
 		
@@ -117,6 +121,9 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         ################################################
         # END ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
         ################################################		
+		
+        self.dt_eht_uxff = self.dt(t_eht_uxff,xzn0,t_timec,intc)		
+        self.div_fht_rxx_o_dd = self.Div(fht_rxx/dd,xzn0)
 		
 		
         # assign global data to be shared across whole class
@@ -315,7 +322,10 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.dd*self.fdil
+        #lhs0 = self.dd*self.fdil
+        lhs0 = self.fdil
+        lhs1 = self.dt_eht_uxff
+        lhs2 = self.div_fht_rxx_o_dd		
 		
 
         # create FIGURE
@@ -325,16 +335,19 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        to_plot = [lhs0]		
+        to_plot = [lhs0,lhs1,lhs2]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
         plt.title('dilatation flux')
-        plt.plot(grd1,lhs0,color='r',label = r"$\overline{\rho} \overline{u'_r d''}$")
-	
+        #plt.plot(grd1,lhs0,color='r',label = r"$\overline{\rho} \overline{u'_r d''}$")
+        plt.plot(grd1,lhs0,color='r',label = r"$\overline{u'_r d''}$")
+        plt.plot(grd1,lhs1,color='b',label = r"$\partial_t \overline{u''_r}$")		
+        plt.plot(grd1,lhs2,color='g',label = r"$\nabla_r \widetilde{R}_{rr} / \overline{\rho}$")	
+		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$g \ cm^{-2} \ s^{-2}$"
+        setylabel = r"$cm \ s^{-2}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

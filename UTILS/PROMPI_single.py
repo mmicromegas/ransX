@@ -507,8 +507,8 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
  
         plt.figure(figsize=(7,6))
 
-        lb = 1.e0
-        ub = 1.e16
+        lb = 1.e4
+        ub = 1.e14
 
         plt.axis([xbl,xbr,lb,ub])
 
@@ -609,7 +609,7 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         plt.semilogy(rc,en_o16,label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
         plt.semilogy(rc,en_ne20,label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
         plt.semilogy(rc,en_si28,label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
-        #plt.semilogy(rc,en_c12+en_o16+en_ne20+en_si28,label='total',color='k')
+        plt.semilogy(rc,en_c12+en_o16+en_ne20+en_si28,label='total',color='k')
 
 
 #        plt.semilogy(rc,en_c12_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
@@ -618,12 +618,16 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
 #        plt.semilogy(rc,en_si28_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
 #        plt.semilogy(rc,en_c12_acf88+en_o16_acf88+en_ne20_acf88+en_si28_acf88,label='total',color='k')
 
-        plt.semilogy(rc,enuc1,color='m',linestyle='--',label='nuc code')
-        plt.semilogy(rc,enuc2,color='r',linestyle='--',label='-neut code')		
-        plt.semilogy(rc,enuc1-enuc2,color='b',linestyle='--',label='nuc+neut code')	
+        #plt.semilogy(rc,enuc1,color='m',linestyle='--',label='nuc code')
+        #plt.semilogy(rc,enuc2,color='r',linestyle='--',label='-neut code')		
+        #plt.semilogy(rc,enuc1-enuc2,color='b',linestyle='--',label='nuc+neut code')	
 		
-        plt.legend(loc=1,prop={'size':8})
-
+        # convective boundary markers
+        plt.axvline(4.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(8.5e8,linestyle='--',linewidth=0.7,color='k')		
+		
+        plt.legend(loc=1,prop={'size':15})		
+		
         plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
         plt.xlabel('r ($10^8$ cm)')
 

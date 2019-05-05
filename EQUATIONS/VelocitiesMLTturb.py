@@ -142,8 +142,8 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         #plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')		
         plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
         plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
-        plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
-        plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
+        #plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
+        #plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
 		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -159,6 +159,6 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 	
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_velocities.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_velocities_turb.png')
 	
 	

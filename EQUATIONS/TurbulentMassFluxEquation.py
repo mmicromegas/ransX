@@ -244,4 +244,5 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'a_eq.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'a_eq.eps')
 		

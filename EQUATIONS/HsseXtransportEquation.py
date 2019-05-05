@@ -11,7 +11,7 @@ import UTILS.ALIMIT as al
 
 class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,element,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,bconv,tconv,intc,data_prefix):
         super(HsseXtransportEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -70,6 +70,9 @@ class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         self.inuc    = inuc
         self.element = element
         self.ddxi    = ddxi	
+		
+        self.bconv   = bconv
+        self.tconv	 = tconv 			
 		
     def plot_Xrho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot Xrho stratification in the model""" 
@@ -143,15 +146,18 @@ class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 				
         # plot DATA 
-        #plt.title('hsse rhoX transport for '+element)
-        plt.title(element)
-        plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}$')
-        plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}$')
-        plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f$')
-        plt.plot(grd1,rhs2,color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_\alpha$")
+        plt.title('hsse rhoX transport for '+element)
+        plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}_i$')
+        plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}_i$')
+        plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f_i$')
+        plt.plot(grd1,rhs2,color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_i$")
 
         plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
+        # convective boundary markers
+        #plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        #plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
         setylabel = r"s$^{-1}$"

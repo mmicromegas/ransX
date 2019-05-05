@@ -272,3 +272,4 @@ class TemperatureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'ftt_eq.png')	
+        plt.savefig('RESULTS/'+self.data_prefix+'ftt_eq.eps')

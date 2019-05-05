@@ -11,4 +11,6 @@
 - complete documentation
 
 - introduce vertical markers for convection zone boundaries
+
+- create FAQ Frequently Asked Questions document
  
