@@ -188,7 +188,7 @@ class MasterPlot():
         # plot continuity equation alternative						       
         ranshssecont.plot_continuity_equation_2(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('cteqhsse')['xbl'],\
-                                             params.getForEqs('cteqhsse')['xbr'],\
+                                            params.getForEqs('cteqhsse')['xbr'],\
                                              params.getForEqs('cteqhsse')['ybu'],\
                                              params.getForEqs('cteqhsse')['ybd'],\
                                              params.getForEqs('cteqhsse')['ilg'])											 
@@ -202,7 +202,23 @@ class MasterPlot():
                                              params.getForEqs('cteqhsse')['ilg'])
 
 
+        # plot continuity equation alternative simplified - cracking on velocities						       
+        ranshssecont.plot_velocities(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('cteqhsse')['xbl'],\
+                                             params.getForEqs('cteqhsse')['xbr'],\
+                                             params.getForEqs('cteqhsse')['ybu'],\
+                                             params.getForEqs('cteqhsse')['ybd'],\
+                                             params.getForEqs('cteqhsse')['ilg'])											 
+											 
+
         ranshssecont.plot_dilatation_flux(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('cteqhsse')['xbl'],\
+                                             params.getForEqs('cteqhsse')['xbr'],\
+                                             params.getForEqs('cteqhsse')['ybu'],\
+                                             params.getForEqs('cteqhsse')['ybd'],\
+                                             params.getForEqs('cteqhsse')['ilg'])
+
+        ranshssecont.plot_mass_flux_acceleration(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('cteqhsse')['xbl'],\
                                              params.getForEqs('cteqhsse')['xbr'],\
                                              params.getForEqs('cteqhsse')['ybu'],\
@@ -391,14 +407,14 @@ class MasterPlot():
                                           params.getForEqs(x)['ilg'])	
 										  										  
 
-    def execXtrsEqBar(self,inuc,element,x):
+    def execXtrsEqBar(self,inuc,element,x,bconv,tconv):
 
         params = self.params
 	
         # instantiate 
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],\
                                            params.getForProp('prop')['ig'],\
-                                           inuc,element,\
+                                           inuc,element,bconv,tconv,\
                                            params.getForProp('prop')['intc'],\
                                            params.getForProp('prop')['prefix'])
 																	  

@@ -209,7 +209,7 @@ for elem in network[1:]: # skip network identifier in the list
     inuc = params.getInuc(network,elem) 	
     if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem,properties['xzn0inc'],properties['xzn0outc'])
     if str2bool(params.getForEqs('xtrseq_'+elem)['plotMee']): plt.execXtrsEq(inuc,elem,'xtrseq_'+elem,properties['xzn0inc'],properties['xzn0outc'])
-    if str2bool(params.getForEqsBar('xtrseq_'+elem+'Bar')['plotMee']): plt.execXtrsEqBar(inuc,elem,'xtrseq_'+elem+'Bar')
+    if str2bool(params.getForEqsBar('xtrseq_'+elem+'Bar')['plotMee']): plt.execXtrsEqBar(inuc,elem,'xtrseq_'+elem+'Bar',properties['xzn0inc'],properties['xzn0outc'])
     if str2bool(params.getForEqs('xflx_'+elem)['plotMee']): plt.execXflx(inuc,elem,'xflx_'+elem,properties['xzn0inc'],properties['xzn0outc'])	
     if str2bool(params.getForEqs('xflxeq_'+elem)['plotMee']): plt.execXflxEq(inuc,elem,'xflxeq_'+elem,properties['xzn0inc'],properties['xzn0outc'])
     if str2bool(params.getForEqs('xvar_'+elem)['plotMee']): plt.execXvar(inuc,elem,'xvar_'+elem,properties['xzn0inc'],properties['xzn0outc'])	

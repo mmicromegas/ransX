@@ -212,6 +212,7 @@ class XvarianceEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,rhs1,color='g',label=r'$-2 f_i \partial_r \widetilde{X}$')
             plt.plot(grd1,rhs2,color='r',label=r'$+2 \overline{\rho X'' \dot{X}}$')		
             plt.plot(grd1,rhs3,color='k',linewidth=0.8,label=r'$- \overline{\rho} \sigma / \tau_L$')		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()		
