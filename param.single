@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) oburn single ---------- #
 []
-## Input-Data Directory .................... ## [single,datafile,C:\Users\mmocak\Desktop\simonX\MREZ2\ob3d.45.hrez.00433.ransdat]
+## Input-Data Directory .................... ## [single,datafile,/home/miro/PROMPI/setups/hheflash/3d/hheflash3d.45.nnuc13.lrez.00002.ransdat]
 ## Input Data Endianness ................... ## [single,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [single,precision,double]
-## Limit X-grid ............................ ## [single,xlimit,3.e8,1.e9]
-## List Of Mean Fields To Plot ............. ## [single,toplot,ux]
+## Limit X-grid ............................ ## [single,xlimit,8.e8,24.e9]
+## List Of Mean Fields To Plot ............. ## [single,toplot,x0002]

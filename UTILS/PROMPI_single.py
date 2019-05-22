@@ -795,7 +795,27 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         ax1.legend(loc=1,prop={'size':18})
         
         plt.show(block=False)		
-		
+
+    def plot_dx(self,xbl,xbr):
+        xzn0 = np.asarray(self.data['xzn0'])
+        xznl = np.asarray(self.data['xznl'])
+        xznr = np.asarray(self.data['xznr'])		
+        nx = np.asarray(self.data['nx'])
+
+        fig, ax1 = plt.subplots(figsize=(7,6))        
+        idxl, idxr = self.idx_bndry(xbl,xbr)
+        ax1.axis([xbl,xbr,0.,1.e8])		
+
+        dx = xznr - xznl
+        ax1.plot(xzn0,dx,color='r',label = r"$dx$")
+     
+
+        ax1.set_xlabel("r")
+        ax1.set_ylabel("dx")
+        ax1.legend(loc=1,prop={'size':18})
+        
+        plt.show(block=False)		
+        
     def idx_bndry(self,xbl,xbr):
         rr = np.asarray(self.data['xzn0'])
         xlm = np.abs(rr-xbl)
