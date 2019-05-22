@@ -62,16 +62,59 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
 		
         idxl, idxr = self.idx_bndry(xbl,xbr)
 		
-        to_plt1 = np.log10(f_1)
+        to_plt1 = f_1
 	
         fig, ax1 = plt.subplots(figsize=(7,6))
 		
-        ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
-        ax1.plot(rr,to_plt1,color='b',label = plabel_1)
+        #ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
+        ax1.semilogy(rr,to_plt1,color='b',label = plabel_1)
 
+        fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\imodel.monstar'
+        tdata = open(fmonstar,'r')
+
+        header_line1 = tdata.readline().split()
+        header_line2 = tdata.readline().split()
+        header_line3 = tdata.readline().split()		
+		
+        t_line1 = tdata.readline().split()
+
+        rrm = []
+        epspp  = []
+        epscno = []
+        epshe  = []
+        for i in range(1996):		
+            rl = tdata.readline().split()
+            rrm.append(rl[2]) 			
+            epspp.append(rl[7])    
+            epscno.append(rl[8])
+            epshe.append(rl[9])
+		
+            #rrm.append(tdata.readline().split()[2]) 			
+            #epspp.append(tdata.readline().split()[7])    
+            #epscno.append(tdata.readline().split()[8])
+            #epshe.append(tdata.readline().split()[9])
+			
+        tdata.close()
+
+        #print(epspp,epscno,epshe)	
+		
+        rrm = np.asarray(rrm[::-1],dtype=float)		
+        epspp = np.asarray(epspp[::-1],dtype=float)
+        epscno = np.asarray(epscno[::-1],dtype=float)
+        epshe = np.asarray(epshe[::-1],dtype=float)			
+		
+		
+        epspp_i = np.interp(rr, 10**rrm, epspp)		
+        epscno_i = np.interp(rr, 10**rrm, epscno)	
+        epshe_i = np.interp(rr, 10**rrm, epshe)			
+		
+        ax1.semilogy(rr,epspp_i+epscno_i+epshe_i,color='k',linestyle='--',label = 'monstar ini')
+		
+        print(to_plt1)		
+		
         ax1.set_xlabel(xlabel_1)
         ax1.set_ylabel(ylabel_1)
-        ax1.legend(loc=7,prop={'size':18})
+        ax1.legend(loc=4,prop={'size':18})
 
         plt.show(block=False)
 
