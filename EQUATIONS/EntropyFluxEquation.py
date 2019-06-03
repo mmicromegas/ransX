@@ -35,6 +35,7 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         dduy = np.asarray(eht.item().get('dduy')[intc])
         dduz = np.asarray(eht.item().get('dduz')[intc])		
         ddss = np.asarray(eht.item().get('ddss')[intc])
+        ddgg = np.asarray(eht.item().get('ddgg')[intc])		
 		
         dduxux = np.asarray(eht.item().get('dduxux')[intc])		
         dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
@@ -44,6 +45,8 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ddssuy = np.asarray(eht.item().get('ddssuy')[intc])
         ddssuz = np.asarray(eht.item().get('ddssuz')[intc])		
 
+        ssddgg = np.asarray(eht.item().get('ssddgg')[intc])		
+		
         ddssuxux = np.asarray(eht.item().get('ddssuxux')[intc])
         ddssuyuy = np.asarray(eht.item().get('ddssuyuy')[intc])
         ddssuzuz = np.asarray(eht.item().get('ddssuzuz')[intc])
@@ -137,6 +140,19 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
           self.plus_eht_uxff_dd_nuc_T + self.plus_eht_uxff_div_ftt_T + self.plus_eht_uxff_epsilonk_approx_T + \
           self.plus_Gss)
 
+        # RHS -eht_ssddgg
+        self.minus_eht_ssddgg = -ssddgg
+		
+        # RHS +fht_ss_eht_ddgg		
+        self.plus_fht_ss_eht_ddgg = +fht_ss*ddgg		  
+		  
+        # -res2 
+        self.minus_resSSfluxEquation2 = -(self.minus_dt_f_ss + self.minus_div_fht_ux_f_ss + \
+          self.minus_div_fr_ss + self.minus_f_ss_gradx_fht_ux + self.minus_rxx_gradx_fht_ss + \
+          self.minus_eht_ssddgg + self.plus_fht_ss_eht_ddgg + \
+          self.plus_eht_uxff_dd_nuc_T + self.plus_eht_uxff_div_ftt_T + self.plus_eht_uxff_epsilonk_approx_T + \
+          self.plus_Gss)		  
+		  
         ###########################		
         # END ENTROPY FLUX EQUATION
         ###########################
@@ -249,5 +265,67 @@ class EntropyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'fss_eq.png')		
 		
-	
+    def plot_fss_equation2(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot entropy flux equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_dt_f_ss  
+        lhs1 = self.minus_div_fht_ux_f_ss 
+		
+        rhs0 = self.minus_div_fr_ss
+        rhs1 = self.minus_f_ss_gradx_fht_ux
+        rhs2 = self.minus_rxx_gradx_fht_ss
+        rhs3 = self.minus_eht_ssddgg
+        rhs4 = self.plus_fht_ss_eht_ddgg		
+        rhs5 = self.plus_eht_uxff_dd_nuc_T
+        rhs6 = self.plus_eht_uxff_div_ftt_T
+        rhs7 = self.plus_eht_uxff_epsilonk_approx_T
+        rhs8 = self.plus_Gss		
+
+        res = self.minus_resSSfluxEquation2
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('entropy flux equation')
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t f_s$")
+        plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\widetilde{u}_r f_s$)")	
+		
+        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_s^r $")     
+        plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_s \partial_r \widetilde{u}_r$") 
+        plt.plot(grd1,rhs2,color='r',label = r"$-\widetilde{R}_{rr} \partial_r \widetilde{s}$") 
+        plt.plot(grd1,rhs3,color='c',label = r"$-\overline{s \rho g_r}$")
+        plt.plot(grd1,rhs4,color='mediumseagreen',label = r"$+\widetilde{s} \overline{\rho g_r}$")
+        plt.plot(grd1,rhs5,color='b',label = r"$+\overline{u''_r \rho \varepsilon_{nuc} /T}$")
+        plt.plot(grd1,rhs6,color='m',label = r"$+\overline{u''_r \nabla \cdot T /T}$")
+        plt.plot(grd1,rhs7,color='g',label = r"$+\overline{u''_r \varepsilon_k /T}$")
+        plt.plot(grd1,rhs8,color='y',label = r"$+G_s$")
+
+		
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_fs$")
+ 
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"erg K$^{-1}$ cm$^{-2}$ s$^{-1}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':8})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'fss_eq2.png')	
 		

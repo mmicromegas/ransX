@@ -10,10 +10,10 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
+class PressureFluxXequation(calc.CALCULUS,al.ALIMIT,object):
 
     def __init__(self,filename,ig,intc,tke_diss,data_prefix):
-        super(PressureFluxEquation,self).__init__(ig) 
+        super(PressureFluxXequation,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)		
@@ -73,8 +73,8 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         eht_ppf_uxff_divuff	= uxppdivu - fht_ppux*divu - pp*uxdivu - pp*fht_ux*divu - ppux*fht_divu	+ \
             fht_ppux*fht_divu + pp*ux*fht_divu + pp*fht_ux*fht_divu
 
-        fpp  = ppux-pp*ux
-        fppx = ppuxux - ppux*ux - pp*uxux + pp*ux*ux - ppux*fht_ux + pp*ux*fht_ux
+        fppx  = ppux-pp*ux
+        fppxx = ppuxux - ppux*ux - pp*uxux + pp*ux*ux - ppux*fht_ux + pp*ux*fht_ux
 
 			
         ########################		
@@ -82,19 +82,19 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ########################
 					   
         # time-series of pressure flux 
-        t_fpp = t_ppux - t_pp*t_ux
+        t_fppx = t_ppux - t_pp*t_ux
 		
         # LHS -dq/dt 		
-        self.minus_dt_fpp = -self.dt(t_fpp,xzn0,t_timec,intc)
+        self.minus_dt_fppx = -self.dt(t_fppx,xzn0,t_timec,intc)
      
-        # LHS -fht_ux gradx fpp
-        self.minus_fht_ux_gradx_fpp = -fht_ux*self.Grad(fpp,xzn0)	 
+        # LHS -fht_ux gradx fppx
+        self.minus_fht_ux_gradx_fppx = -fht_ux*self.Grad(fppx,xzn0)	 
 		
-        # RHS -div pressure flux
-        self.minus_div_fppx = -self.Div(fppx,xzn0)
+        # RHS -div pressure flux in x
+        self.minus_div_fppxx = -self.Div(fppxx,xzn0)
         
-        # RHS -fpp_gradx_ux
-        self.minus_fpp_gradx_ux = -fpp*self.Grad(ux,xzn0)
+        # RHS -fppx_gradx_ux
+        self.minus_fppx_gradx_ux = -fppx*self.Grad(ux,xzn0)
 		
         # RHS +eht_uxf_uxff_gradx_pp
         self.plus_eht_uxf_uxff_gradx_pp = +eht_uxf_uxff*self.Grad(pp,xzn0)	
@@ -112,11 +112,14 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_eht_ppf_GrM_o_dd = -1.*(-ppuyuy/xzn0-ppuzuz/xzn0 + pp*(uyuy/xzn0+uzuz/xzn0))
 
         # RHS -eht_ppf_gradx_pp_o_dd 		
-        self.minus_eht_ppf_gradx_pp_o_dd = -(ppgradxpp_o_dd	- pp*gradxpp_o_dd)
+        #self.minus_eht_ppf_gradx_pp_o_dd = -(ppgradxpp_o_dd	- pp*gradxpp_o_dd)
+
+        # this term is approx. zero, just replace the gradx pp with rho gg		
+        self.minus_eht_ppf_gradx_pp_o_dd = np.zeros(nx)
 	
         # -res  
-        self.minus_resPPfluxEquation = -(self.minus_dt_fpp+ self.minus_fht_ux_gradx_fpp+self.minus_div_fppx+\
-          self.minus_fpp_gradx_ux+self.plus_eht_uxf_uxff_gradx_pp+self.plus_gamma1_eht_uxf_pp_divu+\
+        self.minus_resPPfluxEquation = -(self.minus_dt_fppx+ self.minus_fht_ux_gradx_fppx+self.minus_div_fppxx+\
+          self.minus_fppx_gradx_ux+self.plus_eht_uxf_uxff_gradx_pp+self.plus_gamma1_eht_uxf_pp_divu+\
           self.plus_gamma3_minus_one_eht_uxf_dd_enuc+self.plus_eht_ppf_uxff_divuff+self.minus_eht_ppf_GrM_o_dd+\
           self.minus_eht_ppf_gradx_pp_o_dd)
                                        
@@ -127,16 +130,16 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
-        self.fpp        = fpp
+        self.fppx        = fppx
 		
-    def plot_fpp(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+    def plot_fppx(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean pressure flux stratification in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
 	
         # load DATA to plot
-        plt1 = self.fpp
+        plt1 = self.fppx
 				
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -149,12 +152,12 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 				
         # plot DATA 
-        plt.title(r'pressure flux')
-        plt.plot(grd1,plt1,color='brown',label = r'f$_p$')
+        plt.title(r'pressure flux x')
+        plt.plot(grd1,plt1,color='brown',label = r'f$_{pr}$')
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$f_p$ (erg cm$^{-2}$ s$^{-1}$)"
+        setylabel = r"$f_{pr}$ (erg cm$^{-2}$ s$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -165,20 +168,20 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_fpp.png')
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_fppx.png')
 
 									   
-    def plot_fpp_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+    def plot_fppx_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot acoustic flux equation in the model""" 
 		
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_fpp
-        lhs1 = self.minus_fht_ux_gradx_fpp
+        lhs0 = self.minus_dt_fppx
+        lhs1 = self.minus_fht_ux_gradx_fppx
 		
-        rhs0 = self.minus_div_fppx
-        rhs1 = self.minus_fpp_gradx_ux
+        rhs0 = self.minus_div_fppxx
+        rhs1 = self.minus_fppx_gradx_ux
         rhs2 = self.plus_eht_uxf_uxff_gradx_pp
         rhs3 = self.plus_gamma1_eht_uxf_pp_divu
         rhs4 = self.plus_gamma3_minus_one_eht_uxf_dd_enuc
@@ -199,12 +202,12 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 		
         # plot DATA 
-        plt.title('acoustic flux equation')
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t f_p$")
-        plt.plot(grd1,lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r f_p$)")	
+        plt.title('acoustic flux x equation')
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t f_{pr}$")
+        plt.plot(grd1,lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r f_{pr}$)")	
 		
         plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_p^r $")     
-        plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_p \partial_r \overline{u}_r$") 
+        plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_{pr} \partial_r \overline{u}_r$") 
         plt.plot(grd1,rhs2,color='r',label = r"$+\overline{u'_r u''_r} \partial_r \overline{P}$") 
         plt.plot(grd1,rhs3,color='firebrick',label = r"$+\Gamma_1 \overline{u'_r P d}$") 
         plt.plot(grd1,rhs4,color='c',label = r"$+(\Gamma_3-1)\overline{u'_r \rho \epsilon_{nuc}}$")
@@ -227,6 +230,6 @@ class PressureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'fpp_eq.png')	
-        plt.savefig('RESULTS/'+self.data_prefix+'fpp_eq.eps')
+        plt.savefig('RESULTS/'+self.data_prefix+'fppx_eq.png')	
+        plt.savefig('RESULTS/'+self.data_prefix+'fppx_eq.eps')
 		
