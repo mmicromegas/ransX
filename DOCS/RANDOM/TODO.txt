@@ -1,4 +1,4 @@
-6/April/2019
+6/June/2019
 
 - add proper error handling
 
@@ -13,4 +13,8 @@
 - introduce vertical markers for convection zone boundaries
 
 - create FAQ Frequently Asked Questions document
+
+- create project's website www.ransx.com
+
+- organize ransX workshops
  
