@@ -44,8 +44,12 @@ import EQUATIONS.DensityVarianceEquation as sigmadd
 import EQUATIONS.TurbulentMassFluxEquation as a
 import EQUATIONS.DensitySpecificVolumeCovarianceEquation as b
 
-import EQUATIONS.XtransportEquation as xtra 
-import EQUATIONS.XfluxEquation as xflx
+import EQUATIONS.XtransportEquation as xtra
+ 
+import EQUATIONS.XfluxXequation as xflxx
+import EQUATIONS.XfluxYequation as xflxy
+import EQUATIONS.XfluxZequation as xflxz
+
 import EQUATIONS.XvarianceEquation as xvar
 import EQUATIONS.Xdiffusivity as xdiff
 import EQUATIONS.XdamkohlerNumber as xda
@@ -431,23 +435,30 @@ class MasterPlot():
                                                           params.getForEqsBar(x)['ybd'])
 										  
 										  
-    def execXflx(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
+    def execXflxx(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
 	
     	params = self.params	
 
         # instantiate 		
-        ransXflx = xflx.XfluxEquation(params.getForProp('prop')['eht_data'],\
+        ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],\
                                       params.getForProp('prop')['ig'],\
                                       inuc,element,bconv,tconv,tke_diss,tauL, \
                                       params.getForProp('prop')['intc'],\
                                       params.getForProp('prop')['prefix'])
 
-        ransXflx.plot_Xflux(params.getForProp('prop')['laxis'],\
+        ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],\
                             params.getForEqs(x)['xbl'],\
                             params.getForEqs(x)['xbr'],\
                             params.getForEqs(x)['ybu'],\
                             params.getForEqs(x)['ybd'],\
                             params.getForEqs(x)['ilg'])
+							
+        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],\
+                            params.getForEqs(x)['xbl'],\
+                            params.getForEqs(x)['xbr'],\
+                            params.getForEqs(x)['ybu'],\
+                            params.getForEqs(x)['ybd'],\
+                            params.getForEqs(x)['ilg'])							
 
 #        ransXflx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],\
 #                            params.getForEqs(x)['xbl'],\
@@ -458,32 +469,103 @@ class MasterPlot():
 							
 							
 							
-    def execXflxEq(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
+    def execXflxXeq(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
 
         params = self.params
 	 				    					  
         # instantiate 
-        ransXflx = xflx.XfluxEquation(params.getForProp('prop')['eht_data'],\
+        ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],\
                                       params.getForProp('prop')['ig'],\
                                       inuc,element,bconv,tconv,tke_diss,tauL,\
                                       params.getForProp('prop')['intc'],\
                                       params.getForProp('prop')['prefix'])
 							
-        ransXflx.plot_Xflux_equation(params.getForProp('prop')['laxis'],\
+        ransXflxx.plot_XfluxX_equation(params.getForProp('prop')['laxis'],\
                                      params.getForEqs(x)['xbl'],\
                                      params.getForEqs(x)['xbr'],\
                                      params.getForEqs(x)['ybu'],\
                                      params.getForEqs(x)['ybd'],\
                                      params.getForEqs(x)['ilg'])	
 										  
-        ransXflx.plot_Xflux_equation2(params.getForProp('prop')['laxis'],\
+        ransXflxx.plot_XfluxX_equation2(params.getForProp('prop')['laxis'],\
                                      params.getForEqs(x)['xbl'],\
                                      params.getForEqs(x)['xbr'],\
                                      params.getForEqs(x)['ybu'],\
                                      params.getForEqs(x)['ybd'],\
                                      params.getForEqs(x)['ilg'])
-										  
-										  
+
+    def execXflxy(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
+	
+    	params = self.params	
+
+        # instantiate 		
+        ransXflxy = xflxy.XfluxYequation(params.getForProp('prop')['eht_data'],\
+                                      params.getForProp('prop')['ig'],\
+                                      inuc,element,bconv,tconv,tke_diss,tauL, \
+                                      params.getForProp('prop')['intc'],\
+                                      params.getForProp('prop')['prefix'])
+
+        ransXflxy.plot_XfluxY(params.getForProp('prop')['laxis'],\
+                            params.getForEqs(x)['xbl'],\
+                            params.getForEqs(x)['xbr'],\
+                            params.getForEqs(x)['ybu'],\
+                            params.getForEqs(x)['ybd'],\
+                            params.getForEqs(x)['ilg'])
+														
+    def execXflxYeq(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
+
+        params = self.params
+	 				    					  
+        # instantiate 
+        ransXflxy = xflxy.XfluxYequation(params.getForProp('prop')['eht_data'],\
+                                      params.getForProp('prop')['ig'],\
+                                      inuc,element,bconv,tconv,tke_diss,tauL,\
+                                      params.getForProp('prop')['intc'],\
+                                      params.getForProp('prop')['prefix'])
+							
+        ransXflxy.plot_XfluxY_equation(params.getForProp('prop')['laxis'],\
+                                     params.getForEqs(x)['xbl'],\
+                                     params.getForEqs(x)['xbr'],\
+                                     params.getForEqs(x)['ybu'],\
+                                     params.getForEqs(x)['ybd'],\
+                                     params.getForEqs(x)['ilg'])																			 
+				
+    def execXflxz(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
+	
+    	params = self.params	
+
+        # instantiate 		
+        ransXflxz = xflxz.XfluxZequation(params.getForProp('prop')['eht_data'],\
+                                      params.getForProp('prop')['ig'],\
+                                      inuc,element,bconv,tconv,tke_diss,tauL, \
+                                      params.getForProp('prop')['intc'],\
+                                      params.getForProp('prop')['prefix'])
+
+        ransXflxz.plot_XfluxZ(params.getForProp('prop')['laxis'],\
+                            params.getForEqs(x)['xbl'],\
+                            params.getForEqs(x)['xbr'],\
+                            params.getForEqs(x)['ybu'],\
+                            params.getForEqs(x)['ybd'],\
+                            params.getForEqs(x)['ilg'])
+													
+    def execXflxZeq(self,inuc,element,x,bconv,tconv,tke_diss,tauL):
+
+        params = self.params
+	 				    					  
+        # instantiate 
+        ransXflxz = xflxz.XfluxZequation(params.getForProp('prop')['eht_data'],\
+                                      params.getForProp('prop')['ig'],\
+                                      inuc,element,bconv,tconv,tke_diss,tauL,\
+                                      params.getForProp('prop')['intc'],\
+                                      params.getForProp('prop')['prefix'])
+							
+        ransXflxz.plot_XfluxZ_equation(params.getForProp('prop')['laxis'],\
+                                     params.getForEqs(x)['xbl'],\
+                                     params.getForEqs(x)['xbr'],\
+                                     params.getForEqs(x)['ybu'],\
+                                     params.getForEqs(x)['ybd'],\
+                                     params.getForEqs(x)['ilg'])	
+										  				
     def execXvar(self,inuc,element,x,bconv,tconv):
 	
     	params = self.params	

@@ -1,8 +1,8 @@
 # ----- Parameter file for rans(eXtreme) hheflash tseries ---------- #
 []
-## Input Data Directory .................... ## [tseries,datadir,D:\simonX\hheflash3dlrez2\]
+## Input Data Directory .................... ## [tseries,datadir,D:\simonX\oblrez10june2019\]
 ## Input Data Endianness ................... ## [tseries,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [tseries,precision,double]
-## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ransout_hheflash_lrez5]
-## Time-Range (in s) ....................... ## [tseries,trange,1500.,4500.]
-## Averaging Window (in s) ................. ## [tseries,tavg,2800.]
+## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ransout_lrezoburnnew]
+## Time-Range (in s) ....................... ## [tseries,trange,1467.,1580.]
+## Averaging Window (in s) ................. ## [tseries,tavg,100.]

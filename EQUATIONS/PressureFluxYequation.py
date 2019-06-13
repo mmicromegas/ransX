@@ -42,6 +42,8 @@ class PressureFluxYequation(calc.CALCULUS,al.ALIMIT,object):
         uxux = np.asarray(eht.item().get('uxux')[intc])		
         uyuy = np.asarray(eht.item().get('uyuy')[intc])
         uzuz = np.asarray(eht.item().get('uzuz')[intc])	
+        uxuy = np.asarray(eht.item().get('uxuy')[intc])	
+        uxuz = np.asarray(eht.item().get('uxuz')[intc])			
 		
         ddppux = np.asarray(eht.item().get('ddppux')[intc])	
         ddppuy = np.asarray(eht.item().get('ddppuy')[intc])	
@@ -81,10 +83,16 @@ class PressureFluxYequation(calc.CALCULUS,al.ALIMIT,object):
         gamma1   = np.asarray(eht.item().get('gamma1')[intc])
         gamma3   = np.asarray(eht.item().get('gamma3')[intc])		
 
-        uzuz_o_tanyy = np.asarray(eht.item().get('uzuz_o_tanyy')[intc])
+        uzuzcoty = np.asarray(eht.item().get('uzuzcoty')[intc])
+        ppuzuzcoty = np.asarray(eht.item().get('ppuzuzcoty')[intc])
+		
 				
         gradxpp_o_dd = np.asarray(eht.item().get('gradxpp_o_dd')[intc])		
-        ppgradxpp_o_dd = np.asarray(eht.item().get('ppgradxpp_o_dd')[intc])		
+        ppgradxpp_o_dd = np.asarray(eht.item().get('ppgradxpp_o_dd')[intc])
+		
+        gradypp_o_dd = np.asarray(eht.item().get('gradypp_o_dd')[intc])		
+        ppgradypp_o_dd = np.asarray(eht.item().get('ppgradypp_o_dd')[intc])
+
 		
         # store time series for time derivatives
         t_timec = np.asarray(eht.item().get('timec'))		
@@ -100,14 +108,14 @@ class PressureFluxYequation(calc.CALCULUS,al.ALIMIT,object):
         fht_ppuy = ddppuy/dd
 		
         fht_divu = dddivu/dd		
-        eht_uyf_uxff = uyux - uy*ux
+        eht_uyf_uxff = uxuy - ux*uy
 		
         eht_ppf_uyff_divuff	= uyppdivu - fht_ppuy*divu - pp*uydivu - pp*fht_uy*divu - ppuy*fht_divu	+ \
             fht_ppuy*fht_divu + pp*uy*fht_divu + pp*fht_uy*fht_divu
 
         fppx  = ppux-pp*ux
         fppy  = ppuy-pp*uy
-        fppyx = ppuyux - ppuy*ux - pp*uyux + pp*uy*ux - ppuy*fht_ux + pp*uy*fht_ux
+        fppyx = ppuyux - ppuy*ux - pp*uxuy + pp*uy*ux - ppuy*fht_ux + pp*uy*fht_ux
 
 			
         ########################		
@@ -142,7 +150,7 @@ class PressureFluxYequation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_eht_ppf_uyff_divuff = +eht_ppf_uyff_divuff 	
 
         # RHS -eht_ppf_GtM_o_dd	
-        self.minus_eht_ppf_GtM_o_dd = -1.*(ppuyux/xzn0-ppuzuz/xzn0 - pp*(uyux/xzn0-uzuz_o_tanyy/xzn0))
+        self.minus_eht_ppf_GtM_o_dd = -1.*(ppuyux/xzn0-ppuzuzcoty/xzn0 - pp*(uxuy/xzn0-uzuzcoty/xzn0))
 
         # RHS -eht_ppf_grady_pp_o_ddrr 		
         self.minus_eht_ppf_grady_pp_o_ddrr = -(ppgradypp_o_dd/xzn0	- pp*gradypp_o_dd/xzn0)
@@ -241,7 +249,7 @@ class PressureFluxYequation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs3,color='firebrick',label = r"$+\Gamma_1 \overline{u'_\theta P d}$") 
         plt.plot(grd1,rhs4,color='c',label = r"$+(\Gamma_3-1)\overline{u'_\theta \rho \epsilon_{nuc}}$")
         plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$+\overline{P'u''_\theta d''}$")
-        plt.plot(grd1,rhs6,color='b',label = r"$+\overline{P' G_t^M/ \rho}$")
+        plt.plot(grd1,rhs6,color='b',label = r"$+\overline{P' G_\theta^M/ \rho}$")
         plt.plot(grd1,rhs7,color='m',label = r"$+\overline{P'\partial_\theta P/ \rho r}$")
 		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_p$")

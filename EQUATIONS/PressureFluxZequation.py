@@ -42,7 +42,9 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         uxux = np.asarray(eht.item().get('uxux')[intc])		
         uyuy = np.asarray(eht.item().get('uyuy')[intc])
         uzuz = np.asarray(eht.item().get('uzuz')[intc])	
-		
+        uxuy = np.asarray(eht.item().get('uxuy')[intc])	
+        uxuz = np.asarray(eht.item().get('uxuz')[intc])
+
         ddppux = np.asarray(eht.item().get('ddppux')[intc])	
         ddppuy = np.asarray(eht.item().get('ddppuy')[intc])	
         ddppuz = np.asarray(eht.item().get('ddppuz')[intc])			
@@ -81,17 +83,20 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         gamma1   = np.asarray(eht.item().get('gamma1')[intc])
         gamma3   = np.asarray(eht.item().get('gamma3')[intc])		
 
-        uzuz_o_tanyy = np.asarray(eht.item().get('uzuz_o_tanyy')[intc])
+        uzuzcoty = np.asarray(eht.item().get('uzuzcoty')[intc])
 				
         gradxpp_o_dd = np.asarray(eht.item().get('gradxpp_o_dd')[intc])		
         ppgradxpp_o_dd = np.asarray(eht.item().get('ppgradxpp_o_dd')[intc])		
 
-        gradzpp_o_ddsinyy = np.asarray(eht.item().get('gradzpp_o_ddsinyy')[intc])		
-        ppgradzpp_o_ddsinyy = np.asarray(eht.item().get('ppgradzpp_o_ddsinyy')[intc])
+        #gradzpp_o_ddsiny = np.asarray(eht.item().get('gradzpp_o_ddsiny')[intc])		
+        #ppgradzpp_o_ddsiny = np.asarray(eht.item().get('ppgradzpp_o_ddsiny')[intc])
 
-        ppuzuy_o_tanyy = np.asarray(eht.item().get('ppuzuy_o_tanyy')[intc])		
-        uzuy_o_tanyy = np.asarray(eht.item().get('uzuy_o_tanyy')[intc])
-								
+        ppuzuycoty = np.asarray(eht.item().get('ppuzuycoty')[intc])		
+        uzuycoty = np.asarray(eht.item().get('uzuycoty')[intc])
+		
+        gradzpp_o_ddsiny = np.asarray(eht.item().get('gradzpp_o_ddsiny')[intc])		
+        ppgradzpp_o_ddsiny = np.asarray(eht.item().get('ppgradypp_o_ddsiny')[intc])
+		
         # store time series for time derivatives
         t_timec = np.asarray(eht.item().get('timec'))		
         t_uz    = np.asarray(eht.item().get('uz'))
@@ -109,7 +114,7 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
 		
         fht_divu = dddivu/dd
 		
-        eht_uzf_uxff = uzux - uz*ux
+        eht_uzf_uxff = uxuz - ux*uz
 		
         eht_ppf_uzff_divuff	= uzppdivu - fht_ppuz*divu - pp*uzdivu - pp*fht_uz*divu - ppuz*fht_divu	+ \
             fht_ppuz*fht_divu + pp*uz*fht_divu + pp*fht_uz*fht_divu
@@ -118,7 +123,7 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         fppy  = ppuy-pp*uy
         fppz  = ppuz-pp*uz
 		
-        fppzx = ppuzux - ppuz*ux - pp*uzux + pp*uz*ux - ppuz*fht_ux + pp*uz*fht_ux
+        fppzx = ppuzux - ppuz*ux - pp*uxuz + pp*uz*ux - ppuz*fht_ux + pp*uz*fht_ux
 
 			
         ########################		
@@ -141,7 +146,7 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_fppx_gradx_uz = -fppx*self.Grad(uz,xzn0)
 		
         # RHS +eht_uzf_uxff_gradx_pp
-        self.plus_eht_uyf_uxff_gradx_pp = +eht_uyf_uxff*self.Grad(pp,xzn0)	
+        self.plus_eht_uzf_uxff_gradx_pp = +eht_uzf_uxff*self.Grad(pp,xzn0)	
 
         # RHS +gamma1_eht_uzf_pp_divu
         self.plus_gamma1_eht_uzf_pp_divu = +gamma1*(uzppdivu - uz*ppdivu)		
@@ -153,16 +158,16 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         self.plus_eht_ppf_uzff_divuff = +eht_ppf_uzff_divuff 	
 
         # RHS -eht_ppf_GpM_o_dd	
-        self.minus_eht_ppf_GpM_o_dd = -1.*(ppuzux/xzn0-ppuzuy_o_tanyy/xzn0 - pp*(uzux/xzn0+uzuy_o_tanyy/xzn0))
+        self.minus_eht_ppf_GpM_o_dd = -1.*(ppuzux/xzn0+ppuzuycoty/xzn0 - pp*(uxuz/xzn0+uzuycoty/xzn0))
 
-        # RHS -eht_ppf_gradz_pp_o_ddrrsinyy 		
-        self.minus_eht_ppf_gradz_pp_o_ddrrsinyy = -(ppgradzpp_o_ddsinyy/xzn0 - pp*gradzpp_o_ddsinyy/xzn0)
+        # RHS -eht_ppf_gradz_pp_o_ddrrsiny 		
+        self.minus_eht_ppf_gradz_pp_o_ddrrsiny = -(ppgradzpp_o_ddsiny/xzn0 - pp*gradzpp_o_ddsiny/xzn0)
 	
         # -res  
         self.minus_resPPfluxEquation = -(self.minus_dt_fppz+ self.minus_fht_ux_gradx_fppz+self.minus_div_fppzx+\
           self.minus_fppx_gradx_uz+self.plus_eht_uzf_uxff_gradx_pp+self.plus_gamma1_eht_uzf_pp_divu+\
           self.plus_gamma3_minus_one_eht_uzf_dd_enuc+self.plus_eht_ppf_uzff_divuff+self.minus_eht_ppf_GpM_o_dd+\
-          self.minus_eht_ppf_gradz_pp_o_ddrrsinyy)
+          self.minus_eht_ppf_gradz_pp_o_ddrrsiny)
                                        
         ########################		
         # PRESSURE FLUX EQUATION
@@ -221,14 +226,14 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         lhs0 = self.minus_dt_fppz
         lhs1 = self.minus_fht_ux_gradx_fppz
 		
-        rhs0 = self.minus_div_fppz
-        rhs1 = self.minus_fppz_gradx_ux
+        rhs0 = self.minus_div_fppzx
+        rhs1 = self.minus_fppx_gradx_uz
         rhs2 = self.plus_eht_uzf_uxff_gradx_pp
         rhs3 = self.plus_gamma1_eht_uzf_pp_divu
         rhs4 = self.plus_gamma3_minus_one_eht_uzf_dd_enuc
         rhs5 = self.plus_eht_ppf_uzff_divuff
         rhs6 = self.minus_eht_ppf_GpM_o_dd
-        rhs7 = self.minus_eht_ppf_gradz_pp_o_ddrrsinyy
+        rhs7 = self.minus_eht_ppf_gradz_pp_o_ddrrsiny
 	  
         res = self.minus_resPPfluxEquation
 	

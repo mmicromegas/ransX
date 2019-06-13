@@ -129,7 +129,8 @@ class TemperatureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_eht_uxf_uxff_gradx_tt = -eht_uxf_uxff*self.Grad(tt,xzn0)	
 
         # RHS -eht_eht_ttf_gradx_pp_o_dd
-        self.minus_eht_ttf_gradx_pp_o_dd = -(eht_ttf_gradx_pp_o_dd)
+        #self.minus_eht_ttf_gradx_pp_o_dd = -(eht_ttf_gradx_pp_o_dd)
+        self.minus_eht_ttf_gradx_pp_o_dd = np.zeros(nx) # replace gradx pp with rho gg and you get the 0
 		
         # RHS -gamma3_minus_one_tt_eht_uxf_dff
         self.minus_gamma3_minus_one_tt_eht_uxf_dff = -(gamma3-1.)*tt*eht_uxf_dff
