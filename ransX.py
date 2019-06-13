@@ -209,6 +209,9 @@ if str2bool(params.getForEqs('mxeqhsse')['plotMee']): plt.execHssMomxEq()
 if str2bool(params.getForEqs('tpeqhsse')['plotMee']): plt.execHssTempEq(properties['tke_diss'])
 if str2bool(params.getForEqs('lueqhsse')['plotMee']): plt.execHssLumiEq(properties['tke_diss'])
 
+# FULL TURBULENT VELOCITY FIELD HYPOTHESIS
+if str2bool(params.getForEqs('ftvfh')['plotMee']): plt.execFtvfh()
+
 # load network
 network = params.getNetwork() 
 

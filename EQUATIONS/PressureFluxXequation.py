@@ -202,7 +202,7 @@ class PressureFluxXequation(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 		
         # plot DATA 
-        plt.title('acoustic flux equation')
+        plt.title('acoustic flux x equation')
         plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t f_{pr}$")
         plt.plot(grd1,lhs1,color='k',label = r"$-\widetilde{u}_r \partial_r f_{pr}$)")	
 		

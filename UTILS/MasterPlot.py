@@ -79,6 +79,9 @@ import EQUATIONS.HsseTemperatureEquation as hssetemp
 import EQUATIONS.HsseLuminosityEquation as hsselumi
 import EQUATIONS.HsseXtransportEquation as hssecomp
 
+# import class for full turbulence velocity field hypothesis
+import EQUATIONS.FullTurbulenceVelocityFieldHypothesis as ftvfh
+
 import matplotlib.pyplot as plt 
 
 class MasterPlot():
@@ -2120,7 +2123,39 @@ class MasterPlot():
                                 params.getForEqs('hheq')['ybd'],\
                                 params.getForEqs('hheq')['ilg'])			  
 				
-				
+    def execFtvfh(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransFtvfh =  ftvfh.FullTurbulenceVelocityFieldHypothesis(params.getForProp('prop')['eht_data'],\
+                                      params.getForProp('prop')['ig'],\
+                                      params.getForProp('prop')['intc'],\
+                                      params.getForProp('prop')['prefix'])
+
+									   
+        ransFtvfh.plot_ftvfhX_equation(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('hheq')['xbl'],\
+                                params.getForEqs('hheq')['xbr'],\
+                                params.getForEqs('hheq')['ybu'],\
+                                params.getForEqs('hheq')['ybd'],\
+                                params.getForEqs('hheq')['ilg'])
+
+        ransFtvfh.plot_ftvfhY_equation(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('hheq')['xbl'],\
+                                params.getForEqs('hheq')['xbr'],\
+                                params.getForEqs('hheq')['ybu'],\
+                                params.getForEqs('hheq')['ybd'],\
+                                params.getForEqs('hheq')['ilg'])
+
+        ransFtvfh.plot_ftvfhZ_equation(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('hheq')['xbl'],\
+                                params.getForEqs('hheq')['xbr'],\
+                                params.getForEqs('hheq')['ybu'],\
+                                params.getForEqs('hheq')['ybd'],\
+                                params.getForEqs('hheq')['ilg'])								
+								
+								
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """ 
         """ to obtain publication-quality figures """
