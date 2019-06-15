@@ -277,7 +277,7 @@ class XfluxYequation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,rhs0,color='b',label=r'$-\nabla f^\theta$')
             plt.plot(grd1,rhs1,color='g',label=r'$-f_{r} \partial_r \widetilde{u}_\theta$')
             plt.plot(grd1,rhs2,color='r',label=r'$-R_{r\theta} \partial_x \widetilde{X}$')	
-            plt.plot(grd1,rhs3,color='cyan',label=r"$-\overline{X''\partial_\theta P/r} = 0$")
+            plt.plot(grd1,rhs3,color='cyan',label=r"$-\overline{X''\partial_\theta P/r} = 0 \ bug$")
             plt.plot(grd1,rhs4,color='purple',label=r"$+\overline{u''_\theta \rho \dot{X}}$")
             plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')		
             plt.plot(grd1,res,color='k',linestyle='--',label='res')

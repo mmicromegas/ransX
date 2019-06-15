@@ -32,7 +32,7 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         uz = np.asarray(eht.item().get('uz')[intc])		
 
         pp     = np.asarray(eht.item().get('pp')[intc])	
-        ddgg   = np.asarray(eht.item().get('ddgg')[intc])
+        ddgg   = -np.asarray(eht.item().get('ddgg')[intc])
         gamma1 = np.asarray(eht.item().get('gamma1')[intc])
 		
         ddux  = np.asarray(eht.item().get('ddux')[intc])		
@@ -101,11 +101,44 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         dduxuzz  = np.asarray(eht.item().get('dduxuzz')[intc])
         dduyuzz  = np.asarray(eht.item().get('dduyuzz')[intc])
         dduzuzz  = np.asarray(eht.item().get('dduzuzz')[intc])		
-		
-        dduxx = np.asarray(eht.item().get('dduxx')[intc])
-        dduyy = np.asarray(eht.item().get('dduyy')[intc])	
-        dduzz = np.asarray(eht.item().get('dduzz')[intc])
 
+        #dduxx = np.asarray(eht.item().get('dduxx')[intc])
+        #dduyy = np.asarray(eht.item().get('dduyy')[intc])	
+        #dduzz = np.asarray(eht.item().get('dduzz')[intc])		
+		
+        uxuxx  = np.asarray(eht.item().get('uxuxx')[intc])
+        uyuxx  = np.asarray(eht.item().get('uyuxx')[intc])
+        uzuxx  = np.asarray(eht.item().get('uzuxx')[intc])
+
+        uxuyy  = np.asarray(eht.item().get('uxuyy')[intc])
+        uyuyy  = np.asarray(eht.item().get('uyuyy')[intc])
+        uzuyy  = np.asarray(eht.item().get('uzuyy')[intc])
+		
+        uxuzz  = np.asarray(eht.item().get('uxuzz')[intc])
+        uyuzz  = np.asarray(eht.item().get('uyuzz')[intc])
+        uzuzz  = np.asarray(eht.item().get('uzuzz')[intc])
+
+        uxx = np.asarray(eht.item().get('uxx')[intc])
+        uyy = np.asarray(eht.item().get('uyy')[intc])	
+        uzz = np.asarray(eht.item().get('uzz')[intc])			
+
+        pp = np.asarray(eht.item().get('pp')[intc])		
+        divu = np.asarray(eht.item().get('divu')[intc])
+        dddivu = np.asarray(eht.item().get('dddivu')[intc])		
+        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])		
+		
+        ppux = np.asarray(eht.item().get('ppux')[intc])		
+        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])	
+        uxppdivu = np.asarray(eht.item().get('uxppdivu')[intc])		
+
+        ppuy = np.asarray(eht.item().get('ppuy')[intc])		
+        uydivu = np.asarray(eht.item().get('uydivu')[intc])	
+        uyppdivu = np.asarray(eht.item().get('uyppdivu')[intc])
+
+        ppuz = np.asarray(eht.item().get('ppuz')[intc])		
+        uzdivu = np.asarray(eht.item().get('uzdivu')[intc])	
+        uzppdivu = np.asarray(eht.item().get('uzppdivu')[intc])		
+		
         # construct equation-specific mean fields		
         fht_ux = ddux/dd			
         fht_uy = dduy/dd
@@ -117,8 +150,8 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 						
         if (True):
             self.rxx = uxux - ux*ux
-            self.ryx = uxuy - ux*uy
-            self.rzx = uxuz - ux*uz		
+            self.rxy = uxuy - ux*uy
+            self.rxz = uxuz - ux*uz		
 
         if (False):   		
             self.rxx = dduxux/dd - ddux*ddux/(dd*dd)
@@ -173,22 +206,38 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.eht_uyff_divuff   = dduydivu/dd  - dduy*dddivu/(dd*dd)
         self.eht_uzff_divuff   = dduzdivu/dd  - dduz*dddivu/(dd*dd)			
 		
-        self.eht_uxff_uxxff  = dduxuxx/dd - ddux*dduxx/(dd*dd)
-        self.eht_uxff_uyyff  = dduxuyy/dd - ddux*dduyy/(dd*dd)			
-        self.eht_uxff_uzzff  = dduxuzz/dd - ddux*dduzz/(dd*dd)
+        #self.eht_uxff_uxxff  = dduxuxx/dd - ddux*dduxx/(dd*dd)
+        #self.eht_uxff_uyyff  = dduxuyy/dd - ddux*dduyy/(dd*dd)			
+        #self.eht_uxff_uzzff  = dduxuzz/dd - ddux*dduzz/(dd*dd)
 		
-        self.eht_uyff_uxxff  = dduyuxx/dd - dduy*dduxx/(dd*dd)
-        self.eht_uyff_uyyff  = dduyuyy/dd - dduy*dduyy/(dd*dd)			
-        self.eht_uyff_uzzff  = dduyuzz/dd - dduy*dduzz/(dd*dd)				
+        #self.eht_uyff_uxxff  = dduyuxx/dd - dduy*dduxx/(dd*dd)
+        #self.eht_uyff_uyyff  = dduyuyy/dd - dduy*dduyy/(dd*dd)			
+        #self.eht_uyff_uzzff  = dduyuzz/dd - dduy*dduzz/(dd*dd)				
 		
-        self.eht_uzff_uxxff  = dduzuxx/dd - dduz*dduxx/(dd*dd)
-        self.eht_uzff_uyyff  = dduzuyy/dd - dduz*dduyy/(dd*dd)			
-        self.eht_uzff_uzzff  = dduzuzz/dd - dduz*dduzz/(dd*dd)						
+        #self.eht_uzff_uxxff  = dduzuxx/dd - dduz*dduxx/(dd*dd)
+        #self.eht_uzff_uyyff  = dduzuyy/dd - dduz*dduyy/(dd*dd)			
+        #self.eht_uzff_uzzff  = dduzuzz/dd - dduz*dduzz/(dd*dd)						
 						
 					
         ###############################################
         # END FULL TURBULENCE VELOCITY FIELD HYPOTHESIS
-        ###############################################											
+        ###############################################
+		
+        self.eht_uxfppdivu = uxppdivu - ux*ppdivu		
+        self.ppfuxf_fht_divu = (ppux - pp*ux)*(dddivu/dd)
+        self.pp_eht_uxf_divuff = pp*(uxdivu-ux*divu)
+        self.eht_ppf_uxf_divuff = ppux*divu-ppux*(dddivu/dd)-pp*ux*divu+pp*ux*(dddivu/dd)
+		
+        self.eht_uyfppdivu = uyppdivu - uy*ppdivu		
+        self.ppfuyf_fht_divu = (ppuy - pp*uy)*(dddivu/dd)
+        self.pp_eht_uyf_divuff = pp*(uydivu-uy*divu)
+        self.eht_ppf_uyf_divuff = ppuy*divu-ppuy*(dddivu/dd)-pp*uy*divu+pp*uy*(dddivu/dd)		
+		
+        self.eht_uzfppdivu = uzppdivu - uz*ppdivu		
+        self.ppfuzf_fht_divu = (ppuz - pp*uz)*(dddivu/dd)
+        self.pp_eht_uzf_divuff = pp*(uzdivu-uz*divu)
+        self.eht_ppf_uzf_divuff = ppuz*divu-ppuz*(dddivu/dd)-pp*uz*divu+pp*uz*(dddivu/dd)		
+		
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -198,8 +247,8 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.ig   = ig		
 
         self.pp     = pp       
-		self.ddgg   = ddgg   
-		self.gamma1 = gamma1 
+        self.ddgg   = ddgg   
+        self.gamma1 = gamma1 
 		
     def plot_ftvfhX_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ftvfh in the model""" 
@@ -211,6 +260,11 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         plt1 = self.eht_uxf_uxxf
         plt2 = self.eht_uxf_uyyf
         plt3 = self.eht_uxf_uzzf
+		
+        #plt1 = self.eht_uxf_divuxf		
+        #plt2 = self.eht_uxf_divuyf		
+        #plt3 = self.eht_uxf_divuzf		
+		
         plt4 = -self.ddgg*self.rxx/(self.gamma1*self.pp)
         res = plt1+plt2+plt3+plt4			
 		
@@ -226,10 +280,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('turbulence velocity field hypothesis X')
-        plt.plot(grd1,plt1,color='r',label = r"$\overline{u'_r \nabla_r u'_r}$")
-        plt.plot(grd1,plt2,color='g',label = r"$\overline{u'_r \nabla_\theta u'_\theta}$")		
-        plt.plot(grd1,plt3,color='b',label = r"$\overline{u'_r \nabla_\phi u'_\phi}$")
-        plt.plot(grd1,plt4,color='b',label = r"$\overline{u'_r u'_r} \overline{dd}\widetilde{g}_r/\Gamma_1 \overline{P}$")		
+        plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_r \nabla_r u'_r}$")
+        plt.plot(grd1,plt2,color='g',label = r"$+\overline{u'_r \nabla_\theta u'_\theta}$")		
+        plt.plot(grd1,plt3,color='b',label = r"$+\overline{u'_r \nabla_\phi u'_\phi}$")
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{u'_r u'_r} \ \overline{\rho} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
 		
         # define and show x/y LABELS
@@ -241,13 +295,13 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit() 
 			
-        setylabel = r"$(cm s$^{-2}$)"
+        setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':18})
+        plt.legend(loc=ilg,prop={'size':12})
 
         # display PLOT
         plt.show(block=False)
@@ -281,10 +335,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('turbulence velocity field hypothesis Y')
-        plt.plot(grd1,plt1,color='r',label = r"$\overline{u'_\theta \nabla_r u'_r}$")
-        plt.plot(grd1,plt2,color='g',label = r"$\overline{u'_\theta \nabla_\theta u'_\theta}$")		
-        plt.plot(grd1,plt3,color='b',label = r"$\overline{u'_\theta \nabla_\phi u'_\phi}$")
-        plt.plot(grd1,plt4,color='b',label = r"$\overline{u'_r u'_\theta} \overline{dd}\widetilde{g}_r/\Gamma_1 \overline{P}$")		
+        plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_\theta \nabla_r u'_r}$")
+        plt.plot(grd1,plt2,color='g',label = r"$+\overline{u'_\theta \nabla_\theta u'_\theta}$")		
+        plt.plot(grd1,plt3,color='b',label = r"$+\overline{u'_\theta \nabla_\phi u'_\phi}$")
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{u'_r u'_\theta} \ \overline{\rho} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
 		
         # define and show x/y LABELS
@@ -296,13 +350,13 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit() 
 			
-        setylabel = r"$(cm s$^{-2}$)"
+        setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':18})
+        plt.legend(loc=ilg,prop={'size':12})
 
         # display PLOT
         plt.show(block=False)
@@ -329,16 +383,16 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
-        # set plot boundaries   
+        # set plot boundaries    
         to_plot = [plt1,plt2,plt3,plt4]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 		
         # plot DATA 
         plt.title('turbulence velocity field hypothesis Z')
-        plt.plot(grd1,plt1,color='r',label = r"$\overline{u'_\phi \nabla_r u'_r}$")
-        plt.plot(grd1,plt2,color='g',label = r"$\overline{u'_\phi \nabla_\theta u'_\theta}$")		
-        plt.plot(grd1,plt3,color='b',label = r"$\overline{u'_\phi \nabla_\phi u'_\phi}$")
-        plt.plot(grd1,plt4,color='b',label = r"$\overline{u'_r u'_\phi} \overline{dd}\widetilde{g}_r/\Gamma_1 \overline{P}$")		
+        plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_\phi \nabla_r u'_r}$")
+        plt.plot(grd1,plt2,color='g',label = r"$+\overline{u'_\phi \nabla_\theta u'_\theta}$")		
+        plt.plot(grd1,plt3,color='b',label = r"$+\overline{u'_\phi \nabla_\phi u'_\phi}$")
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{u'_r u'_\phi} \ \overline{\rho} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
 		
         # define and show x/y LABELS
@@ -350,13 +404,13 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit() 
 			
-        setylabel = r"$(cm s$^{-2}$)"
+        setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':18})
+        plt.legend(loc=ilg,prop={'size':12})
 
         # display PLOT
         plt.show(block=False)
@@ -364,4 +418,167 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velZ_field_hypothesis.png')	
 	
+	
+    def plot_uxfpd_identity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot upd in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.eht_uxfppdivu
+        plt2 = -self.ppfuxf_fht_divu
+        plt3 = -self.pp_eht_uxf_divuff
+        plt4 = -self.eht_ppf_uxf_divuff 
+        res = plt1+plt2+plt3+plt4		
+		
+		# create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries    
+        to_plot = [plt1,plt2,plt3,plt4]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+		
+        # plot DATA 
+        plt.title('uxpd identity')
+        plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_r P d}$")
+        plt.plot(grd1,plt2,color='g',label = r"$-\overline{P'u'_r} \ \widetilde{d}$")		
+        plt.plot(grd1,plt3,color='b',label = r"$-\overline{P} \ \overline{u'_r d''}$")
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{P' u'_r d''}$")		
+        plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        setylabel = r"cm s$^{-2}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'uxfpd_identity.png')		
+	
+    def plot_uyfpd_identity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot upd in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.eht_uyfppdivu
+        plt2 = -self.ppfuyf_fht_divu
+        plt3 = -self.pp_eht_uyf_divuff
+        plt4 = -self.eht_ppf_uyf_divuff 
+        res = plt1+plt2+plt3+plt4		
+		
+		# create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries    
+        to_plot = [plt1,plt2,plt3,plt4]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+		
+        # plot DATA 
+        plt.title('uypd identity')
+        plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_\theta P d}$")
+        plt.plot(grd1,plt2,color='g',label = r"$-\overline{P'u'_\theta} \ \widetilde{d}$")		
+        plt.plot(grd1,plt3,color='b',label = r"$-\overline{P} \ \overline{u'_\theta d''}$")
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{P' u'_\theta d''}$")		
+        plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        setylabel = r"cm s$^{-2}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'uyfpd_identity.png')		
+		
+	
+    def plot_uzfpd_identity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot upd in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.eht_uzfppdivu
+        plt2 = -self.ppfuzf_fht_divu
+        plt3 = -self.pp_eht_uzf_divuff
+        plt4 = -self.eht_ppf_uzf_divuff 
+        res = plt1+plt2+plt3+plt4		
+		
+		# create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries    
+        to_plot = [plt1,plt2,plt3,plt4]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+		
+        # plot DATA 
+        plt.title('uzpd identity')
+        plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_\phi P d}$")
+        plt.plot(grd1,plt2,color='g',label = r"$-\overline{P'u'_\phi} \ \widetilde{d}$")		
+        plt.plot(grd1,plt3,color='b',label = r"$-\overline{P} \ \overline{u'_\phi d''}$")
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{P' u'_\phi d''}$")		
+        plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        setylabel = r"cm s$^{-2}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'uzfpd_identity.png')		
 	

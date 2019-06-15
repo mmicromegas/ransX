@@ -95,7 +95,7 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         uzuycoty = np.asarray(eht.item().get('uzuycoty')[intc])
 		
         gradzpp_o_ddsiny = np.asarray(eht.item().get('gradzpp_o_ddsiny')[intc])		
-        ppgradzpp_o_ddsiny = np.asarray(eht.item().get('ppgradypp_o_ddsiny')[intc])
+        ppgradzpp_o_ddsiny = np.asarray(eht.item().get('ppgradzpp_o_ddsiny')[intc])
 		
         # store time series for time derivatives
         t_timec = np.asarray(eht.item().get('timec'))		

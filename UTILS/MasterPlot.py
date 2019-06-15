@@ -2154,6 +2154,27 @@ class MasterPlot():
                                 params.getForEqs('hheq')['ybu'],\
                                 params.getForEqs('hheq')['ybd'],\
                                 params.getForEqs('hheq')['ilg'])								
+
+        ransFtvfh.plot_uxfpd_identity(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('hheq')['xbl'],\
+                                params.getForEqs('hheq')['xbr'],\
+                                params.getForEqs('hheq')['ybu'],\
+                                params.getForEqs('hheq')['ybd'],\
+                                params.getForEqs('hheq')['ilg'])
+
+        ransFtvfh.plot_uyfpd_identity(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('hheq')['xbl'],\
+                                params.getForEqs('hheq')['xbr'],\
+                                params.getForEqs('hheq')['ybu'],\
+                                params.getForEqs('hheq')['ybd'],\
+                                params.getForEqs('hheq')['ilg'])
+
+        ransFtvfh.plot_uzfpd_identity(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('hheq')['xbl'],\
+                                params.getForEqs('hheq')['xbr'],\
+                                params.getForEqs('hheq')['ybu'],\
+                                params.getForEqs('hheq')['ybd'],\
+                                params.getForEqs('hheq')['ilg'])
 								
 								
     def SetMatplotlibParams(self):

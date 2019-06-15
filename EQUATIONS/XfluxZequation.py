@@ -59,8 +59,7 @@ class XfluxZequation(calc.CALCULUS,al.ALIMIT,object):
         ddxiuz  = np.asarray(eht.item().get('ddx'+inuc+'uz')[intc])		
         ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
 	
-        gradzpp_o_siny = np.asarray(eht.item().get('gradzpp_o_ddsiny')[intc])	
-        #gradzpp_o_siny = np.asarray(eht.item().get('gradzpp_o_siny')[intc])
+        gradzpp_o_siny = np.asarray(eht.item().get('gradzpp_o_siny')[intc])	
 		
         ddxiuzuzcoty = np.asarray(eht.item().get('ddx'+inuc+'uzuzcoty')[intc])
         dduzuzcoty = np.asarray(eht.item().get('dduzuzcoty')[intc])		
@@ -283,7 +282,7 @@ class XfluxZequation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,rhs0,color='b',label=r'$-\nabla f^\phi$')
             plt.plot(grd1,rhs1,color='g',label=r'$-f_{r} \partial_r \widetilde{u}_\theta$')
             plt.plot(grd1,rhs2,color='r',label=r'$-R_{r\phi} \partial_r \widetilde{X}$')	
-            plt.plot(grd1,rhs3,color='cyan',label=r"$-\overline{X''\partial_\phi P/r sin \theta}$")
+            plt.plot(grd1,rhs3,color='cyan',label=r"$-\overline{X''\partial_\phi P/r sin \theta} = 0 \ bug $")
             plt.plot(grd1,rhs4,color='purple',label=r"$+\overline{u''_\phi \rho \dot{X}}$")
             plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')		
             plt.plot(grd1,res,color='k',linestyle='--',label='res')
