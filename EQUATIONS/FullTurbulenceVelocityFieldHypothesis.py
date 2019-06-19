@@ -238,6 +238,9 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.pp_eht_uzf_divuff = pp*(uzdivu-uz*divu)
         self.eht_ppf_uzf_divuff = ppuz*divu-ppuz*(dddivu/dd)-pp*uz*divu+pp*uz*(dddivu/dd)		
 		
+        self.eht_divu1 = divu
+        self.eht_divu2 = divux+divuy+divuz		
+		
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -580,5 +583,55 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'uzfpd_identity.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'uzfpd_identity.png')	
+
+    def plot_divu(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot divu in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.eht_divu1
+        plt2 = self.eht_divu2		
+		
+		# create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries    
+        to_plot = [plt1,plt2]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+		
+        # plot DATA 
+        plt.title('divu')
+        plt.plot(grd1,plt1,color='r',label = r"$divu1$")
+        plt.plot(grd1,plt2,color='g',label = r"$divu2$")				
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        setylabel = r"cm s$^{-2}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'divu.png')	
+
+		
 	

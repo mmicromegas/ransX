@@ -152,9 +152,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # RHS +fht_ei_eht_ddgg		
         self.plus_fht_ei_eht_ddgg = +fht_ei*ddgg		
-		
-        		
-		
+				
         # -res  
         self.minus_resEiFluxEquation2 = -(self.minus_dt_fei + self.minus_div_fht_ux_fei + \
           self.minus_div_feix + self.minus_fei_gradx_fht_ux + self.minus_rxx_gradx_fht_ei + \
@@ -285,10 +283,15 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs1 = self.minus_fei_gradx_fht_ux
         rhs2 = self.minus_rxx_gradx_fht_ei 
         rhs3 = self.minus_eht_uxff_pp_divu
+
         #rhs4 = self.minus_eht_eiff_gradx_eht_pp 
         #rhs5 = self.minus_eht_eiff_gradx_ppf
+		
         rhs4 = self.minus_eht_eiddgg 
         rhs5 = self.plus_fht_ei_eht_ddgg 				
+
+        rhs4_plus_rhs5 = rhs4+rhs5		
+
         rhs6 = self.plus_eht_uxff_dd_nuc
         rhs7 = self.plus_eht_uxff_div_fth
         rhs8 = self.plus_eht_uxff_epsilonk_approx
@@ -303,7 +306,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 
         # set plot boundaries   
-        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4,rhs5,rhs6,rhs7,rhs8,rhs9,res]		
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4_plus_rhs5,rhs6,rhs7,rhs8,rhs9,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
 		
         # plot DATA 
@@ -315,8 +318,9 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_i \partial_r \widetilde{u}_r$") 
         plt.plot(grd1,rhs2,color='r',label = r"$-\widetilde{R}_{rr} \partial_r \widetilde{\epsilon_I}$") 
         plt.plot(grd1,rhs3,color='firebrick',label = r"$-\overline{u''_r P d}$") 
-        plt.plot(grd1,rhs4,color='c',label = r"$-\overline{\epsilon_I \rho g_r}$")
-        plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$-\widetilde{X}\overline{\rho g_r}$")
+        #plt.plot(grd1,rhs4,color='c',label = r"$-\overline{\epsilon_I \rho g_r}$")
+        #plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$-\widetilde{\epsilon_I}\overline{\rho g_r}$")
+        plt.plot(grd1,rhs4_plus_rhs5,color='c',label = r"$-\overline{\epsilon_I \rho g_r}-\widetilde{\epsilon_I}\overline{\rho g_r}$")		
         plt.plot(grd1,rhs6,color='b',label = r"$+\overline{u''_r \rho \varepsilon_{nuc}}$")
         plt.plot(grd1,rhs7,color='m',label = r"$+\overline{u''_r \nabla \cdot T}$")
         plt.plot(grd1,rhs8,color='g',label = r"$+\overline{u''_r \varepsilon_k }$")
@@ -338,4 +342,5 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'fei_eq2.png')			
+        plt.savefig('RESULTS/'+self.data_prefix+'fei_eq2.png')	
+        plt.savefig('RESULTS/'+self.data_prefix+'fei_eq2.eps')		

@@ -20,7 +20,8 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # load grid
         xzn0   = np.asarray(eht.item().get('xzn0')) 	
-
+        nx   = np.asarray(eht.item().get('nx')) 
+		
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
@@ -115,7 +116,8 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         self.minus_eht_b_gradx_pp = -eht_b*self.Grad(pp,xzn0)
 		
         # RHS +eht_ddf_sv_gradx_ppf = -eht_dd*svgradxpp
-        self.plus_eht_ddf_sv_gradx_ppf = +dd*(svgradxpp-sv*self.Grad(pp,xzn0))		
+        #self.plus_eht_ddf_sv_gradx_ppf = +dd*(svgradxpp-sv*self.Grad(pp,xzn0))	
+        self.plus_eht_ddf_sv_gradx_ppf = np.zeros(nx)		
 		
         # RHS +Ga
         self.plus_Ga = -dduyuy/xzn0 - dduzuz/xzn0 + dd*(uyuy/xzn0+uzuz/xzn0)
@@ -281,7 +283,7 @@ class TurbulentMassFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs4,color='g',label = r"$-\overline{\rho} \overline{u''_r} \nabla_r \overline{u_r}$")
         plt.plot(grd1,rhs5,color='y',label = r"$+\overline{\rho} \overline{u'_r d''} $")
         plt.plot(grd1,rhs6,color='b',label = r"$-b \partial_r \overline{P}$")
-        plt.plot(grd1,rhs7,color='orange',label = r"$+\overline{\rho' v \partial_r P'}$")
+        plt.plot(grd1,rhs7,color='orange',label = r"$+\overline{\rho' v \partial_r P'} \sim 0$")
         plt.plot(grd1,rhs8,color='skyblue',label = r"$+Ga$")
 		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_a$")

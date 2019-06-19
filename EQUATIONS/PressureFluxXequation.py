@@ -213,7 +213,7 @@ class PressureFluxXequation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,rhs4,color='c',label = r"$+(\Gamma_3-1)\overline{u'_r \rho \epsilon_{nuc}}$")
         plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$+\overline{P'u''_rd''}$")
         plt.plot(grd1,rhs6,color='b',label = r"$+\overline{P' G_r^M/ \rho}$")
-        plt.plot(grd1,rhs7,color='m',label = r"$+\overline{P'\partial_r P/ \rho}$")
+        plt.plot(grd1,rhs7,color='m',label = r"$+\overline{P'\partial_r P/ \rho} \sim 0$")
 		
         plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_p$")
  

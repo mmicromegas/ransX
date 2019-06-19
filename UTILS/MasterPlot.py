@@ -2135,46 +2135,53 @@ class MasterPlot():
 
 									   
         ransFtvfh.plot_ftvfhX_equation(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('hheq')['xbl'],\
-                                params.getForEqs('hheq')['xbr'],\
-                                params.getForEqs('hheq')['ybu'],\
-                                params.getForEqs('hheq')['ybd'],\
-                                params.getForEqs('hheq')['ilg'])
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])
 
         ransFtvfh.plot_ftvfhY_equation(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('hheq')['xbl'],\
-                                params.getForEqs('hheq')['xbr'],\
-                                params.getForEqs('hheq')['ybu'],\
-                                params.getForEqs('hheq')['ybd'],\
-                                params.getForEqs('hheq')['ilg'])
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])
 
         ransFtvfh.plot_ftvfhZ_equation(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('hheq')['xbl'],\
-                                params.getForEqs('hheq')['xbr'],\
-                                params.getForEqs('hheq')['ybu'],\
-                                params.getForEqs('hheq')['ybd'],\
-                                params.getForEqs('hheq')['ilg'])								
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])								
 
         ransFtvfh.plot_uxfpd_identity(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('hheq')['xbl'],\
-                                params.getForEqs('hheq')['xbr'],\
-                                params.getForEqs('hheq')['ybu'],\
-                                params.getForEqs('hheq')['ybd'],\
-                                params.getForEqs('hheq')['ilg'])
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])
 
         ransFtvfh.plot_uyfpd_identity(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('hheq')['xbl'],\
-                                params.getForEqs('hheq')['xbr'],\
-                                params.getForEqs('hheq')['ybu'],\
-                                params.getForEqs('hheq')['ybd'],\
-                                params.getForEqs('hheq')['ilg'])
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])
 
         ransFtvfh.plot_uzfpd_identity(params.getForProp('prop')['laxis'],\
-                                params.getForEqs('hheq')['xbl'],\
-                                params.getForEqs('hheq')['xbr'],\
-                                params.getForEqs('hheq')['ybu'],\
-                                params.getForEqs('hheq')['ybd'],\
-                                params.getForEqs('hheq')['ilg'])
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])
+
+        ransFtvfh.plot_divu(params.getForProp('prop')['laxis'],\
+                                params.getForEqs('ftvfh')['xbl'],\
+                                params.getForEqs('ftvfh')['xbr'],\
+                                params.getForEqs('ftvfh')['ybu'],\
+                                params.getForEqs('ftvfh')['ybd'],\
+                                params.getForEqs('ftvfh')['ilg'])
 								
 								
     def SetMatplotlibParams(self):
