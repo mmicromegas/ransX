@@ -1,0 +1,13 @@
+# ----- Parameter file for rans(eXtreme) and OBURN ---------- #
+[]
+## Input Data Folder ....................................... ## [prop,eht_data,DATA/TSERIES/]
+## Resolution Study Input Files List ....................... ## [prop,eht_res,tseries_ransout_lrezoburn.npy,tseries_ransout_mlrezoburn.npy]
+## Filename Prefix For Plots ............................... ## [prop,prefix,oblrez_]
+## Geomergy; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,2]
+## Central Time Index ...................................... ## [prop,intc,4]
+## Limit Axis .............................................. ## [prop,laxis,2] 
+## X-axis Left boundary for properties ..................... ## [prop,xbl,4.e8]
+## X-axis Right boundary for properties .................... ## [prop,xbr,9.8e8]
+## Nuclear network ......................................... ## [network,neut,prot,he4,c12,o16,ne20,na23,mg24,si28,p31,s32,s34,cl35,ar36,ar38,k39,ca40,ca42,ti44,ti46,cr48,cr50,fe52,fe54,ni56] 
+[]
+## Brunt-Vaisalla frequency ................................ ## [nsq,True,3.7e8,9.8e8,65.,-5.,0]

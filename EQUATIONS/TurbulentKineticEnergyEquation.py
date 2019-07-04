@@ -306,14 +306,16 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
-				
+
+        plt.axis(0.,700.,0.,1.e47)	
+		
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # plot DATA 
         plt.title('turbulent kinetic energy evolution')
-        plt.plot(grd1,tke_int,color='r',label = r'$tke$')	
-
+        plt.plot(grd1,tke_int,color='r',label = r'$tke$')		
+		
         # define and show x/y LABELS
         setxlabel = r"t (s)"
         setylabel = r"ergs"
