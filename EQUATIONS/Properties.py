@@ -12,11 +12,11 @@ import UTILS.ALIMIT as al
 
 class Properties(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,params):
+    def __init__(self,params,filename):
         ig = params.getForProp('prop')['ig'] # load geometry	
         super(Properties,self).__init__(ig) 
 
-        filename = params.getForProp('prop')['eht_data']
+        #filename = params.getForProp('prop')['eht_data']
         intc     = params.getForProp('prop')['intc']
 		
         # load data to structured array

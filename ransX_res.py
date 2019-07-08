@@ -6,7 +6,7 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: January/2019
 
-import EQUATIONS.ResProperties as prop
+import EQUATIONS.Properties as prop
 import UTILS.ResReadParamsRansX as rp
 import UTILS.ResMasterPlot as plot
 import ast 
@@ -14,9 +14,14 @@ import ast
 paramFile = 'param.res'
 params = rp.ResReadParamsRansX(paramFile)
 
+# get list with data source files
+filename = params.getForProp('prop')['eht_data']
+
 # get simulation properties
-#ransP = prop.ResProperties(params)
-#properties = ransP.execute()
+eht = []		
+for file in filename:
+    ransP = prop.Properties(params,file)
+    properties = ransP.execute()
 
 # instantiate master plot 								 
 plt = plot.ResMasterPlot(params)								 
@@ -33,3 +38,37 @@ def str2bool(param):
 
 # BRUNT-VAISALLA FREQUENCY
 if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
+
+# TURBULENT KINETIC ENERGY
+if str2bool(params.getForEqs('tkie')['plotMee']): plt.execTke()
+
+# INTERNAL ENERGY FLUX
+if str2bool(params.getForEqs('eintflx')['plotMee']): plt.execEiFlx()
+
+# PRESSURE FLUX
+if str2bool(params.getForEqs('pressxflx')['plotMee']): plt.execPPxflx()
+
+# TEMPERATURE FLUX EQUATION
+if str2bool(params.getForEqs('tempflx')['plotMee']): plt.execTTflx()
+
+# ENTHALPY FLUX EQUATION
+if str2bool(params.getForEqs('enthflx')['plotMee']): plt.execHHflx()
+
+# ENTROPY FLUX
+if str2bool(params.getForEqs('entrflx')['plotMee']): plt.execSSflx()
+
+# TURBULENT MASS FLUX
+if str2bool(params.getForEqs('tmsflx')['plotMee']): plt.execTMSflx()
+
+# load network
+network = params.getNetwork() 
+
+# COMPOSITION MASS FRACTION AND FLUX
+for elem in network[1:]: # skip network identifier in the list 
+    inuc = params.getInuc(network,elem) 	
+    if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem)
+    if str2bool(params.getForEqs('xflxx_'+elem)['plotMee']): plt.execXflxx(inuc,elem,'xflxx_'+elem)	
+
+
+
+

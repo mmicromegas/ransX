@@ -14,8 +14,11 @@ import ast
 paramFile = 'param.ransx'
 params = rp.ReadParamsRansX(paramFile)
 
+# get data source file
+filename = params.getForProp('prop')['eht_data']
+
 # get simulation properties
-ransP = prop.Properties(params)
+ransP = prop.Properties(params,filename)
 properties = ransP.execute()
 
 # instantiate master plot 								 

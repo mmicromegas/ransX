@@ -307,7 +307,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # create FIGURE
         plt.figure(figsize=(7,6))
 
-        plt.axis(0.,700.,0.,1.e47)	
+        #plt.axis(0.,700.,0.,1.e47)	
 		
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
