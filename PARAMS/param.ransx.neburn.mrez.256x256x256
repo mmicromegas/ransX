@@ -1,4 +1,4 @@
-# ----- Parameter file for rans(eXtreme) and OBURN ---------- #
+# ----- Parameter file for rans(eXtreme) and NEBURN ---------- #
 []
 ## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ransout_nemrez.npy]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,nemrez_]

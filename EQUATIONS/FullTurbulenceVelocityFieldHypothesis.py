@@ -282,11 +282,11 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 		
         # plot DATA 
-        plt.title('turbulence velocity field hypothesis X')
+        plt.title(r"turbulence velocity field hypothesis r")
         plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_r \nabla_r u'_r}$")
         plt.plot(grd1,plt2,color='g',label = r"$+\overline{u'_r \nabla_\theta u'_\theta}$")		
         plt.plot(grd1,plt3,color='b',label = r"$+\overline{u'_r \nabla_\phi u'_\phi}$")
-        plt.plot(grd1,plt4,color='m',label = r"$-\overline{u'_r u'_r} \ \overline{\rho} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{\rho} \ \overline{u'_r u'_r} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
 		
         # define and show x/y LABELS
@@ -311,7 +311,8 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velX_field_hypothesis.png')
-	
+        plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velX_field_hypothesis.eps')
+		
 
     def plot_ftvfhY_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ftvfh in the model""" 
@@ -337,11 +338,11 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 		
         # plot DATA 
-        plt.title('turbulence velocity field hypothesis Y')
+        plt.title(r"turbulence velocity field hypothesis $\theta$")
         plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_\theta \nabla_r u'_r}$")
         plt.plot(grd1,plt2,color='g',label = r"$+\overline{u'_\theta \nabla_\theta u'_\theta}$")		
         plt.plot(grd1,plt3,color='b',label = r"$+\overline{u'_\theta \nabla_\phi u'_\phi}$")
-        plt.plot(grd1,plt4,color='m',label = r"$-\overline{u'_r u'_\theta} \ \overline{\rho} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{\rho} \ \overline{u'_\theta u'_r} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
 		
         # define and show x/y LABELS
@@ -366,7 +367,8 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velY_field_hypothesis.png')	
-	
+        plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velY_field_hypothesis.eps')
+		
     def plot_ftvfhZ_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ftvfh in the model""" 
 		
@@ -391,11 +393,11 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
 		
         # plot DATA 
-        plt.title('turbulence velocity field hypothesis Z')
+        plt.title(r"turbulence velocity field hypothesis $\phi$")
         plt.plot(grd1,plt1,color='r',label = r"$+\overline{u'_\phi \nabla_r u'_r}$")
         plt.plot(grd1,plt2,color='g',label = r"$+\overline{u'_\phi \nabla_\theta u'_\theta}$")		
         plt.plot(grd1,plt3,color='b',label = r"$+\overline{u'_\phi \nabla_\phi u'_\phi}$")
-        plt.plot(grd1,plt4,color='m',label = r"$-\overline{u'_r u'_\phi} \ \overline{\rho} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
+        plt.plot(grd1,plt4,color='m',label = r"$-\overline{\rho} \ \overline{u'_\phi u'_r} \ \widetilde{g}_r/\Gamma_1 \ \overline{P}$")		
         plt.plot(grd1,res,color='k',linestyle='--',label = r"$res$")
 		
         # define and show x/y LABELS
@@ -420,7 +422,8 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velZ_field_hypothesis.png')	
-	
+        plt.savefig('RESULTS/'+self.data_prefix+'full_turb_velZ_field_hypothesis.eps')
+		
 	
     def plot_uxfpd_identity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot upd in the model""" 
