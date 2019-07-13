@@ -14,8 +14,11 @@ import ast
 paramFile = 'param.ransx'
 params = rp.ReadParamsRansX(paramFile)
 
+# get data source file
+filename = params.getForProp('prop')['eht_data']
+
 # get simulation properties
-ransP = prop.Properties(params)
+ransP = prop.Properties(params,filename)
 properties = ransP.execute()
 
 # instantiate master plot 								 
@@ -46,8 +49,11 @@ if str2bool(params.getForEqs('nablas')['plotMee']): plt.execNablas()
 # DEGENERACY PARAMETER
 if str2bool(params.getForEqs('psi')['plotMee']): plt.execDegeneracy()
 
-# TURBULENT AND EXPANSION VELOCITY 
-if str2bool(params.getForEqs('vel')['plotMee']): plt.execVelocities()
+# MEAN AND EXPANSION VELOCITY 
+if str2bool(params.getForEqs('velbgr')['plotMee']): plt.execVelocitiesMeanExp()
+
+# MLT AND TURBULENT VELOCITY 
+if str2bool(params.getForEqs('velmlt')['plotMee']): plt.execVelocitiesMLTturb()
 
 # BRUNT-VAISALLA FREQUENCY
 if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
@@ -97,8 +103,8 @@ if str2bool(params.getForEqs('kine')['plotMee']): plt.execKe()
 if str2bool(params.getForEqs('kieq')['plotMee']): plt.execKeEq(properties['kolm_tke_diss_rate'])
 
 # TURBULENT KINETIC ENERGY EQUATION
-if str2bool(params.getForEqs('tkie')['plotMee']): plt.execTke()
-if str2bool(params.getForEqs('tkeeq')['plotMee']): plt.execTkeEq(properties['kolm_tke_diss_rate'])
+if str2bool(params.getForEqs('tkie')['plotMee']): plt.execTke(properties['kolm_tke_diss_rate'],properties['xzn0inc'],properties['xzn0outc'])
+if str2bool(params.getForEqs('tkeeq')['plotMee']): plt.execTkeEq(properties['kolm_tke_diss_rate'],properties['xzn0inc'],properties['xzn0outc'])
 
 # TOTAL ENERGY EQUATION
 if str2bool(params.getForEqs('toe')['plotMee']): plt.execTe()
@@ -120,9 +126,17 @@ if str2bool(params.getForEqs('eivareq')['plotMee']): plt.execEiVarEq(properties[
 if str2bool(params.getForEqs('press')['plotMee']): plt.execPP()
 if str2bool(params.getForEqs('ppeq')['plotMee']): plt.execPPeq(properties['tke_diss'])
 
-# PRESSURE FLUX EQUATION
-if str2bool(params.getForEqs('pressflx')['plotMee']): plt.execPPflx()
-if str2bool(params.getForEqs('ppflxeq')['plotMee']): plt.execPPflxEq(properties['tke_diss'])
+# PRESSURE FLUX EQUATION in X
+if str2bool(params.getForEqs('pressxflx')['plotMee']): plt.execPPxflx()
+if str2bool(params.getForEqs('ppxflxeq')['plotMee']): plt.execPPxflxEq(properties['tke_diss'])
+
+# PRESSURE FLUX EQUATION in Y
+if str2bool(params.getForEqs('pressyflx')['plotMee']): plt.execPPyflx()
+if str2bool(params.getForEqs('ppyflxeq')['plotMee']): plt.execPPyflxEq(properties['tke_diss'])
+
+# PRESSURE FLUX EQUATION in Z
+if str2bool(params.getForEqs('presszflx')['plotMee']): plt.execPPzflx()
+if str2bool(params.getForEqs('ppzflxeq')['plotMee']): plt.execPPzflxEq(properties['tke_diss'])
 
 # PRESSURE VARIANCE EQUATION
 if str2bool(params.getForEqs('pressvar')['plotMee']): plt.execPPvar()
@@ -198,21 +212,30 @@ if str2bool(params.getForEqs('mxeqhsse')['plotMee']): plt.execHssMomxEq()
 if str2bool(params.getForEqs('tpeqhsse')['plotMee']): plt.execHssTempEq(properties['tke_diss'])
 if str2bool(params.getForEqs('lueqhsse')['plotMee']): plt.execHssLumiEq(properties['tke_diss'])
 
+# FULL TURBULENT VELOCITY FIELD HYPOTHESIS
+if str2bool(params.getForEqs('ftvfh')['plotMee']): plt.execFtvfh()
+
 # load network
 network = params.getNetwork() 
 
 # COMPOSITION TRANSPORT, FLUX, VARIANCE EQUATIONS and EULERIAN DIFFUSIVITY
 for elem in network[1:]: # skip network identifier in the list 
     inuc = params.getInuc(network,elem) 	
-    if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem)
-    if str2bool(params.getForEqs('xtrseq_'+elem)['plotMee']): plt.execXtrsEq(inuc,elem,'xtrseq_'+elem)
-    if str2bool(params.getForEqsBar('xtrseq_'+elem+'Bar')['plotMee']): plt.execXtrsEqBar(inuc,elem,'xtrseq_'+elem+'Bar')
-    if str2bool(params.getForEqs('xflx_'+elem)['plotMee']): plt.execXflx(inuc,elem,'xflx_'+elem)	
-    if str2bool(params.getForEqs('xflxeq_'+elem)['plotMee']): plt.execXflxEq(inuc,elem,'xflxeq_'+elem)
-    if str2bool(params.getForEqs('xvar_'+elem)['plotMee']): plt.execXvar(inuc,elem,'xvar_'+elem)	
-    if str2bool(params.getForEqs('xvareq_'+elem)['plotMee']): plt.execXvarEq(inuc,elem,'xvareq_'+elem,properties['tauL'])	
-    if str2bool(params.getForEqs('xdiff_'+elem)['plotMee']): plt.execDiff(inuc,elem,'xdiff_'+elem,properties['lc'],properties['uconv'])
+    if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem,properties['xzn0inc'],properties['xzn0outc'])
+    if str2bool(params.getForEqs('xtrseq_'+elem)['plotMee']): plt.execXtrsEq(inuc,elem,'xtrseq_'+elem,properties['xzn0inc'],properties['xzn0outc'])
+    if str2bool(params.getForEqsBar('xtrseq_'+elem+'Bar')['plotMee']): plt.execXtrsEqBar(inuc,elem,'xtrseq_'+elem+'Bar',properties['xzn0inc'],properties['xzn0outc'])
+    if str2bool(params.getForEqs('xflxx_'+elem)['plotMee']): plt.execXflxx(inuc,elem,'xflxx_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tke_diss'],properties['tauL'])	
+    if str2bool(params.getForEqs('xflxy_'+elem)['plotMee']): plt.execXflxy(inuc,elem,'xflxy_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tke_diss'],properties['tauL'])	
+    if str2bool(params.getForEqs('xflxz_'+elem)['plotMee']): plt.execXflxz(inuc,elem,'xflxz_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tke_diss'],properties['tauL'])		
+    if str2bool(params.getForEqs('xflxxeq_'+elem)['plotMee']): plt.execXflxXeq(inuc,elem,'xflxxeq_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tke_diss'],properties['tauL'])
+    if str2bool(params.getForEqs('xflxyeq_'+elem)['plotMee']): plt.execXflxYeq(inuc,elem,'xflxyeq_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tke_diss'],properties['tauL'])
+    if str2bool(params.getForEqs('xflxzeq_'+elem)['plotMee']): plt.execXflxZeq(inuc,elem,'xflxzeq_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tke_diss'],properties['tauL'])
+    if str2bool(params.getForEqs('xvar_'+elem)['plotMee']): plt.execXvar(inuc,elem,'xvar_'+elem,properties['xzn0inc'],properties['xzn0outc'])	
+    if str2bool(params.getForEqs('xvareq_'+elem)['plotMee']): plt.execXvarEq(inuc,elem,'xvareq_'+elem,properties['tauL'],properties['xzn0inc'],properties['xzn0outc'])	
+    if str2bool(params.getForEqs('xdiff_'+elem)['plotMee']): plt.execDiff(inuc,elem,'xdiff_'+elem,properties['lc'],properties['uconv'],properties['xzn0inc'],properties['xzn0outc'])
     # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION	
-    if str2bool(params.getForEqs('coeqhsse_'+elem)['plotMee']): plt.execHssCompEq(inuc,elem,'coeqhsse_'+elem)
+    if str2bool(params.getForEqs('coeqhsse_'+elem)['plotMee']): plt.execHssCompEq(inuc,elem,'coeqhsse_'+elem,properties['xzn0inc'],properties['xzn0outc'])
+    # DAMKOHLER NUMBER DISTRIBUTION	
+    if str2bool(params.getForEqs('xda_'+elem)['plotMee']): plt.execXda(inuc,elem,'xda_'+elem,properties['xzn0inc'],properties['xzn0outc'])
 	
 	

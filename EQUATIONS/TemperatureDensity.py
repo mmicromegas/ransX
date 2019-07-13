@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -31,7 +32,8 @@ class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0 = xzn0
         self.dd   = dd
-        self.tt   = tt		
+        self.tt   = tt
+        self.ig   = ig		
 		
     def plot_ttdd(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot temperature and density stratification in the model""" 
@@ -42,13 +44,19 @@ class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
         to_plt1 = np.log10(self.tt)
         to_plt2 = np.log10(self.dd)
 	
-        xlabel_1 = r'r (10$^{8}$ cm)'
-		
-        ylabel_1 = r'log $\overline{\rho}$ (g cm$^{-3}$)'
-        ylabel_2 = r'log $\overline{T}$ (K)'
+        if (self.ig == 1):	
+            xlabel_1 = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            xlabel_1 = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 			
 	
-        plabel_1 = r'$\overline{\rho}$'
-        plabel_2 = r'$\overline{T}$'
+        ylabel_1 = r'log $\overline{T}$ (K)'		
+        ylabel_2 = r'log $\overline{\rho}$ (g cm$^{-3}$)'
+
+        plabel_1 = r'$\overline{T}$'	
+        plabel_2 = r'$\overline{\rho}$'
 	
         # calculate indices of grid boundaries 
         xzn0 = np.asarray(self.xzn0)
@@ -61,7 +69,7 @@ class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
         fig, ax1 = plt.subplots(figsize=(7,6))
 		
         ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
-        ax1.plot(xzn0,to_plt1,color='b',label = plabel_1)
+        ax1.plot(xzn0,to_plt1,color='r',label = plabel_1)
 
         ax1.set_xlabel(xlabel_1)
         ax1.set_ylabel(ylabel_1)
@@ -69,7 +77,7 @@ class TemperatureDensity(calc.CALCULUS,al.ALIMIT,object):
 
         ax2 = ax1.twinx()
         ax2.axis([xbl,xbr,np.min(to_plt2[idxl:idxr]),np.max(to_plt2[idxl:idxr])])
-        ax2.plot(xzn0, to_plt2,color='r',label = plabel_2)
+        ax2.plot(xzn0, to_plt2,color='b',label = plabel_2)
         ax2.set_ylabel(ylabel_2)
         ax2.tick_params('y')
         ax2.legend(loc=1,prop={'size':18})

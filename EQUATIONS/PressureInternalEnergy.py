@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -31,7 +32,8 @@ class PressureInternalEnergy(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.pp          = pp
-        self.ei          = ei		
+        self.ei          = ei
+        self.ig          = ig		
 		
     def plot_ppei(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot pressure and internal energy stratification in the model""" 
@@ -42,7 +44,13 @@ class PressureInternalEnergy(calc.CALCULUS,al.ALIMIT,object):
         to_plt1 = np.log10(self.pp)
         to_plt2 = np.log10(self.ei)
 	
-        xlabel_1 = r'r (10$^{8}$ cm)'
+        if (self.ig == 1):	
+            xlabel_1 = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            xlabel_1 = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
 		
         ylabel_1 = r'log $\overline{P}$ (erg cm$^{-3}$)'
         ylabel_2 = r'log $\overline{\epsilon}$ (ergs)'

@@ -33,7 +33,7 @@ class PROMPI_ransdat:
         self.nstep       = int(header_line1[0])
         self.rans_tstart = float(header_line1[1])
         self.rans_tend   = float(header_line1[2])
-        self.rans_tavg   = float(header_line1[3])
+        self.rans_tavg   = float(header_line1[3])	
 		
         self.qqx    = int(header_line2[0])
         self.qqy    = int(header_line2[1])

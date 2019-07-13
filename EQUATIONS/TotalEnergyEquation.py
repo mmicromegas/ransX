@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -159,7 +160,8 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
-        self.fht_et      = fht_ei + fht_ek			
+        self.fht_et      = fht_ei + fht_ek
+        self.ig          = ig		
 		
     def plot_et(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean total energy stratification in the model""" 
@@ -185,7 +187,14 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{\varepsilon}_t$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 			
+		
         setylabel = r"$\widetilde{\varepsilon}_t$ (erg g$^{-1}$)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -233,23 +242,49 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('total energy equation')
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_t )$")
-        plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{\epsilon}_t$)")	
+        if (self.ig == 1):			
+            plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_t )$")
+            plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \widetilde{\epsilon}_t$)")	
 		
-        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_I $")     
-        plt.plot(grd1,rhs1,color='y',label = r"$-\nabla_r f_T$ (not incl.)") 
-        plt.plot(grd1,rhs2,color='silver',label = r"$-\nabla_r f_k$")     
-        plt.plot(grd1,rhs3,color='c',label = r"$-\nabla_r f_p$") 		
-        plt.plot(grd1,rhs4,color='m',label = r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$")		
-        plt.plot(grd1,rhs5,color='#802A2A',label = r"$-\bar{P} \bar{d}$") 		
-        plt.plot(grd1,rhs6,color='r',label = r'$+W_b$')  
-        plt.plot(grd1,rhs7,color='b',label = r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
-        plt.plot(grd1,rhs8,color='g',label = r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
+            plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_x f_I $")     
+            plt.plot(grd1,rhs1,color='y',label = r"$-\nabla_x f_T$ (not incl.)") 
+            plt.plot(grd1,rhs2,color='silver',label = r"$-\nabla_x f_k$")     
+            plt.plot(grd1,rhs3,color='c',label = r"$-\nabla_x f_p$") 		
+            plt.plot(grd1,rhs4,color='m',label = r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")		
+            plt.plot(grd1,rhs5,color='#802A2A',label = r"$-\bar{P} \bar{d}$") 		
+            plt.plot(grd1,rhs6,color='r',label = r'$+W_b$')  
+            plt.plot(grd1,rhs7,color='b',label = r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
+            plt.plot(grd1,rhs8,color='g',label = r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\epsilon_t}$")
- 
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\epsilon_t}$")
+        elif (self.ig == 2):
+            plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_t )$")
+            plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{\epsilon}_t$)")	
+		
+            plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_I $")     
+            plt.plot(grd1,rhs1,color='y',label = r"$-\nabla_r f_T$ (not incl.)") 
+            plt.plot(grd1,rhs2,color='silver',label = r"$-\nabla_r f_k$")     
+            plt.plot(grd1,rhs3,color='c',label = r"$-\nabla_r f_p$") 		
+            plt.plot(grd1,rhs4,color='m',label = r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$")		
+            plt.plot(grd1,rhs5,color='#802A2A',label = r"$-\bar{P} \bar{d}$") 		
+            plt.plot(grd1,rhs6,color='r',label = r'$+W_b$')  
+            plt.plot(grd1,rhs7,color='b',label = r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
+            plt.plot(grd1,rhs8,color='g',label = r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
+		
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\epsilon_t}$")		
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 	
+			
         setylabel = r"erg cm$^{-3}$ s$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

@@ -35,6 +35,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         dduy = np.asarray(eht.item().get('dduy')[intc])
         dduz = np.asarray(eht.item().get('dduz')[intc])		
         ddei = np.asarray(eht.item().get('ddei')[intc])
+        ddgg = np.asarray(eht.item().get('ddgg')[intc])
 		
         dduxux = np.asarray(eht.item().get('dduxux')[intc])		
         dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
@@ -43,7 +44,8 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ddeiux = np.asarray(eht.item().get('ddeiux')[intc])
         ddeiuy = np.asarray(eht.item().get('ddeiuy')[intc])
         ddeiuz = np.asarray(eht.item().get('ddeiuz')[intc])		
-
+        eiddgg = np.asarray(eht.item().get('eiddgg')[intc])	
+		
         ddeiuxux = np.asarray(eht.item().get('ddeiuxux')[intc])
         ddeiuyuy = np.asarray(eht.item().get('ddeiuyuy')[intc])
         ddeiuzuz = np.asarray(eht.item().get('ddeiuzuz')[intc])
@@ -78,7 +80,7 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         feix = ddeiuxux - ddei*dduxux/dd - 2.*fht_ux*ddeiux + 2.*dd*fht_ux*fht_ei*fht_ux
 
         eht_eiff = ei - ddei/dd				
-        eht_eiff_gradx_ppf = eigradxpp - fht_ei*self.Grad(pp,xzn0)
+        eht_eiff_gradx_ppf = eigradxpp - ei*self.Grad(pp,xzn0)
 		
         eht_uxff_dd_enuc = (dduxenuc1 + dduxenuc2) - fht_ux*(ddenuc1 + ddenuc2)
 		
@@ -144,6 +146,19 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         ###################################		
         # END INTERNAL ENERGY FLUX EQUATION
         ###################################
+		
+        # RHS -eht_eiddgg
+        self.minus_eht_eiddgg = -eiddgg
+		
+        # RHS +fht_ei_eht_ddgg		
+        self.plus_fht_ei_eht_ddgg = +fht_ei*ddgg		
+				
+        # -res  
+        self.minus_resEiFluxEquation2 = -(self.minus_dt_fei + self.minus_div_fht_ux_fei + \
+          self.minus_div_feix + self.minus_fei_gradx_fht_ux + self.minus_rxx_gradx_fht_ei + \
+          self.minus_eht_eiddgg + self.plus_fht_ei_eht_ddgg + self.minus_eht_uxff_pp_divu + \
+          self.plus_eht_uxff_dd_nuc + self.plus_eht_uxff_div_fth + self.plus_eht_uxff_epsilonk_approx + \
+          self.plus_Gei)		
 		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
@@ -254,3 +269,78 @@ class InternalEnergyFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'fei_eq.png')	
+
+    def plot_fei_equation2(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot internal energy flux equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_dt_fei
+        lhs1 = self.minus_div_fht_ux_fei
+		
+        rhs0 = self.minus_div_feix
+        rhs1 = self.minus_fei_gradx_fht_ux
+        rhs2 = self.minus_rxx_gradx_fht_ei 
+        rhs3 = self.minus_eht_uxff_pp_divu
+
+        #rhs4 = self.minus_eht_eiff_gradx_eht_pp 
+        #rhs5 = self.minus_eht_eiff_gradx_ppf
+		
+        rhs4 = self.minus_eht_eiddgg 
+        rhs5 = self.plus_fht_ei_eht_ddgg 				
+
+        rhs4_plus_rhs5 = rhs4+rhs5		
+
+        rhs6 = self.plus_eht_uxff_dd_nuc
+        rhs7 = self.plus_eht_uxff_div_fth
+        rhs8 = self.plus_eht_uxff_epsilonk_approx
+        rhs9 = self.plus_Gei
+	  
+        res = self.minus_resEiFluxEquation2
+	
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+
+        # set plot boundaries   
+        to_plot = [lhs0,lhs1,rhs0,rhs1,rhs2,rhs3,rhs4_plus_rhs5,rhs6,rhs7,rhs8,rhs9,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
+		
+        # plot DATA 
+        plt.title('internal energy flux equation')
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t f_I$")
+        plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\widetilde{u}_r f_I$)")	
+		
+        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_i^r $")     
+        plt.plot(grd1,rhs1,color='#802A2A',label = r"$-f_i \partial_r \widetilde{u}_r$") 
+        plt.plot(grd1,rhs2,color='r',label = r"$-\widetilde{R}_{rr} \partial_r \widetilde{\epsilon_I}$") 
+        plt.plot(grd1,rhs3,color='firebrick',label = r"$-\overline{u''_r P d}$") 
+        #plt.plot(grd1,rhs4,color='c',label = r"$-\overline{\epsilon_I \rho g_r}$")
+        #plt.plot(grd1,rhs5,color='mediumseagreen',label = r"$-\widetilde{\epsilon_I}\overline{\rho g_r}$")
+        plt.plot(grd1,rhs4_plus_rhs5,color='c',label = r"$-\overline{\epsilon_I \rho g_r}-\widetilde{\epsilon_I}\overline{\rho g_r}$")		
+        plt.plot(grd1,rhs6,color='b',label = r"$+\overline{u''_r \rho \varepsilon_{nuc}}$")
+        plt.plot(grd1,rhs7,color='m',label = r"$+\overline{u''_r \nabla \cdot T}$")
+        plt.plot(grd1,rhs8,color='g',label = r"$+\overline{u''_r \varepsilon_k }$")
+        plt.plot(grd1,rhs9,color='y',label = r"$+G_{\epsilon}$")
+
+		
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_\epsilon$")
+ 
+        # define and show x/y LABELS
+        setxlabel = r"r (cm)"
+        setylabel = r"erg cm$^{-2}$ s$^{-2}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':8})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'fei_eq2.png')	
+        plt.savefig('RESULTS/'+self.data_prefix+'fei_eq2.eps')		

@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -31,7 +32,7 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         pp = np.asarray(eht.item().get('pp')[intc])
         gg = np.asarray(eht.item().get('gg')[intc])
 
-        #ddgg = np.asarray(eht.item().get('ddgg')[intc])			
+        ddgg = np.asarray(eht.item().get('ddgg')[intc])			
         ddux = np.asarray(eht.item().get('ddux')[intc])		
 
         dduxux = np.asarray(eht.item().get('dduxux')[intc])
@@ -64,13 +65,11 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.minus_G = -(-dduyuy-dduzuz)/xzn0
 		
         # RHS -(grad P - rho g)
-        self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg   		
-        #self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) + ddgg 	
+        #self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg   		
+        self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) + ddgg 	
         
         #for i in range(nx):
         #    print(2.*ddgg[i],dd[i]*gg[i])		
-	
-	
 	
         # -res
         self.minus_resResXmomentumEquation = \
@@ -85,7 +84,8 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.ddux        = ddux
-        self.ux          = ux      		
+        self.ux          = ux
+        self.ig          = ig 		
 		
     def plot_momentum_x(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ddux stratification in the model""" 
@@ -115,8 +115,15 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         #plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')		
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{\rho} \widetilde{u}_x$ (g cm$^{-2}$ s$^{-1}$)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'
+            setylabel = r"$\overline{\rho} \widetilde{u}_x$ (g cm$^{-2}$ s$^{-1}$)"			
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+            setylabel = r"$\overline{\rho} \widetilde{u}_r$ (g cm$^{-2}$ s$^{-1}$)"			
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -157,15 +164,32 @@ class MomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('x momentum equation')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
-        plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_r ) $")		
-        plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
-        plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_r}$")
-        plt.plot(grd1,rhs2,color='r',label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r)$")		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
-
+        if (self.ig == 1):			
+            plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
+            plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_x ) $")		
+            plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_x (\widetilde{R}_{xx})$")
+            plt.plot(grd1,rhs2,color='r',label=r"$-(\partial_x \overline{P} - \bar{\rho}\tilde{g}_x)$")		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        elif (self.ig == 2):
+            plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
+            plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_r ) $")		
+            plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
+            plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_r}$")
+            plt.plot(grd1,rhs2,color='r',label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r)$")		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')		
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+		
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+		
         setylabel = r"g cm$^{-2}$  s$^{-2}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

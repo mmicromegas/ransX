@@ -12,11 +12,11 @@ import UTILS.ALIMIT as al
 
 class Properties(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,params):
+    def __init__(self,params,filename):
         ig = params.getForProp('prop')['ig'] # load geometry	
         super(Properties,self).__init__(ig) 
 
-        filename = params.getForProp('prop')['eht_data']
+        #filename = params.getForProp('prop')['eht_data']
         intc     = params.getForProp('prop')['intc']
 		
         # load data to structured array
@@ -70,7 +70,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         enuc2 = np.asarray(eht.item().get('enuc2')[intc])		
 
         uxux = np.asarray(eht.item().get('uxux')[intc])		
-		
+				
         gamma1 = np.asarray(eht.item().get('gamma1')[intc])	 
 		
         ###################################
@@ -286,7 +286,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         print 'Dissipation timescale for TKE (in s): %f' % tD
         print 'Reynolds number: %i' % Re
         #print 'Dissipation timescale for radial TKE (in s): %f' % tD_rad
-        #print 'Dissipation timescale for horizontal TKE (in s): %f' % tD_hor		
+        #print 'Dissipation timescale for horizontal TKE (in s): %f' % tD_hor				
 		
 
         uconv = (2.*tke)**0.5
@@ -299,10 +299,12 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
             tauL = 9999999999. 			
             #sys.exit()
 		
-        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv}			
+        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv,'xzn0inc':xzn0inc,'xzn0outc':xzn0outc}			
 		
     def execute(self):
         p = self.properties(self.laxis,self.xbl,self.xbr)
-        return {'tauL':p['tauL'],'kolm_tke_diss_rate':p['kolm_tke_diss_rate'],'tke_diss':p['tke_diss'],'tke':p['tke'],'lc':p['lc'],'uconv':p['uconv']}		
+        return {'tauL':p['tauL'],'kolm_tke_diss_rate':p['kolm_tke_diss_rate'],\
+                'tke_diss':p['tke_diss'],'tke':p['tke'],'lc':p['lc'],\
+                'uconv':p['uconv'],'xzn0inc':p['xzn0inc'],'xzn0outc':p['xzn0outc']}		
 		
 		

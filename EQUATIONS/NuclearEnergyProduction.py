@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
@@ -30,7 +31,8 @@ class NuclearEnergyProduction(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
-        self.enuc        = enuc			
+        self.enuc        = enuc
+        self.ig          = ig		
 		
     def plot_enuc(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot nuclear energy production stratification in the model""" 
@@ -57,7 +59,14 @@ class NuclearEnergyProduction(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{\varepsilon_{nuc}}$')
 		
         # define and show x/y LABELS
-        setxlabel = r'r (10$^{8}$ cm)'
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 			
+		
         setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'		
 
         plt.xlabel(setxlabel)

@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
@@ -11,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,inuc,element,lc,uconv,intc,data_prefix):
+    def __init__(self,filename,ig,inuc,element,lc,uconv,bconv,tconv,intc,data_prefix):
         super(Xdiffusivity,self).__init__(ig) 
 	
         # load data to structured array
@@ -39,6 +40,9 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         self.inuc    = inuc
         self.lc      = lc
         self.uconv   = uconv 		
+
+        self.bconv   = bconv
+        self.tconv	 = tconv 
 		
     def plot_X_Ediffusivity(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         # Eulerian diffusivity
@@ -77,7 +81,10 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 
         # variance of temperature fluctuations		
         sigmatt = (ddttsq-ddtt*ddtt/dd)/dd	
-		
+
+        # T_rms fluctuations
+        tt_rms = sigmatt**0.5		
+	
         # effective diffusivity
         Deff = -fxi/(dd*self.Grad(fht_xi,xzn0))
 		
@@ -86,12 +93,23 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 
         # pressure scale heigth
         hp = - pp/self.Grad(pp,xzn0)
+        #print(hp)		
+		
+        hp = 2.5e8		
 		
         # mlt velocity
         alphae = 1.		
-        u_mlt = fhh/(alphae*fht_cp*sigmatt)
+        u_mlt = fhh/(alphae*dd*fht_cp*tt_rms)
 		
-        Dumlt1     = (1./3.)*u_mlt*lc
+        dir = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\'		
+        data = np.loadtxt(dir+'imodel.tycho',skiprows=26)		
+        nxmax = 500
+		
+        rr = data[1:nxmax,2]
+        vmlt_3 = data[1:nxmax,8]		
+        u_mlt = vmlt_3		
+		
+        Dumlt1     = (1./3.)*u_mlt*lc		
 		
         alpha = 1.5
         Dumlt2 = (1./3.)*u_mlt*alpha*hp        
@@ -116,12 +134,36 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
 	
         # plot DATA 		
         plt.title(r'Eulerian Diff for '+self.element)
-        plt.plot(grd1,term0,label=r"$\sigma_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
-        plt.plot(grd1,term1,label=r"$\sigma_{urms} = (1/3) \ u_{rms} \ l_c $")
-        plt.plot(grd1,term2,label=r"$\sigma_{umlt} = + u_{mlt} \ l_c $")        
-        plt.plot(grd1,term3,label=r"$\sigma_{umlt} = + u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.5)")
-        plt.plot(grd1,term4,label=r"$\sigma_{umlt} = + u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.6)") 
+        plt.plot(grd1,term0,label=r"$D_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
+        #plt.plot(grd1,term1,label=r"$D_{urms} = (1/3) \ u_{rms} \ l_c $")
+        #plt.plot(rr,term2,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ l_c $")        
+        plt.plot(rr,term3,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.5)")
+        #plt.plot(rr,term4,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.6)") 
 
+        # convective boundary markers
+        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k') 		
+		
+        # https://stackoverflow.com/questions/19206332/gaussian-fit-for-python		
+		
+        def gauss(x,a,x0,sigma):
+            return a*np.exp(-(x-x0)**2/(2*(sigma**2)))		
+		
+        #p0 = [1.e15, 6.e8, 5.e7]
+        #coeff, var_matrix = curve_fit(gauss, self.xzn0, Deff, p0=[1.e15, 6.e8, 5.e7])
+        # Get the fitted curve
+        #Deff_fit = gauss(self.xzn0, *coeff)		
+		
+        #plt.plot(grd1,Deff_fit,label=r"$gauss fit$",linewidth=0.7) 
+
+        ampl = max(term3)
+        #xx0 = (self.bconv+0.46e8+self.tconv)/2.
+        xx0 = (self.bconv+self.tconv)/2.		
+        #width = 5.e7
+
+        #Dgauss = gauss(self.xzn0,ampl,xx0,width)		
+        #plt.plot(grd1,Dgauss,color='b',label='model gauss')		
+		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
         setylabel = r"cm$^{-2}$ s$^{-1}$"
@@ -129,18 +171,14 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         plt.ylabel(setylabel)
 		
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':12})
+        plt.legend(loc=ilg,prop={'size':15})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'Ediff_'+element+'.png')			
-			
-				
-    def gauss(x, *p): 
-    # Define model function to be used to fit to the data above:
-        A, mu, sigma = p
-        return A*np.exp(-(x-mu)**2/(2.*sigma**2))		
+
+		
 		
 	
