@@ -215,27 +215,27 @@ class MasterPlot():
 
 
         # plot continuity equation alternative simplified - cracking on velocities						       
-        ranshssecont.plot_velocities(params.getForProp('prop')['laxis'],\
-                                             params.getForEqs('cteqhsse')['xbl'],\
-                                             params.getForEqs('cteqhsse')['xbr'],\
-                                             params.getForEqs('cteqhsse')['ybu'],\
-                                             params.getForEqs('cteqhsse')['ybd'],\
-                                             params.getForEqs('cteqhsse')['ilg'])											 
+#        ranshssecont.plot_velocities(params.getForProp('prop')['laxis'],\
+#                                             params.getForEqs('cteqhsse')['xbl'],\
+#                                             params.getForEqs('cteqhsse')['xbr'],\
+#                                             params.getForEqs('cteqhsse')['ybu'],\
+#                                             params.getForEqs('cteqhsse')['ybd'],\
+#                                             params.getForEqs('cteqhsse')['ilg'])											 
 											 
 
-        ranshssecont.plot_dilatation_flux(params.getForProp('prop')['laxis'],\
-                                             params.getForEqs('cteqhsse')['xbl'],\
-                                             params.getForEqs('cteqhsse')['xbr'],\
-                                             params.getForEqs('cteqhsse')['ybu'],\
-                                             params.getForEqs('cteqhsse')['ybd'],\
-                                             params.getForEqs('cteqhsse')['ilg'])
+#        ranshssecont.plot_dilatation_flux(params.getForProp('prop')['laxis'],\
+#                                             params.getForEqs('cteqhsse')['xbl'],\
+#                                             params.getForEqs('cteqhsse')['xbr'],\
+#                                             params.getForEqs('cteqhsse')['ybu'],\
+#                                             params.getForEqs('cteqhsse')['ybd'],\
+#                                             params.getForEqs('cteqhsse')['ilg'])
 
-        ranshssecont.plot_mass_flux_acceleration(params.getForProp('prop')['laxis'],\
-                                             params.getForEqs('cteqhsse')['xbl'],\
-                                             params.getForEqs('cteqhsse')['xbr'],\
-                                             params.getForEqs('cteqhsse')['ybu'],\
-                                             params.getForEqs('cteqhsse')['ybd'],\
-                                             params.getForEqs('cteqhsse')['ilg'])
+#        ranshssecont.plot_mass_flux_acceleration(params.getForProp('prop')['laxis'],\
+#                                             params.getForEqs('cteqhsse')['xbl'],\
+#                                             params.getForEqs('cteqhsse')['xbr'],\
+#                                             params.getForEqs('cteqhsse')['ybu'],\
+#                                             params.getForEqs('cteqhsse')['ybd'],\
+#                                             params.getForEqs('cteqhsse')['ilg'])
 											 
     def execHssMomxEq(self):
 						  
