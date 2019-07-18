@@ -24,13 +24,13 @@ subroutine rans_avg(imode)
   integer*4 i, j, k, n, ii, jj, kk
   integer*4 ifield
   !
-  real*8 fsteradjk, coty
+  real*8 fsteradjk, coty, siny
   real*8 abar(qx), zbar(qx), gam1(qx), gam2(qx), gam3(qx)
   real*8 ek(qx), ei(qx), et(qx), hh(qx), sv(qx)
   real*8 dd(qx), pp(qx), ss(qx), tt(qx), xn(qx,rans_nnuc)
   real*8 ux(qx), uy(qx), uz(qx), en1(qx), en2(qx)
   real*8 chd(qx),cht(qx),chm(qx),cs(qx),ps(qx)
-  real*8 dppy(qx), gg(qx)
+  real*8 dppy(qx), dppz(qx), gg(qx)
   real*8 mfx(qx), cpd(qx), cvd(qx)
   real*8 ggravity(qx)  
   ! FOR SPATIAL DERIVATIVES
@@ -38,7 +38,7 @@ subroutine rans_avg(imode)
   real*8 ux_yp(qx), ux_ym(qx), ux_zp(qx), ux_zm(qx)
   real*8 uy_yp(qx), uy_ym(qx), uy_zp(qx), uy_zm(qx)
   real*8 uz_yp(qx), uz_ym(qx), uz_zp(qx), uz_zm(qx)
-  real*8 pp_yp(qx), pp_ym(qx)
+  real*8 pp_yp(qx), pp_ym(qx), pp_zp(qx), pp_zm(qx)
   real*8 dxx(qx), dxy(qx), dxz(qx)
   real*8 dyx(qx), dyy(qx), dyz(qx)
   real*8 dzx(qx), dzy(qx), dzz(qx)
@@ -63,6 +63,8 @@ subroutine rans_avg(imode)
   real*8 ei_n1p(qy,qz), ei_n1m(qy,qz)
   real*8 pp_n1p(qy,qz), pp_n1m(qy,qz)
   real*8 pp_n2p(qy,qz), pp_n2m(qy,qz)
+  real*8 pp_n3p(qy,qz), pp_n3m(qy,qz)
+
   
   ! TEMP STORAGE
   real*8 ekin(qx,qy,qz), eint(qx,qy,qz)
@@ -71,7 +73,7 @@ subroutine rans_avg(imode)
   character(len=4)  :: xidchar
     
   ! Composition variable names
-  INTEGER, PARAMETER :: ix = 20
+  INTEGER, PARAMETER :: ix = 25
   character(len=24) xvarname(ix)
 
   ! TEMP STORAGE
@@ -145,17 +147,19 @@ subroutine rans_avg(imode)
   
   call shareplane_ifaces(press,pp_n1p,pp_n1m)  
   call shareplane_jfaces(press,pp_n2p,pp_n2m)
+  call shareplane_kfaces(press,pp_n3p,pp_n3m)
   
-
   ! loop over all zones for averaging
   
   do k=1,qz
      do j=1,qy
         ! mesh descriptors
         fsteradjk = fsterad(j,k)
-        if(igeomx.eq.2) then 
+        if(igeomx.eq.2) then
+           siny      = sin(yzn(j))
            coty      = 1.d0/tan(yzn(j))
         else
+           siny      = 1.d0
            coty      = 1.d0 
         endif
         
@@ -332,6 +336,28 @@ subroutine rans_avg(imode)
         enddo
         
 
+        if(k.eq.1) then
+           do i=1,qx
+              pp_zp(i) = press  (i,j,k+1)
+              pp_zm(i) = pp_n3m (i,j    )
+           enddo
+        else if(k.eq.qz) then
+           do i=1,qx
+              pp_zp(i) = pp_n3p (i,j    )
+              pp_zm(i) = press  (i,j,k-1)
+           enddo
+        else
+           do i=1,qx
+              pp_zp(i) = press (i,j,k+1)
+              pp_zm(i) = press (i,j,k-1)
+           enddo
+        endif                
+
+        do i=1,qx
+           dppz(i) = 0.5d0*(pp_zp(i) - pp_zm(i))/dz
+        enddo
+        
+        
         ! --- velocity gradient uij, stress, div, curl, enstrophy
         !
         ! NOTE: These derivatives are geometry dependent  
@@ -1177,742 +1203,973 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ei(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! uxppdivu (112)
-        ifield = ifield+1
-        if(imode.eq.0) ransname(ifield) = 'uxppdivu'
-        do i=1,qx
-           havg(2,ifield,i) =  havg(2,ifield,i) + &
-                ux(i)*pp(i)*divu(i)*fsteradjk
-        enddo
-        ! dduxenuc1 (113)
+        ! dduxenuc1 (112)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'dduxenuc1'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ux(i)*en1(i)*fsteradjk
         enddo 
-        ! dduxenuc2 (114)
+        ! dduxenuc2 (113)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'dduxenuc2'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ux(i)*en2(i)*fsteradjk
+        enddo
+        ! dduyenuc1 (114)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduyenuc1'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uy(i)*en1(i)*fsteradjk
         enddo 
-        ! ss (115)
+        ! dduyenuc2 (115)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduyenuc2'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uy(i)*en2(i)*fsteradjk
+        enddo
+        ! dduzenuc1 (116)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduzenuc1'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uz(i)*en1(i)*fsteradjk
+        enddo 
+        ! dduzenuc2 (117)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduzenuc2'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uz(i)*en2(i)*fsteradjk
+        enddo  
+        ! ss (118)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ss'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ss(i)*fsteradjk
         enddo
-        ! sssq (116)
+        ! sssq (119)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'sssq'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ss(i)*ss(i)*fsteradjk
         enddo
-        ! ddss (117)
+        ! ddss (120)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddss'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*fsteradjk
         enddo
-        ! ddsssq (118)
+        ! ddsssq (121)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddsssq'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*ss(i)*fsteradjk
         enddo
-        ! ssux (119)
+        ! ssux (122)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ssux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ss(i)*ux(i)*fsteradjk
         enddo
-        ! ddssux (120)
+        ! ddssux (123)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*ux(i)*fsteradjk
         enddo
-        ! ddssuy (121)
+        ! ddssuy (124)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*uy(i)*fsteradjk
         enddo
-        ! ddssuz (122)
+        ! ddssuz (125)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*uz(i)*fsteradjk
         enddo
-        ! ddssssux (123)
+        ! ddssssux (126)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssssux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*ss(i)*ux(i)*fsteradjk
         enddo
-        ! ddssuxux (124)
+        ! ddssuxux (127)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssuxux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*ux(i)*ux(i)*fsteradjk
         enddo
-        ! ddssuyuy (125)
+        ! ddssuyuy (128)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssuyuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*uy(i)*uy(i)*fsteradjk
         enddo
-        ! ddssuzuz (126)
+        ! ddssuzuz (129)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssuzuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ss(i)*uz(i)*uz(i)*fsteradjk
         enddo       
-        ! ddenuc1_o_tt (127)
+        ! ddenuc1_o_tt (130)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddenuc1_o_tt'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (dd(i)*en1(i)/tt(i))*fsteradjk
         enddo
-        ! ddenuc2_o_tt (128)
+        ! ddenuc2_o_tt (131)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddenuc2_o_tt'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (dd(i)*en2(i)/tt(i))*fsteradjk
         enddo
-        ! ddssenuc1_o_tt (129)
+        ! ddssenuc1_o_tt (132)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssenuc1_o_tt'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (dd(i)*ss(i)*en1(i)/tt(i))*fsteradjk
         enddo
-        ! ddssenuc2_o_tt (130)
+        ! ddssenuc2_o_tt (133)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddssenuc2_o_tt'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (dd(i)*ss(i)*en2(i)/tt(i))*fsteradjk
         enddo
-        ! dduxenuc1_o_tt (131)
+        ! dduxenuc1_o_tt (134)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'dduxenuc1_o_tt'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (dd(i)*ux(i)*en1(i)/tt(i))*fsteradjk
         enddo
-        ! dduxenuc2_o_tt (132)
+        ! dduxenuc2_o_tt (135)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'dduxenuc2_o_tt'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (dd(i)*ux(i)*en2(i)/tt(i))*fsteradjk
         enddo
-        ! ssgradxpp (133)
+        ! ssgradxpp (136)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ssgradxpp'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                ss(i)*gradxpp(i)*fsteradjk
         enddo        
-        ! sv (134)
+        ! sv (137)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'sv'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 sv(i)*fsteradjk
         enddo
-        ! svux (135)
+        ! svux (138)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 sv(i)*ux(i)*fsteradjk
         enddo
-        ! svdivu (136)
+        ! svdivu (139)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svdivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 sv(i)*divu(i)*fsteradjk
         enddo
-        ! svgradxpp (137)
+        ! svgradxpp (140)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svgradxpp'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                sv(i)*gradxpp(i)*fsteradjk
         enddo
-        ! svdduyuy (138)
+        ! svdduyuy (141)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svdduyuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                sv(i)*dd(i)*uy(i)*uy(i)*fsteradjk
         enddo        
-        ! svdddduyuy (139)
+        ! svdddduyuy (142)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svdddduyuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                sv(i)*dd(i)*dd(i)*uy(i)*uy(i)*fsteradjk
         enddo
-        ! svdduzuz (140)
+        ! svdduzuz (143)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svdduzuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                sv(i)*dd(i)*uz(i)*uz(i)*fsteradjk
         enddo        
-        ! svdddduzuz (141)
+        ! svdddduzuz (144)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'svdddduzuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                sv(i)*dd(i)*dd(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! divu (142)
+        ! divu (145)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'divu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 divu(i)*fsteradjk
         enddo
-        ! dddivu (143)
+        ! dddivu (146)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'dddivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*divu(i)*fsteradjk
         enddo
-        ! dddddivu (144)
+        ! dddddivu (147)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'dddddivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*dd(i)*divu(i)*fsteradjk
         enddo
-        ! divux (145)
+        ! divux (148)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'divux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 divux(i)*fsteradjk
         enddo        
-        ! divuy (146)
+        ! divuy (149)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'divuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 divuy(i)*fsteradjk
         enddo
-        ! divuz (147)
+        ! divuz (150)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'divuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 divuz(i)*fsteradjk
         enddo
-        ! uxdivu (148)
+        ! dddivux (151)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dddivux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*divux(i)*fsteradjk
+        enddo        
+        ! dddivuy (152)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dddivuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*divuy(i)*fsteradjk
+        enddo
+        ! dddivuz (153)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dddivuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*divuz(i)*fsteradjk
+        enddo
+        ! uxdivu (154)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'uxdivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*divu(i)*fsteradjk
         enddo
-        ! uxdivux (149)
+        ! uydivu (155)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uydivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uy(i)*divu(i)*fsteradjk
+        enddo
+        ! uzdivu (156)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uzdivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uz(i)*divu(i)*fsteradjk
+        enddo
+        ! uxdivux (157)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'uxdivux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*divux(i)*fsteradjk
         enddo
-        ! uxdivuy (150)
+        ! uxdivuy (158)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'uxdivuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*divuy(i)*fsteradjk
         enddo
-        ! uxdivuz (151)
+        ! uxdivuz (159)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'uxdivuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*divuz(i)*fsteradjk
         enddo
-        ! ppdivux (152)
+        ! uydivux (160)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uydivux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uy(i)*divux(i)*fsteradjk
+        enddo
+        ! uydivuy (161)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uydivuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uy(i)*divuy(i)*fsteradjk
+        enddo
+        ! uydivuz (162)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uydivuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uy(i)*divuz(i)*fsteradjk
+        enddo        
+        ! uzdivux (163)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uzdivux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uz(i)*divux(i)*fsteradjk
+        enddo
+        ! uzdivuy (164)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uzdivuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uz(i)*divuy(i)*fsteradjk
+        enddo
+        ! uzdivuz (165)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uzdivuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uz(i)*divuz(i)*fsteradjk
+        enddo
+        ! ppdivux (166)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ppdivux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 pp(i)*divux(i)*fsteradjk
         enddo
-        ! ppdivuy (153)
+        ! ppdivuy (167)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ppdivuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 pp(i)*divuy(i)*fsteradjk
         enddo
-        ! ppdivuz (154)
+        ! ppdivuz (168)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ppdivuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 pp(i)*divuz(i)*fsteradjk
         enddo
-        ! ppdivu (155)
+        ! ppdivu (169)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ppdivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 pp(i)*divu(i)*fsteradjk
         enddo
-        ! uxppdivu (156)
+        ! uxppdivu (170)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'uxppdivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*pp(i)*divu(i)*fsteradjk
         enddo
-        ! gamma1 (157)
+        ! uyppdivu (171)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uyppdivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uy(i)*pp(i)*divu(i)*fsteradjk
+        enddo
+        ! uzppdivu (172)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'uzppdivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uz(i)*pp(i)*divu(i)*fsteradjk
+        enddo        
+        ! gamma1 (173)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma1'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam1(i)*fsteradjk
         enddo
-        ! gamma2 (158)
+        ! gamma2 (174)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma2'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam2(i)*fsteradjk
         enddo
-        ! gamma3 (159)
+        ! gamma3 (175)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma3'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam3(i)*fsteradjk
         enddo
-        ! gamma3ddenuc1 (160)
+        ! gamma3ddenuc1 (176)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma3ddenuc1'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam3(i)*dd(i)*en1(i)*fsteradjk
         enddo
-        ! gamma3ddenuc2 (161)        
+        ! gamma3ddenuc2 (177)        
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma3ddenuc2'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam3(i)*dd(i)*en2(i)*fsteradjk
         enddo
-        ! gamma1ppdivu (162)
+        ! gamma1ppdivu (178)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma1ppdivu'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam1(i)*pp(i)*divu(i)*fsteradjk
         enddo
-        ! gamma1pp (163)
+        ! gamma1pp (179)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma1pp'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam1(i)*pp(i)*fsteradjk
         enddo
-        ! gamma1divu (164)
+        ! gamma1divu (180)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gamma1divu'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 gam1(i)*divu(i)*fsteradjk
         enddo
-        ! ddttsq (165)
+        ! ddttsq (181)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttsq'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*tt(i)*tt(i)*fsteradjk
         enddo
-        ! ddtt (166)
+        ! ddtt (182)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddtt'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*tt(i)*fsteradjk
         enddo        
-        ! ttux (167)
+        ! ttux (183)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*ux(i)*fsteradjk
         enddo
-        ! ttuy (168)
+        ! ttuy (184)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttuy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*uy(i)*fsteradjk
         enddo
-        ! ttuz (169)
+        ! ttuz (185)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttuz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*uz(i)*fsteradjk
         enddo
-        ! ddttux (170)
+        ! ddttux (186)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*tt(i)*ux(i)*fsteradjk
         enddo
-        ! ddttuy (171)
+        ! ddttuy (187)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttuy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*tt(i)*uy(i)*fsteradjk
         enddo
-        ! ddttuz (172)
+        ! ddttuz (188)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttuz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*tt(i)*uz(i)*fsteradjk
         enddo
-        ! ttdivu (173)
+        ! ttdivu (189)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttdivu'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*divu(i)*fsteradjk
         enddo
-        ! enuc1_o_cv (174)
+        ! enuc1_o_cv (190)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'enuc1_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (en1(i)/cvd(i))*fsteradjk
         enddo
-        ! enuc2_o_cv (175)
+        ! enuc2_o_cv (191)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'enuc2_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (en2(i)/cvd(i))*fsteradjk
         enddo
-        ! ddenuc1_o_cv (176)
+        ! ddenuc1_o_cv (192)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddenuc1_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (dd(i)*en1(i)/cvd(i))*fsteradjk
         enddo
-        ! ddenuc2_o_cv (177)
+        ! ddenuc2_o_cv (193)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddenuc2_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (dd(i)*en2(i)/cvd(i))*fsteradjk
         enddo
-        ! ddttuxux (178)
+        ! ddttuxux (194)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttuxux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*tt(i)*ux(i)*ux(i)*fsteradjk
         enddo
-        ! ddttuyuy (179)
+        ! ddttuyuy (195)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttuyuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*tt(i)*uy(i)*uy(i)*fsteradjk
         enddo
-        ! ddttuzuz (180)
+        ! ddttuzuz (196)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddttuzuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*tt(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! ttuxux (181)
+        ! ttuxux (197)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttuxux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                tt(i)*ux(i)*ux(i)*fsteradjk
         enddo
-        ! ttuyuy (182)
+        ! ttuyuy (198)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttuyuy'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 tt(i)*uy(i)*uy(i)*fsteradjk
         enddo
-        ! ttuzuz (183)
+        ! ttuzuz (199)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttuzuz'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 tt(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! ttttux (184)
+        ! ttttux (200)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttttux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*tt(i)*ux(i)*fsteradjk
         enddo
-        ! ttttdivu (185)
+        ! ttttdivu (201)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttttdivu'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*tt(i)*divu(i)*fsteradjk
         enddo
-        ! ttdivu (186)
+        ! ttdivu (202)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttdivu'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 tt(i)*divu(i)*fsteradjk
         enddo
-        ! ttddenuc1_o_cv (187)
+        ! ttddenuc1_o_cv (203)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttddenuc1_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (tt(i)*dd(i)*en1(i)/cvd(i))*fsteradjk
         enddo
-        ! ttddenuc2_o_cv (188)
+        ! ttddenuc2_o_cv (204)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttddenuc2_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (tt(i)*dd(i)*en2(i)/cvd(i))*fsteradjk
         enddo
-        ! ttenuc1_o_cv (189)
+        ! ttenuc1_o_cv (205)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttenuc1_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (tt(i)*en1(i)/cvd(i))*fsteradjk
         enddo
-        ! ttenuc2_o_cv (190)
+        ! ttenuc2_o_cv (206)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttenuc2_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (tt(i)*en2(i)/cvd(i))*fsteradjk
         enddo
-        ! ttux (191)
+        ! ttux (207)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 tt(i)*ux(i)*fsteradjk
         enddo    
-        ! ttgradxpp_o_dd (192)
+        ! ttgradxpp_o_dd (208)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttgradxpp_o_dd'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (tt(i)*gradxpp(i)/dd(i))*fsteradjk
         enddo    
-        ! gradxpp_o_dd (193)
+        ! gradxpp_o_dd (209)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gradxpp_o_dd'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (gradxpp(i)/dd(i))*fsteradjk
         enddo  
-        ! ppgradxpp_o_dd (194)
+        ! ppgradxpp_o_dd (210)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppgradxpp_o_dd'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 (pp(i)*gradxpp(i)/dd(i))*fsteradjk
-        enddo  
-        ! uxttdivu (195)
+        enddo
+        ! gradypp_o_dd (211)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'gradypp_o_dd'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                (dppy(i)/dd(i))*fsteradjk
+        enddo 
+        ! ppgradypp_o_dd (212)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppgradypp_o_dd'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                (pp(i)*dppy(i)/dd(i))*fsteradjk
+        enddo
+        ! gradzpp_o_ddsiny (213)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'gradzpp_o_ddsiny'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                (dppz(i)/(dd(i)*siny))*fsteradjk
+        enddo 
+        ! ppgradzpp_o_ddsiny (214)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppgradzpp_o_ddsiny'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                (pp(i)*dppz(i)/(dd(i)*siny))*fsteradjk
+        enddo
+        ! ppgradzpp_o_siny (215)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppgradzpp_o_siny'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                (pp(i)*dppz(i)/siny)*fsteradjk
+        enddo
+        ! gradzpp_o_siny (216)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'gradzpp_o_siny'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                (dppz(i)/siny)*fsteradjk
+        enddo
+        ! uxttdivu (217)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'uxttdivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*tt(i)*divu(i)*fsteradjk
         enddo 
-        ! ttdivu (196)
+        ! ttdivu (218)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ttdivu'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 tt(i)*divu(i)*fsteradjk
         enddo 
-        ! uxenuc1_o_cv (197)
+        ! uxenuc1_o_cv (219)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'uxenuc1_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (ux(i)*en1(i)/cvd(i))*fsteradjk
         enddo
-        ! uxenuc2_o_cv (198)
+        ! uxenuc2_o_cv (220)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'uxenuc2_o_cv'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 (ux(i)*en2(i)/cvd(i))*fsteradjk
         enddo
-        ! ppux (199)
+        ! ppux (221)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppux'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 pp(i)*ux(i)*fsteradjk
         enddo
-        ! ppppux (200)
+        ! ppuy (222)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                pp(i)*uy(i)*fsteradjk
+        enddo
+        ! ppuz (223)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                pp(i)*uz(i)*fsteradjk
+        enddo        
+        ! ppppux (224)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppppux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*pp(i)*ux(i)*fsteradjk
         enddo
-        ! ddppux (201)
+        ! ddppux (225)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddppux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*pp(i)*ux(i)*fsteradjk
-        enddo        
-        ! ppuxux (202)
+        enddo
+        ! ddppuy (226)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ddppuy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*pp(i)*uy(i)*fsteradjk
+        enddo
+        ! ddppuz (227)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ddppuz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*pp(i)*uz(i)*fsteradjk
+        enddo
+        ! ppuxux (228)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppuxux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*ux(i)*ux(i)*fsteradjk
         enddo
-        ! ppuyuy (203)
+        ! ppuyuy (229)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppuyuy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*uy(i)*uy(i)*fsteradjk
         enddo
-        ! ppuzuz (204)
+        ! ppuzuz (230)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppuzuz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! ppddenuc1 (205)
+        ! ppuyux (231)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuyux'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                pp(i)*uy(i)*ux(i)*fsteradjk
+        enddo
+        ! ppuzux (232)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuzux'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                pp(i)*uz(i)*ux(i)*fsteradjk
+        enddo
+        ! ppuzuy (233)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuzuy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                pp(i)*uz(i)*uy(i)*fsteradjk
+        enddo
+        ! ppuzuzcoty (234)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuzuzcoty'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                pp(i)*uz(i)*uz(i)*coty*fsteradjk
+        enddo
+        ! ppuzuycoty (235)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ppuzuycoty'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                pp(i)*uz(i)*uy(i)*coty*fsteradjk
+        enddo        
+        ! uzuzcoty (236)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uzuzcoty'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uz(i)*uz(i)*coty*fsteradjk
+        enddo
+        ! uzuycoty (237)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uzuycoty'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uz(i)*uy(i)*coty*fsteradjk
+        enddo  
+        ! ppddenuc1 (238)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppddenuc1'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*dd(i)*en1(i)*fsteradjk
         enddo
-        ! ppddenuc2 (206)
+        ! ppddenuc2 (239)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppddenuc2'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*dd(i)*en2(i)*fsteradjk
         enddo
-        ! ppenuc1 (207)
+        ! ppenuc1 (240)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppenuc1'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*en1(i)*fsteradjk
         enddo
-        ! ppenuc2 (208)
+        ! ppenuc2 (241)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppenuc2'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*en2(i)*fsteradjk
         enddo
-        ! ppppdivu (209)
+        ! ppppdivu (242)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ppppdivu'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 pp(i)*pp(i)*divu(i)*fsteradjk
         enddo        
-        ! gradypp (210)
+        ! gradypp (243)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gradypp'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dppy(i)*fsteradjk
         enddo        
-        ! abar (211)
+        ! abar (244)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'abar'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 abar(i)*fsteradjk
         enddo
-        ! zbar (212)
+        ! zbar (245)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'zbar'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 zbar(i)*fsteradjk
         enddo
-        ! ddabar (213)
+        ! ddabar (246)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabar'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*fsteradjk
         enddo
-        ! ddzbar (214)
+        ! ddzbar (247)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbar'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*fsteradjk
         enddo
-        ! abarsq (215)
+        ! abarsq (248)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'abarsq'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 abar(i)*abar(i)*fsteradjk
         enddo
-        ! zbarsq (216)
+        ! zbarsq (249)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'zbarsq'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 zbar(i)*zbar(i)*fsteradjk
         enddo
-        ! ddabarsq_sum_xdn_o_an (217)
+        ! ddabarsq_sum_xdn_o_an (250)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabarsq_sum_xdn_o_an'
         do i=1,qx
@@ -1924,7 +2181,7 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 ddabarsq*sum_xdn_o_an*fsteradjk
         enddo
-        ! uxddabarsq_sum_xdn_o_an (218)
+        ! uxddabarsq_sum_xdn_o_an (251)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'uxddabarsq_sum_xdn_o_an'
         do i=1,qx
@@ -1936,7 +2193,7 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 uxddabarsq*sum_xdn_o_an*fsteradjk
         enddo
-        ! ddabazbar_sum_xdn_o_an (219)
+        ! ddabazbar_sum_xdn_o_an (252)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabazbar_sum_xdn_o_an'
         do i=1,qx
@@ -1948,7 +2205,7 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 ddabarzbar*sum_xdn_o_an*fsteradjk
         enddo
-        ! ddabar_sum_znxdn_o_an (220)
+        ! ddabar_sum_znxdn_o_an (253)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabar_sum_znxdn_o_an'
         do i=1,qx
@@ -1960,7 +2217,7 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 ddabar*sum_znxdn_o_an*fsteradjk
         enddo
-        ! uxddabazbar_sum_xdn_o_an (221)
+        ! uxddabazbar_sum_xdn_o_an (254)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'uxddabazbar_sum_xdn_o_an'
         do i=1,qx
@@ -1972,7 +2229,7 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 uxddabarzbar*sum_xdn_o_an*fsteradjk
         enddo
-        ! uxddabar_sum_znxdn_o_an (222)
+        ! uxddabar_sum_znxdn_o_an (255)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'uxddabar_sum_znxdn_o_an'
         do i=1,qx
@@ -1984,161 +2241,161 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 uxddabar*sum_znxdn_o_an*fsteradjk
         enddo
-        ! abargradxpp (223)
+        ! abargradxpp (256)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'abargradxpp'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 abar(i)*gradxpp(i)*fsteradjk
         enddo        
-        ! ddabarux (224)
+        ! ddabarux (257)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabarux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*ux(i)*fsteradjk
         enddo
-        ! ddabaruy (225)
+        ! ddabaruy (258)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabaruy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*uy(i)*fsteradjk
         enddo        
-        ! ddabaruz (226)
+        ! ddabaruz (259)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabaruz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*uz(i)*fsteradjk
         enddo
-        ! ddabaruxux (227)
+        ! ddabaruxux (260)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabaruxux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*ux(i)*ux(i)*fsteradjk
         enddo
-        ! ddabaruyuy (228)
+        ! ddabaruyuy (261)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabaruyuy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*uy(i)*uy(i)*fsteradjk
         enddo        
-        ! ddabaruzuz (229)
+        ! ddabaruzuz (262)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddabaruzuz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*abar(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! zbargradxpp (230)
+        ! zbargradxpp (263)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'zbargradxpp'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 zbar(i)*gradxpp(i)*fsteradjk
         enddo        
-        ! ddzbarux (231)
+        ! ddzbarux (264)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbarux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*ux(i)*fsteradjk
         enddo
-        ! ddzbaruy (232)
+        ! ddzbaruy (265)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbaruy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*uy(i)*fsteradjk
         enddo        
-        ! ddzbaruz (233)
+        ! ddzbaruz (266)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbaruz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*ux(i)*fsteradjk
         enddo
-        ! ddzbaruxux (234)
+        ! ddzbaruxux (267)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbaruxux'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*ux(i)*ux(i)*fsteradjk
         enddo
-        ! ddzbaruyuy (235)
+        ! ddzbaruyuy (268)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbaruyuy'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*uy(i)*uy(i)*fsteradjk
         enddo        
-        ! ddzbaruzuz (236)
+        ! ddzbaruzuz (269)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'ddzbaruzuz'
         do i=1,qx
            havg(2,ifield,i) = havg(2,ifield,i) + &
                 dd(i)*zbar(i)*uz(i)*uz(i)*fsteradjk
         enddo
-        ! cp (237)
+        ! cp (270)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'cp'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 cpd(i)*fsteradjk
         enddo
-        ! ddcp (238)
+        ! ddcp (271)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddcp'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*cpd(i)*fsteradjk
         enddo        
-        ! cv (239)
+        ! cv (272)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'cv'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 cvd(i)*fsteradjk
         enddo
-        ! ddcv (240)
+        ! ddcv (273)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddcv'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*cvd(i)*fsteradjk
         enddo        
-        ! chid (241)
+        ! chid (274)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'chid'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 chd(i)*fsteradjk
         enddo
-        ! chit (242)
+        ! chit (275)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'chit'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 cht(i)*fsteradjk
         enddo
-        ! chim (243)
+        ! chim (276)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'chim'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 chm(i)*fsteradjk
         enddo        
-        ! sound speed (244)
+        ! sound speed (277)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'sound'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 cs(i)*fsteradjk
         enddo
-        ! psi (245) ! degeneracy parameter
+        ! psi (278) ! degeneracy parameter
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'psi'
         do i=1,qx
@@ -2148,7 +2405,7 @@ subroutine rans_avg(imode)
         
         ! NOTE: These depend on geometry and gravity solver
 
-        ! mm (246)
+        ! mm (279)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'mm'
         if((igrav.eq.1).or.(igrav.eq.2)) then
@@ -2173,7 +2430,7 @@ subroutine rans_avg(imode)
            enddo
         endif
                    
-        ! gg (247)
+        ! gg (280)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gg'
         if((igrav.eq.1).or.(igrav.eq.2)) then
@@ -2195,56 +2452,279 @@ subroutine rans_avg(imode)
            enddo
         endif
 
-        ! ddgg (248)
+        ! ddgg (281)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*ggravity(i)*fsteradjk
         enddo
-        ! uxddgg (249)
+        ! uxddgg (282)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'uxddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ux(i)*dd(i)*ggravity(i)*fsteradjk
         enddo
-        ! hhddgg (250)
+        ! hhddgg (283)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'hhddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 hh(i)*dd(i)*ggravity(i)*fsteradjk
         enddo
-        ! ssddgg (251)
+        ! ssddgg (284)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ssddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ss(i)*dd(i)*ggravity(i)*fsteradjk
         enddo
-        ! abarddgg (252)
+        ! abarddgg (285)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'abarddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 abar(i)*dd(i)*ggravity(i)*fsteradjk
         enddo
-        ! zbarddgg (253)
+        ! zbarddgg (286)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'zbarddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 zbar(i)*dd(i)*ggravity(i)*fsteradjk
         enddo
-        ! eiddgg (254)
+        ! eiddgg (287)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'eiddgg'
         do i=1,qx
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 ei(i)*dd(i)*ggravity(i)*fsteradjk
         enddo
-        
+        ! dduxdivu (288)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduxdivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*ux(i)*divu(i)*fsteradjk
+        enddo
+        ! dduydivu (289)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduydivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uy(i)*divu(i)*fsteradjk
+        enddo
+        ! dduzdivu (290)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduzdivu'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uz(i)*divu(i)*fsteradjk
+        enddo
+        ! dduxdivux (291)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduxdivux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*ux(i)*divux(i)*fsteradjk
+        enddo
+        ! dduxdivuy (292)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduxdivuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*ux(i)*divuy(i)*fsteradjk
+        enddo
+        ! dduxdivuz (293)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduxdivuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*ux(i)*divuz(i)*fsteradjk
+        enddo
+        ! dduydivux (294)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduydivux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uy(i)*divux(i)*fsteradjk
+        enddo
+        ! dduydivuy (295)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduydivuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uy(i)*divuy(i)*fsteradjk
+        enddo
+        ! dduydivuz (296)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduydivuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uy(i)*divuz(i)*fsteradjk
+        enddo
+        ! dduzdivux (297)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduzdivux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uz(i)*divux(i)*fsteradjk
+        enddo
+        ! dduzdivuy (298)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduzdivuy'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uz(i)*divuy(i)*fsteradjk
+        enddo
+        ! dduzdivuz (299)
+        ifield = ifield+1
+        if(imode.eq.0) ransname(ifield) = 'dduzdivuz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uz(i)*divuz(i)*fsteradjk
+        enddo
+        ! uxuyy (300)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uxuyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                ux(i)*uyy(i)*fsteradjk
+        enddo
+        ! uxuzz (301)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uxuzz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                ux(i)*uzz(i)*fsteradjk
+        enddo
+        ! uyuxx (302)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uyuxx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uy(i)*uxx(i)*fsteradjk
+        enddo
+        ! uyuyy (303)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uyuyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uy(i)*uyy(i)*fsteradjk
+        enddo
+        ! uyuzz (304)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uyuzz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uy(i)*uzz(i)*fsteradjk
+        enddo
+        ! uzuxx (305)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uzuxx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uz(i)*uxx(i)*fsteradjk
+        enddo
+        ! uzuyy (306)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uzuyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uz(i)*uyy(i)*fsteradjk
+        enddo
+        ! uzuzz (307)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uzuzz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                uz(i)*uzz(i)*fsteradjk
+        enddo
+        ! dduxuxx (308)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduxuxx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*ux(i)*uxx(i)*fsteradjk
+        enddo
+        ! dduxuyy (309)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduxuyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*ux(i)*uyy(i)*fsteradjk
+        enddo
+        ! dduxuzz (310)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduxuzz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*ux(i)*uzz(i)*fsteradjk
+        enddo
+        ! dduyuxx (311)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduyuxx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*uy(i)*uxx(i)*fsteradjk
+        enddo
+        ! dduyuyy (312)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduyuyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*uy(i)*uyy(i)*fsteradjk
+        enddo
+        ! dduyuzz (313)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduyuzz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*uy(i)*uzz(i)*fsteradjk
+        enddo
+        ! dduzuxx (314)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduzuxx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*uz(i)*uxx(i)*fsteradjk
+        enddo
+        ! dduzuyy (315)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduzuyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*uz(i)*uyy(i)*fsteradjk
+        enddo
+        ! dduzuzz (316)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduzuzz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                 dd(i)*uz(i)*uzz(i)*fsteradjk
+        enddo
+        ! dduxx (317)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduxx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*uxx(i)*fsteradjk
+        enddo
+        ! dduyy (318)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduyy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*uyy(i)*fsteradjk
+        enddo
+        ! dduzz (319)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduzz'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                dd(i)*uzz(i)*fsteradjk
+        enddo
         
         ! NOTE: These are composition-field dependent (depends on ixnuc)
         ! These are variable length: # composition fields = rans_nnuc * 16
@@ -2253,23 +2733,31 @@ subroutine rans_avg(imode)
            if(imode.eq.0) then ! construct varnames
               9901 format(i0.4)
               write(xidchar,9901) n
-              xvarname(1)  = 'x'  //xidchar            ! X
-              xvarname(2)  = 'x'  //xidchar//'sq'      ! X*X
-              xvarname(3)  = 'ddx'//xidchar            ! dd*X 
-              xvarname(4)  = 'ddx'//xidchar//'sq'      ! dd*X*X
-              xvarname(5)  = 'x'  //xidchar//'ux'      ! X*ux
-              xvarname(6)  = 'ddx'//xidchar//'ux'      ! dd*X*ux
-              xvarname(7)  = 'ddx'//xidchar//'uy'      ! dd*X*uy
-              xvarname(8)  = 'ddx'//xidchar//'uz'      ! dd*X*uz
-              xvarname(9)  = 'ddx'//xidchar//'dot'     ! dd*Xdot
-              xvarname(10) = 'ddx'//xidchar//'dotux'   ! dd*Xdot*ux
-              xvarname(11) = 'ddx'//xidchar//'squx'    ! dd*X*X*ux
-              xvarname(12) = 'ddx'//xidchar//'uxux'    ! dd*X*ux*ux
-              xvarname(13) = 'ddx'//xidchar//'uyuy'    ! dd*X*uy*uy
-              xvarname(14) = 'ddx'//xidchar//'uzuz'    ! dd*X*uz*uz
-              xvarname(15) = 'x'  //xidchar//'gradxpp' ! X*gradxpp
-              xvarname(16) = 'ddx'//xidchar//'x'//xidchar//'dot' ! dd*X*Xdot
-              xvarname(17) = 'x'  //xidchar//'ddgg'  ! X*dd*gr
+              xvarname(1)  = 'x'  //xidchar             ! X
+              xvarname(2)  = 'x'  //xidchar//'sq'       ! X*X
+              xvarname(3)  = 'ddx'//xidchar             ! dd*X 
+              xvarname(4)  = 'ddx'//xidchar//'sq'       ! dd*X*X
+              xvarname(5)  = 'x'  //xidchar//'ux'       !  X*ux
+              xvarname(6)  = 'ddx'//xidchar//'ux'       !  dd*X*ux
+              xvarname(7)  = 'ddx'//xidchar//'uy'       ! dd*X*uy
+              xvarname(8)  = 'ddx'//xidchar//'uz'       ! dd*X*uz
+              xvarname(9)  = 'ddx'//xidchar//'dot'      ! dd*Xdot
+              xvarname(10) = 'ddx'//xidchar//'dotux'    ! dd*Xdot*ux
+              xvarname(11) = 'ddx'//xidchar//'dotuy'    ! dd*Xdot*uy
+              xvarname(12) = 'ddx'//xidchar//'dotuz'    ! dd*Xdot*uz              
+              xvarname(13) = 'ddx'//xidchar//'squx'     ! dd*X*X*ux
+              xvarname(14) = 'ddx'//xidchar//'uxux'     ! dd*X*ux*ux
+              xvarname(15) = 'ddx'//xidchar//'uyuy'     ! dd*X*uy*uy
+              xvarname(16) = 'ddx'//xidchar//'uzuz'     ! dd*X*uz*uz
+              xvarname(17) = 'ddx'//xidchar//'uxuy'     ! dd*X*ux*uy
+              xvarname(18) = 'ddx'//xidchar//'uxuz'     ! dd*X*ux*uz
+              xvarname(19) = 'ddx'//xidchar//'uzuycoty' ! dd*X*uz*uy*coty              
+              xvarname(20) = 'ddx'//xidchar//'uzuzcoty' ! dd*X*uz*uz*coty              
+              xvarname(21) = 'x'  //xidchar//'gradxpp'  ! X*gradxpp
+              xvarname(22) = 'x'  //xidchar//'gradypp'  ! X*gradypp
+              xvarname(23) = 'x'  //xidchar//'gradzpp_o_siny'    ! X*gradzpp_o_siny
+              xvarname(24) = 'ddx'//xidchar//'x'//xidchar//'dot' ! dd*X*Xdot
+              xvarname(25) = 'x'  //xidchar//'ddgg'  ! X*dd*gr
            endif
 
            ! xn
@@ -2337,7 +2825,6 @@ subroutine rans_avg(imode)
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
                    dd(i)*xdn(i,n)*fsteradjk                      
            enddo	
-
            ! ddxndotux
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(10)  		   
@@ -2345,61 +2832,110 @@ subroutine rans_avg(imode)
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
                    dd(i)*xdn(i,n)*ux(i)*fsteradjk                      
            enddo
-           
-           ! ddxnsqux
+           ! ddxndotuy
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(11)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   dd(i)*xn(i,n)*xn(i,n)*ux(i)*fsteradjk                      
+                   dd(i)*xdn(i,n)*uy(i)*fsteradjk                      
            enddo
-
-           ! ddxnuxux
+           ! ddxndotuz
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(12)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   dd(i)*xn(i,n)*ux(i)*ux(i)*fsteradjk                      
+                   dd(i)*xdn(i,n)*uz(i)*fsteradjk                      
            enddo
-
-           ! ddxnuyuy
+           ! ddxnsqux
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(13)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   dd(i)*xn(i,n)*uy(i)*uy(i)*fsteradjk                      
+                   dd(i)*xn(i,n)*xn(i,n)*ux(i)*fsteradjk                      
            enddo
-           
-           ! ddxnuzuz
+           ! ddxnuxux
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(14)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   dd(i)*xn(i,n)*uz(i)*uz(i)*fsteradjk                      
+                   dd(i)*xn(i,n)*ux(i)*ux(i)*fsteradjk                      
            enddo
-           
-           ! xngradxpp
+           ! ddxnuyuy
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(15)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   xn(i,n)*gradxpp(i)*fsteradjk                      
-           enddo
-           
-           ! ddxnxdot
+                   dd(i)*xn(i,n)*uy(i)*uy(i)*fsteradjk                      
+           enddo           
+           ! ddxnuzuz
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(16)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   dd(i)*xn(i,n)*xdn(i,n)*fsteradjk                      
+                   dd(i)*xn(i,n)*uz(i)*uz(i)*fsteradjk                      
            enddo
-
-           ! xnddgr
+           ! ddxnuxuy
            ifield = ifield+1                          
            if(imode.eq.0) ransname(ifield) = xvarname(17)  		   
            do i=1,qx                                      
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
-                   xn(i,n)*dd(i)*gg(i)*fsteradjk                      
+                   dd(i)*xn(i,n)*ux(i)*uy(i)*fsteradjk                      
+           enddo
+           ! ddxnuxuz
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(18)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   dd(i)*xn(i,n)*ux(i)*uz(i)*fsteradjk                      
+           enddo
+           ! ddxnuzuycoty
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(19)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   dd(i)*xn(i,n)*uz(i)*uy(i)*coty*fsteradjk                      
+           enddo
+          ! ddxnuzuzcoty
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(20)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   dd(i)*xn(i,n)*uz(i)*uz(i)*coty*fsteradjk                      
+           enddo                      
+           ! xngradxpp
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(21)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   xn(i,n)*gradxpp(i)*fsteradjk                      
+           enddo
+           ! xngradypp
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(22)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   xn(i,n)*dppy(i)*fsteradjk                      
+           enddo
+           ! xngradzpp_o_siny
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(23)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   (xn(i,n)*dppz(i)/siny)*fsteradjk                      
+           enddo
+           ! ddxnxdot
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(24)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   dd(i)*xn(i,n)*xdn(i,n)*fsteradjk                      
+           enddo
+           ! xnddgr
+           ifield = ifield+1                          
+           if(imode.eq.0) ransname(ifield) = xvarname(25)  		   
+           do i=1,qx                                      
+              havg(2,ifield,i) =  havg(2,ifield,i) + &    
+                   xn(i,n)*dd(i)*ggravity(i)*fsteradjk                      
            enddo
            
         enddo
