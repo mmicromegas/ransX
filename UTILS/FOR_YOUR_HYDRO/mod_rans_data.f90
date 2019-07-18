@@ -22,7 +22,7 @@ module mod_rans_data
       include 'dimen.inc' 
       
       rans_nnuc = qn ! rans_nnuc = qn
-      nrans     = 254 + 17*rans_nnuc
+      nrans     = 319 + 25*rans_nnuc
 
       allocate(havg(4,nrans,qqx))
       allocate(ransname(nrans))
