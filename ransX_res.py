@@ -36,6 +36,9 @@ def str2bool(param):
 
 # PLOT
 
+# TEMPERATURE
+if str2bool(params.getForEqs('temp')['plotMee']): plt.execTemp()
+
 # BRUNT-VAISALLA FREQUENCY
 if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
 

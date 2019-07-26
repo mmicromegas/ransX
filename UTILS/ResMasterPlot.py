@@ -1,3 +1,4 @@
+import EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureResolutionStudy as tt
 import EQUATIONS.FOR_RESOLUTION_STUDY.BruntVaisallaResolutionStudy as bruntv
 import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentKineticEnergyResolutionStudy as tke
 import EQUATIONS.FOR_RESOLUTION_STUDY.InternalEnergyFluxResolutionStudy as feix
@@ -79,6 +80,25 @@ class ResMasterPlot():
                                       params.getForEqs('nsq')['ybd'],\
                                       params.getForEqs('nsq')['ilg'])			
 
+    def execTemp(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransTT =  tt.TemperatureResolutionStudy(params.getForProp('prop')['eht_data'],\
+                                           params.getForProp('prop')['ig'],\
+                                           params.getForProp('prop')['intc'],\
+                                           params.getForProp('prop')['prefix'])
+
+									   
+        ransTT.plot_tt(params.getForProp('prop')['laxis'],\
+                                      params.getForEqs('temp')['xbl'],\
+                                      params.getForEqs('temp')['xbr'],\
+                                      params.getForEqs('temp')['ybu'],\
+                                      params.getForEqs('temp')['ybd'],\
+                                      params.getForEqs('temp')['ilg'])									  
+									  
+									  
     def execTke(self):
 						  
         params = self.params			

@@ -141,7 +141,7 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         #plt.plot(grd1,plt2,color='red',label = r'$\widetilde{u}_r$')
         #plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')		
         plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
-        plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
+#        plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
         #plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
         #plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
 		

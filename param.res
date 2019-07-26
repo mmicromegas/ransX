@@ -10,6 +10,7 @@
 ## X-axis Right boundary for properties .................... ## [prop,xbr,9.8e8]
 ## Nuclear network ......................................... ## [network,neut,prot,he4,c12,o16,ne20,na23,mg24,si28,p31,s32,s34,cl35,ar36,ar38,k39,ca40,ca42,ti44,ti46,cr48,cr50,fe52,fe54,ni56] 
 []
+## Temperature stratification .............................. ## [temp,True,3.7e8,9.8e8,2.6e9,1.4e9,0]
 ## Brunt-Vaisalla frequency ................................ ## [nsq,True,3.7e8,9.8e8,65.,-5.,0]
 ## Turbulent Kinetic Energy Stratification ................. ## [tkie,False,3.7e8,9.8e8,5.e13,0.,0]
 ## Internal Energy Flux Stratification ..................... ## [eintflx,False,3.7e8,9.8e8,3.e27,-1.e27,0]
