@@ -299,12 +299,12 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
             tauL = 9999999999. 			
             #sys.exit()
 		
-        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv,'xzn0inc':xzn0inc,'xzn0outc':xzn0outc}			
+        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv,'xzn0inc':xzn0inc,'xzn0outc':xzn0outc,'tc':tc}			
 		
     def execute(self):
         p = self.properties(self.laxis,self.xbl,self.xbr)
         return {'tauL':p['tauL'],'kolm_tke_diss_rate':p['kolm_tke_diss_rate'],\
                 'tke_diss':p['tke_diss'],'tke':p['tke'],'lc':p['lc'],\
-                'uconv':p['uconv'],'xzn0inc':p['xzn0inc'],'xzn0outc':p['xzn0outc']}		
+                'uconv':p['uconv'],'xzn0inc':p['xzn0inc'],'xzn0outc':p['xzn0outc'],'tc':p['tc']}		
 		
 		
