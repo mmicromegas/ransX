@@ -125,6 +125,10 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # plot DATA 
         plt.title('rhoX for '+element)
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{\rho} \widetilde{X}$')
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')
 		
         # define and show x/y LABELS
         if (self.ig == 1):	
@@ -177,7 +181,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{X}$')
 
         # convective boundary markers
-        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
         plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')			
 		
         # define and show x/y LABELS

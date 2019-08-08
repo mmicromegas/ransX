@@ -38,8 +38,8 @@ class XtransportVsNuclearTimescales(calc.CALCULUS,al.ALIMIT,object):
         fxi    = ddxiux - ddxi*ddux/dd	
 
         # calculate damkohler number 		
-        tau_trans = fht_xi/self.Div(fxi/dd,xzn0) 
-        tau_nuc   = fht_xi/(ddxidot/dd)
+        tau_trans = np.abs(fht_xi/self.Div(fxi/dd,xzn0)) 
+        tau_nuc   = np.abs(fht_xi/(ddxidot/dd))
 
         # Damkohler number		
         self.xda = tau_trans/tau_nuc
@@ -82,14 +82,14 @@ class XtransportVsNuclearTimescales(calc.CALCULUS,al.ALIMIT,object):
         plt.yscale('symlog')	
 	
         # plot DATA 		
-        plt.title(r"$timescales \ for \ $"+self.element)
+        plt.title(r"$abs(timescales) \ for \ $"+self.element)
         #plt.semilogy(grd1,plt0,label=r"$-\tau_{trans}^i$",color='r') 
         #plt.semilogy(grd1,plt1,label=r"$-\tau_{nuc}^i$",color='b')
 
         xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
 
-        plt.plot(grd1[xlimitrange],plt0[xlimitrange],label=r"$\tau_{trans}^i$",color='r') 
-        plt.plot(grd1[xlimitrange],plt1[xlimitrange],label=r"$\tau_{nuc}^i$",color='b')
+        plt.plot(grd1[xlimitrange],plt0[xlimitrange],label=r"$|\tau_{trans}^i|$",color='r') 
+        plt.plot(grd1[xlimitrange],plt1[xlimitrange],label=r"$|\tau_{nuc}^i|$",color='b')
 
         xlimitbottom = np.where(grd1 < self.bconv)
         plt.plot(grd1[xlimitbottom],plt0[xlimitbottom],'.',color='r',markersize=0.5)		
