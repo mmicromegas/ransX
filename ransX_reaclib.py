@@ -16,11 +16,11 @@ import ast
 paramFile = 'param.reaclib'
 params = rp.ReadParamsReaclib(paramFile)
 
-# get data source file
-filename = params.getForProp('prop')['eht_data']
+# get RANS data source file
+filename_rans = params.getForProp('prop')['eht_data']
 
 # get simulation properties
-ransP = prop.Properties(params,filename)
+ransP = prop.Properties(params,filename_rans)
 properties = ransP.execute()
 
 # instantiate master plot 								 

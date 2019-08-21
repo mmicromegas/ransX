@@ -19,7 +19,7 @@ class ReadParamsReaclib:
     def getForProp(self,param): 
 	
         match = [s for s in self.input if param in s] # choose only lists identified by param
-        reac_lib = match[0].split(",")[2]
+        reaclib = match[0].split(",")[2]
         eht_data = match[1].split(",")[2]
         prefix   = match[2].split(",")[2]
         fext     = match[3].split(",")[2]		
@@ -29,7 +29,7 @@ class ReadParamsReaclib:
         xbl      = float(match[7].split(",")[2])		
         xbr      = float(match[8].split(",")[2])	
 				
-        return {'eht_data':eht_data,'prefix':prefix,'ig':ig,'intc':intc,'laxis':laxis,'xbl':xbl,'xbr':xbr}				
+        return {'reaclib':reaclib,'eht_data':eht_data,'prefix':prefix,'ig':ig,'intc':intc,'laxis':laxis,'xbl':xbl,'xbr':xbr}				
 
     def getForEqs(self,param): 
 	

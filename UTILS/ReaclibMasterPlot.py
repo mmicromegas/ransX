@@ -14,10 +14,12 @@ class ReaclibMasterPlot():
 	
         # instantiate 
         ransXtvsn = xtvsn.XtransportVsNuclearTimescales(params.getForProp('prop')['eht_data'],\
+                                           params.getForProp('prop')['reaclib'],\
                                            params.getForProp('prop')['ig'],\
                                            inuc,element,bconv,tconv,tauL,\
                                            params.getForProp('prop')['intc'],\
-                                           params.getForProp('prop')['prefix'])
+                                           params.getForProp('prop')['prefix'],\
+                                           params.getNetwork())
 							
         ransXtvsn.plot_Xtimescales(params.getForProp('prop')['laxis'],\
                                           params.getForEqs(x)['xbl'],\
