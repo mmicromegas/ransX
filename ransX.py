@@ -207,10 +207,10 @@ if str2bool(params.getForEqs('zbflx')['plotMee']): plt.execFzbarx()
 if str2bool(params.getForEqs('fzbxeq')['plotMee']): plt.execFzbarxEq()
 
 # HYDRODYNAMIC STELLAR STRUCTURE EQUATIONS
-if str2bool(params.getForEqs('cteqhsse')['plotMee']): plt.execHssContEq()
-if str2bool(params.getForEqs('mxeqhsse')['plotMee']): plt.execHssMomxEq()
-if str2bool(params.getForEqs('tpeqhsse')['plotMee']): plt.execHssTempEq(properties['tke_diss'])
-if str2bool(params.getForEqs('lueqhsse')['plotMee']): plt.execHssLumiEq(properties['tke_diss'])
+if str2bool(params.getForEqs('cteqhsse')['plotMee']): plt.execHssContEq(properties['xzn0inc'],properties['xzn0outc'])
+if str2bool(params.getForEqs('mxeqhsse')['plotMee']): plt.execHssMomxEq(properties['xzn0inc'],properties['xzn0outc'])
+if str2bool(params.getForEqs('tpeqhsse')['plotMee']): plt.execHssTempEq(properties['tke_diss'],properties['xzn0inc'],properties['xzn0outc'])
+if str2bool(params.getForEqs('lueqhsse')['plotMee']): plt.execHssLumiEq(properties['tke_diss'],properties['xzn0inc'],properties['xzn0outc'])
 
 # FULL TURBULENT VELOCITY FIELD HYPOTHESIS
 if str2bool(params.getForEqs('ftvfh')['plotMee']): plt.execFtvfh()
