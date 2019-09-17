@@ -29,6 +29,11 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         dd    = np.asarray(eht.item().get('dd')[intc])
         ux    = np.asarray(eht.item().get('ux')[intc])			
         ddux  = np.asarray(eht.item().get('ddux')[intc])		
+        mm    = np.asarray(eht.item().get('mm')[intc])			
+
+        vol = (4./3.)*np.pi*xzn0**3
+        mm_ver2 = dd*vol
+
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -63,7 +68,9 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         self.dd        = dd	
         self.nx        = nx
         self.ig        = ig		
-		
+        self.vol  = vol	
+        self.mm = mm
+        self.mm_ver2 = mm_ver2		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot rho stratification in the model""" 
@@ -259,4 +266,46 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'continuityFavreDil_eq_bar.png')		
 		
+		
+    def plot_mm_vs_MM(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot mm vs MM in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        mm = self.mm_ver2
+        MM = self.mm
+        mm_lnV = mm*np.log(self.vol)		
+		
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [mm,MM,mm_lnV]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title('mm vs MM')
+	
+        plt.plot(grd1,mm,color='g',label = r'$+\overline{m}$')
+        plt.plot(grd1,MM,color='r',label = r'$+\overline{M}$')
+        plt.plot(grd1,mm_lnV,color='b',linestyle='--',label = r'$+\overline{m} \ ln \ V$')		
+
+        setxlabel = r'r (10$^{8}$ cm)'	
+        setylabel = r"grams"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'mm_vs_MM_eq.png')		
 		

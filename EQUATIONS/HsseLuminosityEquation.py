@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,tke_diss,data_prefix):
+    def __init__(self,filename,ig,intc,tke_diss,bconv,tconv,data_prefix):
         super(HsseLuminosityEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -73,7 +73,8 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         t_tt      = np.asarray(eht.item().get('tt'))
         t_pp      = np.asarray(eht.item().get('pp'))			
 		
-        t_ddei    = np.asarray(eht.item().get('ddei')) 		
+        t_ddei    = np.asarray(eht.item().get('ddei')) 
+        t_ddss    = np.asarray(eht.item().get('ddss')) 		
 		
         t_ddux    = np.asarray(eht.item().get('ddux')) 
         t_dduy    = np.asarray(eht.item().get('dduy')) 
@@ -90,6 +91,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         t_fht_ek = 0.5*(t_dduxux+t_dduyuy+t_dduzuz)/t_dd
         t_fht_ei = t_ddei/t_dd			
         t_fht_et = t_fht_ek + t_fht_ei
+        t_fht_ss = t_ddss/t_dd
 		
         t_fht_ux = t_ddux/t_dd 
         t_fht_uy = t_dduy/t_dd
@@ -218,6 +220,17 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         # END STANDARD LUMINOSITY EQUATION EXACT 
         ######################################## 
 
+        ######################################
+        # STANDARD LUMINOSITY EQUATION EXACT 2 
+        ###################################### 
+
+        self.minus_dd_tt_dt_fht_ss = -sps*dd*tt*self.dt(t_fht_ss,xzn0,t_timec,intc)
+        self.minus_resLumExactEquation2 = -(self.minus_gradx_fht_lum+self.plus_four_pi_rsq_dd_fht_enuc+self.minus_dd_tt_dt_fht_ss)
+
+        ########################################
+        # END STANDARD LUMINOSITY EQUATION EXACT 2 
+        ######################################## 
+
         #################################
         # ALTERNATIVE LUMINOSITY EQUATION 
         #################################		
@@ -226,7 +239,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et*self.Grad(sps*dd*fht_ux,xzn0)
 		
-        self.minus_resLumExactEquation2 = -(self.minus_gradx_fht_lum+self.minus_four_pi_rsq_dd_fht_ux_pp_fdil_o_fht_rxx+self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux) 	
+        self.minus_resAlternativeLumEq = -(self.minus_gradx_fht_lum+self.minus_four_pi_rsq_dd_fht_ux_pp_fdil_o_fht_rxx+self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux) 	
 		
         #####################################
         # END ALTERNATIVE LUMINOSITY EQUATION 
@@ -240,7 +253,7 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et*self.Grad(sps*dd*fht_ux,xzn0)
 		
-        self.minus_resLumExactEquation3 = -(self.minus_gradx_fht_lum+self.minus_four_pi_rsq_dd_fht_ux_dd_o_gamma1+self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux) 	
+        self.minus_resAlternativeLumEqSimplified = -(self.minus_gradx_fht_lum+self.minus_four_pi_rsq_dd_fht_ux_dd_o_gamma1+self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux) 	
 		
         ################################################
         # END ALTERNATIVE LUMINOSITY EQUATION SIMPLIFIED 
@@ -251,6 +264,8 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.xzn0        = xzn0
         self.fht_et      = fht_ei + fht_ek
         self.nx  = nx		
+        self.bconv   = bconv
+        self.tconv	 = tconv		
 		
     def plot_et(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean total energy stratification in the model""" 
@@ -325,22 +340,75 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('hsse luminosity equation')
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
+        #plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
  
-        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
+        #plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
         #plt.plot(grd1,rhs1,color='y',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
-        plt.plot(grd1,rhs2,color='g',label = r"$-4 \pi r^2 \nabla_r f_I$") 		
-        plt.plot(grd1,rhs3,color='gray',label = r"$-4 \pi r^2 \nabla_r f_{th}$ (not incl.)")
-        plt.plot(grd1,rhs4,color='#802A2A',label = r"$-4 \pi r^2  \nabla_r f_{K}$") 		
-        plt.plot(grd1,rhs5,color='darkmagenta',label = r"$-4 \pi r^2 \nabla_r f_{P}$") 
-        plt.plot(grd1,rhs6,color='b',label=r"$-4 \pi r^2 \overline{P} \ \overline{d}$")		
-        plt.plot(grd1,rhs7,color='pink',label=r"$-4 \pi r^2 \widetilde{R}_{ir} \partial_r \widetilde{u}_i$")		
-        plt.plot(grd1,rhs8,color='r',label=r"$+4 \pi r^2 W_b$")
-        plt.plot(grd1,rhs9,color='m',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i /2$")		 
-        plt.plot(grd1,rhs10,color='chartreuse',label = r"$-4 \pi r^2 \overline{\rho} \partial_t \widetilde{\epsilon}_t$") 
-        plt.plot(grd1,rhs11,color='olive',label = r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \widetilde{u}_r$")		
-		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N$")
+        #plt.plot(grd1,rhs2,color='g',label = r"$-4 \pi r^2 \nabla_r f_I$") 		
+        #plt.plot(grd1,rhs3,color='gray',label = r"$-4 \pi r^2 \nabla_r f_{th}$ (not incl.)")
+        #plt.plot(grd1,rhs4,color='#802A2A',label = r"$-4 \pi r^2  \nabla_r f_{K}$") 		
+        #plt.plot(grd1,rhs5,color='darkmagenta',label = r"$-4 \pi r^2 \nabla_r f_{P}$") 
+        #plt.plot(grd1,rhs6,color='b',label=r"$-4 \pi r^2 \overline{P} \ \overline{d}$")		
+        #plt.plot(grd1,rhs7,color='pink',label=r"$-4 \pi r^2 \widetilde{R}_{ir} \partial_r \widetilde{u}_i$")		
+        #plt.plot(grd1,rhs8,color='r',label=r"$+4 \pi r^2 W_b$")
+        #plt.plot(grd1,rhs9,color='m',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i /2$")		 
+        #plt.plot(grd1,rhs10,color='chartreuse',label = r"$-4 \pi r^2 \overline{\rho} \partial_t#\widetilde{\epsilon}_t$") 
+        #plt.plot(grd1,rhs11,color='olive',label = r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \widetilde{u}_r$")		
+        #plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N$")
+ 
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	 
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
+        #plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='y',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}$") 
+        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='g',label = r"$-4 \pi r^2 \nabla_r f_I$") 		
+        plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='gray',label = r"$-4 \pi r^2 \nabla_r f_{th}$ (not incl.)")
+        plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='#802A2A',label = r"$-4 \pi r^2  \nabla_r f_{K}$") 		
+        plt.plot(grd1[xlimitrange],rhs5[xlimitrange],color='darkmagenta',label = r"$-4 \pi r^2 \nabla_r f_{P}$") 
+        plt.plot(grd1[xlimitrange],rhs6[xlimitrange],color='b',label=r"$-4 \pi r^2 \overline{P} \ \overline{d}$")		
+        plt.plot(grd1[xlimitrange],rhs7[xlimitrange],color='pink',label=r"$-4 \pi r^2 \widetilde{R}_{ir} \partial_r \widetilde{u}_i$")		
+        plt.plot(grd1[xlimitrange],rhs8[xlimitrange],color='r',label=r"$+4 \pi r^2 W_b$")
+        plt.plot(grd1[xlimitrange],rhs9[xlimitrange],color='m',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i /2$")		 
+        plt.plot(grd1[xlimitrange],rhs10[xlimitrange],color='chartreuse',label = r"$-4 \pi r^2 \overline{\rho} \partial_t \widetilde{\epsilon}_t$") 
+        plt.plot(grd1[xlimitrange],rhs11[xlimitrange],color='olive',label = r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \widetilde{u}_r$")		
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label=r"res $\sim N$")
+ 
+ 
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='#FF8C00',markersize=0.5)
+        #plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='gray',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='#802A2A',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs5[xlimitbottom],'.',color='darkmagenta',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs6[xlimitbottom],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs7[xlimitbottom],'.',color='pink',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs8[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs9[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs10[xlimitbottom],'.',color='chartreuse',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs11[xlimitbottom],'.',color='olive',markersize=0.5)		
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='#FF8C00',markersize=0.5)
+        #plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='gray',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='#802A2A',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs5[xlimittop],'.',color='darkmagenta',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs6[xlimittop],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs7[xlimittop],'.',color='pink',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs8[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs9[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs10[xlimittop],'.',color='chartreuse',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs11[xlimittop],'.',color='olive',markersize=0.5)		
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k')  
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -411,6 +479,56 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'standard_luminosity_exact_eq.png')		
 		
+    def plot_luminosity_equation_exact2(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot luminosity equation in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+
+        lhs0 = self.minus_gradx_fht_lum
+		
+        rhs0 = self.plus_four_pi_rsq_dd_fht_enuc
+        rhs1 = self.minus_dd_tt_dt_fht_ss
+        res = self.minus_resLumExactEquation2		
+				
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,rhs0,rhs1,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
+		
+        # plot DATA 
+        plt.title("standard luminosity equation exact 2")
+        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
+ 
+        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")     
+        plt.plot(grd1,rhs1,color='brown',label=r"$-4 \pi r^2 \overline{\rho} \overline{T} \partial_t \widetilde{s}$")
+
+        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N$")
+		
+        zeros = np.zeros(self.nx)		
+        plt.plot(grd1,zeros,color='k',linewidth=0.6,label="zero") 
+        # ,label=r"$0 = -\partial_r l + \rho 4\pi r^2 \epsilon - \rho 4 \pi r^2 c_p \partial_t T + \rho 4 \pi r^2 \delta \partial_t P \\ Kippenhahn Weigert p.22, Eq.4.26$"
+        # define and show x/y LABELS
+
+        setxlabel = r"r (cm)"
+        setylabel = r"erg s$^{-1}$ cm$^{-1}$"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'standard_luminosity_exact2_eq.png')				
+		
 		
     def plot_luminosity_equation_2(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot luminosity equation in the model""" 
@@ -422,9 +540,8 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         rhs0 = self.minus_four_pi_rsq_dd_fht_ux_pp_fdil_o_fht_rxx
         rhs1 = self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux
-
 		
-        res = self.minus_resLumExactEquation2
+        res = self.minus_resAlternativeLumEq
 				
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -438,13 +555,33 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title("alternative hsse luminosity equation")
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$") 
-        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{P} \ \overline{u'_r d''} / \ \widetilde{R}_{rr} $")     	
-        plt.plot(grd1,rhs1,color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
+        #plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$") 
+        #plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{P} \ \overline{u'_r d''} / \ \widetilde{R}_{rr} $")     	
+        #plt.plot(grd1,rhs1,color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
 		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
 		
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$") 
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{P} \ \overline{u'_r d''} / \ \widetilde{R}_{rr} $")     	
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label=r"res")		
 
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='#FF8C00',markersize=0.5)     	
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='#FF8C00',markersize=0.5)     	
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k')  
 
         setxlabel = r"r (cm)"
         setylabel = r"erg s$^{-1}$ cm$^{-1}$"
@@ -471,9 +608,8 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         rhs0 = self.minus_four_pi_rsq_dd_fht_ux_dd_o_gamma1
         rhs1 = self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux
-
 		
-        res = self.minus_resLumExactEquation3
+        res = self.minus_resAlternativeLumEqSimplified
 				
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -487,11 +623,33 @@ class HsseLuminosityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title("alternative hsse luminosity eq simp")
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
-        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{g}_r / \Gamma_1$")     	
-        plt.plot(grd1,rhs1,color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
+        #plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
+        #plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{g}_r / \Gamma_1$")     	
+        #plt.plot(grd1,rhs1,color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='#FF6EB4',label = r"$-\partial_r \widetilde{L}$")
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='#FF8C00',label = r"$-4 \pi r^2 \ \widetilde{u}_{r} \ \overline{\rho} \ \overline{g}_r / \Gamma_1$")     	
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='g',label=r"$+\widetilde{\epsilon}_t \partial_r 4 \pi r^2 \overline{\rho} \ \widetilde{u}_{r}$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label=r"res")
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='#FF8C00',markersize=0.5)  	
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
 		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='#FF8C00',markersize=0.5)  	
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)		
+		
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 		
         setxlabel = r"r (cm)"
         setylabel = r"erg s$^{-1}$ cm$^{-1}$"

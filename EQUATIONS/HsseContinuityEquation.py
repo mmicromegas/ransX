@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,intc,data_prefix,bconv,tconv):
         super(HsseContinuityEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -137,7 +137,8 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         self.fdil        = fdil
         self.dd = dd	
         self.fht_ux = fht_ux		
-		
+        self.bconv   = bconv
+        self.tconv	 = tconv         		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot rho stratification in the model""" 
@@ -206,13 +207,45 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('hsse continuity equation')
-        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
-        plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
-        plt.plot(grd1,rhs1,color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
-        plt.plot(grd1,rhs2,color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
-        plt.plot(grd1,rhs3,color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
-        plt.plot(grd1,rhs4,color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        #plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
+        #plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+        #plt.plot(grd1,rhs1,color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
+        #plt.plot(grd1,rhs2,color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
+        #plt.plot(grd1,rhs3,color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
+        #plt.plot(grd1,rhs4,color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='g',label = r'$-\partial_r (\overline{m})$')
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
+        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
+        plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
+        plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+		
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)			
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)	
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -241,7 +274,6 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         rhs0 = self.plus_four_pi_rsq_dd		
         rhs1 = self.minus_mm_dd_fdil_o_fht_rxx
 		
-		
         res = self.minus_resContEquation2
 		
         # create FIGURE
@@ -256,10 +288,33 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('alternative hsse continuity equation')
-        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
-        plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
-        plt.plot(grd1,rhs1,color='b',label = r"$-\overline{\rho} \ \overline{m} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")		
-        plt.plot(grd1,res,color='k',linestyle='--',label = r"res")		
+        #plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
+        #plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+        #plt.plot(grd1,rhs1,color='b',label = r"$-\overline{\rho} \ \overline{m} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")		
+        #plt.plot(grd1,res,color='k',linestyle='--',label = r"res")		
+		
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)			
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='g',label = r'$-\partial_r (\overline{m})$')
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='b',label = r"$-\overline{\rho} \ \overline{m} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")		
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label = r"res")	
+				
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='b',markersize=0.5)		
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)		
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='b',markersize=0.5)		
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -302,10 +357,33 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('alternative hsse continuity eq simp')
-        plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
-        plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")		
-        plt.plot(grd1,rhs1,color='b',label = r"$-\overline{\rho} \ \overline{m} \ \overline{g}_r / \Gamma_1 \overline{P}$")		
-        plt.plot(grd1,res,color='k',linestyle='--',label = r"res")		
+        #plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
+        #plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")		
+        #plt.plot(grd1,rhs1,color='b',label = r"$-\overline{\rho} \ \overline{m} \ \overline{g}_r / \Gamma_1 \overline{P}$")		
+        #plt.plot(grd1,res,color='k',linestyle='--',label = r"res")		
+		
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='g',label = r'$-\partial_r (\overline{m})$')
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='r',label = r"$+4 \pi r^2 \overline{\rho}$")		
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='b',label = r"$-\overline{\rho} \ \overline{m} \ \overline{g}_r / \Gamma_1 \overline{P}$")		
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label = r"res")	
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='b',markersize=0.5)		
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+		
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='b',markersize=0.5)		
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)		
+		
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

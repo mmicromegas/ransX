@@ -29,6 +29,7 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         dd    = np.asarray(eht.item().get('dd')[intc])
         ux    = np.asarray(eht.item().get('ux')[intc])			
         ddux  = np.asarray(eht.item().get('ddux')[intc])		
+		 
 		
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec'))		
@@ -74,7 +75,8 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         self.xzn0        = xzn0
         self.dd          = dd
         self.nx          = nx
-        self.ig          = ig		
+        self.ig          = ig
+        self.vol         = vol		
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -285,4 +287,51 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'continuityWithMassFlux_eq_bar.png')		
 		
+    def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot rho stratification in the model""" 
+		
+        # load x GRID
+        grd1 = self.xzn0
+	
+        # load DATA to plot
+        plt1 = self.dd
+		
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [plt1]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+		
+        # plot DATA 
+        plt.title('density')
+        plt.plot(grd1,plt1,color='brown',label = r'$\overline{\rho}$')
+
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_rho.png')
+	
+
 		

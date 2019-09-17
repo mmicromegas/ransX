@@ -54,6 +54,10 @@ class XfluxXequation(calc.CALCULUS,al.ALIMIT,object):
         ddxiux  = np.asarray(eht.item().get('ddx'+inuc+'ux')[intc])
         ddxidot = np.asarray(eht.item().get('ddx'+inuc+'dot')[intc])	
 	 	
+        print(ddxidot)
+        print("-------------------")		
+        print(ddgg) 
+		
         ddxidotux = np.asarray(eht.item().get('ddx'+inuc+'dotux')[intc]) 	
         ddxiuxux  = np.asarray(eht.item().get('ddx'+inuc+'uxux')[intc])		
         ddxiuyuy  = np.asarray(eht.item().get('ddx'+inuc+'uyuy')[intc])

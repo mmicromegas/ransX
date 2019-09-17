@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,intc,data_prefix,bconv,tconv):
         super(HsseMomentumEquationX,self).__init__(ig) 
 	
         # load data to structured array
@@ -103,6 +103,8 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         self.xzn0        = xzn0
         self.ddux        = ddux
         self.ux          = ux      		
+        self.bconv   = bconv
+        self.tconv	 = tconv  		
 		
     def plot_momentum_x(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ddux stratification in the model""" 
@@ -175,14 +177,45 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('hsse x momentum equation')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
-        plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
-        plt.plot(grd1,rhs1,color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
-        plt.plot(grd1,rhs2,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
-        plt.plot(grd1,rhs3,color='g',label=r"$-\overline{G^{M}_r}$")
-        plt.plot(grd1,rhs4,color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
-		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        #plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
+        #plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
+        #plt.plot(grd1,rhs1,color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
+        #plt.plot(grd1,rhs2,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
+        #plt.plot(grd1,rhs3,color='g',label=r"$-\overline{G^{M}_r}$")
+        #plt.plot(grd1,rhs4,color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='c',label = r"$-\partial_r \overline{P} $")
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
+        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
+        plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='g',label=r"$-\overline{G^{M}_r}$")
+        plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -224,10 +257,29 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('alternative hsse x momentum equation')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
-        plt.plot(grd1,rhs0,color='m',label = r"$-\Gamma_1 \ \overline{\rho} \ \overline{P} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
+        #plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
+        #plt.plot(grd1,rhs0,color='m',label = r"$-\Gamma_1 \ \overline{\rho} \ \overline{P} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='c',label = r"$-\partial_r \overline{P} $")
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-\Gamma_1 \ \overline{\rho} \ \overline{P} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
 		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 		
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -268,10 +320,29 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('alternative hsse x momentum eq simp')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
-        plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
-		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        #plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
+        #plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")		
+        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='c',label = r"$-\partial_r \overline{P} $")
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")		
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)		
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='c',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)		
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

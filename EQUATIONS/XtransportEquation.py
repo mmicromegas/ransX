@@ -298,7 +298,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')		
             plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_x f$')
             plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
-            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')			
         elif (self.ig == 2):
             plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')		

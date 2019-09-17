@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,tke_diss,data_prefix):
+    def __init__(self,filename,ig,intc,tke_diss,bconv,tconv,data_prefix):
         super(HsseTemperatureEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -126,11 +126,12 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         # END ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
         ################################################			
 		
-		
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.tt          = tt			
+        self.bconv   = bconv
+        self.tconv	 = tconv  
 		
     def plot_tt(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean temperature stratification in the model""" 
@@ -201,16 +202,53 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('hsse temperature equation')
-        plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
-        plt.plot(grd1,rhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})/ \overline{u}_r$")
-        plt.plot(grd1,rhs1,color='#FF8C00',label = r"$-\nabla_r f_T/ \overline{u}_r $")     
-        plt.plot(grd1,rhs2,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}/ \overline{u}_r$") 
-        plt.plot(grd1,rhs3,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'} / \overline{u}_r$")
-        plt.plot(grd1,rhs4,color='b',label = r"$+(\overline{\epsilon_{nuc} / cv}/ \overline{u}_r$")
-        plt.plot(grd1,rhs5,color='g',label = r"$+(\overline{\varepsilon / cv})/ \overline{u}_r$")
-        plt.plot(grd1,rhs6,color='m',label = r"+$(\nabla \cdot F_T/ \rho c_v)/ \overline{u}_r$ (not incl.)")
-		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")
+        #plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
+        #plt.plot(grd1,rhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})/ \overline{u}_r$")
+        #plt.plot(grd1,rhs1,color='#FF8C00',label = r"$-\nabla_r f_T/ \overline{u}_r $")     
+        #plt.plot(grd1,rhs2,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}/ \overline{u}_r$") 
+        #plt.plot(grd1,rhs3,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'} / \overline{u}_r$")
+        #plt.plot(grd1,rhs4,color='b',label = r"$+(\overline{\epsilon_{nuc} / cv}/ \overline{u}_r$")
+        #plt.plot(grd1,rhs5,color='g',label = r"$+(\overline{\varepsilon / cv})/ \overline{u}_r$")
+        #plt.plot(grd1,rhs6,color='m',label = r"+$(\nabla \cdot F_T/ \rho c_v)/ \overline{u}_r$ (not incl.)")
+        #plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")
+ 
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	 
+ 
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='olive',label = r"$-\partial_r (\overline{T})$")		
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='#FF6EB4',label = r"$-\partial_t (\overline{T})/ \overline{u}_r$")
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='#FF8C00',label = r"$-\nabla_r f_T/ \overline{u}_r $")     
+        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}/ \overline{u}_r$") 
+        plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='r',label = r"$+(2-\Gamma_3) \overline{T'd'} / \overline{u}_r$")
+        plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='b',label = r"$+(\overline{\epsilon_{nuc} / cv}/ \overline{u}_r$")
+        plt.plot(grd1[xlimitrange],rhs5[xlimitrange],color='g',label = r"$+(\overline{\varepsilon / cv})/ \overline{u}_r$")
+        plt.plot(grd1[xlimitrange],rhs6[xlimitrange],color='m',label = r"+$(\nabla \cdot F_T/ \rho c_v)/ \overline{u}_r$ (not incl.)")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label=r"res $\sim N_T$") 
+ 
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='olive',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='#FF8C00',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='#802A2A',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs5[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs6[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+ 
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='olive',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='#FF6EB4',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='#FF8C00',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='#802A2A',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs5[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs6[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+ 
+         # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -251,11 +289,30 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('alternative hsse temperature equation')
-        plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
-        plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
-		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+        #plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
+        #plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	 
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='olive',label = r"$-\partial_r (\overline{T})$")		
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{u'_r d''} / \ \widetilde{R}_{rr}$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label=r"res")
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='olive',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
  
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='olive',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5) 
+ 
+         # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
+		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
         setylabel = r"K cm$^{-1}$"
@@ -295,10 +352,29 @@ class HsseTemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('alternative hsse temperature eq simp')
-        plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
-        plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{g}_r / \Gamma_1 \overline{P}$")
-		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+        #plt.plot(grd1,lhs0,color='olive',label = r"$-\partial_r (\overline{T})$")		
+        #plt.plot(grd1,rhs0,color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{g}_r / \Gamma_1 \overline{P}$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label=r"res")
+ 
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	 
+ 
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='olive',label = r"$-\partial_r (\overline{T})$")		
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-(\Gamma_3-1) \ \overline{\rho} \ \overline{T} \ \overline{g}_r / \Gamma_1 \overline{P}$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label=r"res") 
+ 
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='olive',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+ 
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='olive',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+
+         # convective boundary markers
+        plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

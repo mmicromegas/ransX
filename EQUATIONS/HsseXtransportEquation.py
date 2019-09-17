@@ -147,16 +147,37 @@ class HsseXtransportEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title('hsse rhoX transport for '+element)
-        plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}_i$')
-        plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}_i$')
-        plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f_i$')
-        plt.plot(grd1,rhs2,color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_i$")
+        #plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}_i$')
+        #plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}_i$')
+        #plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f_i$')
+        #plt.plot(grd1,rhs2,color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_i$")
+        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitbottom = np.where(grd1 < self.bconv)
+        xlimittop = np.where(grd1 > self.tconv)	
+
+        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='r',label = r'$-\partial_t \widetilde{X}_i$')
+        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}_i$')
+        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='b',label=r'$-(1/\overline{\rho}) \nabla_r f_i$')
+        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_i$")
+        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+
+        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='r',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='g',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='b',markersize=0.5)
+        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='y',markersize=0.5)
+        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
 
         # convective boundary markers
-        #plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
-        #plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
 		
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
