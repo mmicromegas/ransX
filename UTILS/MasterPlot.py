@@ -108,6 +108,14 @@ class MasterPlot():
                           params.getForEqs('rho')['ybd'],\
                           params.getForEqs('rho')['ilg'])
 
+        ransCONT.plot_mm_vs_MM(params.getForProp('prop')['laxis'],\
+                          params.getForEqs('rho')['xbl'],\
+                          params.getForEqs('rho')['xbr'],\
+                          params.getForEqs('rho')['ybu'],\
+                          params.getForEqs('rho')['ybd'],\
+                          params.getForEqs('rho')['ilg'])	
+
+
     def execContEq(self):
 						  
         params = self.params						  
@@ -125,7 +133,9 @@ class MasterPlot():
                                           params.getForEqs('conteq')['ybu'],\
                                           params.getForEqs('conteq')['ybd'],\
                                           params.getForEqs('conteq')['ilg'])
-								  
+										 					
+
+						
     def execContEqBar(self):
 
         params = self.params
@@ -161,6 +171,7 @@ class MasterPlot():
                                              params.getForEqs('conteqfdd')['ybu'],\
                                              params.getForEqs('conteqfdd')['ybd'],\
                                              params.getForEqs('conteqfdd')['ilg'])
+											 									
 											 
     def execContFddEqBar(self):
 						  
@@ -179,7 +190,7 @@ class MasterPlot():
                                                           params.getForEqsBar('conteqfddBar')['ybu'],\
                                                           params.getForEqsBar('conteqfddBar')['ybd'])		
 														  
-    def execHssContEq(self):
+    def execHssContEq(self,bconv,tconv):
 						  
         params = self.params						  
 						  
@@ -187,7 +198,8 @@ class MasterPlot():
         ranshssecont = hssecont.HsseContinuityEquation(params.getForProp('prop')['eht_data'],\
                                                              params.getForProp('prop')['ig'],\
                                                              params.getForProp('prop')['intc'],\
-                                                             params.getForProp('prop')['prefix'])
+                                                             params.getForProp('prop')['prefix'],\
+                                                             bconv,tconv)
 
         # plot continuity equation						       
         ranshssecont.plot_continuity_equation(params.getForProp('prop')['laxis'],\
@@ -237,7 +249,7 @@ class MasterPlot():
 #                                             params.getForEqs('cteqhsse')['ybd'],\
 #                                             params.getForEqs('cteqhsse')['ilg'])
 											 
-    def execHssMomxEq(self):
+    def execHssMomxEq(self,bconv,tconv):
 						  
         params = self.params						  
 						  
@@ -245,7 +257,8 @@ class MasterPlot():
         ranshssemomx = hssemomx.HsseMomentumEquationX(params.getForProp('prop')['eht_data'],\
                                                              params.getForProp('prop')['ig'],\
                                                              params.getForProp('prop')['intc'],\
-                                                             params.getForProp('prop')['prefix'])
+                                                             params.getForProp('prop')['prefix'],\
+                                                             bconv,tconv)
 
         # plot hsse momentm equation						       
         ranshssemomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'],\
@@ -272,7 +285,7 @@ class MasterPlot():
                                               params.getForEqs('mxeqhsse')['ilg'])											  
 											  
 											 
-    def execHssTempEq(self,tke_diss):
+    def execHssTempEq(self,tke_diss,bconv,tconv):
 						  
         params = self.params						  
 						
@@ -280,7 +293,7 @@ class MasterPlot():
         ranshssetemp = hssetemp.HsseTemperatureEquation(params.getForProp('prop')['eht_data'],\
                                                              params.getForProp('prop')['ig'],\
                                                              params.getForProp('prop')['intc'],\
-                                                             tke_diss,\
+                                                             tke_diss,bconv,tconv,\
                                                              params.getForProp('prop')['prefix'])
 
         # plot hsse temperature equation						       
@@ -307,7 +320,7 @@ class MasterPlot():
                                              params.getForEqs('tpeqhsse')['ybd'],\
                                              params.getForEqs('tpeqhsse')['ilg'])
 											 
-    def execHssLumiEq(self,tke_diss):
+    def execHssLumiEq(self,tke_diss,bconv,tconv):
 						  
         params = self.params						  
 						
@@ -315,10 +328,10 @@ class MasterPlot():
         ranshsselumi = hsselumi.HsseLuminosityEquation(params.getForProp('prop')['eht_data'],\
                                                              params.getForProp('prop')['ig'],\
                                                              params.getForProp('prop')['intc'],\
-                                                             tke_diss,\
+                                                             tke_diss,bconv,tconv,\
                                                              params.getForProp('prop')['prefix'])
 
-        # plot hsse temperature equation						       
+        # plot hsse luminosity equation						       
         ranshsselumi.plot_luminosity_equation(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('lueqhsse')['xbl'],\
                                              params.getForEqs('lueqhsse')['xbr'],\
@@ -326,7 +339,7 @@ class MasterPlot():
                                              params.getForEqs('lueqhsse')['ybd'],\
                                              params.getForEqs('lueqhsse')['ilg'])											 
 
-        # plot hsse temperature equation exact						       
+        # plot hsse luminosity equation exact						       
         ranshsselumi.plot_luminosity_equation_exact(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('lueqhsse')['xbl'],\
                                              params.getForEqs('lueqhsse')['xbr'],\
@@ -334,7 +347,16 @@ class MasterPlot():
                                              params.getForEqs('lueqhsse')['ybd'],\
                                              params.getForEqs('lueqhsse')['ilg'])
 
-        # plot hsse temperature equation alternative						       
+        # plot hsse luminosity equation exact 2						       
+        ranshsselumi.plot_luminosity_equation_exact2(params.getForProp('prop')['laxis'],\
+                                             params.getForEqs('lueqhsse')['xbl'],\
+                                             params.getForEqs('lueqhsse')['xbr'],\
+                                             params.getForEqs('lueqhsse')['ybu'],\
+                                             params.getForEqs('lueqhsse')['ybd'],\
+                                             params.getForEqs('lueqhsse')['ilg'])
+
+
+        # plot hsse luminosity equation alternative						       
         ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('lueqhsse')['xbl'],\
                                              params.getForEqs('lueqhsse')['xbr'],\
@@ -342,7 +364,7 @@ class MasterPlot():
                                              params.getForEqs('lueqhsse')['ybd'],\
                                              params.getForEqs('lueqhsse')['ilg'])	
 
-        # plot hsse temperature equation alternative simplified						       
+        # plot hsse luminosity equation alternative simplified						       
         ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],\
                                              params.getForEqs('lueqhsse')['xbl'],\
                                              params.getForEqs('lueqhsse')['xbr'],\
