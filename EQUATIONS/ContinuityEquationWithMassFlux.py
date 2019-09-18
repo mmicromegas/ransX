@@ -76,7 +76,6 @@ class ContinuityEquationWithMassFlux(calc.CALCULUS,al.ALIMIT,object):
         self.dd          = dd
         self.nx          = nx
         self.ig          = ig
-        self.vol         = vol		
 		
 		
     def plot_rho(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
