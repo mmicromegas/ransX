@@ -8,7 +8,7 @@ ransX framework implements mean field Reynolds-Averaged Navier-Stokes (a.k.a RAN
 
 ransX requires python 2.7 and the following modules to work:
 
-1. numpy
+1. numpy (version <= 1.16.2)
 2. scipy
 3. matplotlib
 4. ast
