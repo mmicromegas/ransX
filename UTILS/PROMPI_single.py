@@ -136,10 +136,15 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         #ax1.axis([xbl,xbr,-2.5e6,2.5e6])
         ax1.plot(rr,to_plt1,color='b',label = plabel_1)
 
+        xlabel_1 = 'x'
+        ylabel_1 = f1
+        
         ax1.set_xlabel(xlabel_1)
         ax1.set_ylabel(ylabel_1)
         ax1.legend(loc=1,prop={'size':18})
 
+        savefig('RESULTS/'+f1+'.png')
+        
         plt.show(block=False)
         
         
@@ -696,7 +701,7 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         #ax1.plot(xzn0,f_1*f_2,color='b',label = 'rho g')
         #ax1.plot(xzn0,self.Grad(f_3,rr),color='r',label = 'grad pp')        
 
-        ax1.plot(xzn0,press,color='b',label = 'pp')
+        ax1.plot(xzn0,press,color='b',label = 'press')
 
         pp = np.zeros(nx)
         pp[nx-1] = press[nx-1]
@@ -711,10 +716,12 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         
         ax1.plot(xzn0,pp,color='r',label = 'pp hydrostatic')       
         
-        ax1.set_xlabel(r'r')
+        ax1.set_xlabel(r'x')
         ax1.set_ylabel(r'pp')
         ax1.legend(loc=1,prop={'size':18})
 
+        savefig('RESULTS/hse1.png')        
+        
         plt.show(block=False)
 
     def plot_check_heq2(self,xbl,xbr):
@@ -738,6 +745,7 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         #ax1.semilogy(xzn0,press,color='b',label = 'press')
 
         pp = np.zeros(nx)
+        ppgrad = np.zeros(nx)
         pp[nx-1] = press[nx-1]
 
         ggtest = np.zeros(nx)
@@ -751,6 +759,9 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
             #print(i,pp[i],dd[i],gg[i],(xznr[i]-xznl[i]))
             #print(i,gg[i],dd[i],pp[i],(xznr[i]-xznl[i])))
 
+        for i in range(nx-1):
+            ppgrad[i] = (press[i+1]-press[i])/(xzn0[i+1]-xzn0[i])
+            
         #pp[0] = pp[1]    
 
         #print(nx)
@@ -762,15 +773,19 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         #ax1.plot(xzn0,(press-pp)/pp,color='r',label = 'press-hse/hse')       
         #ax1.semilogy(xzn0,pp,color='r',label = 'hse') 
 
-        ax1.plot(xzn0,self.Grad(pp,xzn0),color='r',label='grad')
-        ax1.plot(xzn0,ddgg,color='b',label='dd')
+#        ax1.plot(xzn0,self.Grad(pp,xzn0),color='r',label='grad pp')
+
+        ax1.plot(xzn0,ppgrad,color='r',label='grad pp')
+        ax1.plot(xzn0,ddgg,color='b',label='dd gg')
 		
         rd = (press-pp)/pp
         #print(np.sum(rd))
         
         ax1.set_xlabel(r'r')
-        ax1.set_ylabel(r'press-hse/hse')
+        ax1.set_ylabel(r'grad P')
         ax1.legend(loc=1,prop={'size':18})
+
+        savefig('RESULTS/hse2.png')
 
         plt.show(block=False)
 
@@ -862,6 +877,56 @@ class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
         ax1.legend(loc=1,prop={'size':18})
         
         plt.show(block=False)		
+
+    def plot_check_heq3(self):
+        xzn0 = np.asarray(self.data['xzn0'])
+        xznl = np.asarray(self.data['xznl'])
+        xznr = np.asarray(self.data['xznr'])        
+        nx = np.asarray(self.data['nx'])
+
+        press = np.asarray(self.data['pp'])
+        dd = np.asarray(self.data['dd'])
+        gg = np.asarray(self.data['gg'])
+	
+        fig, ax1 = plt.subplots(figsize=(7,6))
+		
+        pp = np.zeros(nx)
+        pp[nx-1] = press[nx-1]
+        
+        for i in range(nx-2,-1,-1):
+            pp[i] = pp[i+1] - dd[i]*gg[i]*(xznr[i]-xznl[i])
+        
+        ax1.plot(xzn0,(pp-press)/press,color='r',label = '(pp hydrostatic - press)/press')       
+        
+        ax1.set_xlabel(r'r')
+        ax1.set_ylabel(r'(delta pp)/pp')
+        ax1.legend(loc=1,prop={'size':18})
+
+        savefig('RESULTS/hse3.png')
+        
+        plt.show(block=False)
+
+    def plot_check_ux(self,xbl,xbr):
+        ux = np.asarray(self.data['ux'])
+        gg = np.asarray(self.data['gg'])        
+        xzn0 = np.asarray(self.data['xzn0'])        
+
+        fig, ax1 = plt.subplots(figsize=(7,6))        
+        idxl, idxr = self.idx_bndry(xbl,xbr)
+		        
+        #ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
+        ax1.axis([xbl,xbr,-1.e7,1.e7])
+            
+        ax1.plot(xzn0,ux,color='r',label = 'ux')       
+        ax1.plot(xzn0,0.5e7+1.e7*gg/(max(np.abs(gg))),color='b',label = 'gg') 
+        
+        ax1.set_xlabel(r'r')
+        ax1.set_ylabel(r'ux')
+        ax1.legend(loc=1,prop={'size':18})
+
+        savefig('RESULTS/uxcheck.png')
+        
+        plt.show(block=False)
         
     def idx_bndry(self,xbl,xbr):
         rr = np.asarray(self.data['xzn0'])

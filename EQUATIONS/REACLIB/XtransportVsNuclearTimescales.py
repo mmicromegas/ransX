@@ -71,11 +71,50 @@ class XtransportVsNuclearTimescales(calc.CALCULUS,al.ALIMIT,object):
         fht_xi = ddxi/dd
         fxi    = ddxiux - ddxi*ddux/dd	
  		
+        #######################
+        # Xi TRANSPORT EQUATION 
+        #######################
+		
+        # store time series for time derivatives
+        t_timec   = np.asarray(eht.item().get('timec')) 	
+        t_dd      = np.asarray(eht.item().get('dd')) 
+        t_ddxi    = np.asarray(eht.item().get('ddx'+inuc))	
+        t_fht_xi  = t_ddxi/t_dd		
+		
+        # construct equation-specific mean fields
+        fht_ux = ddux/dd
+        fht_xi = ddxi/dd
+        fxi    = ddxiux - ddxi*ddux/dd
+		
+        # LHS -dq/dt 		
+        self.minus_dt_dd_fht_xi = -self.dt(t_dd*t_fht_xi,xzn0,t_timec,intc)
+		
+        # LHS -div(ddXiux)
+        self.minus_div_eht_dd_fht_ux_fht_xi = -self.Div(dd*fht_ux*fht_xi,xzn0)
+		
+        # RHS -div fxi 
+        self.minus_div_fxi = -self.Div(fxi,xzn0) 
+		
+        # RHS +ddXidot 
+        self.plus_ddxidot = +ddxidot 
+		
+        # -res
+        self.minus_resXiTransport = -(self.minus_dt_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + \
+                               self.minus_div_fxi + self.plus_ddxidot)
+		
+        ###########################		
+        # END Xi TRANSPORT EQUATION
+        ###########################		
+		
+		
         #tau_trans = np.abs(fht_xi/self.Div(fxi/dd,xzn0)) 
         #tau_nuc   = np.abs(fht_xi/(ddxidot/dd))
 
         tau_trans = (fht_xi/self.Div(fxi/dd,xzn0)) 
         tau_nuc   = (fht_xi/(ddxidot/dd))
+
+        #tau_trans = ddxi/self.Div(fxi,xzn0) 
+        #tau_nuc   = ddxi/(ddxidot)
 
         # Damkohler number		
         self.xda = tau_trans/tau_nuc
@@ -103,6 +142,79 @@ class XtransportVsNuclearTimescales(calc.CALCULUS,al.ALIMIT,object):
         self.network = network	
         self.eht = eht
         self.intc = intc		
+		
+    def plot_Xtransport_equation(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
+        """Plot Xrho transport equation in the model""" 
+
+        # convert nuc ID to string
+        #xnucid = str(self.inuc)
+        element = self.element
+		
+        # load x GRID
+        grd1 = self.xzn0
+				
+        lhs0 = self.minus_dt_dd_fht_xi
+        lhs1 = self.minus_div_eht_dd_fht_ux_fht_xi 
+		
+        rhs0 = self.minus_div_fxi
+        rhs1 = self.plus_ddxidot
+		
+        res = self.minus_resXiTransport
+		
+        # create FIGURE
+        plt.figure(figsize=(7,6))
+		
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
+		
+        # set plot boundaries   
+        to_plot = [lhs0,lhs1,rhs0,rhs1,res]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)		
+				
+        # plot DATA 
+        plt.title('rhoX transport for '+element)
+        if (self.ig == 1):
+            plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
+            plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_x f$')
+            plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')			
+        elif (self.ig == 2):
+            plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t (\overline{\rho} \widetilde{X})$')
+            plt.plot(grd1,lhs1,color='cyan',label = r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')		
+            plt.plot(grd1,rhs0,color='b',label=r'$-\nabla_r f$')
+            plt.plot(grd1,rhs1,color='g',label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')		
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+		
+        # convective boundary markers
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
+		
+        # define and show x/y LABELS
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+			
+        setylabel = r"g cm$^{-3}$ s$^{-1}$"
+
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+		
+        # show LEGEND
+        plt.legend(loc=ilg,prop={'size':12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/'+self.data_prefix+'mean_Xtransport_'+element+'.png')		
 		
     def plot_Xtimescales(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         # Damkohler number

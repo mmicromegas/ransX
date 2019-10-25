@@ -22,16 +22,18 @@ ransdat = psg.PROMPI_single(datafile,endianness,precision)
 
 ransdat.SetMatplotlibParams()
 
-#for q in q2plot:
-#    ransdat.plot_lin_q1(xbl,xbr,q,r'r (10$^{8}$ cm)',q,q)
-
 for q in q2plot:
-    ransdat.plot_log_q1(xbl,xbr,q,r'r (10$^{8}$ cm)',q,q)
+    ransdat.plot_lin_q1(xbl,xbr,q,r'r (10$^{8}$ cm)',q,q)
+
+#for q in q2plot:
+#    ransdat.plot_log_q1(xbl,xbr,q,r'r (10$^{8}$ cm)',q,q)
 	
-#ransdat.plot_check_heq1()	   
-#ransdat.plot_check_heq2(xbl,xbr)
-ransdat.plot_nablas(xbl,xbr)
-ransdat.plot_dx(xbl,xbr)
+ransdat.plot_check_heq1()	   
+ransdat.plot_check_heq2(xbl,xbr)
+ransdat.plot_check_heq3()
+ransdat.plot_check_ux(xbl,xbr)
+#ransdat.plot_nablas(xbl,xbr)
+#ransdat.plot_dx(xbl,xbr)
 #ransdat.plot_mm(xbl,xbr)
 #ransdat.PlotNucEnergyGen(xbl,xbr)
 
