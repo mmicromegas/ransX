@@ -25,7 +25,7 @@ trange.append(trange_end)
 
 tavg = params.getForTseries('tseries')['tavg']
 
-ransdat = [file for file in os.listdir(datadir) if "ransdat" in file]
+ransdat = [file for file in sorted(os.listdir(datadir)) if "ransdat" in file]
 ransdat = [file.replace(file,datadir+file) for file in ransdat]	
 
 filename = ransdat[0]
