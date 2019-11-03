@@ -23,7 +23,7 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
         nx   = np.asarray(eht.item().get('nx')) 	
 
         # pick specific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
+        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf  
 		
         pp      = np.asarray(eht.item().get('pp')[intc]) 		
         tt      = np.asarray(eht.item().get('tt')[intc]) 
