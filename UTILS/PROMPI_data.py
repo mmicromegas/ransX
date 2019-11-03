@@ -226,7 +226,7 @@ class PROMPI_bindata:
             self.varl.append(line)
             print(line)
 
-        self.interior_mass = float(fhead.readline())
+        #self.interior_mass = float(fhead.readline())
             
         xznl = [] 
         xzn0 = []
@@ -302,7 +302,9 @@ class PROMPI_bindata:
         
             fblock.close()
             
-            self.datadict.update({dat : self.data})             			
+            self.datadict.update({dat : self.data})
+
+            self.datadict.update({'xzn0': xzn0})
 			
     def datadict(self):
         return self.datadict
