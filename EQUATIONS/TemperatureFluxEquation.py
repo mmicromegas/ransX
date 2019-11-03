@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class TemperatureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,tke_diss,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,tke_diss,data_prefix):
         super(TemperatureFluxEquation,self).__init__(ig) 
 	
         # load data to structured array
@@ -75,7 +75,13 @@ class TemperatureFluxEquation(calc.CALCULUS,al.ALIMIT,object):
         enuc2_o_cv = np.asarray(eht.item().get('enuc2_o_cv')[intc])
 
         gamma3 = np.asarray(eht.item().get('gamma3')[intc])
-		
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma3 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+        
         # store time series for time derivatives
         t_timec = np.asarray(eht.item().get('timec'))		
         t_tt    = np.asarray(eht.item().get('tt'))

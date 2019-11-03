@@ -90,14 +90,18 @@ class ZbarFluxTransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # RHS - Z''gradx P - Z''gradx P'
         self.minus_zbarff_gradx_pp_minus_zbarff_gradx_ppf = \
-          -(zbar*self.Grad(pp,xzn0) - fht_zbar*self.Grad(pp,xzn0)) - (zbargradxpp - zbar*self.Grad(pp,xzn0)) 		
+          -(zbar*self.Grad(pp,xzn0) - fht_zbar*self.Grad(pp,xzn0)) - (zbargradxpp - zbar*self.Grad(pp,xzn0))  
 
         # RHS -uxffddzbarsq_sum_xdn_o_an
         self.minus_uxffddabazbar_sum_xdn_o_an = -(uxddabazbar_sum_xdn_o_an - fht_ux*ddabazbar_sum_xdn_o_an)  	
 
         # RHS -uxffddabar_sum_znxdn_o_an
-        self.minus_uxffddabar_sum_znxdn_o_an = -(uxddabar_sum_znxdn_o_an - fht_ux*ddabar_sum_znxdn_o_an)		
-		
+        self.minus_uxffddabar_sum_znxdn_o_an = -(uxddabar_sum_znxdn_o_an - fht_ux*ddabar_sum_znxdn_o_an)      
+
+        # override NaNs (happens for ccp setup in PROMPI)
+        self.minus_uxffddabar_sum_znxdn_o_an = np.nan_to_num(self.minus_uxffddabar_sum_znxdn_o_an)
+        self.minus_uxffddabazbar_sum_xdn_o_an = np.nan_to_num(self.minus_uxffddabazbar_sum_xdn_o_an)
+        
 		
         # RHS +gi 
         self.plus_gzbar = \

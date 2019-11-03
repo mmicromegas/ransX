@@ -139,12 +139,11 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
                                 rxy*self.Grad(dduy/dd,xzn0) + \
                                 rxz*self.Grad(dduz/dd,xzn0))
 		
-
         # -res		
         self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke + \
                                        self.plus_wb + self.plus_wp + self.minus_div_fekx + \
 	                                   self.minus_div_fpx + self.minus_r_grad_u)
-									   						
+        
         #######################################
         # END TURBULENT KINETIC ENERGY EQUATION 
         #######################################  
@@ -172,7 +171,8 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         self.tavg     = tavg
         self.timec    = timec
         self.trange   = trange		
-		
+        self.ig       = ig
+	
     def properties(self,laxis,xbl,xbr):
         """ Print properties of your simulation""" 
 
@@ -202,7 +202,6 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         # load enuc
         enuc1 = self.enuc1	 
         enuc2 = self.enuc2		
-		
 			
         # calculate INDICES for grid boundaries 
         if laxis == 0:
@@ -220,7 +219,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
  
         diss_max = diss.max()
         ind = np.where( (diss > 0.02*diss_max) )[0]
-		
+        
         xzn0inc  = xzn0[ind[0]]
         xzn0outc = xzn0[ind[-1]]		
 
@@ -232,8 +231,15 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         # Reynolds number
         nc = itop-ibot
         Re = nc**(4./3.)		
-		
-        Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
+
+        # handle volume for different geometries
+        if (self.ig == 1):	
+	    Vol = self.xznr**3-self.xznl**3
+        elif (self.ig == 2):	
+            Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
+        else:
+            print("ERROR (Properties.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()   
 
         # Calculate full dissipation rate and timescale
         TKE = (dd*tke*Vol)[ind].sum()

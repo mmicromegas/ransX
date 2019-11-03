@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class InternalEnergyVarianceEquation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,tke_diss,tauL,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,tke_diss,tauL,data_prefix):
         super(InternalEnergyVarianceEquation,self).__init__(ig) 
 	
         # load data to structured array

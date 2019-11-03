@@ -3,6 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import os
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -191,8 +192,11 @@ class XfluxXequation(calc.CALCULUS,al.ALIMIT,object):
         hp = 2.5e8		
 		
         # Dgauss gradient model	
-        dir = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\'		
-        data = np.loadtxt(dir+'imodel.tycho',skiprows=26)		
+
+        # this should be OS independent
+        dir_model = os.path.join(os.path.realpath('.'),'DATA','INIMODEL', 'imodel.tycho')
+        
+        data = np.loadtxt(dir_model,skiprows=26)		
         nxmax = 500
 		
         rr = data[1:nxmax,2]

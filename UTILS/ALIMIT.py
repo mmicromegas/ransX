@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 # class for plot axis limitation
 
@@ -20,10 +21,29 @@ class ALIMIT:
         # calculate INDICES for grid boundaries 
         if LAXIS == 1:
             idxl, idxr = self.idx_bndry(xbl,xbr)		
-				
+
+        # replace NaN with zero and infinity with large finite numbers
+        to_plot = np.nan_to_num(to_plot)
+        
+        # hack for nan_to_num() got an unexpected keyword argument 'num,posif,negif'
+        to_plot_tmp = []
+        for data in to_plot:
+            data_tmp = []
+            for value in data:
+                if(value > 1.e50):
+                    data_tmp.append(1.e50)
+                elif (value < -1.e50):
+                    data_tmp.append(-1.e50) 
+                else:
+                    data_tmp.append(value)
+                    
+            to_plot_tmp.append(data_tmp)
+                        
+        to_plot = to_plot_tmp
+            
         number_of_curves = len(to_plot)
         #print(number_of_curves)
-		
+	
         if (number_of_curves == 1):
 		
             # limit x/y axis

@@ -61,11 +61,15 @@ class ZbarTransportEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # RHS +ddabar_sum_znxdn_o_an				
         self.plus_ddabar_sum_znxdn_o_an = +ddabar_sum_znxdn_o_an
-		
+
+        # override NaNs (happens for ccp setup in PROMPI)
+        self.plus_ddabar_sum_znxdn_o_an = np.nan_to_num(self.plus_ddabar_sum_znxdn_o_an)
+        self.minus_ddabazbar_sum_xdn_o_an = np.nan_to_num( self.minus_ddabazbar_sum_xdn_o_an)
+        
         # -res
         self.minus_resZbarEquation = -(self.minus_dt_eht_dd_zbar + \
                self.minus_div_eht_dd_fht_ux_zbar + self.minus_div_fzbar + \
-			   self.minus_ddabazbar_sum_xdn_o_an + self.plus_ddabar_sum_znxdn_o_an)				
+			   self.minus_ddabazbar_sum_xdn_o_an + self.plus_ddabar_sum_znxdn_o_an)		    
 				
         #############################	
         # END ZBAR TRANSPORT EQUATION

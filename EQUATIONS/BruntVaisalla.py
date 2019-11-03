@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,data_prefix):
         super(BruntVaisalla,self).__init__(ig) 
 	
         # load data to structured array
@@ -45,7 +45,13 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
         mu   = np.asarray(eht.item().get('abar')[intc]) 		
         tt   = np.asarray(eht.item().get('tt')[intc])
         gamma2   = np.asarray(eht.item().get('gamma2')[intc])
-		
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma2 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+
         alpha = 1./chid
         delta = -chit/chid
         phi   = chid/chim
@@ -60,7 +66,7 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
         nabla_ad = (gamma2-1.)/gamma2
         nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)	
 		
-		# Kippenhahn and Weigert, p.42 but with opposite (minus) sign at the (phi/delta)*nabla_mu
+	# Kippenhahn and Weigert, p.42 but with opposite (minus) sign at the (phi/delta)*nabla_mu
         self.nsq_version2 = (gg*delta/hp)*(nabla_ad - nabla - (phi/delta)*nabla_mu) 		
 	
     def plot_bruntvaisalla(self,LAXIS,xbl,xbr,ybu,ybd,ilg):

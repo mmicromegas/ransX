@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix,bconv,tconv):
+    def __init__(self,filename,ig,ieos,intc,data_prefix,bconv,tconv):
         super(HsseMomentumEquationX,self).__init__(ig) 
 	
         # load data to structured array
@@ -38,7 +38,13 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         dduzuz = np.asarray(eht.item().get('dduzuz')[intc])		
 
         gamma1 = np.asarray(eht.item().get('gamma1')[intc])	
-		
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma1 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+        
         # store time series for time derivatives
         t_timec = np.asarray(eht.item().get('timec'))		
         t_dd    = np.asarray(eht.item().get('dd')) 

@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,tke_diss,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,tke_diss,data_prefix):
         super(PressureFluxZequation,self).__init__(ig) 
 	
         # load data to structured array
@@ -83,6 +83,13 @@ class PressureFluxZequation(calc.CALCULUS,al.ALIMIT,object):
         gamma1   = np.asarray(eht.item().get('gamma1')[intc])
         gamma3   = np.asarray(eht.item().get('gamma3')[intc])		
 
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma1 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+            gamma3 = gamma1
+        
         uzuzcoty = np.asarray(eht.item().get('uzuzcoty')[intc])
 				
         gradxpp_o_dd = np.asarray(eht.item().get('gradxpp_o_dd')[intc])		

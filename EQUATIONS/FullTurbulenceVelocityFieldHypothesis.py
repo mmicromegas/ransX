@@ -13,7 +13,7 @@ import UTILS.ALIMIT as al
 
 class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,data_prefix):
         super(FullTurbulenceVelocityFieldHypothesis,self).__init__(ig) 
 	
         # load data to structured array
@@ -138,7 +138,13 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         ppuz = np.asarray(eht.item().get('ppuz')[intc])		
         uzdivu = np.asarray(eht.item().get('uzdivu')[intc])	
         uzppdivu = np.asarray(eht.item().get('uzppdivu')[intc])		
-		
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma1 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+        
         # construct equation-specific mean fields		
         fht_ux = ddux/dd			
         fht_uy = dduy/dd
@@ -231,13 +237,12 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         self.eht_uyfppdivu = uyppdivu - uy*ppdivu		
         self.ppfuyf_fht_divu = (ppuy - pp*uy)*(dddivu/dd)
         self.pp_eht_uyf_divuff = pp*(uydivu-uy*divu)
-        self.eht_ppf_uyf_divuff = ppuy*divu-ppuy*(dddivu/dd)-pp*uy*divu+pp*uy*(dddivu/dd)		
+        self.eht_ppf_uyf_divuff = ppuy*divu-ppuy*(dddivu/dd)-pp*uy*divu+pp*uy*(dddivu/dd)
 		
         self.eht_uzfppdivu = uzppdivu - uz*ppdivu		
         self.ppfuzf_fht_divu = (ppuz - pp*uz)*(dddivu/dd)
         self.pp_eht_uzf_divuff = pp*(uzdivu-uz*divu)
-        self.eht_ppf_uzf_divuff = ppuz*divu-ppuz*(dddivu/dd)-pp*uz*divu+pp*uz*(dddivu/dd)		
-		
+        self.eht_ppf_uzf_divuff = ppuz*divu-ppuz*(dddivu/dd)-pp*uz*divu+pp*uz*(dddivu/dd)
         self.eht_divu1 = divu
         self.eht_divu2 = divux+divuy+divuz		
 		
@@ -597,8 +602,8 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS,al.ALIMIT,object):
         # load DATA to plot
         plt1 = self.eht_divu1
         plt2 = self.eht_divu2		
-		
-		# create FIGURE
+        
+	# create FIGURE
         plt.figure(figsize=(7,6))
 		
         # format AXIS, make sure it is exponential

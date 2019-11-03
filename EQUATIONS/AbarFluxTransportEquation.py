@@ -47,7 +47,7 @@ class AbarFluxTransportEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         uxddabarsq_sum_xdn_o_an	= np.asarray(eht.item().get('uxddabarsq_sum_xdn_o_an')[intc]) 	
         ddabarsq_sum_xdn_o_an = np.asarray(eht.item().get('ddabarsq_sum_xdn_o_an')[intc]) 	
-
+        
         # store time series for time derivatives
         t_timec   = np.asarray(eht.item().get('timec')) 
         t_dd      = np.asarray(eht.item().get('dd')) 
@@ -86,11 +86,14 @@ class AbarFluxTransportEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # RHS - A''gradx P - A''gradx P'
         self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf = \
-          -(abar*self.Grad(pp,xzn0) - fht_abar*self.Grad(pp,xzn0)) - (abargradxpp - abar*self.Grad(pp,xzn0)) 		
+          -(abar*self.Grad(pp,xzn0) - fht_abar*self.Grad(pp,xzn0)) - (abargradxpp - abar*self.Grad(pp,xzn0)) 
 
         # RHS -uxffddabarsq_sum_xdn_o_an
-        self.minus_uxffddabarsq_sum_xdn_o_an = -(uxddabarsq_sum_xdn_o_an - fht_ux*ddabarsq_sum_xdn_o_an)  		
-		
+        self.minus_uxffddabarsq_sum_xdn_o_an = -(uxddabarsq_sum_xdn_o_an - fht_ux*ddabarsq_sum_xdn_o_an)     
+
+        # override NaNs (happens for ccp setup in PROMPI)
+        self.minus_uxffddabarsq_sum_xdn_o_an  =  np.nan_to_num(self.minus_uxffddabarsq_sum_xdn_o_an)
+        
         # RHS +gi 
         self.plus_gabar = \
                   -(ddabaruyuy - (ddabar/dd)*dduyuy - 2.*(dduy/dd) + 2.*ddabar*dduy*dduy/(dd*dd))/xzn0 - \

@@ -3,6 +3,7 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import os
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -100,9 +101,11 @@ class Xdiffusivity(calc.CALCULUS,al.ALIMIT,object):
         # mlt velocity
         alphae = 1.		
         u_mlt = fhh/(alphae*dd*fht_cp*tt_rms)
+
+        # this should be OS independent
+        dir_model = os.path.join(os.path.realpath('.'),'DATA','INIMODEL', 'imodel.tycho')	
 		
-        dir = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\'		
-        data = np.loadtxt(dir+'imodel.tycho',skiprows=26)		
+        data = np.loadtxt(dir_model,skiprows=26)		
         nxmax = 500
 		
         rr = data[1:nxmax,2]

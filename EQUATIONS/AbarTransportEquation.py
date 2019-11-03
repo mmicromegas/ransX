@@ -59,7 +59,10 @@ class AbarTransportEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # RHS -ddabarsq_sum_xdn_o_an
         self.minus_ddabarsq_sum_xdn_o_an = -self.ddabarsq_sum_xdn_o_an		
-				
+
+        # override NaNs (happens for ccp setup in PROMPI)
+        self.minus_ddabarsq_sum_xdn_o_an =  np.nan_to_num(self.minus_ddabarsq_sum_xdn_o_an)
+        
         # -res
         self.minus_resAbarEquation = -(self.minus_dt_eht_dd_abar + self.minus_div_eht_dd_fht_ux_abar +\
               self.minus_div_fabar + self.minus_ddabarsq_sum_xdn_o_an)				
@@ -131,7 +134,7 @@ class AbarTransportEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
-		
+        
         # set plot boundaries   
         to_plot = [lhs0,lhs1,rhs0,rhs1,res]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)

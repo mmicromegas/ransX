@@ -12,14 +12,15 @@ import UTILS.ALIMIT as al
 
 class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,data_prefix):
         super(TemperatureGradients,self).__init__(ig) 
 	
         # load data to structured array
         eht = np.load(filename)		
 
         # load grid
-        xzn0   = np.asarray(eht.item().get('xzn0')) 	
+        xzn0   = np.asarray(eht.item().get('xzn0'))
+        nx   = np.asarray(eht.item().get('nx')) 	
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
@@ -30,7 +31,13 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
         chim    = np.asarray(eht.item().get('chim')[intc]) 		
         chit    = np.asarray(eht.item().get('chit')[intc]) 	
         gamma2    = np.asarray(eht.item().get('gamma2')[intc]) 					
-				
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma2 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+        
         lntt = np.log(tt)
         lnpp = np.log(pp)
         lnmu = np.log(mu)
@@ -38,14 +45,18 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
         # calculate temperature gradients		
         nabla = self.deriv(lntt,lnpp) 
         nabla_ad = (gamma2-1.)/gamma2
-        nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)
-		
+
+        if(ieos == 1):        
+            nabla_mu = np.zeros(nx)
+        else:
+            nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)
+            
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0  = xzn0
         self.nabla = nabla
         self.nabla_ad = nabla_ad
-        self.nabla_mu = nabla_mu		
+        self.nabla_mu = nabla_mu
 		
     def plot_nablas(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot temperature gradients in the model""" 

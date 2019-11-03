@@ -3,6 +3,9 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import os
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +15,7 @@ import UTILS.ALIMIT as al
 
 class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,data_prefix):
         super(VelocitiesMLTturb,self).__init__(ig) 
 	
         # load data to structured array
@@ -43,7 +46,13 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         ttsq = np.asarray(eht.item().get('ttsq')[intc])
         ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
         gamma2 = np.asarray(eht.item().get('gamma2')[intc])
-		
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])   
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma2 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+        
         # store time series for time derivatives
         t_timec = np.asarray(eht.item().get('timec'))		
         t_mm    = np.asarray(eht.item().get('mm')) 		
@@ -88,9 +97,10 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         vmlt_2 = vmlt_2.clip(min=1.) # get rid of negative values, set to min 1.		
         vmlt_2 = (vmlt_2)**0.5		
 
-		
-        dir = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\'		
-        data = np.loadtxt(dir+'imodel.tycho',skiprows=26)		
+        # this should be OS independent
+        dir_model = os.path.join(os.path.realpath('.'),'DATA','INIMODEL', 'imodel.tycho')
+        
+        data = np.loadtxt(dir_model,skiprows=26)		
         nxmax = 500
 		
         rr = data[1:nxmax,2]
@@ -124,13 +134,18 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         plt6 = self.vmlt_2
         plt7 = self.vmlt_3		
 
-		
         # create FIGURE
         plt.figure(figsize=(7,6))
 		
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
-		
+
+        # temporary hack
+        plt4 = np.nan_to_num(plt4)
+        plt5 = np.nan_to_num(plt5)
+        plt6 = np.nan_to_num(plt6)
+        plt7 = np.nan_to_num(plt7)
+        
         # set plot boundaries   
         to_plot = [plt4,plt5,plt6,plt7]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	

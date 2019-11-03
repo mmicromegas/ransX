@@ -12,7 +12,7 @@ import UTILS.ALIMIT as al
 
 class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,filename,ig,intc,data_prefix):
+    def __init__(self,filename,ig,ieos,intc,data_prefix):
         super(RelativeRMSflct,self).__init__(ig) 
 	
         # load data to structured array
@@ -47,7 +47,12 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         self.eht_ssrms = ((sssq-ss*ss)**0.5)/ss
         self.eht_abarrms = ((np.abs(abarsq-abar*abar))**0.5)/abar
         self.eht_zbarrms = ((np.abs(zbarsq-zbar*zbar))**0.5)/zbar		
-		
+
+        # for ideal gas eos
+        if(ieos == 1):
+            gammac = np.asarray(eht.item().get('gammac')[intc]) 
+            sound = (gammac*pp/dd)**(0.5)
+        
         self.ms2 = uxux/sound**2. # mach number squared 
 	
         # assign global data to be shared across whole class
@@ -68,7 +73,8 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         plt4 = self.ms2
         plt5 = self.eht_ssrms
         plt6 = self.eht_abarrms
-        plt7 = self.eht_zbarrms		
+        plt7 = self.eht_zbarrms
+	plt8 = self.ms2**0.5
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -77,19 +83,20 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
         # set plot boundaries   
-        #to_plot = [plt1,plt2,plt3,plt4,plt5,plt6,plt7]		
-        #self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
-		
+        to_plot = [plt1,plt2,plt3,plt4,plt5,plt6,plt7,plt8]		
+        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
+        
         # plot DATA 
         plt.title('relative rms fluctuations')
         plt.semilogy(grd1,plt1,color='brown',label = r"$\rho$")
         plt.semilogy(grd1,plt2,color='r',label = r"$T$")
-        plt.semilogy(grd1,plt3,color='g',label = r"$P$")		
+        plt.semilogy(grd1,plt3,color='g',label = r"$P$")
+        plt.semilogy(grd1,plt8,color='purple',label = r"$M_s$ (Mach)")
         plt.semilogy(grd1,plt4,color='b',label = r"$M_s^2 = u_r^2/c_s^2$")
         plt.semilogy(grd1,plt5,color='m',label = r"$S$")
         plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
         plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")		
-		
+	
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
         setylabel = r"$q'_{rms}/ \overline{q}$"

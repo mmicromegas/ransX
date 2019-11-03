@@ -237,8 +237,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.title('turbulent kinetic energy equation')
         if (self.ig == 1):			
             plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-            plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")	
-		
+            plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
             plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     
             plt.plot(grd1,rhs1,color='c',label = r'$+W_p$') 
             plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\nabla_x f_k$") 
@@ -248,8 +247,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$")
         elif (self.ig == 2): 
             plt.plot(grd1,-lhs0,color='#FF6EB4',label = r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-            plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")	
-		
+            plt.plot(grd1,-lhs1,color='k',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")
             plt.plot(grd1,rhs0,color='r',label = r'$+W_b$')     
             plt.plot(grd1,rhs1,color='c',label = r'$+W_p$') 
             plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\nabla_r f_k$") 
@@ -264,9 +262,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # convective boundary markers
         plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
         plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')	 
- 
- 
- 
+  
         # define and show x/y LABELS
         if (self.ig == 1):	
             setxlabel = r'x (10$^{8}$ cm)'	
@@ -295,7 +291,14 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
         plt1 = self.t_tke	
 
-        Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
+        # handle volume for different geometries
+        if (self.ig == 1):	
+	    Vol = self.xznr**3-self.xznl**3
+        elif (self.ig == 2):	
+            Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
+        else:
+            print("ERROR (TurbulentKineticEnergyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()   
 
         # Calculate 
         tke_int = np.zeros(grd1.size)
@@ -307,7 +310,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
         # create FIGURE
         plt.figure(figsize=(7,6))
 
-        plt.axis([0.,1300.,0.,1.e47])	
+        plt.axis([0.,1000.,0.,5.e46])	
 		
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
