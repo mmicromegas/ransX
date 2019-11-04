@@ -18,6 +18,7 @@ class FourierMasterPlot():
             stke.SpectrumTurbulentKineticEnergy(\
                 params.getForProp('fourier')['datafile'],\
                 params.getForProp('fourier')['prefix'],\
+                params.getForProp('fourier')['ig'],\
                 params.getForProp('fourier')['lhc'])
 
         # plot    

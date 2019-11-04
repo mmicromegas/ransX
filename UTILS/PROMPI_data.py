@@ -305,6 +305,9 @@ class PROMPI_bindata:
             self.datadict.update({dat : self.data})
 
             self.datadict.update({'xzn0': xzn0})
+            self.datadict.update({'qqx': self.qqx})
+            self.datadict.update({'qqy': self.qqy})
+            self.datadict.update({'qqz': self.qqz})			
 			
     def datadict(self):
         return self.datadict

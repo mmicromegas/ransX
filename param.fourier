@@ -1,9 +1,10 @@
 # ----- Parameter file for 2D Fourier spectra of PROMPI data ------- #
 []
-## Input-Data Directory ...................... ## [fourier,datafile,/home/miro/ransX/DATA/BINDATA/ccp_two_layers/ccptwo.ideal.lres.00996.bindata]
+## Input-Data Directory ...................... ## [fourier,datafile,C:\Users\mmocak\Desktop\GITDEV\ransX\DATA\BINDATA\ccp_two_layers\ccptwo.ideal.lres.00996.bindata]
 ## Filename Prefix For Plots ................. ## [fourier,prefix,ccptwo_fourier__]
 ## Input Data Endianness ..................... ## [fourier,endian,little_endian]
 ## Input Data Floating Point Precision ....... ## [fourier,precision,double]
+## Geomergy; ig = 1 Cartes, ig = 2 Spheric ... ## [fourier,ig,1]
 ## Location of Horizontal Cut For Fourier .... ## [fourier,lhc,8.0e8]
 ## Nuclear network ........................... ## [network,fluid1,fluid2]
 []

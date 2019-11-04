@@ -25,11 +25,12 @@ class FourierReadParams:
         match = [s for s in self.input if param in s]       
         datafile  = match[0].split(",")[2]		
         prefix    = match[1].split(",")[2]
-	endian    = match[2].split(",")[2]
-  	precision = match[3].split(",")[2]
-        lhc       = match[4].split(",")[2]
+        endian    = match[2].split(",")[2]
+        precision = match[3].split(",")[2]
+        ig        = match[4].split(",")[2]
+        lhc       = match[5].split(",")[2]
         
-        return {'datafile':datafile,'prefix':prefix,'endian':endian,'precision':precision,'lhc':lhc}				
+        return {'datafile':datafile,'prefix':prefix,'endian':endian,'precision':precision,'ig': ig,'lhc':lhc}				
 
     def getForEqs(self,param): 
 
