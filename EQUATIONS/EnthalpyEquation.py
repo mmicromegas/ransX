@@ -172,20 +172,41 @@ class EnthalpyEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('enthalpy equation')
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{h})$")
-        plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{h}$)")	
+        if(self.ig == 1):		
+            plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{h})$")
+            plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \widetilde{h}$)")	
 		
-        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_h $")     
-        plt.plot(grd1,rhs1,color='#802A2A',label = r"$-\Gamma_1 \bar{P} \bar{d}$") 
-        plt.plot(grd1,rhs2,color='r',label = r"$-\Gamma_1 W_P$")
-        plt.plot(grd1,rhs3,color='b',label = r"$+\Gamma_3 \overline{\rho}\widetilde{\epsilon}_{nuc}$")
-        plt.plot(grd1,rhs4,color='m',label = r"$+\Gamma_3 \varepsilon_k$")
-        plt.plot(grd1,rhs5,color='c',label = r"$+\Gamma_3 \nabla_r f_T$ (not incl.)") 		
+            plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_x f_h $")     
+            plt.plot(grd1,rhs1,color='#802A2A',label = r"$-\Gamma_1 \bar{P} \bar{d}$") 
+            plt.plot(grd1,rhs2,color='r',label = r"$-\Gamma_1 W_P$")
+            plt.plot(grd1,rhs3,color='b',label = r"$+\Gamma_3 \overline{\rho}\widetilde{\epsilon}_{nuc}$")
+            plt.plot(grd1,rhs4,color='m',label = r"$+\Gamma_3 \varepsilon_k$")
+            plt.plot(grd1,rhs5,color='c',label = r"$+\Gamma_3 \nabla_x f_T$ (not incl.)") 		
 		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_h$")
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_h$")
+			
+            # define X label
+            setxlabel = r'x (10$^{8}$ cm)'					
+        elif(self.ig == 2):
+            plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{h})$")
+            plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{h}$)")	
+		
+            plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_h $")     
+            plt.plot(grd1,rhs1,color='#802A2A',label = r"$-\Gamma_1 \bar{P} \bar{d}$") 
+            plt.plot(grd1,rhs2,color='r',label = r"$-\Gamma_1 W_P$")
+            plt.plot(grd1,rhs3,color='b',label = r"$+\Gamma_3 \overline{\rho}\widetilde{\epsilon}_{nuc}$")
+            plt.plot(grd1,rhs4,color='m',label = r"$+\Gamma_3 \varepsilon_k$")
+            plt.plot(grd1,rhs5,color='c',label = r"$+\Gamma_3 \nabla_r f_T$ (not incl.)") 		
+		
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_h$")
+			
+            # define X label
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 			
  
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
         setylabel = r"erg cm$^{-3}$ s$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

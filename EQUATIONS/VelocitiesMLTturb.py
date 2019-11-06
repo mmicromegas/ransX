@@ -90,8 +90,13 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         # calculate temperature gradients		
         nabla = self.deriv(lntt,lnpp) 
         nabla_ad = (gamma2-1.)/gamma2		
-		
-        betaT = -chit/chid		
+
+        if(ieos == 1):
+		    betaT = 0.
+        elif(ieos == 3):	
+            betaT = -chit/chid
+        else:
+            print("ERROR(VeloctiesMLTturb.py): Geometry not implemented")		
 		
         vmlt_2 = gg*betaT*(nabla-nabla_ad)*((lbd**2.)/(8.*Hp))
         vmlt_2 = vmlt_2.clip(min=1.) # get rid of negative values, set to min 1.		

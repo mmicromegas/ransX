@@ -63,6 +63,7 @@ import EQUATIONS.ZbarFluxTransportEquation as fzbarx
 import EQUATIONS.TemperatureDensity as ttdd
 import EQUATIONS.PressureInternalEnergy as ppei
 import EQUATIONS.NuclearEnergyProduction as enuc
+import EQUATIONS.Gravity as grav
 import EQUATIONS.TemperatureGradients as nablas
 import EQUATIONS.Degeneracy as psi
 import EQUATIONS.VelocitiesMeanExp as velmeanexp
@@ -1306,6 +1307,25 @@ class MasterPlot():
                            params.getForEqs('enuc')['ybu'],\
                            params.getForEqs('enuc')['ybd'],\
                            params.getForEqs('enuc')['ilg'])
+
+    def execGrav(self):
+						  
+        params = self.params						  
+						  
+        # instantiate 		
+        ransGrav =  grav.Gravity(params.getForProp('prop')['eht_data'],\
+                                                 params.getForProp('prop')['ig'],\
+                                                 params.getForProp('prop')['intc'],\
+                                                 params.getForProp('prop')['prefix'])
+
+									   
+        ransGrav.plot_grav(params.getForProp('prop')['laxis'],\
+                           params.getForEqs('grav')['xbl'],\
+                           params.getForEqs('grav')['xbr'],\
+                           params.getForEqs('grav')['ybu'],\
+                           params.getForEqs('grav')['ybd'],\
+                           params.getForEqs('grav')['ilg'])
+
 								 
     def execNablas(self):
 						  
@@ -1407,6 +1427,7 @@ class MasterPlot():
         # instantiate 		
         ransBuo =  buo.Buoyancy(params.getForProp('prop')['eht_data'],\
                                 params.getForProp('prop')['ig'],\
+                                params.getForProp('prop')['ieos'],\
                                 params.getForProp('prop')['intc'],\
                                 params.getForProp('prop')['prefix'])
 

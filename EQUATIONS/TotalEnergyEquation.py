@@ -257,6 +257,8 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,rhs8,color='g',label = r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 		
             plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\epsilon_t}$")
+            # define X label
+            setxlabel = r'x (10$^{8}$ cm)'		
         elif (self.ig == 2):
             plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_t )$")
             plt.plot(grd1,lhs1,color='k',label = r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{\epsilon}_t$)")	
@@ -272,19 +274,13 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,rhs8,color='g',label = r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 		
             plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_{\epsilon_t}$")		
+            # define X label
+            setxlabel = r'r (10$^{8}$ cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit() 		
 		
-        # define and show x/y LABELS
-        if (self.ig == 1):	
-            setxlabel = r'x (10$^{8}$ cm)'	
-        elif (self.ig == 2):	
-            setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit() 	
-			
+        # define and show x/y LABELS				
         setylabel = r"erg cm$^{-3}$ s$^{-1}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

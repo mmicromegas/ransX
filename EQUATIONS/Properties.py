@@ -18,6 +18,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
 
         #filename = params.getForProp('prop')['eht_data']
         intc     = params.getForProp('prop')['intc']
+        ieos     = params.getForProp('prop')['ieos']
 		
         # load data to structured array
         eht = np.load(filename)		
@@ -72,6 +73,11 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         uxux = np.asarray(eht.item().get('uxux')[intc])		
 				
         gamma1 = np.asarray(eht.item().get('gamma1')[intc])	 
+		
+        if(ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])
+            cv = np.asarray(eht.item().get('cv')[intc])
+            gamma1 = cp/cv            
 		
         ###################################
         # TURBULENT KINETIC ENERGY EQUATION 

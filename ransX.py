@@ -43,6 +43,9 @@ if str2bool(params.getForEqs('ppei')['plotMee']): plt.execPressEi()
 # NUCLEAR ENERGY PRODUCTION
 if str2bool(params.getForEqs('enuc')['plotMee']): plt.execEnuc()	
 
+# GRAVITY
+if str2bool(params.getForEqs('grav')['plotMee']): plt.execGrav()
+
 # TEMPERATURE GRADIENTS
 if str2bool(params.getForEqs('nablas')['plotMee']): plt.execNablas()
 

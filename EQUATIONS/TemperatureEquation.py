@@ -172,17 +172,37 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('temperature equation')
-        plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})$")
-        plt.plot(grd1,lhs1,color='k',label = r"$-\overline{u}_r \partial_r \overline{T}$")	
+        if (self.ig == 1):
+            plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})$")
+            plt.plot(grd1,lhs1,color='k',label = r"$-\overline{u}_x \partial_x \overline{T}$")	
 		
-        plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_T $")     
-        plt.plot(grd1,rhs1,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}$") 
-        plt.plot(grd1,rhs2,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'}$")
-        plt.plot(grd1,rhs3,color='b',label = r"$+\overline{\epsilon_{nuc} / cv}$")
-        plt.plot(grd1,rhs4,color='g',label = r"$+\overline{\varepsilon / cv}$")
-        plt.plot(grd1,rhs5,color='m',label = r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")	
+            plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_x f_T $")     
+            plt.plot(grd1,rhs1,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}$") 
+            plt.plot(grd1,rhs2,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'}$")
+            plt.plot(grd1,rhs3,color='b',label = r"$+\overline{\epsilon_{nuc} / cv}$")
+            plt.plot(grd1,rhs4,color='g',label = r"$+\overline{\varepsilon / cv}$")
+            plt.plot(grd1,rhs5,color='m',label = r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")	
 		
-        plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")
+            # define X label
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):
+            plt.plot(grd1,lhs0,color='#FF6EB4',label = r"$-\partial_t (\overline{T})$")
+            plt.plot(grd1,lhs1,color='k',label = r"$-\overline{u}_r \partial_r \overline{T}$")	
+		
+            plt.plot(grd1,rhs0,color='#FF8C00',label = r"$-\nabla_r f_T $")     
+            plt.plot(grd1,rhs1,color='#802A2A',label = r"$+(1-\Gamma_3) \bar{T} \bar{d}$") 
+            plt.plot(grd1,rhs2,color='r',label = r"$+(2-\Gamma_3) \overline{T'd'}$")
+            plt.plot(grd1,rhs3,color='b',label = r"$+\overline{\epsilon_{nuc} / cv}$")
+            plt.plot(grd1,rhs4,color='g',label = r"$+\overline{\varepsilon / cv}$")
+            plt.plot(grd1,rhs5,color='m',label = r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")	
+		
+            plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_T$")		
+            # define X label
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()  
  
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

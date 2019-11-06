@@ -74,7 +74,7 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         plt5 = self.eht_ssrms
         plt6 = self.eht_abarrms
         plt7 = self.eht_zbarrms
-	plt8 = self.ms2**0.5
+        plt8 = self.ms2**0.5
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
@@ -93,9 +93,9 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         plt.semilogy(grd1,plt3,color='g',label = r"$P$")
         plt.semilogy(grd1,plt8,color='purple',label = r"$M_s$ (Mach)")
         plt.semilogy(grd1,plt4,color='b',label = r"$M_s^2 = u_r^2/c_s^2$")
-        plt.semilogy(grd1,plt5,color='m',label = r"$S$")
-        plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
-        plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")		
+        #plt.semilogy(grd1,plt5,color='m',label = r"$S$")
+        #plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
+        #plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")		
 	
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
