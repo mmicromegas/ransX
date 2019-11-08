@@ -140,14 +140,26 @@ class MomentumEquationZ(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('z momentum equation')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_\phi ) $")
-        plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\phi ) $")		
-        plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\phi r})$")
-        plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\phi}$")
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        if (self.ig == 1):					
+            plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_z ) $")
+            plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_z ) $")		
+            plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_x (\widetilde{R}_{zx})$")
+            #plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\phi}$")
+            plt.plot(grd1,lhs0+lhs1+rhs0,color='k',linestyle='--',label='res')
+            setxlabel = r"x (cm)"
+        elif(self.ig == 2):  
+            plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_\phi ) $")
+            plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\phi ) $")		
+            plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\phi r})$")
+            plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\phi}$")
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+            setxlabel = r"r (cm)"			
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
         setylabel = r"g cm$^{-2}$  s$^{-2}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

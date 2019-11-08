@@ -78,6 +78,7 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.dduy        = dduy	
+        self.ig          = ig
 		
     def plot_momentum_y(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot dduy stratification in the model""" 
@@ -145,15 +146,28 @@ class MomentumEquationY(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('y momentum equation')
-        plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_\theta ) $")
-        plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\theta ) $")		
-        plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\theta r})$")
-        plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\theta}$")
-        plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \overline{\partial_\theta P}$")		
-        plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        if (self.ig == 1):		
+            plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_y ) $")
+            plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_x (\overline{\rho} \widetilde{u}_y \widetilde{u}_y ) $")		
+            plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_x (\widetilde{R}_{yx})$")
+            #plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\theta}$")
+            #plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \overline{\partial_\theta P}$")		
+            plt.plot(grd1,lhs0+lhs1+rhs0,color='k',linestyle='--',label='res')
+            setxlabel = r"x (cm)"
+        elif(self.ig == 2):           
+            plt.plot(grd1,lhs0,color='c',label = r"$-\partial_t ( \overline{\rho} \widetilde{u}_\theta ) $")
+            plt.plot(grd1,lhs1,color='m',label = r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\theta ) $")		
+            plt.plot(grd1,rhs0,color='b',label=r"$-\nabla_r (\widetilde{R}_{\theta r})$")
+            plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\theta}$")
+            plt.plot(grd1,rhs2,color='r',label=r"$-(1/r) \overline{\partial_\theta P}$")		
+            plt.plot(grd1,res,color='k',linestyle='--',label='res')
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
         setylabel = r"g cm$^{-2}$  s$^{-2}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
