@@ -28,9 +28,10 @@ class FourierReadParams:
         endian    = match[2].split(",")[2]
         precision = match[3].split(",")[2]
         ig        = match[4].split(",")[2]
-        lhc       = match[5].split(",")[2]
+        laxis     = match[5].split(",")[2]		
+        lhc       = match[6].split(",")[2]
         
-        return {'datafile':datafile,'prefix':prefix,'endian':endian,'precision':precision,'ig': ig,'lhc':lhc}				
+        return {'datafile':datafile,'prefix':prefix,'endian':endian,'precision':precision,'ig': ig,'laxis':laxis,'lhc':lhc}				
 
     def getForEqs(self,param): 
 
@@ -40,8 +41,13 @@ class FourierReadParams:
         match_split = match[0].split(",")
         #equation = match_split[0]
         plotMee = match_split[1]
+        xbl = float(match_split[2])
+        xbr = float(match_split[3])
+        ybu = float(match_split[4])
+        ybd = float(match_split[5])		
+        ilg = int(match_split[6])		
 		
-        return {'plotMee':plotMee}
+        return {'plotMee':plotMee,'xbl':xbl,'xbr':xbr,'ybu':ybu,'ybd':ybd,'ilg':ilg}
 
     def getNetwork(self):
         match = [s for s in self.input if 'network' in s]

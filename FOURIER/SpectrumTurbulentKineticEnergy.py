@@ -2,6 +2,7 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 import UTILS.PROMPI_data as pd
+import UTILS.ALIMIT as al
 
 class SpectrumTurbulentKineticEnergy():
 
@@ -82,61 +83,71 @@ class SpectrumTurbulentKineticEnergy():
         # calculate distance from nearest corners in nn x nn matrix
         # and use it later to computer mask for integration over 
 		# spherical shells
-
-        aa = self.dist(nn)		
+        aa = self.dist(nn)			
 
         # integrate over radial shells and calculate spectrum
         spect_tke = []		
-        for ishell in kh:
-            pcut = np.where(aa >= float(ishell) and aa < (float(ishell+1)))
-            #mindx = array_indices(aa,pcut)
-            #mask(mindx(0,*),mindx(1,*)) = 1.                                 
-            #integrand_tke = mask*0.5*(energy_uxff+energy_uyff+energy_uzff)
-            #spect_tke.append(np.sum(integrand_tke))
+        for ishell in kh:      
+            mask = np.where((aa >= float(ishell)) & (aa < float(ishell+1)),1.,0.)			
+            integrand_tke = mask*0.5*(energy_uxff+energy_uyff+energy_uzff)
+            spect_tke.append(np.sum(integrand_tke))			
+            #fig, (ax1) = plt.subplots(figsize=(3, 3))
+            #pos = ax1.imshow(mask,interpolation='bilinear',origin='lower',extent=(0,nn,0,nn)) 
+            #fig.colorbar(pos, ax=ax1)
+            #plt.show(block=False)
 
         # check Parseval's theorem
-        total_tke = (uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r)/2.0
+		
+        #total_tke = (uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r)/2.0
+        #print(float(nn)*float(nn)*np.sum(total_tke),np.sum(spect_tke))
 
-        print(kh,khmax)
-        sys.exit()
-
-        #print(velx)
-        #print('in SpectrumTurbulentKineticEnergy.py',ilhc)
-
-        self.xzn0 = xzn0
+        # share stuff across class
+        self.spect_tke = spect_tke
+        self.kh  = kh
+        self.data_prefix = data_prefix
+        		
         
-    def plot_TKEspectrum(self):
-        """Plot TKE spectrum"""
+    def plot_TKEspectrum(self,LAXIS,xbl,xbr,ybu,ybd,ilg):        
+        """Plot TKE spectrum"""	
 	
+        # load horizontal wave number GRID
+        grd1 = self.kh
+	
+        # load spectrum to plot
+        plt1 = self.spect_tke
+		
         # create FIGURE
         plt.figure(figsize=(7,6))
 		
         # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
-		
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))			
  						
+        # set plot boundaries   						
+        plt.axis([xbl,xbr,ybu,ybd])						
+						
         # plot DATA 
-        #plt.title('turbulent kinetic energy')
-        #plt.plot(grd1,plt1,color='brown',label = r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
+        plt.title('turbulent kinetic energy spectrum')
+        plt.loglog(grd1,plt1,color='brown',label = r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
+        plt.loglog(grd1,max(plt1)*grd1**(-5./3.),color='r',linestyle='--',label=r"k$^{-5/3}$")		
      
-        #setxlabel = r'x (10$^{8}$ cm)'	
-        #setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
+        setxlabel = r'k$_h$'	
+        setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
         
-        #plt.xlabel(setxlabel)
-        #plt.ylabel(setylabel)
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
 		
         # show LEGEND
-        #plt.legend(loc=ilg,prop={'size':18})
+        plt.legend(loc=0,prop={'size':18})
 
         # display PLOT
-        #plt.show(block=False)
+        plt.show(block=False)
 
         # save PLOT
-        #plt.savefig('RESULTS/'+self.data_prefix+'tkespectrum.png')		
+        plt.savefig('RESULTS/'+self.data_prefix+'tkespectrum.png')		
 
 
     # source: https://gist.github.com/abeelen/453de325dd9787ea2aa7fad495f4f018
-    def dist(NAXIS):
+    def dist(self,NAXIS):
         """Returns a rectangular array in which the value of each element is proportional to its frequency.
         >>> dist(3)
         array([[ 0.        ,  1.        ,  1.        ],

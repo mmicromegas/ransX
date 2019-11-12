@@ -22,7 +22,12 @@ class FourierMasterPlot():
                 params.getForProp('fourier')['lhc'])
 
         # plot    
-        fourierTKE.plot_TKEspectrum()		   
+        fourierTKE.plot_TKEspectrum(params.getForProp('fourier')['laxis'],\
+                          params.getForEqs('fstke')['xbl'],\
+                          params.getForEqs('fstke')['xbr'],\
+                          params.getForEqs('fstke')['ybu'],\
+                          params.getForEqs('fstke')['ybd'],\
+                          params.getForEqs('fstke')['ilg'])						   
 						   
 
     def SetMatplotlibParams(self):
