@@ -9,7 +9,7 @@
 ## Location of Horizontal Cut For Fourier .... ## [fourier,lhc,8.0e8]
 ## Nuclear network ........................... ## [network,fluid1,fluid2]
 []
-## Turbulent Kinetic Fourier Energy spectrum . ## [fstke,True,1.,50.,1.e14,1.e22,0]
+## Turbulent Kinetic Fourier Energy spectrum . ## [fstke,True,1.,50.,1.e11,1.e18,0]
 ## ux Fourier "Energy" spectrum .............. ## [fsux,False,0.,50.,1.e22,1.e14,0]
 ## uy Fourier "Energy" spectrum .............. ## [fsuy,False,0.,50.,1.e22,1.e14,0]
 ## uz Fourier "Energy" spectrum .............. ## [fsuz,False,0.,50.,1.e22,1.e14,0]

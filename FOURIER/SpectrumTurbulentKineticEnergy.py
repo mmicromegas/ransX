@@ -90,7 +90,7 @@ class SpectrumTurbulentKineticEnergy():
         for ishell in kh:      
             mask = np.where((aa >= float(ishell)) & (aa < float(ishell+1)),1.,0.)			
             integrand_tke = mask*0.5*(energy_uxff+energy_uyff+energy_uzff)
-            spect_tke.append(np.sum(integrand_tke))			
+            spect_tke.append(np.sum(integrand_tke)/(float(nn)*float(nn)))			
             #fig, (ax1) = plt.subplots(figsize=(3, 3))
             #pos = ax1.imshow(mask,interpolation='bilinear',origin='lower',extent=(0,nn,0,nn)) 
             #fig.colorbar(pos, ax=ax1)
@@ -98,8 +98,10 @@ class SpectrumTurbulentKineticEnergy():
 
         # check Parseval's theorem
 		
-        #total_tke = (uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r)/2.0
-        #print(float(nn)*float(nn)*np.sum(total_tke),np.sum(spect_tke))
+        total_tke = (uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r)/2.0
+        #print(uxf_r*uxf_r,uyf_r*uyf_r,uzf_r*uzf_r,uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r)
+        #print(np.sum(uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r))
+        print(np.sum(total_tke),np.sum(spect_tke))
 
         # share stuff across class
         self.spect_tke = spect_tke
