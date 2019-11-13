@@ -136,7 +136,7 @@ class SpectrumTurbulentKineticEnergy():
 						
         # plot DATA 
         plt.title('turbulent kinetic energy spectrum')
-        plt.loglog(grd1,plt1,color='brown',label = r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
+        plt.loglog(grd1,plt1,color='brown',label = r"$\frac{1}{2} \widetilde{u'_i u'_i}$")
         plt.loglog(grd1,max(plt1)*grd1**(-5./3.),color='r',linestyle='--',label=r"k$^{-5/3}$")		
      
         setxlabel = r'k$_h$'	
