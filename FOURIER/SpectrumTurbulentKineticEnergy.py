@@ -84,7 +84,7 @@ class SpectrumTurbulentKineticEnergy():
 		# spherical shells
         aa = self.dist(nn)			
 
-        # integrate over radial shells and calculate spectrum
+        # integrate over radial shells and calculate total TKE spectrum
         spect_tke = []		
         for ishell in kh:      
             mask = np.where((aa >= float(ishell)) & (aa < float(ishell+1)),1.,0.)			
@@ -95,6 +95,13 @@ class SpectrumTurbulentKineticEnergy():
             #fig.colorbar(pos, ax=ax1)
             #plt.show(block=False)
 
+        # calculate mean TKE spectrum  
+        spect_tke_mean = []		
+        i = -1
+        for ishell in kh:
+            i+=1
+            spect_tke_mean.append(spect_tke[i]/(float(ny)*float(nz)))
+
         # check Parseval's theorem
 		
         total_tke = (uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r)/2.0
@@ -104,9 +111,10 @@ class SpectrumTurbulentKineticEnergy():
 
         # share stuff across class
         self.spect_tke = spect_tke
+        self.spect_tke_mean = spect_tke_mean
         self.kh  = kh
         self.data_prefix = data_prefix
-        		
+		
         
     def plot_TKEspectrum(self,LAXIS,xbl,xbr,ybu,ybd,ilg):        
         """Plot TKE spectrum"""	
@@ -115,7 +123,7 @@ class SpectrumTurbulentKineticEnergy():
         grd1 = self.kh
 	
         # load spectrum to plot
-        plt1 = self.spect_tke
+        plt1 = self.spect_tke_mean
 		
         # create FIGURE
         plt.figure(figsize=(7,6))
