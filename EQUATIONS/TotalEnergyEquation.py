@@ -184,18 +184,23 @@ class TotalEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title(r'total energy')
-        plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{\varepsilon}_t$')
 
-        # define and show x/y LABELS
-        if (self.ig == 1):	
-            setxlabel = r'x (10$^{8}$ cm)'	
-        elif (self.ig == 2):	
-            setxlabel = r'r (10$^{8}$ cm)'
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{\varepsilon}_t$')
+            # define x LABEL
+            setxlabel = r"x (cm)"			
+        elif (self.ig == 2):
+            plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{\varepsilon}_t$')
+            # define x LABEL
+            setxlabel = r"r (cm)"
         else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit() 			
+            print("ERROR (TotalEnergyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
 		
+        # define y LABEL
         setylabel = r"$\widetilde{\varepsilon}_t$ (erg g$^{-1}$)"
+
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

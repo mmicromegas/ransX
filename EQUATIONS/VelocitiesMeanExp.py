@@ -42,7 +42,8 @@ class VelocitiesMeanExp(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0  = xzn0
-        self.ux    = ux		
+        self.ux    = ux
+        self.ig    = ig		
         self.vexp1 = vexp1	
         self.vexp2 = vexp2			
         self.vturb = vturb	
@@ -76,10 +77,20 @@ class VelocitiesMeanExp(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')		
         #plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 		
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if(self.ig == 1):			
+            # define x LABEL
+            setxlabel = r"x (cm)"		
+        elif(self.ig == 2):
+            # define x LABEL
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR(VelocitiesMeanExp.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 			
+		
+        # define y LABELS
         setylabel = r"velocity (cm s$^{-1}$)"
 
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

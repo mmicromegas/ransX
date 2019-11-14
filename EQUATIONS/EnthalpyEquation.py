@@ -124,11 +124,22 @@ class EnthalpyEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title(r'enthalpy')
-        plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{h}$')
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{h}$')
+            # define x LABEL
+            setxlabel = r"x (cm)"		
+        elif(self.ig == 2):
+            plt.plot(grd1,plt1,color='brown',label = r'$\widetilde{h}$')
+            # define x LABEL
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR (EnthalpyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
 
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        # define y LABEL
         setylabel = r"$\widetilde{h}$ (erg g$^{-1}$)"
+
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -203,7 +214,7 @@ class EnthalpyEquation(calc.CALCULUS,al.ALIMIT,object):
             # define X label
             setxlabel = r'r (10$^{8}$ cm)'
         else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            print("ERROR (EnthalpyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit() 			
  
         # define and show x/y LABELS

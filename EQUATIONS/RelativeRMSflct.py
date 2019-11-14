@@ -58,6 +58,7 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
+        self.ig          = ig
 
 		
     def plot_relative_rms_flct(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
@@ -97,10 +98,18 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         #plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
         #plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")		
 	
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if(self.ig == 1):			
+            setxlabel = r"x (cm)"		
+        elif(self.ig == 2):
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()	
+	
+        # define y LABEL
         setylabel = r"$q'_{rms}/ \overline{q}$"
 
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

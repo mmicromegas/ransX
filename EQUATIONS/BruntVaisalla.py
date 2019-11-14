@@ -41,11 +41,6 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
         dlnrhodrs = (1./gamma1)*dlnpdr
         nsq       = gg*(dlnrhodr-dlnrhodrs)
 	
-        # assign global data to be shared across whole class
-        self.data_prefix = data_prefix		
-        self.xzn0        = xzn0
-        self.nsq         = nsq
-	
         chim = np.asarray(eht.item().get('chim')[intc]) 
         chit = np.asarray(eht.item().get('chit')[intc]) 
         chid = np.asarray(eht.item().get('chid')[intc])
@@ -90,8 +85,13 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
             self.nsq_version2 = (gg*delta/hp)*(nabla_ad - nabla - (phi/delta)*nabla_mu) 			
         else:
             print("ERROR(BruntVaisalla.py): EOS not implemented")            		
-		
-		
+				
+        # assign global data to be shared across whole class
+        self.data_prefix = data_prefix		
+        self.xzn0        = xzn0
+        self.nsq         = nsq
+        self.ig = ig
+        self.nx = nx
 	
     def plot_bruntvaisalla(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot BruntVaisalla parameter in the model""" 
@@ -115,13 +115,25 @@ class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('Brunt-Vaisalla frequency')
-        plt.plot(grd1,plt1,color='r',label = r'N$^2$')
-        #plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
 		
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='r',label = r'N$^2$')
+            plt.plot(grd1,np.zeros(self.nx),linestyle='--',color='k')
+            #plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
+            setxlabel = r"x (cm)"				
+        elif(self.ig == 2):
+            plt.plot(grd1,plt1,color='r',label = r'N$^2$')
+            plt.plot(grd1,np.zeros(self.nx),linestyle='--',color='k')
+            #plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')	
+            setxlabel = r"r (cm)"		
+        else:
+            print("ERROR(BruntVaisalla.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        # define y LABELS
         setylabel = r"N$^2$"
 
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

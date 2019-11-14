@@ -51,7 +51,8 @@ class Buoyancy(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
-        self.b           = b		
+        self.b           = b
+        self.ig          = ig		
 			
     def plot_buoyancy(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot buoyancy in the model""" 
@@ -74,12 +75,20 @@ class Buoyancy(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('buoyancy')
-        plt.plot(grd1,plt1,color='brown',label = r'$b$')
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='brown',label = r'$b$')
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):
+            plt.plot(grd1,plt1,color='brown',label = r'$b$')
+            setxlabel = r"r (cm)"			
+        else:
+            print("ERROR(Buoyancy.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
 		
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        # define y LABEL
         setylabel = r"$b (s^{-2}$ cm)"
 
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

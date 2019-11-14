@@ -114,6 +114,7 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0  = xzn0
+        self.ig  = ig
         self.ux    = ux		
         self.vexp1 = vexp1	
         self.vexp2 = vexp2			
@@ -165,10 +166,20 @@ class VelocitiesMLTturb(calc.CALCULUS,al.ALIMIT,object):
         #plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
         #plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
 		
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if(self.ig == 1):	
+            # define x LABEL		
+            setxlabel = r"x (cm)"		
+        elif(self.ig == 2):
+            # define x LABEL			
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()		
+		
+        # define y LABEL
         setylabel = r"velocity (cm s$^{-1}$)"
 
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

@@ -57,6 +57,8 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
         self.nabla = nabla
         self.nabla_ad = nabla_ad
         self.nabla_mu = nabla_mu
+        self.ig = ig
+        self.ieos = ieos
 		
     def plot_nablas(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot temperature gradients in the model""" 
@@ -81,14 +83,29 @@ class TemperatureGradients(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('temperature gradients')
-        plt.plot(grd1,plt1,color='brown',label = r'$\nabla$')
-        plt.plot(grd1,plt2,color='red',label = r'$\nabla_{ad}$')
-        plt.plot(grd1,plt3,color='green',label = r'$\nabla_{\mu}$')		
 		
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='brown',label = r'$\nabla$')
+            plt.plot(grd1,plt2,color='red',label = r'$\nabla_{ad}$')
+            if(self.ieos == 3):
+                plt.plot(grd1,plt3,color='green',label = r'$\nabla_{\mu}$')
+            # define x LABEL
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):
+            plt.plot(grd1,plt1,color='brown',label = r'$\nabla$')
+            plt.plot(grd1,plt2,color='red',label = r'$\nabla_{ad}$')
+            if(self.ieos == 3):
+                plt.plot(grd1,plt3,color='green',label = r'$\nabla_{\mu}$')
+            # define x LABEL
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR (TemperatureGradients.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 	
+			
+        # define y LABEL
         setylabel = r"$\nabla$"
 
+        # show x/y labels
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

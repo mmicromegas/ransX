@@ -124,11 +124,23 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title(r'temperature')
-        plt.plot(grd1,plt1,color='brown',label = r'$\overline{T}$')
-
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+		
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='brown',label = r'$\overline{T}$')	
+            # define x LABEL
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):
+            plt.plot(grd1,plt1,color='brown',label = r'$\overline{T}$')
+            # define x LABEL
+            setxlabel = r"r (cm)"			
+        else:
+            print("ERROR (TemperatureEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        # define y LABEL
         setylabel = r"$\overline{T} (K)$"
+
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

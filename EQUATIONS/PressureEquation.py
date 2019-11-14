@@ -116,11 +116,23 @@ class PressureEquation(calc.CALCULUS,al.ALIMIT,object):
 				
         # plot DATA 
         plt.title(r'pressure')
-        plt.plot(grd1,plt1,color='brown',label = r'$\overline{P}$')
-
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+		
+        if(self.ig == 1):			
+            plt.plot(grd1,plt1,color='brown',label = r'$\overline{P}$')	
+            # define x LABEL
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):
+            plt.plot(grd1,plt1,color='brown',label = r'$\overline{P}$')
+            # define x LABEL
+            setxlabel = r"r (cm)"			
+        else:
+            print("ERROR (PressureEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
+        # define y LABEL
         setylabel = r"$\overline{P}$ (erg cm$^{-3}$)"
+
+        # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
