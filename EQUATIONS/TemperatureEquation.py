@@ -102,6 +102,7 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.tt          = tt			
+        self.ig = ig
 		
     def plot_tt(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot mean temperature stratification in the model""" 
@@ -216,9 +217,10 @@ class TemperatureEquation(calc.CALCULUS,al.ALIMIT,object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()  
  
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        # define y LABEL
         setylabel = r"K s$^{-1}$"
+		
+        # show x/y LABELS		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
