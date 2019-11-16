@@ -59,7 +59,7 @@ class XtransportEquation(calc.CALCULUS,al.ALIMIT,object):
         # construct equation-specific mean fields
         fht_ux = ddux/dd
         fht_xi = ddxi/dd
-        fxi    = ddxiux - ddxi*ddux/dd
+        fxi    = ddxiux - ddxi*ddux/dd	 
 		
         # LHS -dq/dt 		
         self.minus_dt_dd_fht_xi = -self.dt(t_dd*t_fht_xi,xzn0,t_timec,intc)

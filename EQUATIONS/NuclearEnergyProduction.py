@@ -54,7 +54,8 @@ class NuclearEnergyProduction(calc.CALCULUS,al.ALIMIT,object):
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)
 		
         # plot DATA 
-        plt.title('Nuclear energy production')
+        #plt.title('Nuclear energy production')
+        plt.title('Heating (source term)')
         #plt.semilogy(grd1,plt1,color='brown',label = r'$\overline{\varepsilon_{nuc}}$')
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{\varepsilon_{nuc}}$')
 		

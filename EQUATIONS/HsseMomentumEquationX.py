@@ -82,10 +82,18 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         # RHS -dd fht_ux gradx fht_ux
         self.minus_dd_fht_ux_gradx_fht_ux = -dd*fht_ux*self.Grad(fht_ux,xzn0)  		
 		
-        # -res
-        self.minus_resResXmomentumEquation = \
-          -(self.minus_gradx_pp+self.minus_dd_gg+self.minus_dd_dt_fht_ux+self.minus_div_rxx+\
-            self.minus_G+self.minus_dd_fht_ux_gradx_fht_ux)
+        # -res (geometry dependent)
+        if(ig == 1):			
+            self.minus_resResXmomentumEquation = \
+              -(self.minus_gradx_pp+self.minus_dd_gg+self.minus_dd_dt_fht_ux+self.minus_div_rxx+\
+                +self.minus_dd_fht_ux_gradx_fht_ux)		
+        elif(ig == 2):
+            self.minus_resResXmomentumEquation = \
+              -(self.minus_gradx_pp+self.minus_dd_gg+self.minus_dd_dt_fht_ux+self.minus_div_rxx+\
+                self.minus_G+self.minus_dd_fht_ux_gradx_fht_ux)
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
 		
         ##############################
         # END HSSE X MOMENTUM EQUATION 
@@ -102,15 +110,15 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         ###################################
         # END ALTERNATIVE MOMENTUM EQUATION 
         ###################################					
-		
-		
+			
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix		
         self.xzn0        = xzn0
         self.ddux        = ddux
         self.ux          = ux      		
         self.bconv   = bconv
-        self.tconv	 = tconv  		
+        self.tconv	 = tconv 
+        self.ig  = ig 		
 		
     def plot_momentum_x(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
         """Plot ddux stratification in the model""" 
@@ -140,7 +148,14 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
         #plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')		
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if(self.ig == 1):			
+            setxlabel = r"x (cm)"		
+        elif(self.ig == 2):
+            setxlabel = r"r (cm)"
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
+		
         setylabel = r"$\overline{\rho} \widetilde{u}_x$ (g cm$^{-2}$ s$^{-1}$)"
 
         plt.xlabel(setxlabel)
@@ -183,49 +198,93 @@ class HsseMomentumEquationX(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('hsse x momentum equation')
-        #plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
-        #plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
-        #plt.plot(grd1,rhs1,color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
-        #plt.plot(grd1,rhs2,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
-        #plt.plot(grd1,rhs3,color='g',label=r"$-\overline{G^{M}_r}$")
-        #plt.plot(grd1,rhs4,color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
-        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+        if(self.ig == 1):			
+            #plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
+            #plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
+            #plt.plot(grd1,rhs1,color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
+            #plt.plot(grd1,rhs2,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
+            #plt.plot(grd1,rhs3,color='g',label=r"$-\overline{G^{M}_r}$")
+            #plt.plot(grd1,rhs4,color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
+            #plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
-        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
-        xlimitbottom = np.where(grd1 < self.bconv)
-        xlimittop = np.where(grd1 > self.tconv)	
+            xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+            xlimitbottom = np.where(grd1 < self.bconv)
+            xlimittop = np.where(grd1 > self.tconv)	
 
-        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='c',label = r"$-\partial_r \overline{P} $")
-        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
-        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
-        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
-        plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='g',label=r"$-\overline{G^{M}_r}$")
-        plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
-        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+            plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='c',label = r"$-\partial_x \overline{P} $")
+            plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-\overline{\rho} \ \overline{g}_x$")
+            plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
+            plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='b',label=r"$-\nabla_r (\widetilde{R}_{xx})$")
+            plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-\overline{\rho} \widetilde{u}_x \partial_x \widetilde{u}_x$")
+            plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
 
-        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='c',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='r',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='b',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='g',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
 
-        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='c',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='r',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='b',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='g',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
-        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+            plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)	
 
+            # define x LABELS
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):
+            #plt.plot(grd1,lhs0,color='c',label = r"$-\partial_r \overline{P} $")
+            #plt.plot(grd1,rhs0,color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
+            #plt.plot(grd1,rhs1,color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
+            #plt.plot(grd1,rhs2,color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
+            #plt.plot(grd1,rhs3,color='g',label=r"$-\overline{G^{M}_r}$")
+            #plt.plot(grd1,rhs4,color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
+            #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+
+            xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+            xlimitbottom = np.where(grd1 < self.bconv)
+            xlimittop = np.where(grd1 > self.tconv)	
+
+            plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='c',label = r"$-\partial_r \overline{P} $")
+            plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='m',label = r"$-\overline{\rho} \ \overline{g}_r$")
+            plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='r',label = r"$-\overline{\rho} \partial_t \widetilde{u}_r$")		
+            plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='b',label=r"$-\nabla_r (\widetilde{R}_{rr})$")
+            plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='g',label=r"$-\overline{G^{M}_r}$")
+            plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-\overline{\rho} \widetilde{u}_r \partial_r \widetilde{u}_r$")
+            plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+
+            plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='g',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)
+
+            plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='g',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)
+			
+            # define x LABELS
+            setxlabel = r"r (cm)"			
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 		
+		
         # convective boundary markers
         plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
         plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
-
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+		
+        # define y LABEL		
         setylabel = r"erg cm$^{-3}$  cm$^{-1}$"
+		
+        # show x/y LABELS		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		

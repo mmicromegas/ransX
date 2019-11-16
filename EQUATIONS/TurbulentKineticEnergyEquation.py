@@ -242,7 +242,7 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
             plt.plot(grd1,rhs1,color='c',label = r'$+W_p$') 
             plt.plot(grd1,rhs2,color='#802A2A',label = r"$-\nabla_x f_k$") 
             plt.plot(grd1,rhs3,color='m',label = r"$-\nabla_x f_P$")
-            plt.plot(grd1,rhs4,color='b',label = r"$-\widetilde{R}_{ri}\partial_x \widetilde{u_i}$")		
+            plt.plot(grd1,rhs4,color='b',label = r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")		
             plt.plot(grd1,rhs5,color='k',linewidth=0.7,label = r"$-\overline{\rho} u^{'3}_{rms}/l_c$")		
             plt.plot(grd1,res,color='k',linestyle='--',label=r"res $\sim N_k$")
         elif (self.ig == 2): 

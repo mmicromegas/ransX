@@ -64,35 +64,50 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         fht_rxx = dduxux - ddux*ddux/dd
         fdil = (uxdivu - ux*divu) 		
 	
+        # geometry factors
+        if(ig == 1):
+            surface = xzn0**2.
+            volume = xzn0**3.
+        elif(ig == 2):
+            surface = 4.*np.pi*(xzn0**2.)
+            volume = (4./3.)*np.pi*(xzn0**3)
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()           		
+			
         #####################
         # CONTINUITY EQUATION 
         #####################
 				
         # LHS -gradx mm
-        self.minus_gradx_mm = -self.Grad(dd*(4./3.)*np.pi*(xzn0**3),xzn0)
+        #self.minus_gradx_mm = -self.Grad(dd*(4./3.)*np.pi*(xzn0**3),xzn0)
+        self.minus_gradx_mm = -self.Grad(dd*volume,xzn0)		
 				
-        # RHS +4 pi r^2 dd
-        self.plus_four_pi_rsq_dd = +4.*np.pi*(xzn0**2.)*dd
-    		
-        # scale factor +4 pi r^3/ 3 fht_ux
-        self.plus_four_pi_rcu_o_three_fht_ux = (4./3.)*np.pi*(xzn0**3)/fht_ux  		
+        # RHS +4 pi r^2 dd (spherical geometry)
+        #self.plus_surface_dd = +4.*np.pi*(xzn0**2.)*dd
+        self.plus_surface_dd = +surface*dd    		
+			
+        # scale factor +4 pi r^3/ 3 fht_ux (spherical geometry)
+        #self.plus_four_pi_rcu_o_three_fht_ux = (4./3.)*np.pi*(xzn0**3)/fht_ux  		
+        self.plus_volume_o_fht_ux = volume/fht_ux 
 
-        # RHS -4 pi r^3/ 3 fht_ux Div fdd
-        self.minus_four_pi_rcu_o_three_fht_ux_div_fdd = -self.plus_four_pi_rcu_o_three_fht_ux*self.Div(fdd,xzn0)
-		
-        # RHS +4 pi r^3/ 3 fht_ux fdd_o_dd gradx dd				
-        self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd = +self.plus_four_pi_rcu_o_three_fht_ux*(fdd/dd)*self.Grad(dd,xzn0)		
+        # RHS -4 pi r^3/ 3 fht_ux Div fdd (spherical geometry)
+        #self.minus_four_pi_rcu_o_three_fht_ux_div_fdd = -self.plus_four_pi_rcu_o_three_fht_ux*self.Div(fdd,xzn0)
+        self.minus_volume_o_fht_ux_div_fdd = -self.plus_volume_o_fht_ux*self.Div(fdd,xzn0)	
+	
+        # RHS +4 pi r^3/ 3 fht_ux fdd_o_dd gradx dd (spherical geometry)				
+        self.plus_volume_o_fht_ux_fdd_o_dd_gradx_dd = +self.plus_volume_o_fht_ux*(fdd/dd)*self.Grad(dd,xzn0)		
 
-        # RHS -4 pi r^3/ 3 fht_ux dd Div ux 
-        self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux = -self.plus_four_pi_rcu_o_three_fht_ux*dd*self.Div(ux,xzn0) 
+        # RHS -4 pi r^3/ 3 fht_ux dd Div ux (spherical geometry)
+        self.minus_volume_o_fht_ux_dd_div_ux = -self.plus_volume_o_fht_ux*dd*self.Div(ux,xzn0) 
 		
         # RHS -dq/dt 		
-        self.minus_four_pi_rcu_o_three_fht_ux_dt_dd = -self.plus_four_pi_rcu_o_three_fht_ux*self.dt(t_dd,xzn0,t_timec,intc)
+        self.minus_volume_o_fht_ux_dt_dd = -self.plus_volume_o_fht_ux*self.dt(t_dd,xzn0,t_timec,intc)
 
         # -res
-        self.minus_resContEquation = -(self.minus_gradx_mm+self.plus_four_pi_rsq_dd+\
-          self.minus_four_pi_rcu_o_three_fht_ux_div_fdd+self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd+\
-           self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux+self.minus_four_pi_rcu_o_three_fht_ux_dt_dd)
+        self.minus_resContEquation = -(self.minus_gradx_mm+self.plus_surface_dd+\
+          self.minus_volume_o_fht_ux_div_fdd+self.plus_volume_o_fht_ux_fdd_o_dd_gradx_dd+\
+           self.minus_volume_o_fht_ux_dd_div_ux+self.minus_volume_o_fht_ux_dt_dd)
 		
         #########################	
         # END CONTINUITY EQUATION
@@ -102,11 +117,12 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         # ALTERNATIVE CONTINUITY EQUATION 
         #################################				
 		
-        # RHS -mm_dd_eht_fdil/fht_rxx  		
-        self.minus_mm_dd_fdil_o_fht_rxx = -(4./3)*np.pi*(xzn0**3.)*dd*dd*fdil/fht_rxx		
+        # RHS -mm_dd_eht_fdil/fht_rxx 		
+        #self.minus_mm_dd_fdil_o_fht_rxx = -(4./3)*np.pi*(xzn0**3.)*dd*dd*fdil/fht_rxx		
+        self.minus_mm_dd_fdil_o_fht_rxx = -(volume*dd)*dd*fdil/fht_rxx		
 		
         # -res		
-        self.minus_resContEquation2 = -(self.minus_gradx_mm+self.plus_four_pi_rsq_dd+self.minus_mm_dd_fdil_o_fht_rxx)		
+        self.minus_resContEquation2 = -(self.minus_gradx_mm+self.plus_surface_dd+self.minus_mm_dd_fdil_o_fht_rxx)		
 		
         #####################################
         # END ALTERNATIVE CONTINUITY EQUATION 
@@ -119,10 +135,11 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         gg = -gg			
 			
         # RHS +dd_mm_gg_o_gamma1_pp	- the plus sign is due to gg
-        self.minus_dd_mm_gg_o_gamma1_pp = -dd*(4./3)*np.pi*(xzn0**3.)*dd*gg/(gamma1*pp)		
-		
+        #self.minus_dd_mm_gg_o_gamma1_pp = -dd*(4./3)*np.pi*(xzn0**3.)*dd*gg/(gamma1*pp)		
+        self.minus_dd_mm_gg_o_gamma1_pp = -dd*volume*dd*gg/(gamma1*pp)		
+			
         # -res		
-        self.minus_resContEquation3 = -(self.minus_gradx_mm+self.plus_four_pi_rsq_dd+self.minus_dd_mm_gg_o_gamma1_pp)		
+        self.minus_resContEquation3 = -(self.minus_gradx_mm+self.plus_surface_dd+self.minus_dd_mm_gg_o_gamma1_pp)		
 		
         ################################################
         # END ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
@@ -170,9 +187,16 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt1,color='brown',label = r'$\overline{\rho}$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):	
+            setxlabel = r'x (10$^{8}$ cm)'	
+        elif (self.ig == 2):	
+            setxlabel = r'r (10$^{8}$ cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit() 
+			
         setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
-
+		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -193,11 +217,11 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = self.minus_gradx_mm
 		
-        rhs0 = self.plus_four_pi_rsq_dd		
-        rhs1 = self.minus_four_pi_rcu_o_three_fht_ux_div_fdd
-        rhs2 = self.plus_four_pi_rcu_o_three_fht_ux_fdd_o_dd_gradx_dd
-        rhs3 = self.minus_four_pi_rcu_o_three_fht_ux_dd_div_ux
-        rhs4 = self.minus_four_pi_rcu_o_three_fht_ux_dt_dd		
+        rhs0 = self.plus_surface_dd		
+        rhs1 = self.minus_volume_o_fht_ux_div_fdd
+        rhs2 = self.plus_volume_o_fht_ux_fdd_o_dd_gradx_dd
+        rhs3 = self.minus_volume_o_fht_ux_dd_div_ux
+        rhs4 = self.minus_volume_o_fht_ux_dt_dd		
 		
         res = self.minus_resContEquation
 		
@@ -213,49 +237,88 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 		
         # plot DATA 
         plt.title('hsse continuity equation')
-        #plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
-        #plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
-        #plt.plot(grd1,rhs1,color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
-        #plt.plot(grd1,rhs2,color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
-        #plt.plot(grd1,rhs3,color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
-        #plt.plot(grd1,rhs4,color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
-        #plt.plot(grd1,res,color='k',linestyle='--',label='res')
-
-        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
-        xlimitbottom = np.where(grd1 < self.bconv)
-        xlimittop = np.where(grd1 > self.tconv)	
-
-        plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='g',label = r'$-\partial_r (\overline{m})$')
-        plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
-        plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
-        plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
-        plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
-        plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
-        plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
 		
-        plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='g',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='r',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='c',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='m',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='b',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
-        plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)			
+        if(self.ig == 1):		
+            xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+            xlimitbottom = np.where(grd1 < self.bconv)
+            xlimittop = np.where(grd1 > self.tconv)	
 
-        plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='g',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='r',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='c',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='m',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='b',markersize=0.5)
-        plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
-        plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)	
+            plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='g',label = r'$-\partial_x (\overline{m})$')
+            plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='r',label = r"$+x^2 \overline{\rho}$")
+            plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='c',label = r"$-(x^3 / \widetilde{u}_x) \nabla_x f_\rho$")		
+            plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='m',label = r"$+(x^3 / \widetilde{u}_x) f_\rho / \overline{\rho} \partial_x \overline{\rho}$")
+            plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='b',label=r"$-(x^3 / \widetilde{u}_x) \overline{\rho} \overline{d}$")
+            plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-(x^3 / \widetilde{u}_x) \partial_t \overline{\rho}$")
+            plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+		
+            plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='g',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)			
+
+            plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='g',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)		
+            # define x LABEL			
+            setxlabel = r"x (cm)"			
+        elif(self.ig == 2):		
+            #plt.plot(grd1,lhs0,color='g',label = r'$-\partial_r (\overline{m})$')
+            #plt.plot(grd1,rhs0,color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+            #plt.plot(grd1,rhs1,color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
+            #plt.plot(grd1,rhs2,color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
+            #plt.plot(grd1,rhs3,color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
+            #plt.plot(grd1,rhs4,color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
+            #plt.plot(grd1,res,color='k',linestyle='--',label='res')
+
+            xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+            xlimitbottom = np.where(grd1 < self.bconv)
+            xlimittop = np.where(grd1 > self.tconv)	
+
+            plt.plot(grd1[xlimitrange],lhs0[xlimitrange],color='g',label = r'$-\partial_r (\overline{m})$')
+            plt.plot(grd1[xlimitrange],rhs0[xlimitrange],color='r',label = r"$+4 \pi r^2 \overline{\rho}$")
+            plt.plot(grd1[xlimitrange],rhs1[xlimitrange],color='c',label = r"$-(4 \pi r^3/3 \widetilde{u}_r) \nabla_r f_\rho$")		
+            plt.plot(grd1[xlimitrange],rhs2[xlimitrange],color='m',label = r"$+(4 \pi r^3/3 \widetilde{u}_r) f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
+            plt.plot(grd1[xlimitrange],rhs3[xlimitrange],color='b',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \overline{\rho} \overline{d}$")
+            plt.plot(grd1[xlimitrange],rhs4[xlimitrange],color='y',label=r"$-(4 \pi r^3/3 \widetilde{u}_r) \partial_t \overline{\rho}$")
+            plt.plot(grd1[xlimitrange],res[xlimitrange],color='k',linestyle='--',label='res')
+		
+            plt.plot(grd1[xlimitbottom],lhs0[xlimitbottom],'.',color='g',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs0[xlimitbottom],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs1[xlimitbottom],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs2[xlimitbottom],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs3[xlimitbottom],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],rhs4[xlimitbottom],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimitbottom],res[xlimitbottom],'.',color='k',markersize=0.5)			
+
+            plt.plot(grd1[xlimittop],lhs0[xlimittop],'.',color='g',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs0[xlimittop],'.',color='r',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs1[xlimittop],'.',color='c',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs2[xlimittop],'.',color='m',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs3[xlimittop],'.',color='b',markersize=0.5)
+            plt.plot(grd1[xlimittop],rhs4[xlimittop],'.',color='y',markersize=0.5)
+            plt.plot(grd1[xlimittop],res[xlimittop],'.',color='k',markersize=0.5)	
+            # define x LABEL			
+            setxlabel = r"r (cm)"			
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+
 
         # convective boundary markers
         plt.axvline(self.bconv,linestyle='-',linewidth=0.7,color='k')		
         plt.axvline(self.tconv,linestyle='-',linewidth=0.7,color='k') 
 
-        # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        # define y LABEL
         setylabel = r"g cm$^{-1}$"
+		
+        # show x/y LABELS		
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 		
@@ -277,7 +340,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = self.minus_gradx_mm
 		
-        rhs0 = self.plus_four_pi_rsq_dd		
+        rhs0 = self.plus_surface_dd		
         rhs1 = self.minus_mm_dd_fdil_o_fht_rxx
 		
         res = self.minus_resContEquation2
@@ -346,7 +409,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = self.minus_gradx_mm
 		
-        rhs0 = self.plus_four_pi_rsq_dd			
+        rhs0 = self.plus_surface_dd			
         rhs1 = self.minus_dd_mm_gg_o_gamma1_pp		
 		
         res = self.minus_resContEquation3
@@ -414,7 +477,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = -self.plus_gradx_mm/self.plus_dt_mm
 		
-        rhs0 = self.plus_four_pi_rsq_dd/self.plus_dt_mm			
+        rhs0 = self.plus_surface_dd/self.plus_dt_mm			
         rhs1 = self.minus_dd_mm_gg_o_gamma1_pp/self.plus_dt_mm		
 		
         res = lhs0+rhs0+rhs1
@@ -447,7 +510,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = +1./self.fht_ux - self.plus_gradx_dd_o_three_dd_fht_ux
 		
-        rhs0 = self.plus_four_pi_rsq_dd/self.plus_dt_mm			
+        rhs0 = self.plus_surface_dd/self.plus_dt_mm			
         rhs1 = self.minus_dd_mm_gg_o_gamma1_pp/self.plus_dt_mm		
 		
         res = lhs0+rhs0+rhs1		
@@ -581,7 +644,7 @@ class HsseContinuityEquation(calc.CALCULUS,al.ALIMIT,object):
 
         lhs0 = self.minus_gradx_mm/self.plus_dt_mm
 		
-        rhs0 = self.plus_four_pi_rsq_dd			
+        rhs0 = self.plus_surface_dd			
         rhs1 = self.minus_dd_mm_gg_o_gamma1_pp		
 		
         res = self.minus_resContEquation3
