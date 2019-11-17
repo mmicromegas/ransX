@@ -309,7 +309,7 @@ class XfluxXequation(calc.CALCULUS,al.ALIMIT,object):
         #plt.plot(grd1,plt7,color='c',label=r"$-(D_{rr}+D_{r\theta}+D_{r\phi}) \ \partial_r \widetilde{X}$")	
 		
         # convective boundary markers
-        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
         plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
 		
         # convective boundary markers		
@@ -374,7 +374,7 @@ class XfluxXequation(calc.CALCULUS,al.ALIMIT,object):
         plt.plot(grd1,plt4,color='b',linestyle='--',label=r"$model (2)$")		
 		
         # convective boundary markers
-        plt.axvline(self.bconv+0.46e8,linestyle='--',linewidth=0.7,color='k')		
+        plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')		
         plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')		
 		
         # convective boundary markers		

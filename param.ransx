@@ -107,7 +107,7 @@
 []
 ## Transport Equation for Abar ............................. ## [abreq,False,4.e8,1.2e9,4.e3,-4.e3,0]
 ## Flux Equation for Abar .................................. ## [fabxeq,False,4.e8,1.2e9,4.e12,-4.e12,0]
-## Abar stratification ..................................... ## [abar,True,4.e8,1.2e9,1.85e0,1.798e0,0]
+## Abar stratification ..................................... ## [abar,False,4.e8,1.2e9,1.85e0,1.798e0,0]
 ## Abar flux stratification ................................ ## [abflx,False,4.e8,1.2e9,9.e17,-9.e17,0]
 []
 ## Transport Equation for Zbar ............................. ## [zbreq,False,4.e8,1.2e9,2.e3,-2.e3,0]
