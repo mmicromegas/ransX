@@ -1,5 +1,5 @@
-import UTILS.PROMPI_single as psg
-import UTILS.ReadParamsSingle as rps
+import UTILS.PROMPI.PROMPI_single as psg
+import UTILS.SINGLE.ReadParamsSingle as rps
 import warnings
 
 warnings.filterwarnings("ignore")

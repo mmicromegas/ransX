@@ -3,6 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import EQUATIONS.Properties as prop
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -284,59 +285,10 @@ class TurbulentKineticEnergyEquation(calc.CALCULUS,al.ALIMIT,object):
 
         # save PLOT
         plt.savefig('RESULTS/'+self.data_prefix+'tke_eq.png')	
-
-    def plot_tke_evolution(self):
-
-        grd1 = self.t_timec
-
-        plt1 = self.t_tke	
-
-        # handle volume for different geometries
-        if (self.ig == 1):	
-	    Vol = self.xznr**3-self.xznl**3
-        elif (self.ig == 2):	
-            Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
-        else:
-            print("ERROR (TurbulentKineticEnergyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()   
-
-        # Calculate 
-        tke_int = np.zeros(grd1.size)
-        for i in range(0,grd1.size):
-            dd = self.t_dd[i,:]
-            tke = self.t_tke[i,:]
-            tke_int[i] = (dd*tke*Vol).sum()
-		
-        # create FIGURE
-        plt.figure(figsize=(7,6))
-
-        plt.axis([0.,1000.,0.,5.e46])	
-		
-        # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
-		
-        # plot DATA 
-        plt.title('turbulent kinetic energy evolution')
-        plt.plot(grd1,tke_int,color='r',label = r'$tke$')		
-		
-        # define and show x/y LABELS
-        setxlabel = r"t (s)"
-        setylabel = r"ergs"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
-		
-        # show LEGEND
-        plt.legend(loc=1,prop={'size':8})
-
-        # display PLOT
-        plt.show(block=False)
-
-        # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'tke_evol.png')			
 		
     def tke_dissipation(self):
         return self.minus_resTkeEquation		
 
     def tke(self):
         return self.tke		
-		
+		  

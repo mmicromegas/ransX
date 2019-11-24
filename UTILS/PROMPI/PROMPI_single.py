@@ -1,12 +1,11 @@
 import PROMPI_data as prd
-import CALCULUS as calc
 import numpy as np
 import matplotlib.pyplot as plt
 from pylab import *
 
 # class for plotting background stratification of PROMPI models from ransdat
 
-class PROMPI_single(prd.PROMPI_ransdat,calc.CALCULUS,object):
+class PROMPI_single(prd.PROMPI_ransdat,object):
 
     def __init__(self,filename,endianness,precision):
         super(PROMPI_single,self).__init__(filename,endianness,precision) 

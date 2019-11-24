@@ -10,14 +10,13 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Properties(calc.CALCULUS,al.ALIMIT,object):
+class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,params):
+    def __init__(self,params,intc):
         ig = params.getForProp('prop')['ig'] # load geometry	
-        super(Properties,self).__init__(ig) 
+        super(PropertiesEvolution,self).__init__(ig) 
 
         filename = params.getForProp('prop')['eht_data']
-        intc     = params.getForProp('prop')['intc']
         ieos     = params.getForProp('prop')['ieos']
 		
         # load data to structured array
@@ -185,8 +184,11 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         ##############		
         # PROPERTIES #
         ##############
-	
-        xzn0 = self.xzn0
+
+        # load grid	
+        xzn0 = self.xzn0 
+        xznl = self.xznl	
+        xznr = self.xznr	
 	
         # get inner and outer boundary of computational domain  
         xzn0in  = self.xzn0[0]
@@ -240,21 +242,21 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
 
         # handle volume for different geometries
         if (self.ig == 1):	
-	    Vol = self.xznr**3-self.xznl**3
+	        Vol = xznr**3-xznl**3
         elif (self.ig == 2):	
-            Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
+            Vol = 4./3.*np.pi*(xznr**3-xznl**3)
         else:
             print("ERROR (Properties.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()   
 
         # Calculate full dissipation rate and timescale
-        TKE = (dd*tke*Vol)[ind].sum()
+        TKEsum = (dd*tke*Vol)[ind].sum()
         epsD = abs((diss*Vol)[ind].sum())
-        tD = TKE/epsD
-
+        tD = TKEsum/epsD
+		
         # RMS velocities
         M=(dd*Vol)[ind].sum()
-        urms = np.sqrt(2.*TKE/M)
+        urms = np.sqrt(2.*TKEsum/M)
 
         # Turnover timescale
         tc = 2.*(xzn0outc-xzn0inc)/urms
@@ -311,12 +313,17 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
             tauL = 9999999999. 			
             #sys.exit()
 		
-        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'lc':lc,'uconv':uconv,'xzn0inc':xzn0inc,'xzn0outc':xzn0outc,'tc':tc}			
+        return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'dd':dd,'lc':lc,\
+                'uconv':uconv,'xzn0inc':xzn0inc,'xzn0outc':xzn0outc,'tc':tc,'xznr':xznr,'xznl':xznl,\
+                'epsD':epsD,'tD':tD,'tc':tc,'tenuc':tenuc,'pturb_o_pgas':pturb_o_pgas,'TKEsum':TKEsum}			
 		
     def execute(self):
         p = self.properties(self.laxis,self.xbl,self.xbr)
         return {'tauL':p['tauL'],'kolm_tke_diss_rate':p['kolm_tke_diss_rate'],\
-                'tke_diss':p['tke_diss'],'tke':p['tke'],'lc':p['lc'],\
-                'uconv':p['uconv'],'xzn0inc':p['xzn0inc'],'xzn0outc':p['xzn0outc'],'tc':p['tc']}		
+                'tke_diss':p['tke_diss'],'tke':p['tke'],'dd':p['dd'],'lc':p['lc'],\
+                'uconv':p['uconv'],'xzn0inc':p['xzn0inc'],'xzn0outc':p['xzn0outc'],\
+                'tc':p['tc'],'xznr':p['xznr'],'xznl':p['xznl'],'TKEsum':p['TKEsum'],\
+                'epsD':p['epsD'],'tD':p['tD'],'tc':p['tc'],'tenuc':p['tenuc'],\
+                 'pturb_o_pgas':p['pturb_o_pgas']}		
 		
 		

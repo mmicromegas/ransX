@@ -3,6 +3,7 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -76,8 +77,18 @@ class PressureFluxResolutionStudy(calc.CALCULUS,al.ALIMIT,object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
+        if(LAXIS != 2):
+            print("ERROR(PressureFluxResolutionStudy.py): Only LAXIS=2 is supported.")	
+            sys.exit()			
+		
+        fppx_foraxislimit = []
+        fppxmax = np.max(fppx[0])
+        for fppxi in fppx:
+            if(np.max(fppxi) > fppxmax):
+                fppx_foraxislimit = fppxi
+				
         # set plot boundaries   
-        to_plot = [plt]		
+        to_plot = [fppx_foraxislimit]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)			
 		
         # plot DATA 

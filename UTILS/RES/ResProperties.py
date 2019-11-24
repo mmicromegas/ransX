@@ -10,13 +10,13 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Properties(calc.CALCULUS,al.ALIMIT,object):
+class ResProperties(calc.CALCULUS,al.ALIMIT,object):
 
-    def __init__(self,params):
+    def __init__(self,params,filename):
         ig = params.getForProp('prop')['ig'] # load geometry	
-        super(Properties,self).__init__(ig) 
+        super(ResProperties,self).__init__(ig) 
 
-        filename = params.getForProp('prop')['eht_data']
+        #filename = params.getForProp('prop')['eht_data']
         intc     = params.getForProp('prop')['intc']
         ieos     = params.getForProp('prop')['ieos']
 		

@@ -691,7 +691,10 @@ class MasterPlot():
                          params.getForEqs('tkie')['ilg'])
 										  
         # plot turbulent kinetic energy evolution	   
-        ransTke.plot_tke_evolution()
+        #ransTke.plot_tke_evolution()
+
+        # plot evolution of convection boundaries	   
+        #ransTke.plot_conv_bndry_location()
 
 										  
     def execTkeEq(self,kolmrate,bconv,tconv):

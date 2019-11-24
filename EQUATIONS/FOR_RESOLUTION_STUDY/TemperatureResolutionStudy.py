@@ -3,6 +3,7 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -72,8 +73,21 @@ class TemperatureResolutionStudy(calc.CALCULUS,al.ALIMIT,object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
 		
-        # set plot boundaries   
-        to_plot = [plt]		
+        if(LAXIS != 2):
+            print("ERROR(TemperatureResolutionStudy.py): Only LAXIS=2 is supported.")	
+            sys.exit()			
+		
+        tt0_tmp = tt[0]	
+        tt1_tmp = tt[0]	
+
+        tt_foraxislimit = []
+        ttmax = np.max(tt[0])
+        for tti in tt:
+            if(np.max(tti) > ttmax):
+                tt_foraxislimit = tti
+		
+        # set plot boundaries
+        to_plot = [tt_foraxislimit]		
         self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)			
 		
         # plot DATA 

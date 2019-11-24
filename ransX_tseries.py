@@ -1,5 +1,5 @@
-import UTILS.PROMPI_data as pt
-import UTILS.ReadParamsTseries as rpt
+import UTILS.PROMPI.PROMPI_data as pt
+import UTILS.TSERIES.ReadParamsTseries as rpt
 import numpy as np
 import os
 import sys

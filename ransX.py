@@ -7,18 +7,15 @@
 # Date: January/2019
 
 import EQUATIONS.Properties as prop
-import UTILS.ReadParamsRansX as rp
-import UTILS.MasterPlot as plot
+import UTILS.RANSX.ReadParamsRansX as rp
+import UTILS.RANSX.MasterPlot as plot
 import ast 
 
 paramFile = 'param.ransx'
 params = rp.ReadParamsRansX(paramFile)
 
-# get data source file
-filename = params.getForProp('prop')['eht_data']
-
 # get simulation properties
-ransP = prop.Properties(params,filename)
+ransP = prop.Properties(params)
 properties = ransP.execute()
 
 # instantiate master plot 								 

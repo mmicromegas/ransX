@@ -6,10 +6,10 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: January/2019
 
-import EQUATIONS.Properties as prop
-import UTILS.ResReadParamsRansX as rp
-import UTILS.ResMasterPlot as plot
-import ast 
+import UTILS.RES.ResProperties as prop
+import UTILS.RES.ResReadParamsRansX as rp
+import UTILS.RES.ResMasterPlot as plot
+import ast 	
 
 paramFile = 'param.res'
 params = rp.ResReadParamsRansX(paramFile)
@@ -20,7 +20,7 @@ filename = params.getForProp('prop')['eht_data']
 # get simulation properties
 eht = []		
 for file in filename:
-    ransP = prop.Properties(params,file)
+    ransP = prop.ResProperties(params,file)
     properties = ransP.execute()
 
 # instantiate master plot 								 

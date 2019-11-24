@@ -2,8 +2,8 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: November/2019
 
-import UTILS.FourierReadParams as rp
-import UTILS.FourierMasterPlot as plot
+import UTILS.FOURIER.FourierReadParams as rp
+import UTILS.FOURIER.FourierMasterPlot as plot
 import ast 
 
 paramFile = 'param.fourier'
