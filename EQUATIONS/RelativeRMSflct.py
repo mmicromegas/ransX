@@ -77,6 +77,8 @@ class RelativeRMSflct(calc.CALCULUS,al.ALIMIT,object):
         plt7 = self.eht_zbarrms
         plt8 = self.ms2**0.5
 		
+        print("OUTPUT(RelativeRMSflct.py): Max Mach Number: ",np.around(max(plt8),decimals=3))		
+		
         # create FIGURE
         plt.figure(figsize=(7,6))
 		
