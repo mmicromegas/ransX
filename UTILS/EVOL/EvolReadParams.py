@@ -33,7 +33,7 @@ class EvolReadParams:
 		
         return {'eht_data':eht_data,'dataout':dataout,'prefix':prefix,'ig':ig,'ieos':ieos,'laxis':laxis,'xbl':xbl,'xbr':xbr}						
 
-    def getForEqs(self,param): 
+    def getForEvol(self,param): 
 
         # choose only lists identified by param        
         match = [s for s in self.input if param in s]

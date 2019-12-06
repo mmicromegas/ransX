@@ -35,7 +35,10 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         xzn0  = np.asarray(eht.item().get('xzn0')) 
         xznl  = np.asarray(eht.item().get('xznl'))
         xznr  = np.asarray(eht.item().get('xznr'))
-		
+
+        yzn0  = np.asarray(eht.item().get('yzn0'))
+        zzn0  = np.asarray(eht.item().get('zzn0'))	
+	
         xbl   = params.getForProp('prop')['xbl']
         xbr   = params.getForProp('prop')['xbr']		
         laxis = params.getForProp('prop')['laxis']
@@ -158,6 +161,10 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         self.xzn0 = xzn0
         self.xznl = xznl 
         self.xznr = xznr
+
+        self.yzn0 = yzn0
+        self.zzn0 = zzn0
+
         self.tke  = tke 		
 
         self.laxis = laxis
@@ -225,7 +232,8 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
  
         diss_max = diss.max()
         ind = np.where( (diss > 0.02*diss_max) )[0]
-        
+        #ind = np.where( (diss > 0.015*diss_max) )[0]
+		
         xzn0inc  = xzn0[ind[0]]
         xzn0outc = xzn0[ind[-1]]		
 
@@ -240,7 +248,11 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
 
         # handle volume for different geometries
         if (self.ig == 1):	
-	    Vol = self.xznr**3-self.xznl**3
+            #Vol1 = self.xznr**3-self.xznl**3
+            surface = (self.yzn0[-1]-self.yzn0[0])*(self.zzn0[-1]-self.zzn0[0])
+            Vol = surface*(self.xznr-self.xznl)		
+            #print(surface,self.yzn0[-1]-self.yzn0[0],self.zzn0[-1]-self.zzn0[0],Vol)
+            #print(Vol1)			
         elif (self.ig == 2):	
             Vol = 4./3.*np.pi*(self.xznr**3-self.xznl**3)
         else:

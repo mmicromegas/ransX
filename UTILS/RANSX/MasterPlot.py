@@ -1311,6 +1311,13 @@ class MasterPlot():
                            params.getForEqs('enuc')['ybd'],\
                            params.getForEqs('enuc')['ilg'])
 
+        ransEnuc.plot_enuc_per_volume(params.getForProp('prop')['laxis'],\
+                           params.getForEqs('enuc')['xbl'],\
+                           params.getForEqs('enuc')['xbr'],\
+                           params.getForEqs('enuc')['ybu'],\
+                           params.getForEqs('enuc')['ybd'],\
+                           params.getForEqs('enuc')['ilg'])
+
     def execGrav(self):
 						  
         params = self.params						  

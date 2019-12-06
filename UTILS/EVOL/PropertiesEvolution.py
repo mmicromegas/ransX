@@ -72,6 +72,8 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
         uxux = np.asarray(eht.item().get('uxux')[intc])		
 				
         gamma1 = np.asarray(eht.item().get('gamma1')[intc])	 
+
+        x0002    = np.asarray(eht.item().get('x0002')[intc])
 		
         if(ieos == 1):
             cp = np.asarray(eht.item().get('cp')[intc])
@@ -178,6 +180,8 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
         self.trange   = trange		
         self.ig       = ig
 	
+        self.x0002 = x0002
+	
     def properties(self,laxis,xbl,xbr):
         """ Print properties of your simulation""" 
 
@@ -242,7 +246,8 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
 
         # handle volume for different geometries
         if (self.ig == 1):	
-	        Vol = xznr**3-xznl**3
+            surface = (self.yzn0[-1]-self.yzn0[0])*(self.zzn0[-1]-self.zzn0[0])
+            Vol = surface*(self.xznr-self.xznl)	
         elif (self.ig == 2):	
             Vol = 4./3.*np.pi*(xznr**3-xznl**3)
         else:
@@ -312,10 +317,17 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
             kolm_tke_diss_rate = 99999999999.
             tauL = 9999999999. 			
             #sys.exit()
+
+        # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm) 
+        ind = np.where( (xzn0 < 6.66e8 ))[0]
+        x0002mean_cnvz = np.mean(self.x0002[ind])         		
+		
+        #print(ind)
+        #print(x0002mean_cnvz)		
 		
         return {'tauL':tauL,'kolm_tke_diss_rate':kolm_tke_diss_rate,'tke_diss':diss,'tke':tke,'dd':dd,'lc':lc,\
                 'uconv':uconv,'xzn0inc':xzn0inc,'xzn0outc':xzn0outc,'tc':tc,'xznr':xznr,'xznl':xznl,\
-                'epsD':epsD,'tD':tD,'tc':tc,'tenuc':tenuc,'pturb_o_pgas':pturb_o_pgas,'TKEsum':TKEsum}			
+                'epsD':epsD,'tD':tD,'tc':tc,'tenuc':tenuc,'pturb_o_pgas':pturb_o_pgas,'TKEsum':TKEsum,'x0002mean_cnvz':x0002mean_cnvz}			
 		
     def execute(self):
         p = self.properties(self.laxis,self.xbl,self.xbr)
@@ -324,6 +336,6 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
                 'uconv':p['uconv'],'xzn0inc':p['xzn0inc'],'xzn0outc':p['xzn0outc'],\
                 'tc':p['tc'],'xznr':p['xznr'],'xznl':p['xznl'],'TKEsum':p['TKEsum'],\
                 'epsD':p['epsD'],'tD':p['tD'],'tc':p['tc'],'tenuc':p['tenuc'],\
-                 'pturb_o_pgas':p['pturb_o_pgas']}		
+                 'pturb_o_pgas':p['pturb_o_pgas'],'x0002mean_cnvz':p['x0002mean_cnvz']}		
 		
 		

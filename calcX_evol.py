@@ -7,6 +7,7 @@ import UTILS.EVOL.EvolReadParams as rp
 import UTILS.EVOL.EvolMasterPlot as plot
 import UTILS.EVOL.PropertiesEvolution as propevol
 import ast 
+import sys
 
 paramFile = 'param.evol'
 params = rp.EvolReadParams(paramFile)
@@ -21,6 +22,17 @@ eht = np.load(filename)
 t_timec   = np.asarray(eht.item().get('timec')) 
 ntc   = np.asarray(eht.item().get('ntc')) 
 
+
+# check imposed boundary limits 
+xbl = params.getForProp('prop')['xbl']
+xbr = params.getForProp('prop')['xbr']
+xzn0 = np.asarray(eht.item().get('xzn0'))
+
+if ((xbl < xzn0[0]) or (xbr > xzn0[-1])):
+    #print(xbl,xbr,xzn0[0],xzn0[-1])
+    print("ERROR(calcX_evol.py): imposed boundary limit in param.evol exceeds the grid limits.")
+    sys.exit()
+
 t_xzn0inc = []
 t_xzn0outc = []	
 t_TKEsum = []
@@ -29,8 +41,9 @@ t_tD = []
 t_tc = [] 
 t_tenuc = []
 t_pturb_o_pgas = []	
+t_x0002mean_cnvz = []	
 	
-print(t_timec.size,ntc)		
+#print(t_timec.size,ntc)		
 		
 for intc in range(0,t_timec.size):	
     ransPevol = propevol.PropertiesEvolution(params,intc)
@@ -42,7 +55,8 @@ for intc in range(0,t_timec.size):
     t_tD.append(properties['tD'])
     t_tc.append(properties['tc'])
     t_tenuc.append(properties['tenuc'])	
-    t_pturb_o_pgas.append(properties['pturb_o_pgas'])	
+    t_pturb_o_pgas.append(properties['pturb_o_pgas'])
+    t_x0002mean_cnvz.append(properties['x0002mean_cnvz'])	
     print(properties['xzn0inc'],properties['xzn0outc'])
 
 
@@ -81,6 +95,9 @@ tevol.update(xznl)
 
 xznr = {'xznr' : properties['xznr']}
 tevol.update(xznr)
+
+x0002mc = {'t_x0002mean_cnvz' : t_x0002mean_cnvz}
+tevol.update(x0002mc)
 
 # STORE 
 np.save(dataout,tevol)

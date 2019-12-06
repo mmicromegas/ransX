@@ -1,4 +1,5 @@
 import EVOLUTION.TurbulentKineticEnergyEquationEvolution as tkeevol
+import EVOLUTION.ConvectionBoundariesPositionEvolution as cnvzpos
 
 import matplotlib.pyplot as plt 
 
@@ -18,10 +19,32 @@ class EvolMasterPlot():
                                                       params.getForProp('prop')['prefix'])
 										  
         # plot turbulent kinetic energy evolution	   
-        ransTkeEvol.plot_tke_evolution()
+        ransTkeEvol.plot_tke_evolution(params.getForProp('prop')['laxis'],\
+                          params.getForEvol('tkeevol')['xbl'],\
+                          params.getForEvol('tkeevol')['xbr'],\
+                          params.getForEvol('tkeevol')['ybu'],\
+                          params.getForEvol('tkeevol')['ybd'],\
+                          params.getForEvol('tkeevol')['ilg'])
 
+        # ransTkeEvol.plot_x0002()
+								
+    def execEvolCNVZbnry(self):
+						  
+        params = self.params			
+						  
+        # instantiate 		
+        ransCnvzPositionEvol =  cnvzpos.ConvectionBoundariesPositionEvolution(params.getForProp('prop')['dataout'],\
+                                                      params.getForProp('prop')['ig'],\
+                                                      params.getForProp('prop')['prefix'])
+										
         # plot evolution of convection boundaries	   
-        ransTkeEvol.plot_conv_bndry_location()
+        ransCnvzPositionEvol.plot_conv_bndry_location(params.getForProp('prop')['laxis'],\
+                          params.getForEvol('cnvzbndry')['xbl'],\
+                          params.getForEvol('cnvzbndry')['xbr'],\
+                          params.getForEvol('cnvzbndry')['ybu'],\
+                          params.getForEvol('cnvzbndry')['ybd'],\
+                          params.getForEvol('cnvzbndry')['ilg'])
+							
 								
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """ 

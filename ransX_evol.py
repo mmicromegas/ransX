@@ -24,4 +24,7 @@ def str2bool(param):
 # PLOT
 
 # TURBULENT KINETIC ENERGY EVOLUTION
-if str2bool(params.getForEqs('tkeevol')['plotMee']): plt.execEvolTKE()
+if str2bool(params.getForEvol('tkeevol')['plotMee']): plt.execEvolTKE()
+
+# CONVECTION BOUNDARIES POSITION EVOLUTION
+if str2bool(params.getForEvol('cnvzbndry')['plotMee']): plt.execEvolCNVZbnry()
