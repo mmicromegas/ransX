@@ -275,7 +275,7 @@ class Properties(calc.CALCULUS,al.ALIMIT,object):
         ld = M*urms**3./epsD
 
         # Total nuclear luminosity
-        tenuc = ((dd*(enuc1+enuc2))*Vol)[ind].sum()
+        tenuc = ((dd*(enuc1+enuc2))*Vol).sum()
 
         # Pturb over Pgas 
         gamma1 = self.gamma1

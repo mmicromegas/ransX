@@ -28,3 +28,9 @@ if str2bool(params.getForEvol('tkeevol')['plotMee']): plt.execEvolTKE()
 
 # CONVECTION BOUNDARIES POSITION EVOLUTION
 if str2bool(params.getForEvol('cnvzbndry')['plotMee']): plt.execEvolCNVZbnry()
+
+# TOTAL ENERGY SOURCE TERM EVOLUTION
+if str2bool(params.getForEvol('enesource')['plotMee']): plt.execEvolTenuc()
+
+# X0002 EVOLUTION
+if str2bool(params.getForEvol('x0002evol')['plotMee']): plt.execEvolX0002()

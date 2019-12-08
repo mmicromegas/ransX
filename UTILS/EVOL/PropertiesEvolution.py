@@ -34,7 +34,10 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
         xzn0  = np.asarray(eht.item().get('xzn0')) 
         xznl  = np.asarray(eht.item().get('xznl'))
         xznr  = np.asarray(eht.item().get('xznr'))
-		
+
+        yzn0  = np.asarray(eht.item().get('yzn0'))
+        zzn0  = np.asarray(eht.item().get('zzn0'))	
+	
         xbl   = params.getForProp('prop')['xbl']
         xbr   = params.getForProp('prop')['xbr']		
         laxis = params.getForProp('prop')['laxis']
@@ -159,6 +162,10 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
         self.xzn0 = xzn0
         self.xznl = xznl 
         self.xznr = xznr
+
+        self.yzn0 = yzn0
+        self.zzn0 = zzn0
+		
         self.tke  = tke 		
 
         self.laxis = laxis
@@ -270,7 +277,7 @@ class PropertiesEvolution(calc.CALCULUS,al.ALIMIT,object):
         ld = M*urms**3./epsD
 
         # Total nuclear luminosity
-        tenuc = ((dd*(enuc1+enuc2))*Vol)[ind].sum()
+        tenuc = ((dd*(enuc1+enuc2))*Vol).sum()
 
         # Pturb over Pgas 
         gamma1 = self.gamma1

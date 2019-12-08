@@ -29,7 +29,7 @@ xbr = params.getForProp('prop')['xbr']
 xzn0 = np.asarray(eht.item().get('xzn0'))
 
 if ((xbl < xzn0[0]) or (xbr > xzn0[-1])):
-    #print(xbl,xbr,xzn0[0],xzn0[-1])
+    print(xbl,xbr,xzn0[0],xzn0[-1])
     print("ERROR(calcX_evol.py): imposed boundary limit in param.evol exceeds the grid limits.")
     sys.exit()
 

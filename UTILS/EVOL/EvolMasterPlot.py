@@ -1,5 +1,8 @@
 import EVOLUTION.TurbulentKineticEnergyEquationEvolution as tkeevol
 import EVOLUTION.ConvectionBoundariesPositionEvolution as cnvzpos
+import EVOLUTION.EnergySourceTermEvolution as enesrc
+import EVOLUTION.X0002Evolution as x2evol
+
 
 import matplotlib.pyplot as plt 
 
@@ -26,7 +29,6 @@ class EvolMasterPlot():
                           params.getForEvol('tkeevol')['ybd'],\
                           params.getForEvol('tkeevol')['ilg'])
 
-        # ransTkeEvol.plot_x0002()
 								
     def execEvolCNVZbnry(self):
 						  
@@ -44,7 +46,41 @@ class EvolMasterPlot():
                           params.getForEvol('cnvzbndry')['ybu'],\
                           params.getForEvol('cnvzbndry')['ybd'],\
                           params.getForEvol('cnvzbndry')['ilg'])
+
+    def execEvolTenuc(self):
+						  
+        params = self.params			
+						  
+        # instantiate 		
+        ransTenucEvol =  enesrc.EnergySourceTermEvolution(params.getForProp('prop')['dataout'],\
+                                                      params.getForProp('prop')['ig'],\
+                                                      params.getForProp('prop')['prefix'])
+										  
+        # plot total energy source	   
+        ransTenucEvol.plot_tenuc_evolution(params.getForProp('prop')['laxis'],\
+                          params.getForEvol('enesource')['xbl'],\
+                          params.getForEvol('enesource')['xbr'],\
+                          params.getForEvol('enesource')['ybu'],\
+                          params.getForEvol('enesource')['ybd'],\
+                          params.getForEvol('enesource')['ilg'])
 							
+    def execEvolX0002(self):
+						  
+        params = self.params			
+						  
+        # instantiate 		
+        ransX0002Evol =  x2evol.X0002Evolution(params.getForProp('prop')['dataout'],\
+                                                      params.getForProp('prop')['ig'],\
+                                                      params.getForProp('prop')['prefix'])
+										
+        # plot evolution of x0002	   
+        ransX0002Evol.plot_x0002(params.getForProp('prop')['laxis'],\
+                          params.getForEvol('x0002evol')['xbl'],\
+                          params.getForEvol('x0002evol')['xbr'],\
+                          params.getForEvol('x0002evol')['ybu'],\
+                          params.getForEvol('x0002evol')['ybd'],\
+                          params.getForEvol('x0002evol')['ilg'])
+
 								
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """ 

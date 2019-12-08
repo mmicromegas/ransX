@@ -888,6 +888,10 @@ class PROMPI_single(prd.PROMPI_ransdat,object):
         gg = np.asarray(self.data['gg'])
 	
         fig, ax1 = plt.subplots(figsize=(7,6))
+
+        ax1.axis([4.e8,1.2e9,1.e-4,0.1])
+		
+        plt.title(r'HSE deviation (evolved)')		
 		
         pp = np.zeros(nx)
         pp[nx-1] = press[nx-1]
@@ -895,13 +899,13 @@ class PROMPI_single(prd.PROMPI_ransdat,object):
         for i in range(nx-2,-1,-1):
             pp[i] = pp[i+1] - dd[i]*gg[i]*(xznr[i]-xznl[i])
         
-        ax1.plot(xzn0,(pp-press)/press,color='r',label = '(pp hydrostatic - press)/press')       
+        ax1.semilogy(xzn0,np.abs((pp-press))/press,color='r',label = '(pp hydrostatic - press)/press')       
         
-        ax1.set_xlabel(r'r')
+        ax1.set_xlabel(r'x')
         ax1.set_ylabel(r'(delta pp)/pp')
         ax1.legend(loc=1,prop={'size':18})
 
-        savefig('RESULTS/hse3.png')
+        savefig('RESULTS/hse3_ccptwo_256cubed_evolved.png')
         
         plt.show(block=False)
 
