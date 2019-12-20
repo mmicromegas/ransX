@@ -1,0 +1,7 @@
+# ----- Parameter file for rans(eXtreme) oburn single ---------- #
+[]
+## Input-Data Directory .................... ## [single,datafile,D:\simonX\ccptwo\ccptwo.lrez.00779.ransdat]
+## Input Data Endianness ................... ## [single,endian,little_endian]
+## Input Data Floating Point Precision ..... ## [single,precision,double]
+## Limit X-grid ............................ ## [single,xlimit,4.e8,1.2e9]
+## List Of Mean Fields To Plot ............. ## [single,toplot,ux]

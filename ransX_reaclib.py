@@ -19,21 +19,29 @@ ransP = prop.Properties(params)
 properties = ransP.execute()
 
 # instantiate master plot 								 
-plt = plot.ReaclibMasterPlot(params)								 
+plt = plot.ReaclibMasterPlot(params)
 
 # obtain publication quality figures
 plt.SetMatplotlibParams()
+
 
 # define useful functions
 def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
 
+
 # load network
-network = params.getNetwork() 
+network = params.getNetwork()
 
 # COMPARE TRANSPORT and NUCLEAR TIMESCALES 
-for elem in network[1:]: # skip network identifier in the list 
-    inuc = params.getInuc(network,elem) 	
-    if str2bool(params.getForEqs('xTimescales_'+elem)['plotMee']): plt.execXtransportVSnuclearTimescales(inuc,elem,'xTimescales_'+elem,properties['xzn0inc'],properties['xzn0outc'],properties['tc'])
-
+for elem in network[1:]:  # skip network identifier in the list
+    inuc = params.getInuc(network, elem)
+    if str2bool(params.getForEqs('xTimescales_' + elem)['plotMee']): plt.execXtransportVSnuclearTimescales(inuc, elem,
+                                                                                                           'xTimescales_' + elem,
+                                                                                                           properties[
+                                                                                                               'xzn0inc'],
+                                                                                                           properties[
+                                                                                                               'xzn0outc'],
+                                                                                                           properties[
+                                                                                                               'tc'])

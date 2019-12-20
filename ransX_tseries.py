@@ -3,12 +3,9 @@ import UTILS.TSERIES.ReadParamsTseries as rpt
 import numpy as np
 import os
 import sys
-import matplotlib.pyplot as plt       
 
-
-# read input parameters
-	   
-paramFile = 'param.tseries'
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.tseries')
 params = rpt.ReadParamsTseries(paramFile)	   
 	   
 datadir = params.getForTseries('tseries')['datadir']

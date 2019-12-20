@@ -4,49 +4,47 @@
 
 import numpy as np
 import UTILS.EVOL.EvolReadParams as rp
-import UTILS.EVOL.EvolMasterPlot as plot
 import UTILS.EVOL.PropertiesEvolution as propevol
-import ast 
 import sys
+import os
 
-paramFile = 'param.evol'
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.evol')
 params = rp.EvolReadParams(paramFile)
 
 filename = params.getForProp('prop')['eht_data']
 dataout = params.getForProp('prop')['dataout']
 
 # load data to structured array
-eht = np.load(filename)	
+eht = np.load(filename)
 
-# load availabe central times
-t_timec   = np.asarray(eht.item().get('timec')) 
-ntc   = np.asarray(eht.item().get('ntc')) 
-
+# load available central times
+t_timec = np.asarray(eht.item().get('timec'))
+ntc = np.asarray(eht.item().get('ntc'))
 
 # check imposed boundary limits 
 xbl = params.getForProp('prop')['xbl']
 xbr = params.getForProp('prop')['xbr']
 xzn0 = np.asarray(eht.item().get('xzn0'))
 
-if ((xbl < xzn0[0]) or (xbr > xzn0[-1])):
-    print(xbl,xbr,xzn0[0],xzn0[-1])
+if (xbl < xzn0[0]) or (xbr > xzn0[-1]):
+    print(xbl, xbr, xzn0[0], xzn0[-1])
     print("ERROR(calcX_evol.py): imposed boundary limit in param.evol exceeds the grid limits.")
     sys.exit()
 
 t_xzn0inc = []
-t_xzn0outc = []	
+t_xzn0outc = []
 t_TKEsum = []
 t_epsD = []
 t_tD = []
-t_tc = [] 
+t_tc = []
 t_tenuc = []
-t_pturb_o_pgas = []	
-t_x0002mean_cnvz = []	
-	
-#print(t_timec.size,ntc)		
-		
-for intc in range(0,t_timec.size):	
-    ransPevol = propevol.PropertiesEvolution(params,intc)
+t_pturb_o_pgas = []
+t_x0002mean_cnvz = []
+t_machMax, t_machMean = [], []
+
+for intc in range(0, t_timec.size):
+    ransPevol = propevol.PropertiesEvolution(params, intc)
     properties = ransPevol.execute()
     t_xzn0inc.append(properties['xzn0inc'])
     t_xzn0outc.append(properties['xzn0outc'])
@@ -54,11 +52,12 @@ for intc in range(0,t_timec.size):
     t_epsD.append(properties['epsD'])
     t_tD.append(properties['tD'])
     t_tc.append(properties['tc'])
-    t_tenuc.append(properties['tenuc'])	
+    t_tenuc.append(properties['tenuc'])
     t_pturb_o_pgas.append(properties['pturb_o_pgas'])
-    t_x0002mean_cnvz.append(properties['x0002mean_cnvz'])	
-    print(properties['xzn0inc'],properties['xzn0outc'])
-
+    t_machMax.append(properties['machMax'])
+    t_machMean.append(properties['machMean'])
+    t_x0002mean_cnvz.append(properties['x0002mean_cnvz'])
+    print(properties['xzn0inc'], properties['xzn0outc'])
 
 # store time-evolution
 tevol = {}
@@ -90,16 +89,31 @@ tevol.update(t_nucl)
 t_pt_o_pg = {'t_pturb_o_pgas': t_pturb_o_pgas}
 tevol.update(t_pt_o_pg)
 
-xznl = {'xznl' : properties['xznl']}
+t_machMx = {'t_machMax': t_machMax}
+tevol.update(t_machMx)
+
+t_machMn = {'t_machMean': t_machMean}
+tevol.update(t_machMn)
+
+xznl = {'xznl': properties['xznl']}
 tevol.update(xznl)
 
-xznr = {'xznr' : properties['xznr']}
+xznr = {'xznr': properties['xznr']}
 tevol.update(xznr)
 
-x0002mc = {'t_x0002mean_cnvz' : t_x0002mean_cnvz}
+x0002mc = {'t_x0002mean_cnvz': t_x0002mean_cnvz}
 tevol.update(x0002mc)
 
+nx = {'nx': properties['nx']}
+tevol.update(nx)
+
+ny = {'ny': properties['ny']}
+tevol.update(ny)
+
+nz = {'nz': properties['nz']}
+tevol.update(nz)
+
 # STORE 
-np.save(dataout,tevol)
+np.save(dataout, tevol)
 
 # END

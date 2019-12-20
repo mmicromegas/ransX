@@ -1,32 +1,20 @@
-###############################################
-# rans(eXtreme) https://arxiv.org/abs/1401.5176
-###############################################
+# Author: Miroslav Mocak
+# Email: miroslav.mocak@gmail.com
+# Date: November/2019
+from typing import Union
 
-STILL TO BE DEVELOPED !!!!!!!!!!!!!!!!!!!
+import UTILS.EVOL.FOR_RESOLUTION_STUDY.ResEvolReadParams as rp
+import UTILS.EVOL.FOR_RESOLUTION_STUDY.ResEvolMasterPlot as plot
+import UTILS.EVOL.PropertiesEvolution as propevol
+import ast
+import os
 
-# Author: Miroslav Mocak 
-# Email: miroslav.mocak@gmail.com 
-# Date: January/2019
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.res.evol')
+params = rp.ResEvolReadParams(paramFile)
 
-import UTILS.RES.ResProperties as prop
-import UTILS.RES.ResReadParamsRansX as rp
-import UTILS.RES.ResMasterPlot as plot
-import ast 	
-
-paramFile = 'param.res'
-params = rp.ResReadParamsRansX(paramFile)
-
-# get list with data source files
-filename = params.getForProp('prop')['eht_data']
-
-# get simulation properties
-eht = []		
-for file in filename:
-    ransP = prop.ResProperties(params,file)
-    properties = ransP.execute()
-
-# instantiate master plot 								 
-plt = plot.ResMasterPlot(params)								 
+# instantiate master plot
+plt = plot.ResEvolMasterPlot(params)
 
 # obtain publication quality figures
 plt.SetMatplotlibParams()
@@ -36,44 +24,20 @@ def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
 
-# PLOT
+# TURBULENT KINETIC ENERGY EVOLUTION
+if str2bool(params.getForEvol('tkeevol')['plotMee']): plt.execEvolTKE()
 
-# TEMPERATURE
-if str2bool(params.getForEqs('temp')['plotMee']): plt.execTemp()
+# MACH NUMBER MAX EVOLUTION
+if str2bool(params.getForEvol('machmxevol')['plotMee']): plt.execEvolMachMax()
 
-# BRUNT-VAISALLA FREQUENCY
-if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
+# MACH NUMBER MEAN EVOLUTION
+if str2bool(params.getForEvol('machmeevol')['plotMee']): plt.execEvolMachMean()
 
-# TURBULENT KINETIC ENERGY
-if str2bool(params.getForEqs('tkie')['plotMee']): plt.execTke()
+# CONVECTION BOUNDARIES POSITION EVOLUTION
+if str2bool(params.getForEvol('cnvzbndry')['plotMee']): plt.execEvolCNVZbnry()
 
-# INTERNAL ENERGY FLUX
-if str2bool(params.getForEqs('eintflx')['plotMee']): plt.execEiFlx()
+# TOTAL ENERGY SOURCE TERM EVOLUTION
+if str2bool(params.getForEvol('enesource')['plotMee']): plt.execEvolTenuc()
 
-# PRESSURE FLUX
-if str2bool(params.getForEqs('pressxflx')['plotMee']): plt.execPPxflx()
-
-# TEMPERATURE FLUX EQUATION
-if str2bool(params.getForEqs('tempflx')['plotMee']): plt.execTTflx()
-
-# ENTHALPY FLUX EQUATION
-if str2bool(params.getForEqs('enthflx')['plotMee']): plt.execHHflx()
-
-# ENTROPY FLUX
-if str2bool(params.getForEqs('entrflx')['plotMee']): plt.execSSflx()
-
-# TURBULENT MASS FLUX
-if str2bool(params.getForEqs('tmsflx')['plotMee']): plt.execTMSflx()
-
-# load network
-network = params.getNetwork() 
-
-# COMPOSITION MASS FRACTION AND FLUX
-for elem in network[1:]: # skip network identifier in the list 
-    inuc = params.getInuc(network,elem) 	
-    if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem)
-    if str2bool(params.getForEqs('xflxx_'+elem)['plotMee']): plt.execXflxx(inuc,elem,'xflxx_'+elem)	
-
-
-
-
+# X0002 EVOLUTION
+if str2bool(params.getForEvol('x0002evol')['plotMee']): plt.execEvolX0002()

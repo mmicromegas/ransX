@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 
+
 # class for useful identities
 
 class UsefulIdentities:
@@ -9,4 +10,4 @@ class UsefulIdentities:
         pass
 
     def flux(self):
-        pass    
+        pass

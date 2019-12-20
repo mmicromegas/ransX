@@ -1,6 +1,7 @@
-# ----- Parameter file for 2D Fourier spectra of PROMPI data ------- #
+# ----- Parameter file for rans(eXtreme) and OBURN ---------- #
 []
-## Input-Data Directory ...................... ## [fourier,datafile,C:\Users\mmocak\Desktop\GITDEV\ransX\DATA\BINDATA\ccp_one_layer\ccpone.lrez.07001.bindata]
+## Input-Data Directory ...................... ## [fourier,datadi,C:\Users\mmocak\Desktop\GITDEV\ransX\DATA\BINDATA\ccp_one_layer\]
+## Input-Data Files ...........................## [fourier,datafiles,ccpone.lrez.07001.bindata,ccpone.mrez.07002.bindata,ccpone.hrez.07001.bindata] 
 ## Filename Prefix For Plots ................. ## [fourier,prefix,ccpone_fourier_lres]
 ## Input Data Endianness ..................... ## [fourier,endian,little_endian]
 ## Input Data Floating Point Precision ....... ## [fourier,precision,double]

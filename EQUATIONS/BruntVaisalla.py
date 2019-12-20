@@ -4,146 +4,146 @@ import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class BruntVaisalla(calc.CALCULUS,al.ALIMIT,object):
+class BruntVaisalla(calc.CALCULUS, al.ALIMIT, object):
 
-    def __init__(self,filename,ig,ieos,intc,data_prefix):
-        super(BruntVaisalla,self).__init__(ig) 
-	
+    def __init__(self, filename, ig, ieos, intc, data_prefix):
+        super(BruntVaisalla, self).__init__(ig)
+
         # load data to structured array
-        eht = np.load(filename)		
+        eht = np.load(filename)
 
         # load grid
-        xzn0   = np.asarray(eht.item().get('xzn0')) 	
-        nx   = np.asarray(eht.item().get('nx'))
+        xzn0 = np.asarray(eht.item().get('xzn0'))
+        nx = np.asarray(eht.item().get('nx'))
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 
-		
-        dd        = np.asarray(eht.item().get('dd')[intc]) 
-        pp        = np.asarray(eht.item().get('pp')[intc]) 
-        gg        = np.asarray(eht.item().get('gg')[intc])
-        gamma1    = np.asarray(eht.item().get('gamma1')[intc])
+
+        dd = np.asarray(eht.item().get('dd')[intc])
+        pp = np.asarray(eht.item().get('pp')[intc])
+        gg = np.asarray(eht.item().get('gg')[intc])
+        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if(ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])   
+        if (ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])
             cv = np.asarray(eht.item().get('cv')[intc])
-            gamma1 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
-		
-        dlnrhodr  = self.deriv(np.log(dd),xzn0)
-        dlnpdr    = self.deriv(np.log(pp),xzn0)
-        dlnrhodrs = (1./gamma1)*dlnpdr
-        nsq       = gg*(dlnrhodr-dlnrhodrs)
-	
-        chim = np.asarray(eht.item().get('chim')[intc]) 
-        chit = np.asarray(eht.item().get('chit')[intc]) 
+            gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+
+        dlnrhodr = self.deriv(np.log(dd), xzn0)
+        dlnpdr = self.deriv(np.log(pp), xzn0)
+        dlnrhodrs = (1. / gamma1) * dlnpdr
+        nsq = gg * (dlnrhodr - dlnrhodrs)
+
+        chim = np.asarray(eht.item().get('chim')[intc])
+        chit = np.asarray(eht.item().get('chit')[intc])
         chid = np.asarray(eht.item().get('chid')[intc])
-        mu   = np.asarray(eht.item().get('abar')[intc]) 		
-        tt   = np.asarray(eht.item().get('tt')[intc])
-        gamma2   = np.asarray(eht.item().get('gamma2')[intc])
+        mu = np.asarray(eht.item().get('abar')[intc])
+        tt = np.asarray(eht.item().get('tt')[intc])
+        gamma2 = np.asarray(eht.item().get('gamma2')[intc])
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if(ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])   
+        if (ieos == 1):
+            cp = np.asarray(eht.item().get('cp')[intc])
             cv = np.asarray(eht.item().get('cv')[intc])
-            gamma2 = cp/cv   # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+            gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             alpha = 0.
             delta = 0.
-            phi   = 0.
-        elif(ieos == 3):
-            alpha = 1./chid
-            delta = -chit/chid
-            phi   = chid/chim
+            phi = 0.
+        elif (ieos == 3):
+            alpha = 1. / chid
+            delta = -chit / chid
+            phi = chid / chim
         else:
-            print("ERROR(BruntVaisalla.py): EOS not implemented")			
+            print("ERROR(BruntVaisalla.py): EOS not implemented")
 
-        hp    = -pp/self.Grad(pp,xzn0)  		
-	
+        hp = -pp / self.Grad(pp, xzn0)
+
         lntt = np.log(tt)
         lnpp = np.log(pp)
         lnmu = np.log(mu)
 
         # calculate temperature gradients	
 
-        if(ieos == 1):
-            nabla = self.deriv(lntt,lnpp) 
-            nabla_ad = (gamma2-1.)/gamma2
+        if (ieos == 1):
+            nabla = self.deriv(lntt, lnpp)
+            nabla_ad = (gamma2 - 1.) / gamma2
             nabla_mu = np.zeros(nx)
-	        # Kippenhahn and Weigert, p.42 
-            self.nsq_version2 = (gg*delta/hp)*(nabla_ad - nabla) 			
-        elif(ieos == 3):		
-            nabla = self.deriv(lntt,lnpp) 
-            nabla_ad = (gamma2-1.)/gamma2
-            nabla_mu = (chim/chit)*self.deriv(lnmu,lnpp)
-	        # Kippenhahn and Weigert, p.42 but with opposite (minus) sign at the (phi/delta)*nabla_mu
-            self.nsq_version2 = (gg*delta/hp)*(nabla_ad - nabla - (phi/delta)*nabla_mu) 			
+            # Kippenhahn and Weigert, p.42
+            self.nsq_version2 = (gg * delta / hp) * (nabla_ad - nabla)
+        elif (ieos == 3):
+            nabla = self.deriv(lntt, lnpp)
+            nabla_ad = (gamma2 - 1.) / gamma2
+            nabla_mu = (chim / chit) * self.deriv(lnmu, lnpp)
+            # Kippenhahn and Weigert, p.42 but with opposite (minus) sign at the (phi/delta)*nabla_mu
+            self.nsq_version2 = (gg * delta / hp) * (nabla_ad - nabla - (phi / delta) * nabla_mu)
         else:
-            print("ERROR(BruntVaisalla.py): EOS not implemented")            		
-				
+            print("ERROR(BruntVaisalla.py): EOS not implemented")
+
         # assign global data to be shared across whole class
-        self.data_prefix = data_prefix		
-        self.xzn0        = xzn0
-        self.nsq         = nsq
+        self.data_prefix = data_prefix
+        self.xzn0 = xzn0
+        self.nsq = nsq
         self.ig = ig
         self.nx = nx
-	
-    def plot_bruntvaisalla(self,LAXIS,xbl,xbr,ybu,ybd,ilg):
-        """Plot BruntVaisalla parameter in the model""" 
+
+    def plot_bruntvaisalla(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot BruntVaisalla parameter in the model"""
 
         # load x GRID
         grd1 = self.xzn0
-	
+
         # load DATA to plot
         plt1 = self.nsq
         plt2 = self.nsq_version2
-		
+
         # create FIGURE
-        plt.figure(figsize=(7,6))
-		
+        plt.figure(figsize=(7, 6))
+
         # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0,0))		
-		
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
         # set plot boundaries   
-        to_plot = [plt1,plt2]		
-        self.set_plt_axis(LAXIS,xbl,xbr,ybu,ybd,to_plot)	
-		
+        to_plot = [plt1, plt2]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
         # plot DATA 
         plt.title('Brunt-Vaisalla frequency')
-		
-        if(self.ig == 1):			
-            plt.plot(grd1,plt1,color='r',label = r'N$^2$')
-            plt.plot(grd1,np.zeros(self.nx),linestyle='--',color='k')
-            #plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
-            setxlabel = r"x (cm)"				
-        elif(self.ig == 2):
-            plt.plot(grd1,plt1,color='r',label = r'N$^2$')
-            plt.plot(grd1,np.zeros(self.nx),linestyle='--',color='k')
-            #plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')	
-            setxlabel = r"r (cm)"		
+
+        if (self.ig == 1):
+            plt.plot(grd1, plt1, color='r', label=r'N$^2$')
+            plt.plot(grd1, np.zeros(self.nx), linestyle='--', color='k')
+            # plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
+            setxlabel = r"x (cm)"
+        elif (self.ig == 2):
+            plt.plot(grd1, plt1, color='r', label=r'N$^2$')
+            plt.plot(grd1, np.zeros(self.nx), linestyle='--', color='k')
+            # plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
+            setxlabel = r"r (cm)"
         else:
-            print("ERROR(BruntVaisalla.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit() 
-			
-        # define y LABELS
+            print(
+                "ERROR(BruntVaisalla.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+
+            # define y LABELS
         setylabel = r"N$^2$"
 
         # show x/y LABELS
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
-		
+
         # show LEGEND
-        plt.legend(loc=ilg,prop={'size':18})
+        plt.legend(loc=ilg, prop={'size': 18})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/'+self.data_prefix+'mean_BruntVaisalla.png')
-	
-	
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_BruntVaisalla.png')

@@ -63,12 +63,12 @@ class TemperatureFluxResolutionStudy(calc.CALCULUS,al.ALIMIT,object):
         nz = self.nz		
 				
         # find maximum resolution data		
-        grd_maxres = self.maxresdata(grd) 		
+        grd_maxres = self.maxresdata(grd)
         nsq_maxres = self.maxresdata(fttx)
 		
-        plt_interp = []		
+        plt_interp = []
         for i in range(len(grd)):
-            plt_interp.append(np.interp(grd_maxres,grd[i],fttx[i]))		
+            plt_interp.append(np.interp(grd_maxres,grd[i],fttx[i]))
 
         # create FIGURE
         plt.figure(figsize=(7,6))

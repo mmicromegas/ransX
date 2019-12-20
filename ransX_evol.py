@@ -4,7 +4,6 @@
 
 import UTILS.EVOL.EvolReadParams as rp
 import UTILS.EVOL.EvolMasterPlot as plot
-import UTILS.EVOL.PropertiesEvolution as propevol
 import ast 
 
 paramFile = 'param.evol'

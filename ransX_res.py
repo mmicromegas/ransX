@@ -9,9 +9,11 @@
 import UTILS.RES.ResProperties as prop
 import UTILS.RES.ResReadParamsRansX as rp
 import UTILS.RES.ResMasterPlot as plot
-import ast 	
+import ast
+import os
 
-paramFile = 'param.res'
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.res')
 params = rp.ResReadParamsRansX(paramFile)
 
 # get list with data source files

@@ -1,7 +1,0 @@
-# ----- Parameter file for rans(eXtreme) oburn single ---------- #
-[]
-## Input-Data Directory .................... ## [single,datafile,C:\Users\mmocak\Desktop\GITDEV\ransX\DATA\RANSDAT\ccpone.lrez.00070.cfl02.ransdat]
-## Input Data Endianness ................... ## [single,endian,little_endian]
-## Input Data Floating Point Precision ..... ## [single,precision,double]
-## Limit X-grid ............................ ## [single,xlimit,3.6e8,8.4e8]
-## List Of Mean Fields To Plot ............. ## [single,toplot,ux,tt,dd]

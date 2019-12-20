@@ -1,8 +1,0 @@
-# ----- Parameter file for rans(eXtreme) hheflash tseries ---------- #
-[]
-## Input Data Directory .................... ## [tseries,datadir,D:\simonX\ccpone\lres1\]
-## Input Data Endianness ................... ## [tseries,endian,little_endian]
-## Input Data Floating Point Precision ..... ## [tseries,precision,double]
-## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ccpone_64cubed_end]
-## Time-Range (in s) ....................... ## [tseries,trange,822.,957.]
-## Averaging Window (in s) ................. ## [tseries,tavg,120.]

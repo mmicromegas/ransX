@@ -2,16 +2,21 @@
 # rans(eXtreme) https://arxiv.org/abs/1401.5176
 ###############################################
 
+# File: ransX.py
 # Author: Miroslav Mocak 
 # Email: miroslav.mocak@gmail.com 
 # Date: January/2019
+# Desc: main script for plotting terms in RANS equations
+# Usage: run ransX.py
 
 import EQUATIONS.Properties as prop
 import UTILS.RANSX.ReadParamsRansX as rp
 import UTILS.RANSX.MasterPlot as plot
-import ast 
+import ast
+import os
 
-paramFile = 'param.ransx'
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.ransx')
 params = rp.ReadParamsRansX(paramFile)
 
 # get simulation properties
