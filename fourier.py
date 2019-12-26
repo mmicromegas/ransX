@@ -5,8 +5,10 @@
 import UTILS.FOURIER.FourierReadParams as rp
 import UTILS.FOURIER.FourierMasterPlot as plot
 import ast
+import os
 
-paramFile = 'param.fourier'
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.fourier')
 params = rp.FourierReadParams(paramFile)
 
 # instantiate master plot  	 
@@ -21,8 +23,6 @@ def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
 
-
-# PLOT
 
 # TURBULENT KINETIC ENERGY FOURIER SPECTRUM
 if str2bool(params.getForEqs('fstke')['plotMee']): plt.execFourierTKE()

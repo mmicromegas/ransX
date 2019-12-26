@@ -4,7 +4,7 @@ import EVOLUTION.FOR_RESOLUTION_STUDY.MachNumberMeanEvolutionResolutionStudy as 
 
 # import EVOLUTION.FOR_RESOLUTION_STUDY.ConvectionBoundariesPositionEvolutionResolutionStudy as cnvzpos
 # import EVOLUTION.FOR_RESOLUTION_STUDY.EnergySourceTermEvolutionResolutionStudy as enesrc
-# import EVOLUTION.FOR_RESOLUTION_STUDY.X0002EvolutionResolutionStudy as x2evol
+import EVOLUTION.FOR_RESOLUTION_STUDY.X0002EvolutionResolutionStudy as x2evol
 
 
 import matplotlib.pyplot as plt
@@ -65,6 +65,23 @@ class ResEvolMasterPlot():
                                        params.getForEvol('machmeevol')['ybu'], \
                                        params.getForEvol('machmeevol')['ybd'], \
                                        params.getForEvol('machmeevol')['ilg'])
+
+    def execEvolX0002(self):
+        params = self.params
+
+        # instantiate
+        ransX0002 = x2evol.X0002EvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'], \
+            params.getForProp('prop')['ig'], \
+            params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy evolution
+        ransX0002.plot_x0002_evolution(params.getForProp('prop')['laxis'], \
+                                       params.getForEvol('x0002evol')['xbl'], \
+                                       params.getForEvol('x0002evol')['xbr'], \
+                                       params.getForEvol('x0002evol')['ybu'], \
+                                       params.getForEvol('x0002evol')['ybd'], \
+                                       params.getForEvol('x0002evol')['ilg'])
 
 
     def SetMatplotlibParams(self):

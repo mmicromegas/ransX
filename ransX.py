@@ -34,8 +34,6 @@ def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
 
-# PLOT
-
 # TEMPERATURE AND DENSITY 
 if str2bool(params.getForEqs('ttdd')['plotMee']): plt.execRhoTemp()	
 

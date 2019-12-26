@@ -5,8 +5,10 @@
 import UTILS.EVOL.EvolReadParams as rp
 import UTILS.EVOL.EvolMasterPlot as plot
 import ast 
+import os
 
-paramFile = 'param.evol'
+# create os independent path and read parameter file
+paramFile = os.path.join('PARAMS', 'param.evol')
 params = rp.EvolReadParams(paramFile)
 
 # instantiate master plot  	 
@@ -20,7 +22,6 @@ def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
 
-# PLOT
 
 # TURBULENT KINETIC ENERGY EVOLUTION
 if str2bool(params.getForEvol('tkeevol')['plotMee']): plt.execEvolTKE()

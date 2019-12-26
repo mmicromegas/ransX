@@ -2,20 +2,27 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 import UTILS.PROMPI.PROMPI_data as pd
+import UTILS.CALCULUS as calc
+import UTILS.ALIMIT as al
 
+class SpectrumTurbulentKineticEnergyResolutionStudy(calc.CALCULUS, al.ALIMIT, object):
 
-class SpectrumTurbulentKineticEnergyResolutionStudy():
+    def __init__(self, datadir, filename, data_prefix, ig, lhc):
+        super(SpectrumTurbulentKineticEnergyResolutionStudy, self).__init__(ig)
 
-    def __init__(self, filename, data_prefix, ig, lhc):
+        # initialize
+        ig = int(ig)
 
         # load data to a list
         block = []
         for file in filename:
-            block.append(pd.PROMPI_bindata(filename, ['velx', 'vely', 'velz']))
+            print(datadir+file)
+            block.append(pd.PROMPI_bindata(datadir+file, ['velx', 'vely', 'velz']))
 
         # declare data lists
         xzn0, velx, vely, velz, xlm, ilhc = [], [], [], [], [], []
         nx, ny, nz = [], [], []
+        sterad, steradtot = [],[]
 
         for i in range(len(filename)):
             xzn0.append(block[i].datadict['xzn0'])
@@ -28,33 +35,30 @@ class SpectrumTurbulentKineticEnergyResolutionStudy():
             ny.append(block[i].datadict['qqy'])
             nz.append(block[i].datadict['qqz'])
 
-        # initialize 
-        ig = int(ig)
-
-        if (ig == 1):
-            sterad = np.ones((nz, ny))
-            steradtot = np.sum(sterad)
-        elif (ig == 2):
-            print("ERROR (SpectrumTurbulentKineticEnergy.py): Spherical Geometry not implemented.")
-            # sterad =
-            # steradtot =
-        else:
-            print("ERROR (SpectrumTurbulentKineticEnergy.py): Geometry not implemented")
+            if (ig == 1):
+                sterad.append(np.ones((nz[i], ny[i])))
+                steradtot.append(np.sum(sterad[i]))
+            elif (ig == 2):
+                print("ERROR (SpectrumTurbulentKineticEnergy.py): Spherical Geometry not implemented.")
+                # sterad =
+                # steradtot =
+            else:
+                print("ERROR (SpectrumTurbulentKineticEnergy.py): Geometry not implemented")
 
         hvelx, hvely, hvelz = [], [], []
         khh, spect_tke_mean_res = [], []
 
-        for file in filename:
+        for i in range(len(filename)):
 
             # get horizontal data
-            hvelx = velx[i][ilhc][:][:]
-            hvely = vely[i][ilhc][:][:]
-            hvelz = velz[i][ilhc][:][:]
+            hvelx = velx[i][ilhc[i]][:][:]
+            hvely = vely[i][ilhc[i]][:][:]
+            hvelz = velz[i][ilhc[i]][:][:]
 
             # calculate horizontal mean value
-            eh_ux = np.sum(hvelx * sterad) / steradtot
-            eh_uy = np.sum(hvely * sterad) / steradtot
-            eh_uz = np.sum(hvelz * sterad) / steradtot
+            eh_ux = np.sum(hvelx * sterad[i]) / steradtot[i]
+            eh_uy = np.sum(hvely * sterad[i]) / steradtot[i]
+            eh_uz = np.sum(hvelz * sterad[i]) / steradtot[i]
 
             # calculate Reynolds fluctuations
             uxf_r = hvelx - eh_ux
@@ -112,10 +116,10 @@ class SpectrumTurbulentKineticEnergyResolutionStudy():
 
             # calculate mean TKE spectrum
             spect_tke_mean = []
-            i = -1
+            j = -1
             for ishell in kh:
-                i += 1
-                spect_tke_mean.append(spect_tke[i] / (float(ny) * float(nz)))
+                j += 1
+                spect_tke_mean.append(spect_tke[j] / (float(ny[i]) * float(nz[i])))
 
             # check Parseval's theorem
 
@@ -124,7 +128,7 @@ class SpectrumTurbulentKineticEnergyResolutionStudy():
             # print(np.sum(uxf_r*uxf_r+uyf_r*uyf_r+uzf_r*uzf_r))
             print(np.sum(total_tke), np.sum(spect_tke))
 
-            spect_tke_mean_res.append(spect_tke_mean)
+            spect_tke_mean_res.append(np.asarray(spect_tke_mean))
 
         # share stuff across class
 
@@ -132,16 +136,15 @@ class SpectrumTurbulentKineticEnergyResolutionStudy():
         self.khh = khh
         self.data_prefix = data_prefix
 
+        self.nx = nx
+        self.ny = ny
+        self.nz = nz
+
     def plot_TKEspectrum(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot TKE spectrum"""
 
         # load horizontal wave number GRID
         grd = self.khh
-
-        # load resolution
-        nx = self.nx
-        ny = self.ny
-        nz = self.nz
 
         # load DATA to plot
         spect_tke_mean_res = self.spect_tke_mean_res
@@ -160,7 +163,8 @@ class SpectrumTurbulentKineticEnergyResolutionStudy():
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        if (LAXIS != 2):
+        LAXIS = int(LAXIS)
+        if LAXIS != 2:
             print("ERROR(SpectrumTurbulentKineticEnergyResolutionStudy.py): Only LAXIS=2 is supported.")
             sys.exit()
 
@@ -218,3 +222,14 @@ class SpectrumTurbulentKineticEnergyResolutionStudy():
         axis = np.linspace(-NAXIS / 2 + 1, NAXIS / 2, NAXIS)
         result = np.sqrt(axis ** 2 + axis[:, np.newaxis] ** 2)
         return np.roll(result, NAXIS / 2 + 1, axis=(0, 1))
+
+    # find data with maximum resolution
+    def maxresdata(self, data):
+        tmp = 0
+        for idata in data:
+            if idata.shape[0] > tmp:
+                data_maxres = idata
+            else:
+                tmp = idata.shape[0]
+
+        return data_maxres

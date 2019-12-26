@@ -220,7 +220,7 @@ class PROMPI_bindata:
         for line in range(self.nvar):
             line = fhead.readline().strip()
             self.varl.append(line)
-            print(line)
+            # print(line)
 
         # self.interior_mass = float(fhead.readline())
 
