@@ -193,7 +193,7 @@ class TemperatureEquation(calc.CALCULUS, al.ALIMIT, object):
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$+(1-\Gamma_3) \bar{T} \bar{d}$")
             plt.plot(grd1, rhs2, color='r', label=r"$+(2-\Gamma_3) \overline{T'd'}$")
             plt.plot(grd1, rhs3, color='b', label=r"$+\overline{\epsilon_{nuc} / cv}$")
-            plt.plot(grd1, rhs4, color='g', label=r"$+\overline{\varepsilon / cv}$")
+            plt.plot(grd1, rhs4, color='g', label=r"$+\overline{\varepsilon_{diss}} \ / \ \overline{cv}$")
             plt.plot(grd1, rhs5, color='m', label=r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")

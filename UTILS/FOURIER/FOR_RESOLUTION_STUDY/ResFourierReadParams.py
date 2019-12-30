@@ -1,5 +1,4 @@
 import re  # python regular expressions
-import sys
 
 
 class ResFourierReadParams:

@@ -13,7 +13,7 @@ import ast
 import os
 
 # create os independent path and read parameter file
-paramFile = os.path.join('PARAMS', 'param.res')
+paramFile = os.path.join('PARAMS', 'param.ransx.res')
 params = rp.ResReadParamsRansX(paramFile)
 
 # get list with data source files

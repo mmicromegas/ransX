@@ -71,7 +71,6 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         self.vol = vol
         self.mm = mm
         self.mm_ver2 = mm_ver2
-        self.dAdt = dAdt
 
     def plot_rho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""

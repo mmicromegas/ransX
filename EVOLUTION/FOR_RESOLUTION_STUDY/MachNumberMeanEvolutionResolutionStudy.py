@@ -99,7 +99,7 @@ class MachNumberMeanEvolutionResolutionStudy(calc.CALCULUS, al.ALIMITevol, objec
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 8})
 
         # display PLOT
         plt.show(block=False)

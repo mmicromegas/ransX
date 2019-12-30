@@ -10,7 +10,7 @@ import ast
 import os
 
 # create os independent path and read parameter file
-paramFile = os.path.join('PARAMS', 'param.res.evol')
+paramFile = os.path.join('PARAMS', 'param.evol.res')
 params = rp.ResEvolReadParams(paramFile)
 
 # instantiate master plot

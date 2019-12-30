@@ -4,7 +4,7 @@
 ## Resolution Study Input Files List ....................... ## [prop,eht_res,tseries_oburn_lres3_tavg600secs.npy,tseries_oburn_mlres3_tavg600secs.npy]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,oblrez_resstudy_]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,3]
-## Geomergy; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,2]
+## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,2]
 ## Central Time Index ...................................... ## [prop,intc,4]
 ## Limit Axis .............................................. ## [prop,laxis,1]
 ## X-axis Left boundary for properties ..................... ## [prop,xbl,4.e8]

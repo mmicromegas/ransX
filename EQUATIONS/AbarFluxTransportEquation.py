@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import UTILS.CALCULUS as calc
 import UTILS.ALIMIT as al
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -20,12 +21,12 @@ class AbarFluxTransportEquation(calc.CALCULUS, al.ALIMIT, object):
 
         # load grid
         xzn0 = np.asarray(eht.item().get('xzn0'))
+        nx = np.asarray(eht.item().get('nx'))
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
         dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
         pp = np.asarray(eht.item().get('pp')[intc])
         abar = np.asarray(eht.item().get('abar')[intc])
 
@@ -95,18 +96,32 @@ class AbarFluxTransportEquation(calc.CALCULUS, al.ALIMIT, object):
         # override NaNs (happens for ccp setup in PROMPI)
         self.minus_uxffddabarsq_sum_xdn_o_an = np.nan_to_num(self.minus_uxffddabarsq_sum_xdn_o_an)
 
-        # RHS +gi 
-        self.plus_gabar = \
-            -(ddabaruyuy - (ddabar / dd) * dduyuy - 2. * (dduy / dd) + 2. * ddabar * dduy * dduy / (dd * dd)) / xzn0 - \
-            (ddabaruzuz - (ddabar / dd) * dduzuz - 2. * (dduz / dd) + 2. * ddabar * dduz * dduz / (dd * dd)) / xzn0 + \
-            (ddabaruyuy - (ddabar / dd) * dduyuy) / xzn0 + \
-            (ddabaruzuz - (ddabar / dd) * dduzuz) / xzn0
+        if (ig == 1):
+            # RHS +gi
+            self.plus_gabar = np.zeros(nx)
+            # -res
+            self.minus_resAbarFlux = -(self.minus_dt_fabar + self.minus_div_fht_ux_fabar + self.minus_div_fabarx + \
+                                       self.minus_fabar_gradx_fht_ux + self.minus_rxx_gradx_fht_abar + \
+                                       self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf + \
+                                       self.minus_uxffddabarsq_sum_xdn_o_an + self.plus_gabar)
+        elif (ig == 2):
+            # RHS +gi
+            self.plus_gabar = \
+                -(ddabaruyuy - (ddabar / dd) * dduyuy - 2. * (dduy / dd) + 2. * ddabar * dduy * dduy / (
+                        dd * dd)) / xzn0 - \
+                (ddabaruzuz - (ddabar / dd) * dduzuz - 2. * (dduz / dd) + 2. * ddabar * dduz * dduz / (
+                        dd * dd)) / xzn0 + \
+                (ddabaruyuy - (ddabar / dd) * dduyuy) / xzn0 + \
+                (ddabaruzuz - (ddabar / dd) * dduzuz) / xzn0
 
-        # -res				   
-        self.minus_resAbarFlux = -(self.minus_dt_fabar + self.minus_div_fht_ux_fabar + self.minus_div_fabarx + \
-                                   self.minus_fabar_gradx_fht_ux + self.minus_rxx_gradx_fht_abar + \
-                                   self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf + \
-                                   self.minus_uxffddabarsq_sum_xdn_o_an + self.plus_gabar)
+            # -res
+            self.minus_resAbarFlux = -(self.minus_dt_fabar + self.minus_div_fht_ux_fabar + self.minus_div_fabarx + \
+                                       self.minus_fabar_gradx_fht_ux + self.minus_rxx_gradx_fht_abar + \
+                                       self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf + \
+                                       self.minus_uxffddabarsq_sum_xdn_o_an + self.plus_gabar)
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
 
         ########################
         # END Abar FLUX EQUATION 
@@ -116,6 +131,7 @@ class AbarFluxTransportEquation(calc.CALCULUS, al.ALIMIT, object):
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.fabarx = fabarx
+        self.ig = ig
 
     def plot_abarflux(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Abarflux stratification in the model"""
@@ -185,21 +201,44 @@ class AbarFluxTransportEquation(calc.CALCULUS, al.ALIMIT, object):
 
         # plot DATA 
         plt.title('Abar flux equation')
-        plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_A$')
-        plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_r (\widetilde{u}_r f_A)$')
-        plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^r_A$')
-        plt.plot(grd1, rhs1, color='g', label=r'$-f_A \partial_r \widetilde{u}_r$')
-        plt.plot(grd1, rhs2, color='r', label=r'$-R_{rr} \partial_r \widetilde{A}$')
-        plt.plot(grd1, rhs3, color='cyan',
-                 label=r"$-\overline{A''} \partial_r \overline{P} - \overline{A'' \partial_r P'}$")
-        plt.plot(grd1, rhs4, color='purple',
-                 label=r"$-\overline{u''_r \rho A^2 \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
-        plt.plot(grd1, rhs5, color='yellow', label=r'$+G_A$')
-        plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        if (self.ig == 1):
+            plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_A$')
+            plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_x (\widetilde{u}_x f_A)$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^x_A$')
+            plt.plot(grd1, rhs1, color='g', label=r'$-f_A \partial_x \widetilde{u}_x$')
+            plt.plot(grd1, rhs2, color='r', label=r'$-R_{xx} \partial_x \widetilde{A}$')
+            plt.plot(grd1, rhs3, color='cyan',
+                     label=r"$-\overline{A''} \partial_x \overline{P} - \overline{A'' \partial_x P'}$")
+            plt.plot(grd1, rhs4, color='purple',
+                     label=r"$-\overline{u''_x \rho A^2 \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        elif (self.ig == 2):
+            plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_A$')
+            plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_r (\widetilde{u}_r f_A)$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^r_A$')
+            plt.plot(grd1, rhs1, color='g', label=r'$-f_A \partial_r \widetilde{u}_r$')
+            plt.plot(grd1, rhs2, color='r', label=r'$-R_{rr} \partial_r \widetilde{A}$')
+            plt.plot(grd1, rhs3, color='cyan',
+                     label=r"$-\overline{A''} \partial_r \overline{P} - \overline{A'' \partial_r P'}$")
+            plt.plot(grd1, rhs4, color='purple',
+                     label=r"$-\overline{u''_r \rho A^2 \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
+            plt.plot(grd1, rhs5, color='yellow', label=r'$+G_A$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        if (self.ig == 1):
+            setxlabel = r'x (cm)'
+        elif (self.ig == 2):
+            setxlabel = r'r (cm)'
+        else:
+            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            sys.exit()
+
         setylabel = r"g cm$^{-2}$ s$^{-2}$"
+
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 

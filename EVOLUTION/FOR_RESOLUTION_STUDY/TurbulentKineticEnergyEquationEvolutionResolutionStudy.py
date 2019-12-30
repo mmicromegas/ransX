@@ -108,46 +108,13 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(calc.CALCULUS, al.A
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 8})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol.png')
-
-    def plot_x0002(self):
-
-        # get data 
-        t_timec = self.t_timec
-        t_x = self.t_x0002mean_cnvz
-
-        # create FIGURE
-        plt.figure(figsize=(7, 5))
-
-        plt.axis([0., 1400., -0.005, 0.09])
-
-        # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
-
-        # plot DATA 
-        plt.title(r'bottom 2/3 of cnvz ($256^3$)')
-        plt.plot(t_timec, t_x, color='r', label=r'$X_2$')
-
-        # define and show x/y LABELS
-        setxlabel = r"t (s)"
-        setylabel = r"avg(X2)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
-
-        # show LEGEND
-        plt.legend(loc=1, prop={'size': 14})
-
-        # display PLOT
-        plt.show(block=False)
-
-        # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'x0002mean_evol.png')
 
     # find data with maximum resolution
     def maxresdata(self, data):

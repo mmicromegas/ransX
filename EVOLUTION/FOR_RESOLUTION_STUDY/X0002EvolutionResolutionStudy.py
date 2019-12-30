@@ -100,7 +100,7 @@ class X0002EvolutionResolutionStudy(calc.CALCULUS, al.ALIMITevol, object):
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)
