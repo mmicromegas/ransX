@@ -1,13 +1,16 @@
 import numpy as np
 import sys
+import UTILS.Tools as aT
 
 
 # class for calculus functions
 
-class CALCULUS:
+class Calculus(aT.Tools, object):
 
     def __init__(self, ig):
-        # geometry 
+        super(Calculus)
+
+        # geometry
         self.ig = ig
 
     def deriv(self, f, x):
@@ -23,14 +26,12 @@ class CALCULUS:
         x01 = np.roll(x, 1) - x  # x0 - x1
         x02 = np.roll(x, 1) - np.roll(x, -1)  # x0 - x2
 
-        deriv = np.zeros(f.size)
-
         #       middle points
         deriv = np.roll(f, 1) * (x12 / (x01 * x02)) + f * (1. / x12 - 1. / x01) - np.roll(f, -1) * (x01 / (x02 * x12))
 
         #       first point
         deriv[0] = f[0] * (x01[1] + x02[1]) / (x01[1] * x02[1]) - f[1] * x02[1] / (x01[1] * x12[1]) + f[2] * x01[1] / (
-                    x02[1] * x12[1])
+                x02[1] * x12[1])
 
         #       last point
         n = x.size
@@ -43,33 +44,30 @@ class CALCULUS:
     def Div(self, f, rc):
         """Compute the divergence of 'f'"""
 
-        divf = np.zeros(f.shape)
-
-        if (self.ig == 2):
+        if self.ig == 2:
             f = f * rc ** 2
             divf = self.deriv(f, rc) / rc ** 2
-        elif (self.ig == 1):
+        elif self.ig == 1:
             divf = self.deriv(f, rc)
         else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            print("ERROR(Calculus.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
         return divf
 
     def Grad(self, q, rc):
         """Compute gradient"""
-        grad = np.zeros(q.shape)
         grad = self.deriv(q, rc)
         return grad
 
     def dt(self, q, rc, timec, tt):
-
-        # rc = self.xzn0
-        # timec = self.timec
+        """Compute time derivative"""
 
         tmp = np.zeros(q.shape)
         dt = np.zeros(rc.shape)
 
-        for i in range(0, rc.size): tmp[:, i] = self.deriv(q[:, i], timec)
+        for i in range(0, rc.size):
+            tmp[:, i] = self.deriv(q[:, i], timec)
+
         dt[:] = tmp[tt, :]
         return dt
