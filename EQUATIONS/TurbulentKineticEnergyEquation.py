@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 import EQUATIONS.Properties as prop
 
 
@@ -12,7 +12,7 @@ import EQUATIONS.Properties as prop
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentKineticEnergyEquation(calc.CALCULUS, al.ALIMIT, object):
+class TurbulentKineticEnergyEquation(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, filename, ig, intc, minus_kolmrate, bconv, tconv, data_prefix):
         super(TurbulentKineticEnergyEquation, self).__init__(ig)

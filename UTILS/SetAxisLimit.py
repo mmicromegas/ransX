@@ -5,7 +5,10 @@ import sys
 
 # class for plot axis limitation
 
-class ALIMIT:
+class SetAxisLimit:
+
+    def __init__(self):
+        pass
 
     def idx_bndry(self, xbl, xbr):
         # calculate indices of grid boundaries

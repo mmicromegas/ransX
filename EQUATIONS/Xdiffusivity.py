@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 import os
 
 
@@ -12,7 +12,7 @@ import os
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Xdiffusivity(calc.CALCULUS, al.ALIMIT, object):
+class Xdiffusivity(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, filename, ig, inuc, element, lc, uconv, bconv, tconv, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)

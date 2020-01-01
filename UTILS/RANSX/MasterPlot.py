@@ -2043,7 +2043,7 @@ class MasterPlot():
                                 params.getForEqs('hheq')['ybd'], \
                                 params.getForEqs('hheq')['ilg'])
 
-    def execFtvfh(self):
+    def execFtvfh(self, bconv, tconv):
         params = self.params
 
         # instantiate 		
@@ -2051,7 +2051,8 @@ class MasterPlot():
                                                                 params.getForProp('prop')['ig'], \
                                                                 params.getForProp('prop')['ieos'], \
                                                                 params.getForProp('prop')['intc'], \
-                                                                params.getForProp('prop')['prefix'])
+                                                                params.getForProp('prop')['prefix'],\
+                                                                bconv,tconv)
 
         ransFtvfh.plot_ftvfhX_equation(params.getForProp('prop')['laxis'], \
                                        params.getForEqs('ftvfh')['xbl'], \

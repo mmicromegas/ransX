@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 import sys
 
 
@@ -12,7 +12,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureFluxResolutionStudy(calc.CALCULUS, al.ALIMIT, object):
+class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(PressureFluxResolutionStudy, self).__init__(ig)

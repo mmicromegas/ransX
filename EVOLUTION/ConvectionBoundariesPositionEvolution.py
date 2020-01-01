@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
+import UTILS.Calculus as calc
 import UTILS.EVOL.ALIMITevol as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -9,7 +9,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ConvectionBoundariesPositionEvolution(calc.CALCULUS, al.ALIMITevol, object):
+class ConvectionBoundariesPositionEvolution(calc.Calculus, al.ALIMITevol, object):
 
     def __init__(self, dataout, ig, data_prefix):
         super(ConvectionBoundariesPositionEvolution, self).__init__(ig)

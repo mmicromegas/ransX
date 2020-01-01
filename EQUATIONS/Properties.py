@@ -1,8 +1,7 @@
 import numpy as np
 import sys
-import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,7 +9,7 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Properties(calc.CALCULUS, al.ALIMIT, object):
+class Properties(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, params):
         ig = params.getForProp('prop')['ig']  # load geometry

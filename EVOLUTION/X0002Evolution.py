@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
+import UTILS.Calculus as calc
 import UTILS.EVOL.ALIMITevol as al
 
 
@@ -10,7 +10,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class X0002Evolution(calc.CALCULUS, al.ALIMITevol, object):
+class X0002Evolution(calc.Calculus, al.ALIMITevol, object):
 
     def __init__(self, dataout, ig, data_prefix):
         super(X0002Evolution, self).__init__(ig)

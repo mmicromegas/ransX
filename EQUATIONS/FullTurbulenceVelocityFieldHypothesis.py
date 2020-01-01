@@ -2,8 +2,8 @@ import numpy as np
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -12,9 +12,9 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
+class FullTurbulenceVelocityFieldHypothesis(calc.Calculus, al.SetAxisLimit, object):
 
-    def __init__(self, filename, ig, ieos, intc, data_prefix):
+    def __init__(self, filename, ig, ieos, intc, data_prefix, bconv, tconv):
         super(FullTurbulenceVelocityFieldHypothesis, self).__init__(ig)
 
         # load data to structured array
@@ -257,6 +257,9 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
         self.ddgg = ddgg
         self.gamma1 = gamma1
 
+        self.bconv = bconv
+        self.tconv = tconv
+
     def plot_ftvfhX_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot ftvfh in the model"""
 
@@ -302,6 +305,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
 
         setylabel = r"cm s$^{-2}$"
 
@@ -359,6 +366,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
 
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
         setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
@@ -415,6 +426,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
 
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
         setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
@@ -470,6 +485,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
 
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
         setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
@@ -523,6 +542,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
 
         setylabel = r"cm s$^{-2}$"
 
@@ -578,6 +601,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
 
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
         setylabel = r"cm s$^{-2}$"
 
         plt.xlabel(setxlabel)
@@ -625,6 +652,10 @@ class FullTurbulenceVelocityFieldHypothesis(calc.CALCULUS, al.ALIMIT, object):
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
 
         setylabel = r"cm s$^{-2}$"
 

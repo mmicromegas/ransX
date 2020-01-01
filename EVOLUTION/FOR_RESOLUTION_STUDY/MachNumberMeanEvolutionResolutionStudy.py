@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
+import UTILS.Calculus as calc
 import UTILS.EVOL.ALIMITevol as al
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -10,7 +10,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class MachNumberMeanEvolutionResolutionStudy(calc.CALCULUS, al.ALIMITevol, object):
+class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object):
 
     def __init__(self, filename, ig, data_prefix):
         super(MachNumberMeanEvolutionResolutionStudy, self).__init__(ig)

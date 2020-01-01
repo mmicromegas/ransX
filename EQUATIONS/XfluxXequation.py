@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 import os
 
 
@@ -12,7 +12,7 @@ import os
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XfluxXequation(calc.CALCULUS, al.ALIMIT, object):
+class XfluxXequation(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, tke_diss, tauL, intc, data_prefix):
         super(XfluxXequation, self).__init__(ig)

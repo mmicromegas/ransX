@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 import os
 import sys
 
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class VelocitiesMLTturb(calc.CALCULUS, al.ALIMIT, object):
+class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)

@@ -2,11 +2,11 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 import UTILS.PROMPI.PROMPI_data as pd
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 
 
-class SpectrumUyVarianceResolutionStudy(calc.CALCULUS, al.ALIMIT, object):
+class SpectrumUyVarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, datadir, filename, data_prefix, ig, lhc):
         super(SpectrumUyVarianceResolutionStudy, self).__init__(ig)

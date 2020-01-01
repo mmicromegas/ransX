@@ -2,8 +2,9 @@ import numpy as np
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
+import UTILS.Tools as uT
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -12,7 +13,7 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
+class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(ContinuityEquationWithFavrianDilatation, self).__init__(ig)
@@ -21,23 +22,19 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        mm = np.asarray(eht.item().get('mm')[intc])
-
-        vol = (4. / 3.) * np.pi * xzn0 ** 3
-        mm_ver2 = dd * vol
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        mm = self.getRAdata(eht, 'mm')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -58,9 +55,13 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         # -res
         self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_dd_div_fht_ux)
 
-        #################################################	
+        #################################################
         # END CONTINUITY EQUATION WITH FAVRIAN DILATATION
         #################################################
+
+        # ad hoc variables
+        vol = (4. / 3.) * np.pi * xzn0 ** 3
+        mm_ver2 = dd * vol
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -72,8 +73,13 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         self.mm = mm
         self.mm_ver2 = mm_ver2
 
-    def plot_rho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_rho(self, laxis, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry())
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -89,20 +95,17 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
 
         # set plot boundaries   
         to_plot = [plt1]
-        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+        self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('density')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho}$')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
+        elif self.ig == 2:
             setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
 
@@ -118,8 +121,13 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
 
-    def plot_continuity_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_continuity_equation(self, laxis, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry())
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -139,33 +147,27 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
 
         # set plot boundaries   
         to_plot = [lhs0, lhs1, rhs0, res]
-        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+        self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('continuity equation with Favrian dilatation')
 
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
             plt.plot(grd1, lhs1, color='r', label=r'$- \widetilde{u}_x \partial_x (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_x (\widetilde{u}_x)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
             plt.plot(grd1, lhs1, color='r', label=r'$- \widetilde{u}_r \partial_r (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_r (\widetilde{u}_r)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
+        elif self.ig == 2:
             setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
         plt.xlabel(setxlabel)
@@ -191,7 +193,7 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         term3 = self.minus_dd_div_fht_ux
         term4 = self.minus_resContEquation
 
-        # calculate INDICES for grid boundaries 
+        # calculate INDICES for grid boundaries
         if laxis == 1 or laxis == 2:
             idxl, idxr = self.idx_bndry(xbl, xbr)
         else:
@@ -226,7 +228,7 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         # note the change: I'm only supplying y data.
         y = [int_term1 / fc, int_term2 / fc, int_term3 / fc, int_term4 / fc]
 
-        # Calculate how many bars there will be
+        # calculate how many bars there will be
         N = len(y)
 
         # Generate a list of numbers, from 0 to N
@@ -267,7 +269,7 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar.png')
 
-    def plot_mm_vs_MM(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_mm_vs_MM(self, laxis, xbl, xbr, ybu, ybd, ilg):
         """Plot mm vs MM in the model"""
 
         # load x GRID
@@ -285,7 +287,7 @@ class ContinuityEquationWithFavrianDilatation(calc.CALCULUS, al.ALIMIT, object):
 
         # set plot boundaries   
         to_plot = [mm, MM, mm_lnV]
-        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+        self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('mm vs MM')

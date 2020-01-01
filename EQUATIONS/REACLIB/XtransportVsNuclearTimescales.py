@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import UTILS.CALCULUS as calc
-import UTILS.ALIMIT as al
+import UTILS.Calculus as calc
+import UTILS.SetAxisLimit as al
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +11,7 @@ import UTILS.ALIMIT as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportVsNuclearTimescales(calc.CALCULUS, al.ALIMIT, object):
+class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
 
     def __init__(self, filename_rans, filename_reaclib, ig, inuc, element, bconv, tconv, tc, intc, data_prefix,
                  network):
