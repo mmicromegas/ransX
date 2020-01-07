@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 import matplotlib.pyplot as plt
 import UTILS.PROMPI.PROMPI_data as pd
 

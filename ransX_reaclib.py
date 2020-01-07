@@ -6,7 +6,7 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: August/2019
 
-import EQUATIONS.Properties as prop
+import UTILS.RANSX.Properties as prop
 import UTILS.REACLIB.ReadParamsReaclib as rp
 import UTILS.REACLIB.ReaclibMasterPlot as plot
 import ast

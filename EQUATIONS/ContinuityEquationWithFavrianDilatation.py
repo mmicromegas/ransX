@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import UTILS.Calculus as uCalc
 import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +14,7 @@ import UTILS.Tools as uT
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, object):
+class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(ContinuityEquationWithFavrianDilatation, self).__init__(ig)
@@ -78,7 +79,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # check supported geometries
         if self.ig != 1 and self.ig != 2:
-            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry())
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
         # load x GRID
@@ -104,12 +105,12 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (10$^{8}$ cm)'
+            plt.xlabel(setxlabel)
         elif self.ig == 2:
             setxlabel = r'r (10$^{8}$ cm)'
+            plt.xlabel(setxlabel)
 
         setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
-
-        plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 
         # show LEGEND
@@ -126,7 +127,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # check supported geometries
         if self.ig != 1 and self.ig != 2:
-            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry())
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
         # load x GRID
@@ -166,11 +167,12 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (10$^{8}$ cm)'
+            plt.xlabel(setxlabel)
         elif self.ig == 2:
             setxlabel = r'r (10$^{8}$ cm)'
+            plt.xlabel(setxlabel)
 
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 
         # show LEGEND
@@ -184,9 +186,6 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
     def plot_continuity_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of continuity equation in the model"""
-
-        # load x GRID
-        grd1 = self.xzn0
 
         term1 = self.minus_dt_dd
         term2 = self.minus_fht_ux_grad_dd

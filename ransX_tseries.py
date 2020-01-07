@@ -6,15 +6,15 @@ import sys
 
 # create os independent path and read parameter file
 paramFile = os.path.join('PARAMS', 'param.tseries')
-params = rpt.ReadParamsTseries(paramFile)	   
-	   
+params = rpt.ReadParamsTseries(paramFile)
+
 datadir = params.getForTseries('tseries')['datadir']
 endianness = params.getForTseries('tseries')['endianness']
 precision = params.getForTseries('tseries')['precision']
 
-dataout = params.getForTseries('tseries')['dataout']	
+dataout = params.getForTseries('tseries')['dataout']
 
-trange_beg = params.getForTseries('tseries')['trange_beg']	
+trange_beg = params.getForTseries('tseries')['trange_beg']
 trange_end = params.getForTseries('tseries')['trange_end']
 trange = []
 trange.append(trange_beg)
@@ -23,52 +23,52 @@ trange.append(trange_end)
 tavg = params.getForTseries('tseries')['tavg']
 
 ransdat = [file for file in sorted(os.listdir(datadir)) if "ransdat" in file]
-ransdat = [file.replace(file,datadir+file) for file in ransdat]	
+ransdat = [file.replace(file, datadir + file) for file in ransdat]
 
 filename = ransdat[0]
-ts = pt.PROMPI_ransdat(filename,endianness,precision)
+ts = pt.PROMPI_ransdat(filename, endianness, precision)
 
 ransl = ts.rans_list()
-		
+
 nstep = []
-time  = []
-dt  = []	
-		
+time = []
+dt = []
+
 for filename in ransdat:
     print(filename)
-    ts = pt.PROMPI_ransdat(filename,endianness,precision)
+    ts = pt.PROMPI_ransdat(filename, endianness, precision)
     rans_tstart, rans_tend, rans_tavg = ts.rans_header()
     time.append(rans_tend)
     dt.append(rans_tavg)
-    #print(rans_tend,rans_tavg)	
-	
+    # print(rans_tend,rans_tavg)
+
 # convert to array
 
 time = np.asarray(time)
-dt = np.asarray(dt)		
+dt = np.asarray(dt)
 nt = len(ransdat)
 
 print('Numer of snapshots: ', nt)
-print('Available time range:',min(time),round(max(time),3))
-print('Restrict data to time range:', trange[0],trange[1])
+print('Available time range:', min(time), round(max(time), 3))
+print('Restrict data to time range:', trange[0], trange[1])
 
 #   limit snapshot list to time range of interest
 
 idx = np.where((time > trange[0]) & (time < trange[1]))
 time = time[idx]
-dt = dt[idx]		
+dt = dt[idx]
 
 #  time averaging window
 
-timecmin = min(time)+tavg/2.0
-timecmax = max(time)-tavg/2.0
-itc      = np.where((time >= timecmin) & (time <= timecmax))
-timec    = time[itc]
-ntc      = len(timec)
+timecmin = min(time) + tavg / 2.0
+timecmax = max(time) - tavg / 2.0
+itc = np.where((time >= timecmin) & (time <= timecmax))
+timec = time[itc]
+ntc = len(timec)
 
 print('Number of time averaged snapshots: ', ntc)
-print('Averaged time range: ',round(timecmin,3), round(timecmax,3))
-print('nx',ts.rans()['nx'])
+print('Averaged time range: ', round(timecmin, 3), round(timecmax, 3))
+print('nx', ts.rans()['nx'])
 
 if ntc == 0:
     print("----------")
@@ -83,7 +83,7 @@ if ntc == 0:
 eh = []
 for i in idx[0]:
     filename = ransdat[i]
-    ts = pt.PROMPI_ransdat(filename,endianness,precision) 
+    ts = pt.PROMPI_ransdat(filename, endianness, precision)
     field = [[data for data in ts.rans()[s]] for s in ts.ransl]
     eh.append(field)
 
@@ -99,51 +99,51 @@ for s in ts.ransl:
     idx = ts.ransl.index(s)
     tmp2 = []
     for i in range(ntc):
-        itavg = np.where((time >= (timec[i]-tavg/2.)) & (time <= (timec[i]+tavg/2.)))
+        itavg = np.where((time >= (timec[i] - tavg / 2.)) & (time <= (timec[i] + tavg / 2.)))
         sumdt = np.sum(dt[itavg])
         tmp1 = np.zeros(ts.rans()['nx'])
-        for j in itavg[0]:   
-            tmp1 += np.asarray(eh[:][j][idx])*dt[j]
-        tmp2.append(tmp1/sumdt)
-    field = {str(s) : tmp2}  		
-    eht.update(field)     	
-	
+        for j in itavg[0]:
+            tmp1 += np.asarray(eh[:][j][idx]) * dt[j]
+        tmp2.append(tmp1 / sumdt)
+    field = {str(s): tmp2}
+    eht.update(field)
+
 # store grid 
-	
-nx = {'nx' : ts.rans()['nx']}
+
+nx = {'nx': ts.rans()['nx']}
 eht.update(nx)
 
-ny = {'nx' : ts.rans()['ny']}
+ny = {'nx': ts.rans()['ny']}
 eht.update(ny)
 
-nz = {'nx' : ts.rans()['nz']}
-eht.update(nz)	
-	
-xzn0 = {'xzn0' : ts.rans()['xzn0']}
+nz = {'nx': ts.rans()['nz']}
+eht.update(nz)
+
+xzn0 = {'xzn0': ts.rans()['xzn0']}
 eht.update(xzn0)
 
-xznl = {'xznl' : ts.rans()['xznl']}
+xznl = {'xznl': ts.rans()['xznl']}
 eht.update(xznl)
 
-xznr = {'xznr' : ts.rans()['xznr']}
+xznr = {'xznr': ts.rans()['xznr']}
 eht.update(xznr)
 
-yzn0 = {'yzn0' : ts.rans()['yzn0']}
+yzn0 = {'yzn0': ts.rans()['yzn0']}
 eht.update(yzn0)
 
-yznl = {'yznl' : ts.rans()['yznl']}
+yznl = {'yznl': ts.rans()['yznl']}
 eht.update(yznl)
 
-yznr = {'yznr' : ts.rans()['yznr']}
+yznr = {'yznr': ts.rans()['yznr']}
 eht.update(yznr)
 
-zzn0 = {'zzn0' : ts.rans()['zzn0']}
+zzn0 = {'zzn0': ts.rans()['zzn0']}
 eht.update(zzn0)
 
-zznl = {'zznl' : ts.rans()['zznl']}
+zznl = {'zznl': ts.rans()['zznl']}
 eht.update(zznl)
 
-zznr = {'zznr' : ts.rans()['zznr']}
+zznr = {'zznr': ts.rans()['zznr']}
 eht.update(zznr)
 
 ntc = {'ntc': ntc}
@@ -173,34 +173,32 @@ eht.update(ny)
 nz = {'nz': ts.rans()['nz']}
 eht.update(nz)
 
+# STORE TIME-AVERAGED DATA i.e the EHT dictionary
 
-# STORE TIME-AVERAGED DATA i.e the EHT dictionary 
-
-np.save(dataout+'.npy',eht)
+np.save(dataout + '.npy', eht)
 
 # END
 
 # OBSOLETE CODE 
-	
-#print(ts.ransl)
 
-#fld = 'ux'
-#a = eht[fld]
+# print(ts.ransl)
+
+# fld = 'ux'
+# a = eht[fld]
 ##intc = ntc - 1
-#intc = 11
-#b = a[:][intc]
-#xx = eht['xzn0']
+# intc = 11
+# b = a[:][intc]
+# xx = eht['xzn0']
 
-#print(b)
+# print(b)
 
-#fig, ax1 = plt.subplots(figsize=(7,6))
+# fig, ax1 = plt.subplots(figsize=(7,6))
 
-#for i in range(nt):
+# for i in range(nt):
 #    filename = ransdat[i]
 #    ts = pt.PROMPI_ransdat(filename,'little_endian','double')
 #    plt.plot(xx,ts.rans()[fld])
 
-#ax1.plot(xx,b,color='k')
+# ax1.plot(xx,b,color='k')
 
-#plt.show()
-
+# plt.show()

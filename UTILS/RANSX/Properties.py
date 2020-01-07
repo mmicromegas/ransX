@@ -2,6 +2,8 @@ import numpy as np
 import sys
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,13 +13,8 @@ import UTILS.SetAxisLimit as al
 
 class Properties(calc.Calculus, al.SetAxisLimit, object):
 
-    def __init__(self, params):
-        ig = params.getForProp('prop')['ig']  # load geometry
+    def __init__(self, filename, ig, ieos, intc, laxis, xbl, xbr):
         super(Properties, self).__init__(ig)
-
-        filename = params.getForProp('prop')['eht_data']
-        intc = params.getForProp('prop')['intc']
-        ieos = params.getForProp('prop')['ieos']
 
         # load data to structured array
         eht = np.load(filename)
@@ -38,122 +35,28 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         yzn0 = np.asarray(eht.item().get('yzn0'))
         zzn0 = np.asarray(eht.item().get('zzn0'))
 
-        xbl = params.getForProp('prop')['xbl']
-        xbr = params.getForProp('prop')['xbr']
-        laxis = params.getForProp('prop')['laxis']
-
-        # pick pecific Reynolds-averaged mean fields according to:
-        # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf			
-
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
-
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
-
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
-
-        ddekux = np.asarray(eht.item().get('ddekux')[intc])
-        ddek = np.asarray(eht.item().get('ddek')[intc])
-
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ppux = np.asarray(eht.item().get('ppux')[intc])
-
         enuc1 = np.asarray(eht.item().get('enuc1')[intc])
         enuc2 = np.asarray(eht.item().get('enuc2')[intc])
 
+        dd = np.asarray(eht.item().get('dd')[intc])
+        pp = np.asarray(eht.item().get('pp')[intc])
         uxux = np.asarray(eht.item().get('uxux')[intc])
-
         gamma1 = np.asarray(eht.item().get('gamma1')[intc])
 
-        if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
-            gamma1 = cp / cv
+        # for ccp project
+        x0002 = np.asarray(eht.item().get('x0002')[intc])
 
-            ###################################
-        # TURBULENT KINETIC ENERGY EQUATION 
-        ###################################   		
+        # instantiate turbulent kinetic energy object
+        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, ieos, intc)
 
-        # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
+        # load fields
+        tkefields = tkeF.getTKEfield()
 
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_dduy = np.asarray(eht.item().get('dduy'))
-        t_dduz = np.asarray(eht.item().get('dduz'))
+        # get turbulent kinetic energy
+        self.tke = tkefields['tke']
 
-        t_dduxux = np.asarray(eht.item().get('dduxux'))
-        t_dduyuy = np.asarray(eht.item().get('dduyuy'))
-        t_dduzuz = np.asarray(eht.item().get('dduzuz'))
-
-        t_uxffuxff = t_dduxux / t_dd - t_ddux * t_ddux / (t_dd * t_dd)
-        t_uyffuyff = t_dduyuy / t_dd - t_dduy * t_dduy / (t_dd * t_dd)
-        t_uzffuzff = t_dduzuz / t_dd - t_dduz * t_dduz / (t_dd * t_dd)
-
-        t_tke = 0.5 * (t_uxffuxff + t_uyffuyff + t_uzffuzff)
-
-        # construct equation-specific mean fields
-        fht_ux = ddux / dd
-        fht_ek = ddek / dd
-
-        uxffuxff = (dduxux / dd - ddux * ddux / (dd * dd))
-        uyffuyff = (dduyuy / dd - dduy * dduy / (dd * dd))
-        uzffuzff = (dduzuz / dd - dduz * dduz / (dd * dd))
-
-        tke = 0.5 * (uxffuxff + uyffuyff + uzffuzff)
-
-        fekx = ddekux - fht_ek * fht_ux
-        fpx = ppux - pp * ux
-
-        # LHS -dq/dt 			
-        self.minus_dt_dd_tke = -self.dt(t_dd * t_tke, xzn0, t_timec, intc)
-
-        # LHS -div dd ux tke
-        self.minus_div_eht_dd_fht_ux_tke = -self.Div(dd * fht_ux * tke, xzn0)
-
-        # -div kinetic energy flux
-        self.minus_div_fekx = -self.Div(fekx, xzn0)
-
-        # -div acoustic flux		
-        self.minus_div_fpx = -self.Div(fpx, xzn0)
-
-        # RHS warning ax = overline{+u''_x} 
-        self.plus_ax = -ux + fht_ux
-
-        # +buoyancy work
-        self.plus_wb = self.plus_ax * self.Grad(pp, xzn0)
-
-        # +pressure dilatation
-        self.plus_wp = ppdivu - pp * divu
-
-        # -R grad u
-
-        rxx = dduxux - ddux * ddux / dd
-        rxy = dduxuy - ddux * dduy / dd
-        rxz = dduxuz - ddux * dduz / dd
-
-        self.minus_r_grad_u = -(rxx * self.Grad(ddux / dd, xzn0) + \
-                                rxy * self.Grad(dduy / dd, xzn0) + \
-                                rxz * self.Grad(dduz / dd, xzn0))
-
-        # -res		
-        self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke + \
-                                       self.plus_wb + self.plus_wp + self.minus_div_fekx + \
-                                       self.minus_div_fpx + self.minus_r_grad_u)
-
-        #######################################
-        # END TURBULENT KINETIC ENERGY EQUATION 
-        #######################################  
+        # get turbulent kinetic energy dissipation
+        self.minus_resTkeEquation = tkefields['minus_resTkeEquation']
 
         # assign global data to be shared across whole class	
         self.xzn0 = xzn0
@@ -163,9 +66,6 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         self.yzn0 = yzn0
         self.zzn0 = zzn0
 
-        self.tke = tke
-
-        self.laxis = laxis
         self.xbl = xbl
         self.xbr = xbr
         self.nx = nx
@@ -183,16 +83,30 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         self.timec = timec
         self.trange = trange
         self.ig = ig
+        self.laxis = laxis
 
-    def properties(self, laxis, xbl, xbr):
+        self.x0002 = x0002
+
+    def properties(self):
         """ Print properties of your simulation"""
+        """ Share Turbulent Kinetic Energy Equations Terms  """
 
-        ##############		
+        laxis = self.laxis
+        xbl = self.xbl
+        xbr = self.xbr
+
+        ##############
         # PROPERTIES #
         ##############
 
         # load grid
         xzn0 = self.xzn0
+        yzn0 = self.yzn0
+        zzn0 = self.zzn0
+
+        xznl = self.xznl
+        xznr = self.xznr
+
         nx = self.nx
         ny = self.ny
         nz = self.nz
@@ -250,26 +164,23 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
 
         # handle volume for different geometries
         if (self.ig == 1):
-            # Vol1 = self.xznr**3-self.xznl**3
-            surface = (self.yzn0[-1] - self.yzn0[0]) * (self.zzn0[-1] - self.zzn0[0])
-            Vol = surface * (self.xznr - self.xznl)
-            # print(surface,self.yzn0[-1]-self.yzn0[0],self.zzn0[-1]-self.zzn0[0],Vol)
-            # print(Vol1)
+            surface = (yzn0[-1] - yzn0[0]) * (zzn0[-1] - zzn0[0])
+            Vol = surface * (xznr - xznl)
         elif (self.ig == 2):
-            Vol = 4. / 3. * np.pi * (self.xznr ** 3 - self.xznl ** 3)
+            Vol = 4. / 3. * np.pi * (xznr ** 3 - xznl ** 3)
         else:
             print(
                 "ERROR (Properties.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
 
-            # Calculate full dissipation rate and timescale
-        TKE = (dd * tke * Vol)[ind].sum()
+        # Calculate full dissipation rate and timescale
+        TKEsum = (dd * tke * Vol)[ind].sum()
         epsD = abs((diss * Vol)[ind].sum())
-        tD = TKE / epsD
+        tD = TKEsum / epsD
 
         # RMS velocities
         M = (dd * Vol)[ind].sum()
-        urms = np.sqrt(2. * TKE / M)
+        urms = np.sqrt(2. * TKEsum / M)
 
         # Turnover timescale
         tc = 2. * (xzn0outc - xzn0inc) / urms
@@ -287,8 +198,8 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         pturb_o_pgas = (gamma1 * ur2 / cs2)[ind].mean()
 
         # Mach number
-        mach2 = uxux/cs2
-        mach = mach2**0.5
+        mach2 = uxux / cs2
+        mach = mach2 ** 0.5
 
         machMax = mach[ind].max()
         machMean = mach[ind].mean()
@@ -333,14 +244,25 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
             tauL = 9999999999.
             # sys.exit()
 
-        return {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, \
-                'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc, \
-                'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz,'machMax': machMax,'machMean': machMean}
+        # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm)
+        ind = np.where((xzn0 < 6.66e8))[0]
+        x0002mean_cnvz = np.mean(self.x0002[ind])
 
-    def execute(self):
-        p = self.properties(self.laxis, self.xbl, self.xbr)
-        return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'], \
-                'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], \
-                'uconv': p['uconv'], 'xzn0inc': p['xzn0inc'], 'xzn0outc': p['xzn0outc'], \
-                'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'],'machMax': p['machMax'],\
-                'machMean': p['machMean']}
+        """ Share Turbulent Kinetic Energy Equations Terms  """
+
+        ig = self.ig
+
+        p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss,
+                'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
+                'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
+                'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
+                'epsD': epsD, 'tD': tD, 'tc': tc, 'tenuc': tenuc, 'xznl': xznl, 'xznr': xznr}
+
+        return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'],
+                'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
+                'uconv': p['uconv'], 'xzn0inc': p['xzn0inc'], 'xzn0outc': p['xzn0outc'],
+                'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax': p['machMax'],
+                'machMean': p['machMean'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
+                'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'],
+                'epsD': p['epsD'], 'tD': p['tD'], 'tc': p['tc'], 'tenuc': p['tenuc'],
+                'xznl': p['xznl'], 'xznr': p['xznr']}

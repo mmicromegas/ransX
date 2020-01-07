@@ -634,16 +634,16 @@ class MasterPlot():
                          params.getForEqs(x)['ybd'], \
                          params.getForEqs(x)['ilg'])
 
-    def execTke(self, kolmrate, bconv, tconv):
+    def execTke(self,kolmdissrate,bconv,tconv):
         params = self.params
-        kolmrate = 0.
 
         # instantiate 		
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'], \
-                                                     params.getForProp('prop')['ig'], \
-                                                     params.getForProp('prop')['intc'], \
-                                                     -kolmrate, bconv, tconv, \
-                                                     params.getForProp('prop')['prefix'])
+                                                      params.getForProp('prop')['ig'], \
+                                                      params.getForProp('prop')['ieos'], \
+                                                      params.getForProp('prop')['intc'], \
+                                                      kolmdissrate, bconv, tconv, \
+                                                      params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy			   
         ransTke.plot_tke(params.getForProp('prop')['laxis'], \
@@ -659,15 +659,16 @@ class MasterPlot():
         # plot evolution of convection boundaries	   
         # ransTke.plot_conv_bndry_location()
 
-    def execTkeEq(self, kolmrate, bconv, tconv):
+    def execTkeEq(self,kolmdissrate,bconv,tconv):
         params = self.params
 
         # instantiate 		
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'], \
-                                                     params.getForProp('prop')['ig'], \
-                                                     params.getForProp('prop')['intc'], \
-                                                     -kolmrate, bconv, tconv, \
-                                                     params.getForProp('prop')['prefix'])
+                                                      params.getForProp('prop')['ig'], \
+                                                      params.getForProp('prop')['ieos'], \
+                                                      params.getForProp('prop')['intc'], \
+                                                      kolmdissrate, bconv, tconv, \
+                                                      params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation			     
         ransTke.plot_tke_equation(params.getForProp('prop')['laxis'], \

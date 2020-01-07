@@ -1,11 +1,11 @@
 import numpy as np
 import sys 
-import UTILS.Tools as aT
+import UTILS.Errors as eR
 
 
 # class for calculus functions
 
-class Calculus(aT.Tools, object):
+class Calculus(eR.Errors, object):
 
     def __init__(self, ig):
         super(Calculus)

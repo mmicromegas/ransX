@@ -5,7 +5,6 @@ from typing import Union
 
 import UTILS.EVOL.FOR_RESOLUTION_STUDY.ResEvolReadParams as rp
 import UTILS.EVOL.FOR_RESOLUTION_STUDY.ResEvolMasterPlot as plot
-import UTILS.EVOL.PropertiesEvolution as propevol
 import ast
 import os
 

@@ -12,5 +12,3 @@ class Tools:
         quantity = np.asarray(ransdatarray.item().get(q))
         return quantity
 
-    def errorGeometry(self,ig):
-        return " Geometry ig = " + str(ig) + " not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ..."

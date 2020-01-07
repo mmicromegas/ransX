@@ -6,9 +6,9 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: January/2019
 
-import UTILS.RES.ResProperties as prop
 import UTILS.RES.ResReadParamsRansX as rp
 import UTILS.RES.ResMasterPlot as plot
+import UTILS.RANSX.Properties as prop
 import ast
 import os
 
@@ -16,25 +16,27 @@ import os
 paramFile = os.path.join('PARAMS', 'param.ransx.res')
 params = rp.ResReadParamsRansX(paramFile)
 
-# get list with data source files
+# get list with data source files and central time index
 filename = params.getForProp('prop')['eht_data']
+intc = params.getForProp('prop')['intc']
 
-# get simulation properties
-eht = []		
-for file in filename:
-    ransP = prop.ResProperties(params,file)
+# calculate and display simulation properties
+for filee in filename:
+    ransP = prop.Properties(params, filee, intc)
     properties = ransP.execute()
 
 # instantiate master plot 								 
-plt = plot.ResMasterPlot(params)								 
+plt = plot.ResMasterPlot(params)
 
 # obtain publication quality figures
 plt.SetMatplotlibParams()
+
 
 # define useful functions
 def str2bool(param):
     # True/False strings to proper boolean
     return ast.literal_eval(param)
+
 
 # PLOT
 
@@ -66,14 +68,10 @@ if str2bool(params.getForEqs('entrflx')['plotMee']): plt.execSSflx()
 if str2bool(params.getForEqs('tmsflx')['plotMee']): plt.execTMSflx()
 
 # load network
-network = params.getNetwork() 
+network = params.getNetwork()
 
 # COMPOSITION MASS FRACTION AND FLUX
-for elem in network[1:]: # skip network identifier in the list 
-    inuc = params.getInuc(network,elem) 	
-    if str2bool(params.getForEqs('xrho_'+elem)['plotMee']): plt.execXrho(inuc,elem,'xrho_'+elem)
-    if str2bool(params.getForEqs('xflxx_'+elem)['plotMee']): plt.execXflxx(inuc,elem,'xflxx_'+elem)	
-
-
-
-
+for elem in network[1:]:  # skip network identifier in the list
+    inuc = params.getInuc(network, elem)
+    if str2bool(params.getForEqs('xrho_' + elem)['plotMee']): plt.execXrho(inuc, elem, 'xrho_' + elem)
+    if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']): plt.execXflxx(inuc, elem, 'xflxx_' + elem)

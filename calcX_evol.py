@@ -4,7 +4,7 @@
 
 import numpy as np
 import UTILS.EVOL.EvolReadParams as rp
-import UTILS.EVOL.PropertiesEvolution as propevol
+import UTILS.RANSX.Properties as prop
 import sys
 import os
 
@@ -20,6 +20,7 @@ eht = np.load(filename)
 
 # load available central times
 t_timec = np.asarray(eht.item().get('timec'))
+
 ntc = np.asarray(eht.item().get('ntc'))
 
 # check imposed boundary limits 
@@ -31,6 +32,10 @@ if (xbl < xzn0[0]) or (xbr > xzn0[-1]):
     print(xbl, xbr, xzn0[0], xzn0[-1])
     print("ERROR(calcX_evol.py): imposed boundary limit in param.evol exceeds the grid limits.")
     sys.exit()
+
+# TODO: add size of cnvz in Hp, RMS velocities, convective turnover timescales #
+# TODO: add here amplitude of residuals in the convection zone (to find out optimum tavg)
+
 
 t_xzn0inc = []
 t_xzn0outc = []
@@ -44,8 +49,8 @@ t_x0002mean_cnvz = []
 t_machMax, t_machMean = [], []
 
 for intc in range(0, t_timec.size):
-    ransPevol = propevol.PropertiesEvolution(params, intc)
-    properties = ransPevol.execute()
+    ransP = prop.Properties(params, filename, intc)
+    properties = ransP.execute()
     t_xzn0inc.append(properties['xzn0inc'])
     t_xzn0outc.append(properties['xzn0outc'])
     t_TKEsum.append(properties['TKEsum'])
