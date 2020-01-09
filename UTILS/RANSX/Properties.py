@@ -1,7 +1,9 @@
 import numpy as np
 import sys
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
+import UTILS.Errors as eR
+import UTILS.Tools as uT
 import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
 
 
@@ -11,7 +13,7 @@ import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Properties(calc.Calculus, al.SetAxisLimit, object):
+class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, laxis, xbl, xbr):
         super(Properties, self).__init__(ig)
@@ -19,35 +21,42 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         # load data to structured array
         eht = np.load(filename)
 
-        timec = eht.item().get('timec')[intc]
-        tavg = np.asarray(eht.item().get('tavg'))
-        trange = np.asarray(eht.item().get('trange'))
+        timec = self.getRAdata(eht, 'timec')[intc]
+        tavg = self.getRAdata(eht, 'tavg')
+        trange = self.getRAdata(eht, 'trange')
 
         # load grid
-        nx = np.asarray(eht.item().get('nx'))
-        ny = np.asarray(eht.item().get('ny'))
-        nz = np.asarray(eht.item().get('nz'))
+        nx = self.getRAdata(eht, 'nx')
+        ny = self.getRAdata(eht, 'ny')
+        nz = self.getRAdata(eht, 'nz')
 
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        xznl = np.asarray(eht.item().get('xznl'))
-        xznr = np.asarray(eht.item().get('xznr'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        xznl = self.getRAdata(eht, 'xznl')
+        xznr = self.getRAdata(eht, 'xznr')
 
-        yzn0 = np.asarray(eht.item().get('yzn0'))
-        zzn0 = np.asarray(eht.item().get('zzn0'))
+        yzn0 = self.getRAdata(eht, 'yzn0')
+        zzn0 = self.getRAdata(eht, 'zzn0')
 
-        enuc1 = np.asarray(eht.item().get('enuc1')[intc])
-        enuc2 = np.asarray(eht.item().get('enuc2')[intc])
+        enuc1 = self.getRAdata(eht, 'enuc1')[intc]
+        enuc2 = self.getRAdata(eht, 'enuc2')[intc]
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        uxux = np.asarray(eht.item().get('uxux')[intc])
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
+            gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+            # gamma3 = gamma1
 
         # for ccp project
-        x0002 = np.asarray(eht.item().get('x0002')[intc])
+        x0002 = self.getRAdata(eht, 'x0002')[intc]
 
         # instantiate turbulent kinetic energy object
-        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, ieos, intc)
+        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
 
         # load fields
         tkefields = tkeF.getTKEfield()
@@ -89,7 +98,11 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
 
     def properties(self):
         """ Print properties of your simulation"""
-        """ Share Turbulent Kinetic Energy Equations Terms  """
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(Properties.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         laxis = self.laxis
         xbl = self.xbl
@@ -99,7 +112,7 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         # PROPERTIES #
         ##############
 
-        # load grid
+        # get grid
         xzn0 = self.xzn0
         yzn0 = self.yzn0
         zzn0 = self.zzn0
@@ -133,9 +146,10 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         enuc2 = self.enuc2
 
         # calculate INDICES for grid boundaries 
-        if laxis == 0:
-            idxl = 0
-            idxr = self.nx - 1
+        idxl = 0
+        idxr = self.nx - 1
+
+        # override
         if laxis == 1:
             idxl, idxr = self.idx_bndry(xbl, xbr)
         if laxis == 2:
@@ -148,7 +162,6 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
 
         diss_max = diss.max()
         ind = np.where((diss > 0.02 * diss_max))[0]
-        # ind = np.where( (diss > 0.015*diss_max) )[0]
 
         xzn0inc = xzn0[ind[0]]
         xzn0outc = xzn0[ind[-1]]
@@ -162,16 +175,13 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         nc = itop - ibot
         Re = nc ** (4. / 3.)
 
+        Vol = np.zeros(nx)
         # handle volume for different geometries
-        if (self.ig == 1):
+        if self.ig == 1:
             surface = (yzn0[-1] - yzn0[0]) * (zzn0[-1] - zzn0[0])
             Vol = surface * (xznr - xznl)
-        elif (self.ig == 2):
+        elif self.ig == 2:
             Vol = 4. / 3. * np.pi * (xznr ** 3 - xznl ** 3)
-        else:
-            print(
-                "ERROR (Properties.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # Calculate full dissipation rate and timescale
         TKEsum = (dd * tke * Vol)[ind].sum()
@@ -205,7 +215,7 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         machMean = mach[ind].mean()
 
         # Calculate size of convection zone in pressure scale heights
-        hp = -pp / self.Grad(pp, xzn0)
+        # hp = -pp / self.Grad(pp, xzn0)
         pbot = pp[ibot]
         lcz_vs_hp = np.log(pbot / pp[ibot:itop])
 
@@ -219,7 +229,8 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         print 'Resolution: %i' % self.nx, self.ny, self.nz
         print 'Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out)
         print 'Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc)
-        if laxis != 0: print 'Extent of convection zone (in Hp): %f' % lcz_vs_hp[itop - ibot - 1]
+        if laxis != 0:
+            print 'Extent of convection zone (in Hp): %f' % lcz_vs_hp[itop - ibot - 1]
         print 'Averaging time window (in s): %f' % self.tavg
         print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
         print 'Convective turnover timescale (in s)  %.2e' % tc
@@ -253,10 +264,10 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
         ig = self.ig
 
         p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss,
-                'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
-                'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
-                'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
-                'epsD': epsD, 'tD': tD, 'tc': tc, 'tenuc': tenuc, 'xznl': xznl, 'xznr': xznr}
+             'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
+             'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
+             'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
+             'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'xznl': xznl, 'xznr': xznr}
 
         return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
@@ -264,5 +275,5 @@ class Properties(calc.Calculus, al.SetAxisLimit, object):
                 'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax': p['machMax'],
                 'machMean': p['machMean'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
                 'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'],
-                'epsD': p['epsD'], 'tD': p['tD'], 'tc': p['tc'], 'tenuc': p['tenuc'],
+                'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'],
                 'xznl': p['xznl'], 'xznr': p['xznr']}

@@ -6,7 +6,6 @@ import EVOLUTION.FOR_RESOLUTION_STUDY.MachNumberMeanEvolutionResolutionStudy as 
 # import EVOLUTION.FOR_RESOLUTION_STUDY.EnergySourceTermEvolutionResolutionStudy as enesrc
 import EVOLUTION.FOR_RESOLUTION_STUDY.X0002EvolutionResolutionStudy as x2evol
 
-
 import matplotlib.pyplot as plt
 
 
@@ -43,11 +42,11 @@ class ResEvolMasterPlot():
 
         # plot turbulent kinetic energy evolution
         ransMachMax.plot_machmax_evolution(params.getForProp('prop')['laxis'], \
-                                       params.getForEvol('machmxevol')['xbl'], \
-                                       params.getForEvol('machmxevol')['xbr'], \
-                                       params.getForEvol('machmxevol')['ybu'], \
-                                       params.getForEvol('machmxevol')['ybd'], \
-                                       params.getForEvol('machmxevol')['ilg'])
+                                           params.getForEvol('machmxevol')['xbl'], \
+                                           params.getForEvol('machmxevol')['xbr'], \
+                                           params.getForEvol('machmxevol')['ybu'], \
+                                           params.getForEvol('machmxevol')['ybd'], \
+                                           params.getForEvol('machmxevol')['ilg'])
 
     def execEvolMachMean(self):
         params = self.params
@@ -60,11 +59,11 @@ class ResEvolMasterPlot():
 
         # plot turbulent kinetic energy evolution
         ransMachMean.plot_machmean_evolution(params.getForProp('prop')['laxis'], \
-                                       params.getForEvol('machmeevol')['xbl'], \
-                                       params.getForEvol('machmeevol')['xbr'], \
-                                       params.getForEvol('machmeevol')['ybu'], \
-                                       params.getForEvol('machmeevol')['ybd'], \
-                                       params.getForEvol('machmeevol')['ilg'])
+                                             params.getForEvol('machmeevol')['xbl'], \
+                                             params.getForEvol('machmeevol')['xbr'], \
+                                             params.getForEvol('machmeevol')['ybu'], \
+                                             params.getForEvol('machmeevol')['ybd'], \
+                                             params.getForEvol('machmeevol')['ilg'])
 
     def execEvolX0002(self):
         params = self.params
@@ -82,7 +81,6 @@ class ResEvolMasterPlot():
                                        params.getForEvol('x0002evol')['ybu'], \
                                        params.getForEvol('x0002evol')['ybd'], \
                                        params.getForEvol('x0002evol')['ilg'])
-
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

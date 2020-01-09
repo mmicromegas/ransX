@@ -6,30 +6,86 @@
 # Email: miroslav.mocak@gmail.com 
 # Date: January/2019
 
-import UTILS.RES.ResReadParamsRansX as rp
-import UTILS.RES.ResMasterPlot as plot
-import UTILS.RANSX.Properties as prop
+import UTILS.RES.ResReadParamsRansX as rP
+import UTILS.RES.ResMasterPlot as mPlot
+import UTILS.RANSX.Properties as pRop
 import ast
 import os
 
-# create os independent path and read parameter file
-paramFile = os.path.join('PARAMS', 'param.ransx.res')
-params = rp.ResReadParamsRansX(paramFile)
 
-# get list with data source files and central time index
-filename = params.getForProp('prop')['eht_data']
-intc = params.getForProp('prop')['intc']
+def main():
+    # create os independent path and read parameter file
+    paramFile = os.path.join('PARAMS', 'param.ransx.res')
+    params = rP.ResReadParamsRansX(paramFile)
 
-# calculate and display simulation properties
-for filee in filename:
-    ransP = prop.Properties(params, filee, intc)
-    properties = ransP.execute()
+    # get list with data source files and central time index
+    filename = params.getForProp('prop')['eht_data']
+    intc = params.getForProp('prop')['intc']
 
-# instantiate master plot 								 
-plt = plot.ResMasterPlot(params)
+    # get input properties
+    ig = params.getForProp('prop')['ig']
+    ieos = params.getForProp('prop')['ieos']
+    laxis = params.getForProp('prop')['laxis']
+    xbl = params.getForProp('prop')['xbl']
+    xbr = params.getForProp('prop')['xbr']
 
-# obtain publication quality figures
-plt.SetMatplotlibParams()
+    # get and display simulation properties that you do resolution study of
+    for filee in filename:
+        ransP = pRop.Properties(filee, ig, ieos, intc, laxis, xbl, xbr)
+        ransP.properties()
+
+    # instantiate master plot
+    plt = mPlot.ResMasterPlot(params)
+
+    # obtain publication quality figures
+    plt.SetMatplotlibParams()
+
+    # TEMPERATURE
+    if str2bool(params.getForEqs('temp')['plotMee']):
+        plt.execTemp()
+
+    # BRUNT-VAISALLA FREQUENCY
+    if str2bool(params.getForEqs('nsq')['plotMee']):
+        plt.execBruntV()
+
+    # TURBULENT KINETIC ENERGY
+    if str2bool(params.getForEqs('tkie')['plotMee']):
+        plt.execTke()
+
+    # INTERNAL ENERGY FLUX
+    if str2bool(params.getForEqs('eintflx')['plotMee']):
+        plt.execEiFlx()
+
+    # PRESSURE FLUX
+    if str2bool(params.getForEqs('pressxflx')['plotMee']):
+        plt.execPPxflx()
+
+    # TEMPERATURE FLUX EQUATION
+    if str2bool(params.getForEqs('tempflx')['plotMee']):
+        plt.execTTflx()
+
+    # ENTHALPY FLUX EQUATION
+    if str2bool(params.getForEqs('enthflx')['plotMee']):
+        plt.execHHflx()
+
+    # ENTROPY FLUX
+    if str2bool(params.getForEqs('entrflx')['plotMee']):
+        plt.execSSflx()
+
+    # TURBULENT MASS FLUX
+    if str2bool(params.getForEqs('tmsflx')['plotMee']):
+        plt.execTMSflx()
+
+    # load network
+    network = params.getNetwork()
+
+    # COMPOSITION MASS FRACTION AND FLUX
+    for elem in network[1:]:  # skip network identifier in the list
+        inuc = params.getInuc(network, elem)
+        if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
+            plt.execXrho(inuc, elem, 'xrho_' + elem)
+        if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']):
+            plt.execXflxx(inuc, elem, 'xflxx_' + elem)
 
 
 # define useful functions
@@ -38,40 +94,8 @@ def str2bool(param):
     return ast.literal_eval(param)
 
 
-# PLOT
+# EXECUTE MAIN
+if __name__ == "__main__":
+    main()
 
-# TEMPERATURE
-if str2bool(params.getForEqs('temp')['plotMee']): plt.execTemp()
-
-# BRUNT-VAISALLA FREQUENCY
-if str2bool(params.getForEqs('nsq')['plotMee']): plt.execBruntV()
-
-# TURBULENT KINETIC ENERGY
-if str2bool(params.getForEqs('tkie')['plotMee']): plt.execTke()
-
-# INTERNAL ENERGY FLUX
-if str2bool(params.getForEqs('eintflx')['plotMee']): plt.execEiFlx()
-
-# PRESSURE FLUX
-if str2bool(params.getForEqs('pressxflx')['plotMee']): plt.execPPxflx()
-
-# TEMPERATURE FLUX EQUATION
-if str2bool(params.getForEqs('tempflx')['plotMee']): plt.execTTflx()
-
-# ENTHALPY FLUX EQUATION
-if str2bool(params.getForEqs('enthflx')['plotMee']): plt.execHHflx()
-
-# ENTROPY FLUX
-if str2bool(params.getForEqs('entrflx')['plotMee']): plt.execSSflx()
-
-# TURBULENT MASS FLUX
-if str2bool(params.getForEqs('tmsflx')['plotMee']): plt.execTMSflx()
-
-# load network
-network = params.getNetwork()
-
-# COMPOSITION MASS FRACTION AND FLUX
-for elem in network[1:]:  # skip network identifier in the list
-    inuc = params.getInuc(network, elem)
-    if str2bool(params.getForEqs('xrho_' + elem)['plotMee']): plt.execXrho(inuc, elem, 'xrho_' + elem)
-    if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']): plt.execXflxx(inuc, elem, 'xflxx_' + elem)
+# END

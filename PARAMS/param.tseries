@@ -4,5 +4,5 @@
 ## Input Data Endianness ................... ## [tseries,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [tseries,precision,double]
 ## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ccptwo_256cubed_1500secs_newHeating]
-## Time-Range (in s) ....................... ## [tseries,trange,0.,2764.]
+## Time-Range (in s) ....................... ## [tseries,trange,0.,1999.]
 ## Averaging Window (in s) ................. ## [tseries,tavg,1500.]
