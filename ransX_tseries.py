@@ -11,6 +11,7 @@
 
 import UTILS.PROMPI.PROMPI_data as uPd
 import UTILS.TSERIES.ReadParamsTseries as uRpt
+import UTILS.Errors as uEr
 import numpy as np
 import os
 import sys
@@ -21,6 +22,7 @@ def main():
     paramFile = os.path.join('PARAMS', 'param.tseries')
     params = uRpt.ReadParamsTseries(paramFile)
 
+    # read input parameters
     datadir = params.getForTseries('tseries')['datadir']
     endianness = params.getForTseries('tseries')['endianness']
     precision = params.getForTseries('tseries')['precision']
@@ -71,15 +73,16 @@ def main():
     timec = time[itc]
     ntc = len(timec)
 
+    # print useful information
     print('Number of time averaged snapshots: ', ntc)
     print('Averaged time range: ', round(timecmin, 3), round(timecmax, 3))
     print('nx', ts.rans()['nx'])
 
+#   instantiate errors
+    errors = uEr.Errors()
     if ntc == 0:
         print("----------")
-        print("rans_tseries.py ERROR: Zero time-averaged snapshots.")
-        print("rans_tseries.py Adjust your trange and averaging window.")
-        print("rans_tseries.py EXITING ... ")
+        print("Error(rans_tseries.py) " + errors.errorAveragedSnapshots())
         print("----------")
         sys.exit()
 

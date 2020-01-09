@@ -1,5 +1,6 @@
 # class for error messages
 
+
 class Errors:
 
     def __init__(self):
@@ -10,3 +11,6 @@ class Errors:
 
     def errorOutOfBoundary(self):
         return " imposed boundary limit in param.evol exceeds the grid limits. EXITING ..."
+
+    def errorAveragedSnapshots(self):
+        return " Zero time-averaged snapshots. Adjust your trange and averaging window. EXITING ..."
