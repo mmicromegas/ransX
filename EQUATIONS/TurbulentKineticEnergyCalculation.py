@@ -1,5 +1,6 @@
 import numpy as np
-import UTILS.Calculus as calc
+import UTILS.Calculus as uCalc
+import UTILS.Tools as uT
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -8,73 +9,69 @@ import UTILS.Calculus as calc
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentKineticEnergyCalculation(calc.Calculus, object):
+class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
 
-    def __init__(self, filename, ig, ieos, intc):
+    def __init__(self, filename, ig, intc):
         super(TurbulentKineticEnergyCalculation, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
-        timec = eht.item().get('timec')[intc]
-        tavg = np.asarray(eht.item().get('tavg'))
-        trange = np.asarray(eht.item().get('trange'))
-
         # load grid
-        nx = np.asarray(eht.item().get('nx'))
-        ny = np.asarray(eht.item().get('ny'))
-        nz = np.asarray(eht.item().get('nz'))
+        nx = self.getRAdata(eht, 'nx')
+        ny = self.getRAdata(eht, 'ny')
+        nz = self.getRAdata(eht, 'nz')
 
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        xznl = np.asarray(eht.item().get('xznl'))
-        xznr = np.asarray(eht.item().get('xznr'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        xznl = self.getRAdata(eht, 'xznl')
+        xznr = self.getRAdata(eht, 'xznr')
 
-        yzn0 = np.asarray(eht.item().get('yzn0'))
-        zzn0 = np.asarray(eht.item().get('zzn0'))
+        yzn0 = self.getRAdata(eht, 'yzn0')
+        zzn0 = self.getRAdata(eht, 'zzn0')
 
-        # pick pecific Reynolds-averaged mean fields according to:
+        # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+        # dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduxuy = self.getRAdata(eht, 'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht, 'dduxuz')[intc]
 
-        ddekux = np.asarray(eht.item().get('ddekux')[intc])
-        ddek = np.asarray(eht.item().get('ddek')[intc])
+        ddekux = self.getRAdata(eht, 'ddekux')[intc]
+        ddek = self.getRAdata(eht, 'ddek')[intc]
 
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ppux = np.asarray(eht.item().get('ppux')[intc])
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
 
-        uxux = np.asarray(eht.item().get('uxux')[intc])
+        uxux = self.getRAdata(eht, 'uxux')[intc]
 
         ###################################
         # TURBULENT KINETIC ENERGY EQUATION
         ###################################
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
 
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_dduy = np.asarray(eht.item().get('dduy'))
-        t_dduz = np.asarray(eht.item().get('dduz'))
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_dduy = self.getRAdata(eht, 'dduy')
+        t_dduz = self.getRAdata(eht, 'dduz')
 
-        t_dduxux = np.asarray(eht.item().get('dduxux'))
-        t_dduyuy = np.asarray(eht.item().get('dduyuy'))
-        t_dduzuz = np.asarray(eht.item().get('dduzuz'))
+        t_dduxux = self.getRAdata(eht, 'dduxux')
+        t_dduyuy = self.getRAdata(eht, 'dduyuy')
+        t_dduzuz = self.getRAdata(eht, 'dduzuz')
 
         t_uxffuxff = t_dduxux / t_dd - t_ddux * t_ddux / (t_dd * t_dd)
         t_uyffuyff = t_dduyuy / t_dd - t_dduy * t_dduy / (t_dd * t_dd)
@@ -122,13 +119,13 @@ class TurbulentKineticEnergyCalculation(calc.Calculus, object):
         rxy = dduxuy - ddux * dduy / dd
         rxz = dduxuz - ddux * dduz / dd
 
-        self.minus_r_grad_u = -(rxx * self.Grad(ddux / dd, xzn0) + \
-                                rxy * self.Grad(dduy / dd, xzn0) + \
+        self.minus_r_grad_u = -(rxx * self.Grad(ddux / dd, xzn0) +
+                                rxy * self.Grad(dduy / dd, xzn0) +
                                 rxz * self.Grad(dduz / dd, xzn0))
 
         # -res
-        self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke + \
-                                       self.plus_wb + self.plus_wp + self.minus_div_fekx + \
+        self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke +
+                                       self.plus_wb + self.plus_wp + self.minus_div_fekx +
                                        self.minus_div_fpx + self.minus_r_grad_u)
 
         #######################################
@@ -154,24 +151,23 @@ class TurbulentKineticEnergyCalculation(calc.Calculus, object):
 
     def getTKEfield(self):
         # return fields
-        field = {'dd':self.dd, 'tke': self.tke, 'xzn0': self.xzn0, 'minus_dt_dd_tke': self.minus_dt_dd_tke,
-        'minus_div_eht_dd_fht_ux_tke': self.minus_div_eht_dd_fht_ux_tke,
-        'minus_div_fekx': self.minus_div_fekx,
-        'minus_div_fpx': self.minus_div_fpx,
-        'plus_ax': self.plus_ax,
-        'plus_wb': self.plus_wb,
-        'plus_wp': self.plus_wp,
-        'minus_r_grad_u': self.minus_r_grad_u,
-        'minus_resTkeEquation': self.minus_resTkeEquation}
+        field = {'dd': self.dd, 'tke': self.tke, 'xzn0': self.xzn0, 'minus_dt_dd_tke': self.minus_dt_dd_tke,
+                 'minus_div_eht_dd_fht_ux_tke': self.minus_div_eht_dd_fht_ux_tke,
+                 'minus_div_fekx': self.minus_div_fekx,
+                 'minus_div_fpx': self.minus_div_fpx,
+                 'plus_ax': self.plus_ax,
+                 'plus_wb': self.plus_wb,
+                 'plus_wp': self.plus_wp,
+                 'minus_r_grad_u': self.minus_r_grad_u,
+                 'minus_resTkeEquation': self.minus_resTkeEquation}
 
-        return{'dd': field['dd'],'tke': field['tke'], 'xzn0': field['xzn0'],'minus_dt_dd_tke': field['minus_dt_dd_tke'],
-               'minus_div_eht_dd_fht_ux_tke': field['minus_div_eht_dd_fht_ux_tke'],
-               'minus_div_fekx': field['minus_div_fekx'],
-               'minus_div_fpx': field['minus_div_fpx'],
-               'plus_ax': field['plus_ax'],
-               'plus_wb': field['plus_wb'],
-               'plus_wp': field['plus_wp'],
-               'minus_r_grad_u': field['minus_r_grad_u'],
-               'minus_resTkeEquation': field['minus_resTkeEquation']}
-
-
+        return {'dd': field['dd'], 'tke': field['tke'], 'xzn0': field['xzn0'],
+                'minus_dt_dd_tke': field['minus_dt_dd_tke'],
+                'minus_div_eht_dd_fht_ux_tke': field['minus_div_eht_dd_fht_ux_tke'],
+                'minus_div_fekx': field['minus_div_fekx'],
+                'minus_div_fpx': field['minus_div_fpx'],
+                'plus_ax': field['plus_ax'],
+                'plus_wb': field['plus_wb'],
+                'plus_wp': field['plus_wp'],
+                'minus_r_grad_u': field['minus_r_grad_u'],
+                'minus_resTkeEquation': field['minus_resTkeEquation']}

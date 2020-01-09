@@ -17,7 +17,7 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
         super(TurbulentKineticEnergyEquation, self)
 
         # instantiate turbulent kinetic energy object
-        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, ieos, intc)
+        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
 
         # load all fields
         tkefields = tkeF.getTKEfield()
@@ -96,9 +96,9 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
         # plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$\frac{1}{2} \overline{u'_i u'_i}$")
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
+        elif self.ig == 2:
             setxlabel = r'r (10$^{8}$ cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
