@@ -180,10 +180,10 @@ def main():
 
 
 # EXECUTE MAIN
-# if __name__ == "__main__":
-#     main()
-#
-# # END
+if __name__ == "__main__":
+    main()
+
+# END
 
 # OBSOLETE CODE 
 
