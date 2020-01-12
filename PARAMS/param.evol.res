@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) and CCP project ---------- #
 []
 ## Input Datadir ........................................... ## [prop,eht_data,DATA/TEVOL/]
-## Data File List .......................................... ## [prop,eht_res,tseries_ccptwo_64cubed_5secs_newHeating_fixedmu_opto3_evol.npy,tseries_ccptwo_256cubed_5secs_cosma_evol.npy]
+## Data File List .......................................... ## [prop,eht_res,tseries_ccptwo_64cubed_5secs_newHeating_fixedmu_opto3_evol.npy,tseries_ccptwo_128cubed_5secs_newHeating_fixedmu_opto3_evol.npy,tseries_ccptwo_256cubed_5secs_cosma_evol.npy]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_res_oldvsnewmu_resttest_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,1]

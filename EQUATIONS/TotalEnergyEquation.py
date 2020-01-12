@@ -7,6 +7,7 @@ import UTILS.SetAxisLimit as al
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
@@ -22,60 +23,60 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
-        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
-        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
+        dduxuy = self.getRAdata(eht, 'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht, 'dduxuz')[intc]
 
-        ddekux = self.getRAdata(eht,'ddekux')[intc]
-        ddek = self.getRAdata(eht,'ddek')[intc]
+        ddekux = self.getRAdata(eht, 'ddekux')[intc]
+        ddek = self.getRAdata(eht, 'ddek')[intc]
 
-        ddei = self.getRAdata(eht,'ddei')[intc]
-        ddeiux = self.getRAdata(eht,'ddeiux')[intc]
+        ddei = self.getRAdata(eht, 'ddei')[intc]
+        ddeiux = self.getRAdata(eht, 'ddeiux')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
-        ppux = self.getRAdata(eht,'ppux')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
 
-        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
-        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
+        ddenuc1 = self.getRAdata(eht, 'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht, 'ddenuc2')[intc]
 
         #######################
         # TOTAL ENERGY EQUATION 
         #######################
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
 
-        t_ddei = self.getRAdata(eht,'ddei')
+        t_ddei = self.getRAdata(eht, 'ddei')
 
-        t_ddux = self.getRAdata(eht,'ddux')
-        t_dduy = self.getRAdata(eht,'dduy')
-        t_dduz = self.getRAdata(eht,'dduz')
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_dduy = self.getRAdata(eht, 'dduy')
+        t_dduz = self.getRAdata(eht, 'dduz')
 
-        t_dduxux = self.getRAdata(eht,'dduxux')
-        t_dduyuy = self.getRAdata(eht,'dduyuy')
-        t_dduzuz = self.getRAdata(eht,'dduzuz')
+        t_dduxux = self.getRAdata(eht, 'dduxux')
+        t_dduyuy = self.getRAdata(eht, 'dduyuy')
+        t_dduzuz = self.getRAdata(eht, 'dduzuz')
 
-        t_uxux = self.getRAdata(eht,'uxux')
-        t_uyuy = self.getRAdata(eht,'uyuy')
-        t_uzuz = self.getRAdata(eht,'uzuz')
+        t_uxux = self.getRAdata(eht, 'uxux')
+        t_uyuy = self.getRAdata(eht, 'uyuy')
+        t_uzuz = self.getRAdata(eht, 'uzuz')
 
         t_fht_ek = 0.5 * (t_dduxux + t_dduyuy + t_dduzuz) / t_dd
         t_fht_ei = t_ddei / t_dd
@@ -150,14 +151,14 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         self.plus_dd_fht_enuc = ddenuc1 + ddenuc2
 
         # -res		
-        self.minus_resTeEquation = - (self.minus_dt_eht_dd_fht_et + self.minus_div_eht_dd_fht_ux_fht_et + \
-                                      self.minus_div_fei + self.minus_div_ftt + self.minus_div_fekx + \
-                                      self.minus_div_fpx + self.minus_r_grad_u + self.minus_pp_div_ux + \
+        self.minus_resTeEquation = - (self.minus_dt_eht_dd_fht_et + self.minus_div_eht_dd_fht_ux_fht_et +
+                                      self.minus_div_fei + self.minus_div_ftt + self.minus_div_fekx +
+                                      self.minus_div_fpx + self.minus_r_grad_u + self.minus_pp_div_ux +
                                       self.plus_wb + self.plus_dd_fht_enuc + self.plus_dd_Dt_fht_ui_fht_ui_o_two)
 
         ###########################
         # END TOTAL ENERGY EQUATION 
-        ###########################  
+        ###########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix

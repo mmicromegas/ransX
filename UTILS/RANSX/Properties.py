@@ -5,6 +5,8 @@ import UTILS.SetAxisLimit as uSal
 import UTILS.Errors as eR
 import UTILS.Tools as uT
 import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
+import EQUATIONS.ContinuityEquationWithMassFluxCalculation as contCalc
+import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -55,6 +57,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # for ccp project
         x0002 = self.getRAdata(eht, 'x0002')[intc]
 
+        ####################################################################
+
         # instantiate turbulent kinetic energy object
         tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
 
@@ -67,7 +71,31 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # get turbulent kinetic energy dissipation
         self.minus_resTkeEquation = tkefields['minus_resTkeEquation']
 
-        # assign global data to be shared across whole class	
+        ####################################################################
+
+        # instantiate continuity equation object
+        contF = contCalc.ContinuityEquationWithMassFluxCalculation(filename, ig, intc)
+
+        # load fields
+        contfields = contF.getCONTfield()
+
+        # get residual of the continuity equation
+        self.minus_resContEquation = contfields['minus_resContEquation']
+
+        ####################################################################
+
+        # instantiate total energy equation object
+        teeF = teeCalc.TotalEnergyEquationCalculation(filename, ig, intc)
+
+        # load fields
+        teefields = teeF.getTotalEnergyEquationField()
+
+        # get residual of the total energy equation equation
+        self.minus_resTeEquation = teefields['minus_resTeEquation']
+
+        ####################################################################
+
+        # assign global data to be shared across whole class
         self.xzn0 = xzn0
         self.xznl = xznl
         self.xznr = xznr
@@ -104,13 +132,13 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             print("ERROR(Properties.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
-        laxis = self.laxis
-        xbl = self.xbl
-        xbr = self.xbr
-
         ##############
         # PROPERTIES #
         ##############
+
+        laxis = self.laxis
+        xbl = self.xbl
+        xbr = self.xbr
 
         # get grid
         xzn0 = self.xzn0
@@ -256,8 +284,19 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             # sys.exit()
 
         # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm)
-        ind = np.where((xzn0 < 6.66e8))[0]
-        x0002mean_cnvz = np.mean(self.x0002[ind])
+        indCCP = np.where((xzn0 < 6.66e8))[0]
+        x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+        indRES = np.where((xzn0 < 8.0e8) & (xzn0 > 4.5e8))[0]
+        # residual from continuity equation
+        resCont = np.abs(self.minus_resContEquation)
+        resContMax = np.max(resCont[indRES])
+        resContMean = np.mean(resCont[indRES])
+
+        # residual from total energy equation
+        resTee = np.abs(self.minus_resTeEquation)
+        resTeeMax = np.max(resTee[indRES])
+        resTeeMean = np.mean(resTee[indRES])
 
         ig = self.ig
 
@@ -265,7 +304,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
              'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
              'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
-             'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'xznl': xznl, 'xznr': xznr}
+             'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
+             'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr}
 
         return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
@@ -273,5 +313,6 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
                 'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax': p['machMax'],
                 'machMean': p['machMean'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
                 'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'],
-                'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'],
+                'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'], 'resContMean': p['resContMean'],
+                'resContMax': p['resContMax'], 'resTeeMax': p['resTeeMax'], 'resTeeMean': p['resTeeMean'],
                 'xznl': p['xznl'], 'xznr': p['xznr'], 'urms': p['urms']}

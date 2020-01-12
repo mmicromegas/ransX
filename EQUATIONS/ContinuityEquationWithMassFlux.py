@@ -68,7 +68,7 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_div_fdd + \
                                        self.plus_fdd_o_dd_gradx_dd + self.minus_dd_div_ux)
 
-        ########################################	
+        ########################################
         # END CONTINUITY EQUATION WITH MASS FLUX
         ########################################
 

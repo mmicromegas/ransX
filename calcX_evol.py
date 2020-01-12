@@ -56,6 +56,7 @@ def main():
 
     t_xzn0inc, t_xzn0outc, t_TKEsum, t_epsD, t_tD, t_urms = [], [], [], [], [], []
     t_tc, t_tenuc, t_pturb_o_pgas, t_machMax, t_machMean = [], [], [], [], []
+    t_resContMean, t_resContMax, t_resTeeMean, t_resTeeMax = [], [], [], []
     t_x0002mean_cnvz = []
 
     intc = 0
@@ -73,8 +74,12 @@ def main():
         t_machMax.append(prp['machMax'])
         t_machMean.append(prp['machMean'])
         t_urms.append(prp['urms'])
+        t_resContMean.append(prp['resContMean'])
+        t_resContMax.append(prp['resContMax'])
+        t_resTeeMean.append(prp['resTeeMean'])
+        t_resTeeMax.append(prp['resTeeMax'])
         t_x0002mean_cnvz.append(prp['x0002mean_cnvz'])
-        print(prp['xzn0inc'], prp['xzn0outc'])
+        print(prp['xzn0inc'], prp['xzn0outc'],prp['resContMean'],prp['resContMax'],prp['resTeeMean'],prp['resTeeMax'])
 
     # store time-evolution
     tevol = {}
@@ -115,10 +120,23 @@ def main():
     t_velrms = {'t_urms': t_urms}
     tevol.update(t_velrms)
 
+    t_resCntMx = {'t_resContMax': t_resContMax}
+    tevol.update(t_resCntMx)
+
+    t_resCntMn = {'t_resContMean': t_resContMean}
+    tevol.update(t_resCntMn)
+
+    t_resTeeMx = {'t_resTeeMax': t_resTeeMax}
+    tevol.update(t_resTeeMx)
+
+    t_resTeeMn = {'t_resTeeMean': t_resTeeMean}
+    tevol.update(t_resTeeMn)
+
     x0002mc = {'t_x0002mean_cnvz': t_x0002mean_cnvz}
     tevol.update(x0002mc)
 
     # get and store grid via redundant call to properties
+    # otherwise prp may be as assigned before reference
     ransP = pRop.Properties(filename, ig, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
