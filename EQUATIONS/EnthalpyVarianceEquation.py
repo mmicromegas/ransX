@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class EnthalpyVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
+class EnthalpyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, tauL, data_prefix):
         super(EnthalpyVarianceEquation, self).__init__(ig)
@@ -20,50 +21,50 @@ class EnthalpyVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        hh = np.asarray(eht.item().get('hh')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        hh = self.getRAdata(eht,'hh')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddhh = np.asarray(eht.item().get('ddhh')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddhh = self.getRAdata(eht,'ddhh')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
+        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
 
-        ddenuc1 = np.asarray(eht.item().get('ddenuc1')[intc])
-        ddenuc2 = np.asarray(eht.item().get('ddenuc2')[intc])
+        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
 
-        hhddenuc1 = np.asarray(eht.item().get('hhddenuc1')[intc])
-        hhddenuc2 = np.asarray(eht.item().get('hhddenuc2')[intc])
+        hhddenuc1 = self.getRAdata(eht,'hhddenuc1')[intc]
+        hhddenuc2 = self.getRAdata(eht,'hhddenuc2')[intc]
 
-        hhppdivu = np.asarray(eht.item().get('hhppdivu')[intc])
+        hhppdivu = self.getRAdata(eht,'hhppdivu')[intc]
 
-        ddhhhh = np.asarray(eht.item().get('ddhhhh')[intc])
-        ddhhux = np.asarray(eht.item().get('ddhhux')[intc])
-        ddhhhhux = np.asarray(eht.item().get('ddhhhhux')[intc])
+        ddhhhh = self.getRAdata(eht,'ddhhhh')[intc]
+        ddhhux = self.getRAdata(eht,'ddhhux')[intc]
+        ddhhhhux = self.getRAdata(eht,'ddhhhhux')[intc]
 
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
+        gamma3 = self.getRAdata(eht,'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddhh = np.asarray(eht.item().get('ddhh'))
-        t_ddhhhh = np.asarray(eht.item().get('ddhhhh'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddhh = self.getRAdata(eht,'ddhh')
+        t_ddhhhh = self.getRAdata(eht,'ddhhhh')
 
         t_sigma_hh = (t_ddhhhh / t_dd) - (t_ddhh * t_ddhh) / (t_dd * t_dd)
 

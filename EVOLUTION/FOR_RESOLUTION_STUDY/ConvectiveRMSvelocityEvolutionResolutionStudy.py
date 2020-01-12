@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.EVOL.ALIMITevol as al
+import UTILS.Calculus as uCalc
+import UTILS.EVOL.ALIMITevol as uEal
 import UTILS.Tools as uT
 
 
@@ -12,24 +12,24 @@ import UTILS.Tools as uT
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, object):
+class ConvectiveRMSvelocityEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, object):
 
     def __init__(self, filename, ig, data_prefix):
-        super(MachNumberMeanEvolutionResolutionStudy, self).__init__(ig)
+        super(ConvectiveRMSvelocityEvolutionResolutionStudy, self).__init__(ig)
 
         # load data to a list of structured arrays
         eht = []
-        for file in filename:
-            eht.append(np.load(file))
+        for ffile in filename:
+            eht.append(np.load(ffile))
 
         # declare data lists
-        t_timec, t_machme = [], []
+        t_timec, t_urms = [], []
         nx, ny, nz = [], [], []
 
         for i in range(len(filename)):
             # load temporal evolution
             t_timec.append(self.getRAdata(eht[i], 't_timec'))
-            t_machme.append(self.getRAdata(eht[i], 't_machMean'))
+            t_urms.append(self.getRAdata(eht[i], 't_urms'))
 
             nx.append(self.getRAdata(eht[i], 'nx'))
             ny.append(self.getRAdata(eht[i], 'ny'))
@@ -37,18 +37,18 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
 
         # share data across the whole class
         self.t_timec = t_timec
-        self.t_machme = t_machme
-
+        self.t_urms = t_urms
         self.data_prefix = data_prefix
 
         self.nx = nx
         self.ny = ny
         self.nz = nz
 
-    def plot_machmean_evolution(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_turms_evolution(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 
         grd = self.t_timec
-        plt1 = self.t_machme
+        plt1 = self.t_urms
+        # plt2 = self.t_epsD
 
         # load resolution
         nx = self.nx
@@ -70,7 +70,7 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         if (LAXIS != 2):
-            print("ERROR(MachNumberMeanEvolutionResolutionStudy.py): Only LAXIS=2 is supported.")
+            print("ERROR(ConvectiveRMSvelocityEvolutionResolutionStudy.py): Only LAXIS=2 is supported.")
             sys.exit()
 
         plt10_tmp = plt1[0]
@@ -87,16 +87,16 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('mean Mach number evolution')
+        plt.title('convective rms velocity evolution')
 
         for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # plt.plot(grd1,plt2,color='g',label = r'$epsD$')
 
         # define and show x/y LABELS
         setxlabel = r"t (s)"
-        setylabel = r"Mach"
+        setylabel = r"u (cms/s)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 
@@ -107,7 +107,7 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'machmean_evol_res.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'urms_evol.png')
 
     # find data with maximum resolution
     def maxresdata(self, data):

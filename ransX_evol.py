@@ -30,6 +30,14 @@ def main():
     if str2bool(params.getForEvol('tkeevol')['plotMee']):
         plt.execEvolTKE()
 
+    # MACH NUMBER MAX EVOLUTION
+    if str2bool(params.getForEvol('machmxevol')['plotMee']):
+        plt.execEvolMachMax()
+
+    # MACH NUMBER MEAN EVOLUTION
+    if str2bool(params.getForEvol('machmeevol')['plotMee']):
+        plt.execEvolMachMean()
+
     # CONVECTION BOUNDARIES POSITION EVOLUTION
     if str2bool(params.getForEvol('cnvzbndry')['plotMee']):
         plt.execEvolCNVZbnry()
@@ -38,9 +46,19 @@ def main():
     if str2bool(params.getForEvol('enesource')['plotMee']):
         plt.execEvolTenuc()
 
+    # CONVECTIVE RMS VELOCITIES
+    if str2bool(params.getForEvol('convelrms')['plotMee']):
+        plt.execEvolConvVelRMS()
+
+    # CONVECTIVE TURNOVER TIMESCALE
+    if str2bool(params.getForEvol('convturn')['plotMee']):
+        plt.execEvolConvTurnoverTime()
+
     # X0002 EVOLUTION
     if str2bool(params.getForEvol('x0002evol')['plotMee']):
         plt.execEvolX0002()
+
+
 
 
 # define useful functions

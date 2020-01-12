@@ -8,7 +8,7 @@ class Tools:
     def __init__(self):
         pass
 
-    def getRAdata(self, ransdatarray, q):
-        quantity = np.asarray(ransdatarray.item().get(q))
+    def getRAdata(self, ransdat, q):
+        quantity = np.asarray(ransdat.item().get(q))
         return quantity
 

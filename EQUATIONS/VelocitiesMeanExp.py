@@ -3,7 +3,9 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, object):
+class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(VelocitiesMeanExp, self).__init__(ig)
@@ -20,19 +22,19 @@ class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        ux = np.asarray(eht.item().get('ux')[intc])
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
+        ux = self.getRAdata(eht,'ux')[intc]
+        dd = self.getRAdata(eht,'dd')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_mm = np.asarray(eht.item().get('mm'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_mm = self.getRAdata(eht,'mm')
 
         minus_dt_mm = -self.dt(t_mm, xzn0, t_timec, intc)
 

@@ -47,6 +47,14 @@ def main():
     if str2bool(params.getForEvol('enesource')['plotMee']):
         plt.execEvolTenuc()
 
+    # CONVECTIVE RMS VELOCITIES
+    if str2bool(params.getForEvol('convelrms')['plotMee']):
+        plt.execEvolConvVelRMS()
+
+    # CONVECTIVE TURNOVER TIMESCALE
+    if str2bool(params.getForEvol('convturn')['plotMee']):
+        plt.execEvolConvTurnoverTime()
+
     # X0002 EVOLUTION
     if str2bool(params.getForEvol('x0002evol')['plotMee']):
         plt.execEvolX0002()

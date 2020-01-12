@@ -3,6 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, object):
+class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(ZbarTransportEquation, self).__init__(ig)
@@ -20,24 +22,24 @@ class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        zbar = np.asarray(eht.item().get('zbar')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddzbar = np.asarray(eht.item().get('ddzbar')[intc])
-        ddzbarux = np.asarray(eht.item().get('ddzbarux')[intc])
-        ddabazbar_sum_xdn_o_an = np.asarray(eht.item().get('ddabazbar_sum_xdn_o_an')[intc])
-        ddabar_sum_znxdn_o_an = np.asarray(eht.item().get('ddabar_sum_znxdn_o_an')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        zbar = self.getRAdata(eht, 'zbar')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ddzbar = self.getRAdata(eht, 'ddzbar')[intc]
+        ddzbarux = self.getRAdata(eht, 'ddzbarux')[intc]
+        ddabazbar_sum_xdn_o_an = self.getRAdata(eht, 'ddabazbar_sum_xdn_o_an')[intc]
+        ddabar_sum_znxdn_o_an = self.getRAdata(eht, 'ddabar_sum_znxdn_o_an')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddzbar = np.asarray(eht.item().get('ddzbar'))
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddzbar = self.getRAdata(eht, 'ddzbar')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -72,7 +74,7 @@ class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, object):
                                        self.minus_div_eht_dd_fht_ux_zbar + self.minus_div_fzbar + \
                                        self.minus_ddabazbar_sum_xdn_o_an + self.plus_ddabar_sum_znxdn_o_an)
 
-        #############################	
+        #############################
         # END ZBAR TRANSPORT EQUATION
         #############################
 

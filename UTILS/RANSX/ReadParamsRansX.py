@@ -5,36 +5,37 @@ class ReadParamsRansX:
 
     def __init__(self, filename):
 
-        file = open(filename, 'r')
-        next(file)  # skip header line
-        next(file)  # skip header line
+        ffile = open(filename, 'r')
+        next(ffile)  # skip header line
+        next(ffile)  # skip header line
 
-        input = []
-        for line in file:
+        iinput = []
+        for line in ffile:
             prsvalue = re.search(r'\[(.*)\]', line).group(1)  # parse out values from square brackets
-            input.append(prsvalue)
-        file.close()
+            iinput.append(prsvalue)
+        ffile.close()
 
-        self.input = input
+        self.iinput = iinput
 
     def getForProp(self, param):
 
-        match = [s for s in self.input if param in s]  # choose only lists identified by param
+        match = [s for s in self.iinput if param in s]  # choose only lists identified by param
         eht_data = match[0].split(",")[2]
         prefix = match[1].split(",")[2]
         ig = int(match[2].split(",")[2])
         ieos = int(match[3].split(",")[2])
         intc = int(match[4].split(",")[2])
         laxis = int(match[5].split(",")[2])
-        xbl = float(match[6].split(",")[2])
-        xbr = float(match[7].split(",")[2])
+        fext = match[6].split(",")[2]
+        xbl = float(match[7].split(",")[2])
+        xbr = float(match[8].split(",")[2])
 
         return {'eht_data': eht_data, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'intc': intc, 'laxis': laxis,
-                'xbl': xbl, 'xbr': xbr}
+                'fext': fext, 'xbl': xbl, 'xbr': xbr}
 
     def getForEqs(self, param):
 
-        match = [s for s in self.input if param in s]  # choose only lists identified by param
+        match = [s for s in self.iinput if param in s]  # choose only lists identified by param
         # print(param,match)
         match_split = match[0].split(",")
         # equation = match_split[0]
@@ -49,7 +50,7 @@ class ReadParamsRansX:
 
     def getForEqsBar(self, param):
 
-        match = [s for s in self.input if param in s]  # choose only lists identified by param
+        match = [s for s in self.iinput if param in s]  # choose only lists identified by param
         match_split = match[0].split(",")
         # equation = match_split[0]
         plotMee = match_split[1]
@@ -61,16 +62,17 @@ class ReadParamsRansX:
         return {'plotMee': plotMee, 'xbl': xbl, 'xbr': xbr, 'ybu': ybu, 'ybd': ybd}
 
     def getNetwork(self):
-        match = [s for s in self.input if 'network' in s]
+        match = [s for s in self.iinput if 'network' in s]
         match_split = match[0].split(",")
         return match_split
 
     def getInuc(self, network, element):
+        inuc = 0
         inuc_tmp = int(network.index(element))
         if inuc_tmp < 10:
             inuc = '000' + str(inuc_tmp)
-        if inuc_tmp >= 10 and inuc_tmp < 100:
+        if 10 <= inuc_tmp < 100:
             inuc = '00' + str(inuc_tmp)
-        if inuc_tmp >= 100 and inuc_tmp < 1000:
+        if 100 <= inuc_tmp < 1000:
             inuc = '0' + str(inuc_tmp)
         return inuc

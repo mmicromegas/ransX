@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
+class TemperatureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, tauL, data_prefix):
         super(TemperatureVarianceEquation, self).__init__(ig)
@@ -20,47 +21,47 @@ class TemperatureVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
 
-        ttsq = np.asarray(eht.item().get('ttsq')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ttux = np.asarray(eht.item().get('ttux')[intc])
-        ttttux = np.asarray(eht.item().get('ttttux')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        ttdivu = np.asarray(eht.item().get('ttdivu')[intc])
+        ttsq = self.getRAdata(eht,'ttsq')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
+        ttux = self.getRAdata(eht,'ttux')[intc]
+        ttttux = self.getRAdata(eht,'ttttux')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
+        ttdivu = self.getRAdata(eht,'ttdivu')[intc]
 
-        enuc1_o_cv = np.asarray(eht.item().get('enuc1_o_cv')[intc])
-        enuc2_o_cv = np.asarray(eht.item().get('enuc2_o_cv')[intc])
+        enuc1_o_cv = self.getRAdata(eht,'enuc1_o_cv')[intc]
+        enuc2_o_cv = self.getRAdata(eht,'enuc2_o_cv')[intc]
 
-        ttenuc1_o_cv = np.asarray(eht.item().get('ttenuc1_o_cv')[intc])
-        ttenuc2_o_cv = np.asarray(eht.item().get('ttenuc2_o_cv')[intc])
+        ttenuc1_o_cv = self.getRAdata(eht,'ttenuc1_o_cv')[intc]
+        ttenuc2_o_cv = self.getRAdata(eht,'ttenuc2_o_cv')[intc]
 
-        ttttdivu = np.asarray(eht.item().get('ttttdivu')[intc])
-        ttdivu = np.asarray(eht.item().get('ttdivu')[intc])
+        ttttdivu = self.getRAdata(eht,'ttttdivu')[intc]
+        ttdivu = self.getRAdata(eht,'ttdivu')[intc]
 
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
+        gamma3 = self.getRAdata(eht,'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_tt = np.asarray(eht.item().get('tt'))
-        t_ttsq = np.asarray(eht.item().get('ttsq'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_tt = self.getRAdata(eht,'tt')
+        t_ttsq = self.getRAdata(eht,'ttsq')
 
         t_sigma_tt = t_ttsq - t_tt * t_tt
 

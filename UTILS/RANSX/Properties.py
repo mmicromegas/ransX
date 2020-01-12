@@ -259,15 +259,13 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ind = np.where((xzn0 < 6.66e8))[0]
         x0002mean_cnvz = np.mean(self.x0002[ind])
 
-        """ Share Turbulent Kinetic Energy Equations Terms  """
-
         ig = self.ig
 
         p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss,
              'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
              'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
-             'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'xznl': xznl, 'xznr': xznr}
+             'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'xznl': xznl, 'xznr': xznr}
 
         return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
@@ -276,4 +274,4 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
                 'machMean': p['machMean'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
                 'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'],
                 'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'],
-                'xznl': p['xznl'], 'xznr': p['xznr']}
+                'xznl': p['xznl'], 'xznr': p['xznr'], 'urms': p['urms']}

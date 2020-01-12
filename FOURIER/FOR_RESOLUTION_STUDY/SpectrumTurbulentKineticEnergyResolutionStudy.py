@@ -6,7 +6,7 @@ import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
 
 
-class SpectrumTurbulentKineticEnergyResolutionStudy(calc.Calculus, al.SetAxisLimit, object):
+class SpectrumTurbulentKineticEnergyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, datadir, filename, data_prefix, ig, lhc):
         super(SpectrumTurbulentKineticEnergyResolutionStudy, self).__init__(ig)

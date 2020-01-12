@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.EVOL.ALIMITevol as al
+import UTILS.Calculus as uCalc
+import UTILS.EVOL.ALIMITevol as uEal
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -10,7 +12,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentKineticEnergyEquationEvolution(calc.Calculus, al.ALIMITevol, object):
+class TurbulentKineticEnergyEquationEvolution(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, eR.Errors, object):
 
     def __init__(self, dataout, ig, data_prefix):
         super(TurbulentKineticEnergyEquationEvolution, self).__init__(ig)
@@ -19,13 +21,13 @@ class TurbulentKineticEnergyEquationEvolution(calc.Calculus, al.ALIMITevol, obje
         eht = np.load(dataout)
 
         # load temporal evolution
-        t_timec = np.asarray(eht.item().get('t_timec'))
-        t_TKEsum = np.asarray(eht.item().get('t_TKEsum'))
-        t_epsD = np.asarray(eht.item().get('t_epsD'))
-        t_xzn0inc = np.asarray(eht.item().get('t_xzn0inc'))
-        t_xzn0outc = np.asarray(eht.item().get('t_xzn0outc'))
+        t_timec = self.getRAdata(eht, 't_timec')
+        t_TKEsum = self.getRAdata(eht, 't_TKEsum')
+        t_epsD = self.getRAdata(eht, 't_epsD')
+        t_xzn0inc = self.getRAdata(eht, 't_xzn0inc')
+        t_xzn0outc = self.getRAdata(eht, 't_xzn0outc')
 
-        t_x0002mean_cnvz = np.asarray(eht.item().get('t_x0002mean_cnvz'))
+        t_x0002mean_cnvz = self.getRAdata(eht, 't_x0002mean_cnvz')
 
         # share data across the whole class
         self.t_timec = t_timec

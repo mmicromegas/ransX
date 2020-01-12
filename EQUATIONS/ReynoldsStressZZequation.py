@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,7 +11,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ReynoldsStressZZequation(calc.Calculus, al.SetAxisLimit, object):
+class ReynoldsStressZZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, minus_kolmrate, data_prefix):
         super(ReynoldsStressZZequation, self).__init__(ig)
@@ -19,68 +20,68 @@ class ReynoldsStressZZequation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 		
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
 
-        dduycoty = np.asarray(eht.item().get('dduycoty')[intc])
-        dduzcoty = np.asarray(eht.item().get('dduzcoty')[intc])
+        dduycoty = self.getRAdata(eht,'dduycoty')[intc]
+        dduzcoty = self.getRAdata(eht,'dduzcoty')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
 
-        dduyuycoty = np.asarray(eht.item().get('dduyuycoty')[intc])
-        dduzuzcoty = np.asarray(eht.item().get('dduzuzcoty')[intc])
-        dduzuycoty = np.asarray(eht.item().get('dduzuycoty')[intc])
+        dduyuycoty = self.getRAdata(eht,'dduyuycoty')[intc]
+        dduzuzcoty = self.getRAdata(eht,'dduzuzcoty')[intc]
+        dduzuycoty = self.getRAdata(eht,'dduzuycoty')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
 
-        dduxuxux = np.asarray(eht.item().get('dduxuxux')[intc])
-        dduxuyuy = np.asarray(eht.item().get('dduxuyuy')[intc])
-        dduxuzuz = np.asarray(eht.item().get('dduxuzuz')[intc])
+        dduxuxux = self.getRAdata(eht,'dduxuxux')[intc]
+        dduxuyuy = self.getRAdata(eht,'dduxuyuy')[intc]
+        dduxuzuz = self.getRAdata(eht,'dduxuzuz')[intc]
 
-        dduzuzuycoty = np.asarray(eht.item().get('dduzuzuycoty')[intc])
+        dduzuzuycoty = self.getRAdata(eht,'dduzuzuycoty')[intc]
 
-        ddekux = np.asarray(eht.item().get('ddekux')[intc])
-        ddek = np.asarray(eht.item().get('ddek')[intc])
+        ddekux = self.getRAdata(eht,'ddekux')[intc]
+        ddek = self.getRAdata(eht,'ddek')[intc]
 
-        ppdivux = np.asarray(eht.item().get('ppdivux')[intc])
-        ppdivuy = np.asarray(eht.item().get('ppdivuy')[intc])
-        ppdivuz = np.asarray(eht.item().get('ppdivuz')[intc])
+        ppdivux = self.getRAdata(eht,'ppdivux')[intc]
+        ppdivuy = self.getRAdata(eht,'ppdivuy')[intc]
+        ppdivuz = self.getRAdata(eht,'ppdivuz')[intc]
 
-        divux = np.asarray(eht.item().get('divux')[intc])
-        divuy = np.asarray(eht.item().get('divuy')[intc])
-        divuz = np.asarray(eht.item().get('divuz')[intc])
+        divux = self.getRAdata(eht,'divux')[intc]
+        divuy = self.getRAdata(eht,'divuy')[intc]
+        divuz = self.getRAdata(eht,'divuz')[intc]
 
-        ppux = np.asarray(eht.item().get('ppux')[intc])
+        ppux = self.getRAdata(eht,'ppux')[intc]
 
         #############################
         # REYNOLDS STRESS ZZ EQUATION 
         #############################   		
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
 
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_dduy = np.asarray(eht.item().get('dduy'))
-        t_dduz = np.asarray(eht.item().get('dduz'))
+        t_ddux = self.getRAdata(eht,'ddux')
+        t_dduy = self.getRAdata(eht,'dduy')
+        t_dduz = self.getRAdata(eht,'dduz')
 
-        t_dduxux = np.asarray(eht.item().get('dduxux'))
-        t_dduyuy = np.asarray(eht.item().get('dduyuy'))
-        t_dduzuz = np.asarray(eht.item().get('dduzuz'))
+        t_dduxux = self.getRAdata(eht,'dduxux')
+        t_dduyuy = self.getRAdata(eht,'dduyuy')
+        t_dduzuz = self.getRAdata(eht,'dduzuz')
 
         t_uxffuxff = t_dduxux / t_dd - t_ddux * t_ddux / (t_dd * t_dd)
         t_uyffuyff = t_dduyuy / t_dd - t_dduy * t_dduy / (t_dd * t_dd)

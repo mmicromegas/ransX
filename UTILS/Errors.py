@@ -1,4 +1,4 @@
-# class for error messages
+# class for error messages #
 
 
 class Errors:
@@ -10,7 +10,10 @@ class Errors:
         return " Geometry ig = " + str(ig) + " not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ..."
 
     def errorOutOfBoundary(self):
-        return " imposed boundary limit in param.evol exceeds the grid limits. EXITING ..."
+        return " Imposed boundary limit in param.evol exceeds the grid limits. EXITING ..."
 
     def errorAveragedSnapshots(self):
         return " Zero time-averaged snapshots. Adjust your trange and averaging window. EXITING ..."
+
+    def errorOutputFileExtension(self,fext):
+        return " Chosen Output File Extension is " + str(fext) + ". Only png and eps are supported for now. EXITING ..."

@@ -6,7 +6,7 @@ import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
 
 
-class SpectrumTemperatureVarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, object):
+class SpectrumTemperatureVarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, datadir, filename, data_prefix, ig, lhc):
         super(SpectrumTemperatureVarianceResolutionStudy, self).__init__(ig)

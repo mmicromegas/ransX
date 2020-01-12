@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class DensityVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
+class DensityVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, tauL, data_prefix):
         super(DensityVarianceEquation, self).__init__(ig)
@@ -20,26 +21,26 @@ class DensityVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddsq = np.asarray(eht.item().get('ddsq')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ddddux = np.asarray(eht.item().get('ddddux')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        dddddivu = np.asarray(eht.item().get('dddddivu')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddsq = self.getRAdata(eht,'ddsq')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
+        ddddux = self.getRAdata(eht,'ddddux')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
+        dddddivu = self.getRAdata(eht,'dddddivu')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_ddsq = np.asarray(eht.item().get('ddsq'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddux = self.getRAdata(eht,'ddux')
+        t_ddsq = self.getRAdata(eht,'ddsq')
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
@@ -52,9 +53,9 @@ class DensityVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
 
         f_sigma_dd = ddddux - 2. * ddux * dd + dd * dd * ux - ddsq * fht_ux + dd * dd * fht_ux
 
-        ###########################   		
+        ###########################
         # DENSITY VARIANCE EQUATION
-        ###########################		
+        ###########################
 
         # time-series of density variance 
         t_sigma_dd = t_ddsq - t_dd * t_dd

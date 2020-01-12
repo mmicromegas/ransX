@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, object):
+class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
         super(TemperatureFluxEquation, self).__init__(ig)
@@ -20,74 +21,74 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        cv = np.asarray(eht.item().get('cv')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        cv = self.getRAdata(eht,'cv')[intc]
 
-        ux = np.asarray(eht.item().get('ux')[intc])
-        uy = np.asarray(eht.item().get('uy')[intc])
-        uz = np.asarray(eht.item().get('uz')[intc])
+        ux = self.getRAdata(eht,'ux')[intc]
+        uy = self.getRAdata(eht,'uy')[intc]
+        uz = self.getRAdata(eht,'uz')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
 
-        uxux = np.asarray(eht.item().get('uxux')[intc])
-        uyuy = np.asarray(eht.item().get('uyuy')[intc])
-        uzuz = np.asarray(eht.item().get('uzuz')[intc])
+        uxux = self.getRAdata(eht,'uxux')[intc]
+        uyuy = self.getRAdata(eht,'uyuy')[intc]
+        uzuz = self.getRAdata(eht,'uzuz')[intc]
 
-        ttux = np.asarray(eht.item().get('ttux')[intc])
-        ttuy = np.asarray(eht.item().get('ttuy')[intc])
-        ttuz = np.asarray(eht.item().get('ttuz')[intc])
+        ttux = self.getRAdata(eht,'ttux')[intc]
+        ttuy = self.getRAdata(eht,'ttuy')[intc]
+        ttuz = self.getRAdata(eht,'ttuz')[intc]
 
-        ttuxux = np.asarray(eht.item().get('ttuxux')[intc])
-        ttuyuy = np.asarray(eht.item().get('ttuyuy')[intc])
-        ttuzuz = np.asarray(eht.item().get('ttuzuz')[intc])
+        ttuxux = self.getRAdata(eht,'ttuxux')[intc]
+        ttuyuy = self.getRAdata(eht,'ttuyuy')[intc]
+        ttuzuz = self.getRAdata(eht,'ttuzuz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
 
-        ddttuxux = np.asarray(eht.item().get('ddttuxux')[intc])
-        ddttuyuy = np.asarray(eht.item().get('ddttuyuy')[intc])
-        ddttuzuz = np.asarray(eht.item().get('ddttuzuz')[intc])
+        ddttuxux = self.getRAdata(eht,'ddttuxux')[intc]
+        ddttuyuy = self.getRAdata(eht,'ddttuyuy')[intc]
+        ddttuzuz = self.getRAdata(eht,'ddttuzuz')[intc]
 
-        divu = np.asarray(eht.item().get('divu')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        ttdivu = np.asarray(eht.item().get('ttdivu')[intc])
+        divu = self.getRAdata(eht,'divu')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        ttdivu = self.getRAdata(eht,'ttdivu')[intc]
 
-        ttgradxpp_o_dd = np.asarray(eht.item().get('ttgradxpp_o_dd')[intc])
-        gradxpp_o_dd = np.asarray(eht.item().get('gradxpp_o_dd')[intc])
+        ttgradxpp_o_dd = self.getRAdata(eht,'ttgradxpp_o_dd')[intc]
+        gradxpp_o_dd = self.getRAdata(eht,'gradxpp_o_dd')[intc]
 
-        uxttdivu = np.asarray(eht.item().get('uxttdivu')[intc])
+        uxttdivu = self.getRAdata(eht,'uxttdivu')[intc]
 
-        uxenuc1_o_cv = np.asarray(eht.item().get('uxenuc1_o_cv')[intc])
-        uxenuc2_o_cv = np.asarray(eht.item().get('uxenuc2_o_cv')[intc])
+        uxenuc1_o_cv = self.getRAdata(eht,'uxenuc1_o_cv')[intc]
+        uxenuc2_o_cv = self.getRAdata(eht,'uxenuc2_o_cv')[intc]
 
-        enuc1_o_cv = np.asarray(eht.item().get('enuc1_o_cv')[intc])
-        enuc2_o_cv = np.asarray(eht.item().get('enuc2_o_cv')[intc])
+        enuc1_o_cv = self.getRAdata(eht,'enuc1_o_cv')[intc]
+        enuc2_o_cv = self.getRAdata(eht,'enuc2_o_cv')[intc]
 
-        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        gamma3 = self.getRAdata(eht,'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma3 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_tt = np.asarray(eht.item().get('tt'))
-        t_ux = np.asarray(eht.item().get('ux'))
-        t_ttux = np.asarray(eht.item().get('ttux'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_tt = self.getRAdata(eht,'tt')
+        t_ux = self.getRAdata(eht,'ux')
+        t_ttux = self.getRAdata(eht,'ttux')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -113,7 +114,7 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, object):
 
         ttf_GrM = -(ddttuyuy - tt * dduyuy) / xzn0 - (ddttuzuz - tt * dduzuz) / xzn0
 
-        ###########################		
+        ###########################
         # TEMPERATURE FLUX EQUATION
         ###########################
 

@@ -1,8 +1,9 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.EVOL.ALIMITevol as al
+import UTILS.Calculus as uCalc
+import UTILS.EVOL.ALIMITevol as uEal
+import UTILS.Tools as uT
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,7 +11,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentKineticEnergyEquationEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object):
+class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, object):
 
     def __init__(self, filename, ig, data_prefix):
         super(TurbulentKineticEnergyEquationEvolutionResolutionStudy, self).__init__(ig)
@@ -21,31 +22,22 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(calc.Calculus, al.A
             eht.append(np.load(file))
 
         # declare data lists
-        t_timec, t_TKEsum, t_epsD, t_xzn0inc, t_xzn0outc, t_x0002mean_cnvz = [], [], [], [], [], []
+        t_timec, t_TKEsum = [], []
         nx, ny, nz = [], [], []
 
         for i in range(len(filename)):
             # load temporal evolution
-            t_timec.append(np.asarray(eht[i].item().get('t_timec')))
-            t_TKEsum.append(np.asarray(eht[i].item().get('t_TKEsum')))
-            t_epsD.append(np.asarray(eht[i].item().get('t_epsD')))
-            t_xzn0inc.append(np.asarray(eht[i].item().get('t_xzn0inc')))
-            t_xzn0outc.append(np.asarray(eht[i].item().get('t_xzn0outc')))
-            t_x0002mean_cnvz.append(np.asarray(eht[i].item().get('t_x0002mean_cnvz')))
+            t_timec.append(self.getRAdata(eht[i],'t_timec'))
+            t_TKEsum.append(self.getRAdata(eht[i],'t_TKEsum'))
 
-            nx.append(np.asarray(eht[i].item().get('nx')))
-            ny.append(np.asarray(eht[i].item().get('ny')))
-            nz.append(np.asarray(eht[i].item().get('nz')))
+            nx.append(self.getRAdata(eht[i],'nx'))
+            ny.append(self.getRAdata(eht[i],'ny'))
+            nz.append(self.getRAdata(eht[i],'nz'))
 
         # share data across the whole class
         self.t_timec = t_timec
         self.t_TKEsum = t_TKEsum
-        self.t_epsD = t_epsD
-        self.t_xzn0inc = t_xzn0inc
-        self.t_xzn0outc = t_xzn0outc
         self.data_prefix = data_prefix
-
-        self.t_x0002mean_cnvz = t_x0002mean_cnvz
 
         self.nx = nx
         self.ny = ny
@@ -114,7 +106,7 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(calc.Calculus, al.A
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol_res.png')
 
     # find data with maximum resolution
     def maxresdata(self, data):

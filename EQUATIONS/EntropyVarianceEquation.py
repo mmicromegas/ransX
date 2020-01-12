@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
+class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, tke_diss, tauL, data_prefix):
         super(EntropyVarianceEquation, self).__init__(ig)
@@ -20,37 +21,37 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        ss = np.asarray(eht.item().get('ss')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        ss = self.getRAdata(eht,'ss')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddei = np.asarray(eht.item().get('ddei')[intc])
-        ddss = np.asarray(eht.item().get('ddss')[intc])
-        ddssux = np.asarray(eht.item().get('ddssux')[intc])
-        ddsssq = np.asarray(eht.item().get('ddsssq')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddei = self.getRAdata(eht,'ddei')[intc]
+        ddss = self.getRAdata(eht,'ddss')[intc]
+        ddssux = self.getRAdata(eht,'ddssux')[intc]
+        ddsssq = self.getRAdata(eht,'ddsssq')[intc]
 
-        ddssssux = np.asarray(eht.item().get('ddssssux')[intc])
+        ddssssux = self.getRAdata(eht,'ddssssux')[intc]
 
-        ddenuc1_o_tt = np.asarray(eht.item().get('ddenuc1_o_tt')[intc])
-        ddenuc2_o_tt = np.asarray(eht.item().get('ddenuc2_o_tt')[intc])
+        ddenuc1_o_tt = self.getRAdata(eht,'ddenuc1_o_tt')[intc]
+        ddenuc2_o_tt = self.getRAdata(eht,'ddenuc2_o_tt')[intc]
 
-        ddssenuc1_o_tt = np.asarray(eht.item().get('ddssenuc1_o_tt')[intc])
-        ddssenuc2_o_tt = np.asarray(eht.item().get('ddssenuc2_o_tt')[intc])
+        ddssenuc1_o_tt = self.getRAdata(eht,'ddssenuc1_o_tt')[intc]
+        ddssenuc2_o_tt = self.getRAdata(eht,'ddssenuc2_o_tt')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddss = np.asarray(eht.item().get('ddss'))
-        t_ddsssq = np.asarray(eht.item().get('ddsssq'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddss = self.getRAdata(eht,'ddss')
+        t_ddsssq = self.getRAdata(eht,'ddsssq')
 
         t_sigma_ss = (t_ddsssq / t_dd) - (t_ddss * t_ddss) / (t_dd * t_dd)
 
@@ -65,9 +66,9 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
 
         disstke_o_tt = tke_diss / tt
 
-        ###########################		
+        ###########################
         # ENTROPY VARIANCE EQUATION
-        ###########################  
+        ###########################
 
         # LHS -dt dd sigma_ss 		
         self.minus_dt_eht_dd_sigma_ss = -self.dt(t_dd * t_sigma_ss, xzn0, t_timec, intc)

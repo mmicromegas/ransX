@@ -3,7 +3,8 @@ import sys
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XfluxYequation(calc.Calculus, al.SetAxisLimit, object):
+class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, tke_diss, tauL, intc, data_prefix):
         super(XfluxYequation, self).__init__(ig)
@@ -20,83 +21,83 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        uy = np.asarray(eht.item().get('uy')[intc])
-        uz = np.asarray(eht.item().get('uz')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        xi = np.asarray(eht.item().get('x' + inuc)[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        uy = self.getRAdata(eht,'uy')[intc]
+        uz = self.getRAdata(eht,'uz')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        xi = self.getRAdata(eht,'x' + inuc)[intc]
 
-        uxy = np.asarray(eht.item().get('uxy')[intc])
-        uxz = np.asarray(eht.item().get('uxz')[intc])
+        uxy = self.getRAdata(eht,'uxy')[intc]
+        uxz = self.getRAdata(eht,'uxz')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
-        ddgg = np.asarray(eht.item().get('ddgg')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddgg = self.getRAdata(eht,'ddgg')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
 
-        uxux = np.asarray(eht.item().get('uxux')[intc])
-        uxuy = np.asarray(eht.item().get('uxuy')[intc])
-        uxuz = np.asarray(eht.item().get('uxuz')[intc])
-        uyuy = np.asarray(eht.item().get('uyuy')[intc])
-        uzuz = np.asarray(eht.item().get('uzuz')[intc])
+        uxux = self.getRAdata(eht,'uxux')[intc]
+        uxuy = self.getRAdata(eht,'uxuy')[intc]
+        uxuz = self.getRAdata(eht,'uxuz')[intc]
+        uyuy = self.getRAdata(eht,'uyuy')[intc]
+        uzuz = self.getRAdata(eht,'uzuz')[intc]
 
-        ddxi = np.asarray(eht.item().get('ddx' + inuc)[intc])
-        xiux = np.asarray(eht.item().get('x' + inuc + 'ux')[intc])
-        ddxiux = np.asarray(eht.item().get('ddx' + inuc + 'ux')[intc])
-        ddxiuy = np.asarray(eht.item().get('ddx' + inuc + 'uy')[intc])
-        ddxiuz = np.asarray(eht.item().get('ddx' + inuc + 'uz')[intc])
-        ddxidot = np.asarray(eht.item().get('ddx' + inuc + 'dot')[intc])
+        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
+        xiux = self.getRAdata(eht,'x' + inuc + 'ux')[intc]
+        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
+        ddxiuy = self.getRAdata(eht,'ddx' + inuc + 'uy')[intc]
+        ddxiuz = self.getRAdata(eht,'ddx' + inuc + 'uz')[intc]
+        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
 
-        gradypp = np.asarray(eht.item().get('gradypp')[intc])
+        gradypp = self.getRAdata(eht,'gradypp')[intc]
 
-        ddxiuzuzcoty = np.asarray(eht.item().get('ddx' + inuc + 'uzuzcoty')[intc])
-        dduzuzcoty = np.asarray(eht.item().get('dduzuzcoty')[intc])
+        ddxiuzuzcoty = self.getRAdata(eht,'ddx' + inuc + 'uzuzcoty')[intc]
+        dduzuzcoty = self.getRAdata(eht,'dduzuzcoty')[intc]
 
-        xigradxpp = np.asarray(eht.item().get('x' + inuc + 'gradxpp')[intc])
-        xigradypp = np.asarray(eht.item().get('x' + inuc + 'gradypp')[intc])
+        xigradxpp = self.getRAdata(eht,'x' + inuc + 'gradxpp')[intc]
+        xigradypp = self.getRAdata(eht,'x' + inuc + 'gradypp')[intc]
 
-        ddxidotux = np.asarray(eht.item().get('ddx' + inuc + 'dotux')[intc])
-        ddxidotuy = np.asarray(eht.item().get('ddx' + inuc + 'dotuy')[intc])
-        ddxidotuz = np.asarray(eht.item().get('ddx' + inuc + 'dotuz')[intc])
+        ddxidotux = self.getRAdata(eht,'ddx' + inuc + 'dotux')[intc]
+        ddxidotuy = self.getRAdata(eht,'ddx' + inuc + 'dotuy')[intc]
+        ddxidotuz = self.getRAdata(eht,'ddx' + inuc + 'dotuz')[intc]
 
-        ddxiuxux = np.asarray(eht.item().get('ddx' + inuc + 'uxux')[intc])
-        ddxiuyuy = np.asarray(eht.item().get('ddx' + inuc + 'uyuy')[intc])
-        ddxiuzuz = np.asarray(eht.item().get('ddx' + inuc + 'uzuz')[intc])
-        ddxiuxuy = np.asarray(eht.item().get('ddx' + inuc + 'uxuy')[intc])
-        ddxiuxuz = np.asarray(eht.item().get('ddx' + inuc + 'uxuz')[intc])
+        ddxiuxux = self.getRAdata(eht,'ddx' + inuc + 'uxux')[intc]
+        ddxiuyuy = self.getRAdata(eht,'ddx' + inuc + 'uyuy')[intc]
+        ddxiuzuz = self.getRAdata(eht,'ddx' + inuc + 'uzuz')[intc]
+        ddxiuxuy = self.getRAdata(eht,'ddx' + inuc + 'uxuy')[intc]
+        ddxiuxuz = self.getRAdata(eht,'ddx' + inuc + 'uxuz')[intc]
 
-        xiddgg = np.asarray(eht.item().get('x' + inuc + 'ddgg')[intc])
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
+        xiddgg = self.getRAdata(eht,'x' + inuc + 'ddgg')[intc]
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
 
-        divu = np.asarray(eht.item().get('divu')[intc])
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        divu = self.getRAdata(eht,'divu')[intc]
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
+        gamma3 = self.getRAdata(eht,'gamma3')[intc]
 
-        gamma1 = np.asarray(eht.item().get('ux')[intc])
-        gamma3 = np.asarray(eht.item().get('ux')[intc])
+        gamma1 = self.getRAdata(eht,'ux')[intc]
+        gamma3 = self.getRAdata(eht,'ux')[intc]
 
         fht_rxx = dduxux - ddux * ddux / dd
         fdil = (uxdivu - ux * divu)
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_dduy = np.asarray(eht.item().get('dduy'))
-        t_ddxi = np.asarray(eht.item().get('ddx' + inuc))
-        t_ddxiuy = np.asarray(eht.item().get('ddx' + inuc + 'uy'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_dduy = self.getRAdata(eht,'dduy')
+        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
+        t_ddxiuy = self.getRAdata(eht,'ddx' + inuc + 'uy')
 
         ##################
         # Xi FLUX EQUATION 

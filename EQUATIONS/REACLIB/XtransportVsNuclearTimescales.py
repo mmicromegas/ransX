@@ -3,7 +3,9 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
+class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename_rans, filename_reaclib, ig, inuc, element, bconv, tconv, tc, intc, data_prefix,
                  network):
@@ -55,18 +57,18 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
         # print(rlabel)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        ddxi = np.asarray(eht.item().get('ddx' + inuc)[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddxiux = np.asarray(eht.item().get('ddx' + inuc + 'ux')[intc])
-        ddxidot = np.asarray(eht.item().get('ddx' + inuc + 'dot')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
@@ -78,9 +80,9 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
         #######################
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddxi = np.asarray(eht.item().get('ddx' + inuc))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
         t_fht_xi = t_ddxi / t_dd
 
         # construct equation-specific mean fields
@@ -122,7 +124,7 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
 
         # assign global data to be shared across whole class	
         self.data_prefix = data_prefix
-        self.xzn0 = np.asarray(eht.item().get('xzn0'))
+        self.xzn0 = self.getRAdata(eht,'xzn0')
         self.element = element
         self.inuc = inuc
         self.bconv = bconv
@@ -310,9 +312,9 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
                         if elem in network:
                             # print('ele in network: ' + elem)
                             inuc = self.getInuc(network, elem)
-                            # fht_yi_list.append((np.asarray(eht.item().get('ddx'+inuc)[intc])/dd))
-                            fht_yi_list.append(((np.asarray(eht.item().get('ddx' + inuc)[intc]) / dd) / float(inuc)))
-                            # ddxi = {ele : np.asarray(eht.item().get('ddx'+inuc)[intc]))}
+                            # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc])/dd))
+                            fht_yi_list.append(((self.getRAdata(eht,'ddx' + inuc)[intc] / dd) / float(inuc)))
+                            # ddxi = {ele : self.getRAdata(eht,'ddx'+inuc)[intc])}
                             # ddxidict.update(ddxi)
                     if rlsplit[3] == element:
                         plt.plot(grd1,
@@ -334,8 +336,8 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, object):
                         if elem in network:
                             # print('ele in network: ' + elem)
                             inuc = self.getInuc(network, elem)
-                            # fht_yi_list.append((np.asarray(eht.item().get('ddx'+inuc)[intc])/dd))
-                            fht_yi_list.append(((np.asarray(eht.item().get('ddx' + inuc)[intc]) / dd) / float(inuc)))
+                            # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc]/dd))
+                            fht_yi_list.append(((self.getRAdata(eht,'ddx' + inuc)[intc] / dd) / float(inuc)))
                     if rlsplit[4] == element:
                         plt.plot(grd1,
                                  self.GET3NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],

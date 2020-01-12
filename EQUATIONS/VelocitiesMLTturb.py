@@ -3,6 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 import os
 import sys
 
@@ -13,7 +15,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, object):
+class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)
@@ -22,40 +24,40 @@ class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        ux = np.asarray(eht.item().get('ux')[intc])
-        dd = np.asarray(eht.item().get('dd')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        hh = np.asarray(eht.item().get('hh')[intc])
-        cp = np.asarray(eht.item().get('cp')[intc])
-        gg = np.asarray(eht.item().get('gg')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        chit = np.asarray(eht.item().get('chit')[intc])
-        chid = np.asarray(eht.item().get('chid')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        ddtt = np.asarray(eht.item().get('ddtt')[intc])
-        ddhh = np.asarray(eht.item().get('ddhh')[intc])
-        ddcp = np.asarray(eht.item().get('ddcp')[intc])
-        ddhhux = np.asarray(eht.item().get('ddhhux')[intc])
-        hhux = np.asarray(eht.item().get('hhux')[intc])
-        ttsq = np.asarray(eht.item().get('ttsq')[intc])
-        ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
-        gamma2 = np.asarray(eht.item().get('gamma2')[intc])
+        ux = self.getRAdata(eht,'ux')[intc]
+        dd = self.getRAdata(eht,'dd')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        hh = self.getRAdata(eht,'hh')[intc]
+        cp = self.getRAdata(eht,'cp')[intc]
+        gg = self.getRAdata(eht,'gg')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        chit = self.getRAdata(eht,'chit')[intc]
+        chid = self.getRAdata(eht,'chid')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        ddtt = self.getRAdata(eht,'ddtt')[intc]
+        ddhh = self.getRAdata(eht,'ddhh')[intc]
+        ddcp = self.getRAdata(eht,'ddcp')[intc]
+        ddhhux = self.getRAdata(eht,'ddhhux')[intc]
+        hhux = self.getRAdata(eht,'hhux')[intc]
+        ttsq = self.getRAdata(eht,'ttsq')[intc]
+        ddttsq = self.getRAdata(eht,'ddttsq')[intc]
+        gamma2 = self.getRAdata(eht,'gamma2')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_mm = np.asarray(eht.item().get('mm'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_mm = self.getRAdata(eht,'mm')
 
         minus_dt_mm = -self.dt(t_mm, xzn0, t_timec, intc)
 

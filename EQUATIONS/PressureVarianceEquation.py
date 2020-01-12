@@ -3,6 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
+class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, tauL, data_prefix):
         super(PressureVarianceEquation, self).__init__(ig)
@@ -20,47 +22,47 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ppsq = np.asarray(eht.item().get('ppsq')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ppux = np.asarray(eht.item().get('ppux')[intc])
-        ppppux = np.asarray(eht.item().get('ppppux')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
+        ppsq = self.getRAdata(eht, 'ppsq')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
+        ppppux = self.getRAdata(eht, 'ppppux')[intc]
+        dddivu = self.getRAdata(eht, 'dddivu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
 
-        ddenuc1 = np.asarray(eht.item().get('ddenuc1')[intc])
-        ddenuc2 = np.asarray(eht.item().get('ddenuc2')[intc])
+        ddenuc1 = self.getRAdata(eht, 'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht, 'ddenuc2')[intc]
 
-        ppddenuc1 = np.asarray(eht.item().get('ppddenuc1')[intc])
-        ppddenuc2 = np.asarray(eht.item().get('ppddenuc2')[intc])
+        ppddenuc1 = self.getRAdata(eht, 'ppddenuc1')[intc]
+        ppddenuc2 = self.getRAdata(eht, 'ppddenuc2')[intc]
 
-        ppppdivu = np.asarray(eht.item().get('ppppdivu')[intc])
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
+        ppppdivu = self.getRAdata(eht, 'ppppdivu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
 
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_pp = np.asarray(eht.item().get('pp'))
-        t_ppsq = np.asarray(eht.item().get('ppsq'))
+        t_timec = self.getRAdata(eht, 'timec')
+        t_pp = self.getRAdata(eht, 'pp')
+        t_ppsq = self.getRAdata(eht, 'ppsq')
 
         t_sigma_pp = t_ppsq - t_pp * t_pp
 
@@ -104,13 +106,13 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, object):
 
         # RHS plus_two_gamma3_minus_one_ppf_dd_enuc	
         self.plus_two_gamma3_minus_one_ppf_dd_enuc = +(2. * gamma3 - 1.) * (
-                    (ppddenuc1 + ppddenuc2) - pp * (ddenuc1 + ddenuc2))
+                (ppddenuc1 + ppddenuc2) - pp * (ddenuc1 + ddenuc2))
 
         # -res
         self.minus_resSigmaPPequation = -(
-                    self.minus_dt_sigma_pp + self.minus_fht_ux_gradx_sigma_pp + self.minus_div_f_sigma_pp + \
-                    self.minus_two_gamma1_pp_ppf_ddff + self.minus_two_fpp_gradx_pp + self.minus_two_gamma1_fht_d_sigma_pp + \
-                    self.minus_two_gamma1_minus_one_eht_ppf_ppf_dff + self.plus_two_gamma3_minus_one_ppf_dd_enuc)
+                self.minus_dt_sigma_pp + self.minus_fht_ux_gradx_sigma_pp + self.minus_div_f_sigma_pp + \
+                self.minus_two_gamma1_pp_ppf_ddff + self.minus_two_fpp_gradx_pp + self.minus_two_gamma1_fht_d_sigma_pp + \
+                self.minus_two_gamma1_minus_one_eht_ppf_ppf_dff + self.plus_two_gamma3_minus_one_ppf_dd_enuc)
 
         # Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
         self.minus_sigmaPPkolmdiss = -sigma_pp / tauL

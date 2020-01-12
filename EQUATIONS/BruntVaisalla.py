@@ -1,9 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class BruntVaisalla(calc.Calculus, al.SetAxisLimit, object):
+class BruntVaisalla(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(BruntVaisalla, self).__init__(ig)
@@ -20,21 +21,21 @@ class BruntVaisalla(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        gg = np.asarray(eht.item().get('gg')[intc])
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        gg = self.getRAdata(eht,'gg')[intc]
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         dlnrhodr = self.deriv(np.log(dd), xzn0)
@@ -42,22 +43,22 @@ class BruntVaisalla(calc.Calculus, al.SetAxisLimit, object):
         dlnrhodrs = (1. / gamma1) * dlnpdr
         nsq = gg * (dlnrhodr - dlnrhodrs)
 
-        chim = np.asarray(eht.item().get('chim')[intc])
-        chit = np.asarray(eht.item().get('chit')[intc])
-        chid = np.asarray(eht.item().get('chid')[intc])
-        mu = np.asarray(eht.item().get('abar')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        gamma2 = np.asarray(eht.item().get('gamma2')[intc])
+        chim = self.getRAdata(eht,'chim')[intc]
+        chit = self.getRAdata(eht,'chit')[intc]
+        chid = self.getRAdata(eht,'chid')[intc]
+        mu = self.getRAdata(eht,'abar')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        gamma2 = self.getRAdata(eht,'gamma2')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+        if ieos == 1:
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             alpha = 0.
             delta = 0.
             phi = 0.
-        elif (ieos == 3):
+        elif ieos == 3:
             alpha = 1. / chid
             delta = -chit / chid
             phi = chid / chim

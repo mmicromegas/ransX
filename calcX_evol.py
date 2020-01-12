@@ -52,10 +52,9 @@ def main():
         print("ERROR(calcX_evol.py):" + errors.errorOutOfBoundary())
         sys.exit()
 
-    # TODO: add size of cnvz in Hp, RMS velocities, convective turnover timescales #
     # TODO: add here amplitude of residuals in the convection zone (to find out optimum tavg)
 
-    t_xzn0inc, t_xzn0outc, t_TKEsum, t_epsD, t_tD = [], [], [], [], []
+    t_xzn0inc, t_xzn0outc, t_TKEsum, t_epsD, t_tD, t_urms = [], [], [], [], [], []
     t_tc, t_tenuc, t_pturb_o_pgas, t_machMax, t_machMean = [], [], [], [], []
     t_x0002mean_cnvz = []
 
@@ -73,6 +72,7 @@ def main():
         t_pturb_o_pgas.append(prp['pturb_o_pgas'])
         t_machMax.append(prp['machMax'])
         t_machMean.append(prp['machMean'])
+        t_urms.append(prp['urms'])
         t_x0002mean_cnvz.append(prp['x0002mean_cnvz'])
         print(prp['xzn0inc'], prp['xzn0outc'])
 
@@ -111,6 +111,9 @@ def main():
 
     t_machMn = {'t_machMean': t_machMean}
     tevol.update(t_machMn)
+
+    t_velrms = {'t_urms': t_urms}
+    tevol.update(t_velrms)
 
     x0002mc = {'t_x0002mean_cnvz': t_x0002mean_cnvz}
     tevol.update(x0002mc)

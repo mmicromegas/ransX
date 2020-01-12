@@ -4,6 +4,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -12,7 +14,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
+class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
         super(XtransportEquation, self).__init__(ig)
@@ -21,40 +23,40 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        ddxi = np.asarray(eht.item().get('ddx' + inuc)[intc])
-        ddxiux = np.asarray(eht.item().get('ddx' + inuc + 'ux')[intc])
-        ddxidot = np.asarray(eht.item().get('ddx' + inuc + 'dot')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
+        ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
 
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
-        gamma3 = np.asarray(eht.item().get('gamma3')[intc])
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
-        uxdivu = np.asarray(eht.item().get('ux')[intc])
-        gamma1 = np.asarray(eht.item().get('ux')[intc])
-        gamma3 = np.asarray(eht.item().get('ux')[intc])
+        uxdivu = self.getRAdata(eht, 'ux')[intc]
+        gamma1 = self.getRAdata(eht, 'ux')[intc]
+        gamma3 = self.getRAdata(eht, 'ux')[intc]
 
         fht_rxx = dduxux - ddux * ddux / dd
         fdil = (uxdivu - ux * divu)
 
         #######################
-        # Xi TRANSPORT EQUATION 
+        # Xi TRANSPORT EQUATION
         #######################
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddxi = np.asarray(eht.item().get('ddx' + inuc))
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddxi = self.getRAdata(eht, 'ddx' + inuc)
         t_fht_xi = t_ddxi / t_dd
 
         # construct equation-specific mean fields
@@ -62,27 +64,26 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         fht_xi = ddxi / dd
         fxi = ddxiux - ddxi * ddux / dd
 
-        # LHS -dq/dt 		
+        # LHS -dq/dt
         self.minus_dt_dd_fht_xi = -self.dt(t_dd * t_fht_xi, xzn0, t_timec, intc)
 
         # LHS -div(ddXiux)
         self.minus_div_eht_dd_fht_ux_fht_xi = -self.Div(dd * fht_ux * fht_xi, xzn0)
 
-        # RHS -div fxi 
+        # RHS -div fxi
         self.minus_div_fxi = -self.Div(fxi, xzn0)
 
-        # RHS +ddXidot 
+        # RHS +ddXidot
         self.plus_ddxidot = +ddxidot
 
         # -res
-        self.minus_resXiTransport = -(self.minus_dt_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + \
-                                      self.minus_div_fxi + self.plus_ddxidot)
+        self.minus_resXiTransport = -(self.minus_dt_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + self.minus_div_fxi + self.plus_ddxidot)
 
-        ###########################		
+        ###########################
         # END Xi TRANSPORT EQUATION
         ###########################
 
-        # grad models		
+        # grad models
         self.plus_gradx_fht_xi = +self.Grad(fht_xi, xzn0)
         cnst = gamma1
         self.minus_cnst_dd_fht_xi_fdil_o_fht_rxx = -cnst * dd * fht_xi * fdil / fht_rxx
@@ -119,11 +120,11 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
+        # set plot boundaries
         to_plot = [plt1]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
+        # plot DATA
         plt.title('rhoX for ' + element)
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{X}$')
 
@@ -173,11 +174,11 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
+        # set plot boundaries
         to_plot = [plt1]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
+        # plot DATA
         plt.title('X for ' + element)
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{X}$')
 
@@ -228,11 +229,11 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
+        # set plot boundaries
         to_plot = [plt1, plt2]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
+        # plot DATA
         plt.title('X for ' + element)
         plt.plot(grd1, plt1, color='brown', label=r'$\partial_r \widetilde{X}$')
         plt.plot(grd1, plt2, color='r', label=r'$.$')
@@ -288,11 +289,11 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
+        # set plot boundaries
         to_plot = [lhs0, lhs1, rhs0, rhs1, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
+        # plot DATA
         plt.title('rhoX transport for ' + element)
         if (self.ig == 1):
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
@@ -352,7 +353,7 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         term4 = self.plus_ddxidot
         term5 = self.minus_resXiTransport
 
-        # calculate INDICES for grid boundaries 
+        # calculate INDICES for grid boundaries
         if laxis == 1 or laxis == 2:
             idxl, idxr = self.idx_bndry(xbl, xbr)
         else:

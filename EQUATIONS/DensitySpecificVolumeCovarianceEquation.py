@@ -1,9 +1,9 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +11,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, object):
+class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(DensitySpecificVolumeCovarianceEquation, self).__init__(ig)
@@ -20,23 +20,23 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, ob
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        sv = np.asarray(eht.item().get('sv')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        svux = np.asarray(eht.item().get('svux')[intc])
-        svdivu = np.asarray(eht.item().get('svdivu')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        sv = self.getRAdata(eht,'sv')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        svux = self.getRAdata(eht,'svux')[intc]
+        svdivu = self.getRAdata(eht,'svdivu')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_sv = np.asarray(eht.item().get('sv'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_sv = self.getRAdata(eht,'sv')
 
         # construct equation-specific mean fields		
         t_b = 1. - t_sv * t_dd

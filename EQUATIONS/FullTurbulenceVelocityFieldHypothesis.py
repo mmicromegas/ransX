@@ -4,7 +4,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class FullTurbulenceVelocityFieldHypothesis(calc.Calculus, al.SetAxisLimit, object):
+class FullTurbulenceVelocityFieldHypothesis(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix, bconv, tconv):
         super(FullTurbulenceVelocityFieldHypothesis, self).__init__(ig)
@@ -21,129 +22,129 @@ class FullTurbulenceVelocityFieldHypothesis(calc.Calculus, al.SetAxisLimit, obje
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        uy = np.asarray(eht.item().get('uy')[intc])
-        uz = np.asarray(eht.item().get('uz')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        uy = self.getRAdata(eht,'uy')[intc]
+        uz = self.getRAdata(eht,'uz')[intc]
 
-        pp = np.asarray(eht.item().get('pp')[intc])
-        ddgg = -np.asarray(eht.item().get('ddgg')[intc])
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        pp = self.getRAdata(eht,'pp')[intc]
+        ddgg = -self.getRAdata(eht,'ddgg')[intc]
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
 
-        uxux = np.asarray(eht.item().get('uxux')[intc])
-        uxuy = np.asarray(eht.item().get('uxuy')[intc])
-        uxuz = np.asarray(eht.item().get('uxuz')[intc])
+        uxux = self.getRAdata(eht,'uxux')[intc]
+        uxuy = self.getRAdata(eht,'uxuy')[intc]
+        uxuz = self.getRAdata(eht,'uxuz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
 
-        divu = np.asarray(eht.item().get('divu')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
+        divu = self.getRAdata(eht,'divu')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
 
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        uydivu = np.asarray(eht.item().get('uydivu')[intc])
-        uzdivu = np.asarray(eht.item().get('uzdivu')[intc])
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        uydivu = self.getRAdata(eht,'uydivu')[intc]
+        uzdivu = self.getRAdata(eht,'uzdivu')[intc]
 
-        uxdivux = np.asarray(eht.item().get('uxdivux')[intc])
-        uydivux = np.asarray(eht.item().get('uydivux')[intc])
-        uzdivux = np.asarray(eht.item().get('uzdivux')[intc])
+        uxdivux = self.getRAdata(eht,'uxdivux')[intc]
+        uydivux = self.getRAdata(eht,'uydivux')[intc]
+        uzdivux = self.getRAdata(eht,'uzdivux')[intc]
 
-        uxdivuy = np.asarray(eht.item().get('uxdivuy')[intc])
-        uydivuy = np.asarray(eht.item().get('uydivuy')[intc])
-        uzdivuy = np.asarray(eht.item().get('uzdivuy')[intc])
+        uxdivuy = self.getRAdata(eht,'uxdivuy')[intc]
+        uydivuy = self.getRAdata(eht,'uydivuy')[intc]
+        uzdivuy = self.getRAdata(eht,'uzdivuy')[intc]
 
-        uxdivuz = np.asarray(eht.item().get('uxdivuz')[intc])
-        uydivuz = np.asarray(eht.item().get('uydivuz')[intc])
-        uzdivuz = np.asarray(eht.item().get('uzdivuz')[intc])
+        uxdivuz = self.getRAdata(eht,'uxdivuz')[intc]
+        uydivuz = self.getRAdata(eht,'uydivuz')[intc]
+        uzdivuz = self.getRAdata(eht,'uzdivuz')[intc]
 
-        divux = np.asarray(eht.item().get('divux')[intc])
-        divuy = np.asarray(eht.item().get('divuy')[intc])
-        divuz = np.asarray(eht.item().get('divuz')[intc])
+        divux = self.getRAdata(eht,'divux')[intc]
+        divuy = self.getRAdata(eht,'divuy')[intc]
+        divuz = self.getRAdata(eht,'divuz')[intc]
 
-        dduxdivu = np.asarray(eht.item().get('dduxdivu')[intc])
-        dduydivu = np.asarray(eht.item().get('dduydivu')[intc])
-        dduzdivu = np.asarray(eht.item().get('dduzdivu')[intc])
+        dduxdivu = self.getRAdata(eht,'dduxdivu')[intc]
+        dduydivu = self.getRAdata(eht,'dduydivu')[intc]
+        dduzdivu = self.getRAdata(eht,'dduzdivu')[intc]
 
-        dduxdivux = np.asarray(eht.item().get('dduxdivux')[intc])
-        dduydivux = np.asarray(eht.item().get('dduydivux')[intc])
-        dduzdivux = np.asarray(eht.item().get('dduzdivux')[intc])
+        dduxdivux = self.getRAdata(eht,'dduxdivux')[intc]
+        dduydivux = self.getRAdata(eht,'dduydivux')[intc]
+        dduzdivux = self.getRAdata(eht,'dduzdivux')[intc]
 
-        dduxdivuy = np.asarray(eht.item().get('dduxdivuy')[intc])
-        dduydivuy = np.asarray(eht.item().get('dduydivuy')[intc])
-        dduzdivuy = np.asarray(eht.item().get('dduzdivuy')[intc])
+        dduxdivuy = self.getRAdata(eht,'dduxdivuy')[intc]
+        dduydivuy = self.getRAdata(eht,'dduydivuy')[intc]
+        dduzdivuy = self.getRAdata(eht,'dduzdivuy')[intc]
 
-        dduxdivuz = np.asarray(eht.item().get('dduxdivuz')[intc])
-        dduydivuz = np.asarray(eht.item().get('dduydivuz')[intc])
-        dduzdivuz = np.asarray(eht.item().get('dduzdivuz')[intc])
+        dduxdivuz = self.getRAdata(eht,'dduxdivuz')[intc]
+        dduydivuz = self.getRAdata(eht,'dduydivuz')[intc]
+        dduzdivuz = self.getRAdata(eht,'dduzdivuz')[intc]
 
-        dddivux = np.asarray(eht.item().get('dddivux')[intc])
-        dddivuy = np.asarray(eht.item().get('dddivuy')[intc])
-        dddivuz = np.asarray(eht.item().get('dddivuz')[intc])
+        dddivux = self.getRAdata(eht,'dddivux')[intc]
+        dddivuy = self.getRAdata(eht,'dddivuy')[intc]
+        dddivuz = self.getRAdata(eht,'dddivuz')[intc]
 
-        dduxuxx = np.asarray(eht.item().get('dduxuxx')[intc])
-        dduyuxx = np.asarray(eht.item().get('dduyuxx')[intc])
-        dduzuxx = np.asarray(eht.item().get('dduzuxx')[intc])
+        dduxuxx = self.getRAdata(eht,'dduxuxx')[intc]
+        dduyuxx = self.getRAdata(eht,'dduyuxx')[intc]
+        dduzuxx = self.getRAdata(eht,'dduzuxx')[intc]
 
-        dduxuyy = np.asarray(eht.item().get('dduxuyy')[intc])
-        dduyuyy = np.asarray(eht.item().get('dduyuyy')[intc])
-        dduzuyy = np.asarray(eht.item().get('dduzuyy')[intc])
+        dduxuyy = self.getRAdata(eht,'dduxuyy')[intc]
+        dduyuyy = self.getRAdata(eht,'dduyuyy')[intc]
+        dduzuyy = self.getRAdata(eht,'dduzuyy')[intc]
 
-        dduxuzz = np.asarray(eht.item().get('dduxuzz')[intc])
-        dduyuzz = np.asarray(eht.item().get('dduyuzz')[intc])
-        dduzuzz = np.asarray(eht.item().get('dduzuzz')[intc])
+        dduxuzz = self.getRAdata(eht,'dduxuzz')[intc]
+        dduyuzz = self.getRAdata(eht,'dduyuzz')[intc]
+        dduzuzz = self.getRAdata(eht,'dduzuzz')[intc]
 
-        # dduxx = np.asarray(eht.item().get('dduxx')[intc])
-        # dduyy = np.asarray(eht.item().get('dduyy')[intc])
-        # dduzz = np.asarray(eht.item().get('dduzz')[intc])
+        # dduxx = self.getRAdata(eht,'dduxx')[intc]
+        # dduyy = self.getRAdata(eht,'dduyy')[intc]
+        # dduzz = self.getRAdata(eht,'dduzz')[intc]
 
-        uxuxx = np.asarray(eht.item().get('uxuxx')[intc])
-        uyuxx = np.asarray(eht.item().get('uyuxx')[intc])
-        uzuxx = np.asarray(eht.item().get('uzuxx')[intc])
+        uxuxx = self.getRAdata(eht,'uxuxx')[intc]
+        uyuxx = self.getRAdata(eht,'uyuxx')[intc]
+        uzuxx = self.getRAdata(eht,'uzuxx')[intc]
 
-        uxuyy = np.asarray(eht.item().get('uxuyy')[intc])
-        uyuyy = np.asarray(eht.item().get('uyuyy')[intc])
-        uzuyy = np.asarray(eht.item().get('uzuyy')[intc])
+        uxuyy = self.getRAdata(eht,'uxuyy')[intc]
+        uyuyy = self.getRAdata(eht,'uyuyy')[intc]
+        uzuyy = self.getRAdata(eht,'uzuyy')[intc]
 
-        uxuzz = np.asarray(eht.item().get('uxuzz')[intc])
-        uyuzz = np.asarray(eht.item().get('uyuzz')[intc])
-        uzuzz = np.asarray(eht.item().get('uzuzz')[intc])
+        uxuzz = self.getRAdata(eht,'uxuzz')[intc]
+        uyuzz = self.getRAdata(eht,'uyuzz')[intc]
+        uzuzz = self.getRAdata(eht,'uzuzz')[intc]
 
-        uxx = np.asarray(eht.item().get('uxx')[intc])
-        uyy = np.asarray(eht.item().get('uyy')[intc])
-        uzz = np.asarray(eht.item().get('uzz')[intc])
+        uxx = self.getRAdata(eht,'uxx')[intc]
+        uyy = self.getRAdata(eht,'uyy')[intc]
+        uzz = self.getRAdata(eht,'uzz')[intc]
 
-        pp = np.asarray(eht.item().get('pp')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
+        pp = self.getRAdata(eht,'pp')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
+        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
 
-        ppux = np.asarray(eht.item().get('ppux')[intc])
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        uxppdivu = np.asarray(eht.item().get('uxppdivu')[intc])
+        ppux = self.getRAdata(eht,'ppux')[intc]
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        uxppdivu = self.getRAdata(eht,'uxppdivu')[intc]
 
-        ppuy = np.asarray(eht.item().get('ppuy')[intc])
-        uydivu = np.asarray(eht.item().get('uydivu')[intc])
-        uyppdivu = np.asarray(eht.item().get('uyppdivu')[intc])
+        ppuy = self.getRAdata(eht,'ppuy')[intc]
+        uydivu = self.getRAdata(eht,'uydivu')[intc]
+        uyppdivu = self.getRAdata(eht,'uyppdivu')[intc]
 
-        ppuz = np.asarray(eht.item().get('ppuz')[intc])
-        uzdivu = np.asarray(eht.item().get('uzdivu')[intc])
-        uzppdivu = np.asarray(eht.item().get('uzppdivu')[intc])
+        ppuz = self.getRAdata(eht,'ppuz')[intc]
+        uzdivu = self.getRAdata(eht,'uzdivu')[intc]
+        uzppdivu = self.getRAdata(eht,'uzppdivu')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         # construct equation-specific mean fields		

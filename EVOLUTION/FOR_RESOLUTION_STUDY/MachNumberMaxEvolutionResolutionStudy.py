@@ -3,6 +3,8 @@ import sys
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.EVOL.ALIMITevol as al
+import UTILS.Tools as uT
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,7 +12,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class MachNumberMaxEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object):
+class MachNumberMaxEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, object):
 
     def __init__(self, filename, ig, data_prefix):
         super(MachNumberMaxEvolutionResolutionStudy, self).__init__(ig)
@@ -26,12 +28,12 @@ class MachNumberMaxEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object
 
         for i in range(len(filename)):
             # load temporal evolution
-            t_timec.append(np.asarray(eht[i].item().get('t_timec')))
-            t_machmx.append(np.asarray(eht[i].item().get('t_machMax')))
+            t_timec.append(self.getRAdata(eht[i], 't_timec'))
+            t_machmx.append(self.getRAdata(eht[i], 't_machMax'))
 
-            nx.append(np.asarray(eht[i].item().get('nx')))
-            ny.append(np.asarray(eht[i].item().get('ny')))
-            nz.append(np.asarray(eht[i].item().get('nz')))
+            nx.append(self.getRAdata(eht[i], 'nx'))
+            ny.append(self.getRAdata(eht[i], 'ny'))
+            nz.append(self.getRAdata(eht[i], 'nz'))
 
         # share data across the whole class
         self.t_timec = t_timec
@@ -105,7 +107,7 @@ class MachNumberMaxEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'machmax_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'machmax_evol_res.png')
 
     # find data with maximum resolution
     def maxresdata(self, data):

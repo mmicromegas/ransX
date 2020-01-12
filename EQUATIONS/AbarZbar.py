@@ -1,8 +1,9 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class AbarZbar(calc.Calculus, al.SetAxisLimit, object):
+class AbarZbar(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(AbarZbar, self).__init__(ig)
@@ -22,13 +23,13 @@ class AbarZbar(calc.Calculus, al.SetAxisLimit, object):
         self.data_prefix = data_prefix
 
         # load grid	
-        self.xzn0 = np.asarray(eht.item().get('xzn0'))
+        self.xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        self.abar = np.asarray(eht.item().get('abar')[intc])
-        self.zbar = np.asarray(eht.item().get('zbar')[intc])
+        self.abar = self.getRAdata(eht, 'abar')[intc]
+        self.zbar = self.getRAdata(eht, 'zbar')[intc]
 
     def plot_abarzbar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot abarzbar in the model"""

@@ -95,57 +95,60 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'], \
-                                                                    params.getForProp('prop')['ig'], \
-                                                                    params.getForProp('prop')['intc'], \
+        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+                                                                    params.getForProp('prop')['ig'],
+                                                                    params.getForProp('prop')['fext'],
+                                                                    params.getForProp('prop')['intc'],
                                                                     params.getForProp('prop')['prefix'])
 
         # plot density
-        ransCONT.plot_rho(params.getForProp('prop')['laxis'], \
-                          params.getForEqs('rho')['xbl'], \
-                          params.getForEqs('rho')['xbr'], \
-                          params.getForEqs('rho')['ybu'], \
-                          params.getForEqs('rho')['ybd'], \
+        ransCONT.plot_rho(params.getForProp('prop')['laxis'],
+                          params.getForEqs('rho')['xbl'],
+                          params.getForEqs('rho')['xbr'],
+                          params.getForEqs('rho')['ybu'],
+                          params.getForEqs('rho')['ybd'],
                           params.getForEqs('rho')['ilg'])
 
-        ransCONT.plot_mm_vs_MM(params.getForProp('prop')['laxis'], \
-                               params.getForEqs('rho')['xbl'], \
-                               params.getForEqs('rho')['xbr'], \
-                               params.getForEqs('rho')['ybu'], \
-                               params.getForEqs('rho')['ybd'], \
+        ransCONT.plot_mm_vs_MM(params.getForProp('prop')['laxis'],
+                               params.getForEqs('rho')['xbl'],
+                               params.getForEqs('rho')['xbr'],
+                               params.getForEqs('rho')['ybu'],
+                               params.getForEqs('rho')['ybd'],
                                params.getForEqs('rho')['ilg'])
 
     def execContEq(self):
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'], \
-                                                                    params.getForProp('prop')['ig'], \
-                                                                    params.getForProp('prop')['intc'], \
+        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+                                                                    params.getForProp('prop')['ig'],
+                                                                    params.getForProp('prop')['fext'],
+                                                                    params.getForProp('prop')['intc'],
                                                                     params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
-        ransCONT.plot_continuity_equation(params.getForProp('prop')['laxis'], \
-                                          params.getForEqs('conteq')['xbl'], \
-                                          params.getForEqs('conteq')['xbr'], \
-                                          params.getForEqs('conteq')['ybu'], \
-                                          params.getForEqs('conteq')['ybd'], \
+        ransCONT.plot_continuity_equation(params.getForProp('prop')['laxis'],
+                                          params.getForEqs('conteq')['xbl'],
+                                          params.getForEqs('conteq')['xbr'],
+                                          params.getForEqs('conteq')['ybu'],
+                                          params.getForEqs('conteq')['ybd'],
                                           params.getForEqs('conteq')['ilg'])
 
     def execContEqBar(self):
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'], \
-                                                                    params.getForProp('prop')['ig'], \
-                                                                    params.getForProp('prop')['intc'], \
+        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+                                                                    params.getForProp('prop')['ig'],
+                                                                    params.getForProp('prop')['fext'],
+                                                                    params.getForProp('prop')['intc'],
                                                                     params.getForProp('prop')['prefix'])
 
         # plot continuity equation integral budget					       
-        ransCONT.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'], \
-                                                          params.getForEqsBar('conteqBar')['xbl'], \
-                                                          params.getForEqsBar('conteqBar')['xbr'], \
-                                                          params.getForEqsBar('conteqBar')['ybu'], \
+        ransCONT.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'],
+                                                          params.getForEqsBar('conteqBar')['xbl'],
+                                                          params.getForEqsBar('conteqBar')['xbr'],
+                                                          params.getForEqsBar('conteqBar')['ybu'],
                                                           params.getForEqsBar('conteqBar')['ybd'])
 
     def execContFddEq(self):

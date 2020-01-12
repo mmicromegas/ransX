@@ -1,3 +1,5 @@
+# class for RANS ContinuityEquationWithFavrianDilatation #
+
 import numpy as np
 import sys
 from scipy import integrate
@@ -16,7 +18,7 @@ import UTILS.Errors as eR
 
 class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, data_prefix):
         super(ContinuityEquationWithFavrianDilatation, self).__init__(ig)
 
         # load data to structured array
@@ -70,6 +72,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         self.dd = dd
         self.nx = nx
         self.ig = ig
+        self.fext = fext
         self.vol = vol
         self.mm = mm
         self.mm_ver2 = mm_ver2
@@ -119,8 +122,16 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # display PLOT
         plt.show(block=False)
 
+        # check supported file output extension
+        if self.fext != "png" and self.fext != "eps":
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorOutputFileExtension(self.fext))
+            sys.exit()
+
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
 
     def plot_continuity_equation(self, laxis, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
@@ -181,8 +192,16 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # display PLOT
         plt.show(block=False)
 
+        # check supported file output extension
+        if self.fext != "png" and self.fext != "eps":
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorOutputFileExtension(self.fext))
+            sys.exit()
+
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq.eps')
 
     def plot_continuity_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of continuity equation in the model"""
@@ -265,8 +284,16 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # display PLOT
         plt.show(block=False)
 
+        # check supported file output extension
+        if self.fext != "png" and self.fext != "eps":
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorOutputFileExtension(self.fext))
+            sys.exit()
+
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar.eps')
 
     def plot_mm_vs_MM(self, laxis, xbl, xbr, ybu, ybd, ilg):
         """Plot mm vs MM in the model"""
@@ -307,5 +334,13 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # display PLOT
         plt.show(block=False)
 
+        # check supported file output extension
+        if self.fext != "png" and self.fext != "eps":
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorOutputFileExtension(self.fext))
+            sys.exit()
+
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mm_vs_MM_eq.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mm_vs_MM_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mm_vs_MM_eq.eps')

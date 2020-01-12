@@ -4,7 +4,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, object):
+class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(PressureInternalEnergy, self).__init__(ig)
@@ -21,13 +22,13 @@ class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	 
 
-        pp = np.asarray(eht.item().get('pp')[intc])
-        ei = np.asarray(eht.item().get('ei')[intc])
+        pp = self.getRAdata(eht,'pp')[intc]
+        ei = self.getRAdata(eht,'ei')[intc]
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -59,14 +60,14 @@ class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, object):
         plabel_1 = r'$\overline{P}$'
         plabel_2 = r'$\overline{\epsilon}$'
 
-        # calculate indices of grid boundaries 
+        # calculate indices of grid boundaries
         xzn0 = np.asarray(self.xzn0)
         xlm = np.abs(xzn0 - xbl)
         xrm = np.abs(xzn0 - xbr)
         idxl = int(np.where(xlm == xlm.min())[0][0])
         idxr = int(np.where(xrm == xrm.min())[0][0])
 
-        # create FIGURE	
+        # create FIGURE
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
         ax1.axis([xbl, xbr, np.min(to_plt1[idxl:idxr]), np.max(to_plt1[idxl:idxr])])

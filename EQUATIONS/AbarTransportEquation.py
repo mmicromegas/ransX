@@ -3,6 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, object):
+class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(AbarTransportEquation, self).__init__(ig)
@@ -20,25 +22,23 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        abar = np.asarray(eht.item().get('abar')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        abar = self.getRAdata(eht, 'abar')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
 
-        ddabar = np.asarray(eht.item().get('ddabar')[intc])
-        ddabarux = np.asarray(eht.item().get('ddabarux')[intc])
+        ddabar = self.getRAdata(eht, 'ddabar')[intc]
+        ddabarux = self.getRAdata(eht, 'ddabarux')[intc]
 
-        self.ddabarsq_sum_xdn_o_an = np.asarray(eht.item().get('ddabarsq_sum_xdn_o_an')[intc])
+        self.ddabarsq_sum_xdn_o_an = self.getRAdata(eht, 'ddabarsq_sum_xdn_o_an')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddabar = np.asarray(eht.item().get('ddabar'))
+        t_timec = self.getRAdata(eht, 'timec')
+        t_ddabar = self.getRAdata(eht, 'ddabar')
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd

@@ -3,7 +3,8 @@ import sys
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class MomentumEquationX(calc.Calculus, al.SetAxisLimit, object):
+class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(MomentumEquationX, self).__init__(ig)
@@ -20,28 +21,28 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        nx = np.asarray(eht.item().get('nx'))
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        gg = np.asarray(eht.item().get('gg')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        gg = self.getRAdata(eht,'gg')[intc]
 
-        ddgg = np.asarray(eht.item().get('ddgg')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
+        ddgg = self.getRAdata(eht,'ddgg')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddux = np.asarray(eht.item().get('ddux'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddux = self.getRAdata(eht,'ddux')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -68,7 +69,7 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, object):
         self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp, xzn0) + ddgg
 
         # for i in range(nx):
-        #    print(2.*ddgg[i],dd[i]*gg[i])		
+        #    print(2.*ddgg[i],dd[i]*gg[i]		
 
         # -res
         self.minus_resResXmomentumEquation = \

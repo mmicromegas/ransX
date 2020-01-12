@@ -3,6 +3,9 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +14,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, object):
+class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(RelativeRMSflct, self).__init__(ig)
@@ -20,27 +23,27 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        ss = np.asarray(eht.item().get('ss')[intc])
-        abar = np.asarray(eht.item().get('abar')[intc])
-        zbar = np.asarray(eht.item().get('zbar')[intc])
+        dd = self.getRAdata(eht, 'dd')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        ss = self.getRAdata(eht, 'ss')[intc]
+        abar = self.getRAdata(eht, 'abar')[intc]
+        zbar = self.getRAdata(eht, 'zbar')[intc]
 
-        uxux = np.asarray(eht.item().get('uxux')[intc])
-        sound = np.asarray(eht.item().get('sound')[intc])
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        sound = self.getRAdata(eht, 'sound')[intc]
 
-        ddsq = np.asarray(eht.item().get('ddsq')[intc])
-        ttsq = np.asarray(eht.item().get('ttsq')[intc])
-        ppsq = np.asarray(eht.item().get('ppsq')[intc])
-        sssq = np.asarray(eht.item().get('sssq')[intc])
-        abarsq = np.asarray(eht.item().get('abarsq')[intc])
-        zbarsq = np.asarray(eht.item().get('zbarsq')[intc])
+        ddsq = self.getRAdata(eht, 'ddsq')[intc]
+        ttsq = self.getRAdata(eht, 'ttsq')[intc]
+        ppsq = self.getRAdata(eht, 'ppsq')[intc]
+        sssq = self.getRAdata(eht, 'sssq')[intc]
+        abarsq = self.getRAdata(eht, 'abarsq')[intc]
+        zbarsq = self.getRAdata(eht, 'zbarsq')[intc]
 
         self.eht_ddrms = ((ddsq - dd * dd) ** 0.5) / dd
         self.eht_ttrms = ((ttsq - tt * tt) ** 0.5) / tt
@@ -51,7 +54,7 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, object):
 
         # for ideal gas eos
         if (ieos == 1):
-            gammac = np.asarray(eht.item().get('gammac')[intc])
+            gammac = self.getRAdata(eht, 'gammac')[intc]
             sound = (gammac * pp / dd) ** (0.5)
 
         self.ms2 = uxux / sound ** 2.  # mach number squared

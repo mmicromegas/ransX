@@ -3,7 +3,9 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +13,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureGradients(calc.Calculus, al.SetAxisLimit, object):
+class TemperatureGradients(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(TemperatureGradients, self).__init__(ig)
@@ -20,23 +22,23 @@ class TemperatureGradients(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf  
 
-        pp = np.asarray(eht.item().get('pp')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        mu = np.asarray(eht.item().get('abar')[intc])
-        chim = np.asarray(eht.item().get('chim')[intc])
-        chit = np.asarray(eht.item().get('chit')[intc])
-        gamma2 = np.asarray(eht.item().get('gamma2')[intc])
+        pp = self.getRAdata(eht,'pp')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        mu = self.getRAdata(eht,'abar')[intc]
+        chim = self.getRAdata(eht,'chim')[intc]
+        chit = self.getRAdata(eht,'chit')[intc]
+        gamma2 = self.getRAdata(eht,'gamma2')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         lntt = np.log(tt)

@@ -3,6 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.EVOL.ALIMITevol as al
+import UTILS.Tools as uT
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +12,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object):
+class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, object):
 
     def __init__(self, filename, ig, data_prefix):
         super(X0002EvolutionResolutionStudy, self).__init__(ig)
@@ -27,12 +28,12 @@ class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object):
 
         for i in range(len(filename)):
             # load temporal evolution
-            t_timec.append(np.asarray(eht[i].item().get('t_timec')))
-            t_x0002mean_cnvz.append(np.asarray(eht[i].item().get('t_x0002mean_cnvz')))
+            t_timec.append(self.getRAdata(eht[i], 't_timec'))
+            t_x0002mean_cnvz.append(self.getRAdata(eht[i], 't_x0002mean_cnvz'))
 
-            nx.append(np.asarray(eht[i].item().get('nx')))
-            ny.append(np.asarray(eht[i].item().get('ny')))
-            nz.append(np.asarray(eht[i].item().get('nz')))
+            nx.append(self.getRAdata(eht[i], 'nx'))
+            ny.append(self.getRAdata(eht[i], 'ny'))
+            nz.append(self.getRAdata(eht[i], 'nz'))
 
         # share data across the whole class
         self.t_timec = t_timec
@@ -106,7 +107,7 @@ class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'x0002_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'x0002_evol_res.png')
 
     # find data with maximum resolution
     def maxresdata(self, data):

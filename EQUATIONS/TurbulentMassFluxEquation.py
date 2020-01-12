@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, object):
+class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(TurbulentMassFluxEquation, self).__init__(ig)
@@ -20,47 +21,47 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        gg = np.asarray(eht.item().get('gg')[intc])
-        sv = np.asarray(eht.item().get('sv')[intc])
-        mm = np.asarray(eht.item().get('mm')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        gg = self.getRAdata(eht,'gg')[intc]
+        sv = self.getRAdata(eht,'sv')[intc]
+        mm = self.getRAdata(eht,'mm')[intc]
 
-        uxux = np.asarray(eht.item().get('uxux')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
+        uxux = self.getRAdata(eht,'uxux')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
 
-        uyuy = np.asarray(eht.item().get('uyuy')[intc])
-        uzuz = np.asarray(eht.item().get('uzuz')[intc])
+        uyuy = self.getRAdata(eht,'uyuy')[intc]
+        uzuz = self.getRAdata(eht,'uzuz')[intc]
 
-        svdduyuy = np.asarray(eht.item().get('svdduyuy')[intc])
-        svdduzuz = np.asarray(eht.item().get('svdduzuz')[intc])
+        svdduyuy = self.getRAdata(eht,'svdduyuy')[intc]
+        svdduzuz = self.getRAdata(eht,'svdduzuz')[intc]
 
-        svdddduyuy = np.asarray(eht.item().get('svdddduyuy')[intc])
-        svdddduzuz = np.asarray(eht.item().get('svdddduzuz')[intc])
+        svdddduyuy = self.getRAdata(eht,'svdddduyuy')[intc]
+        svdddduzuz = self.getRAdata(eht,'svdddduzuz')[intc]
 
-        svgradxpp = np.asarray(eht.item().get('svgradxpp')[intc])
+        svgradxpp = self.getRAdata(eht,'svgradxpp')[intc]
 
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ux = np.asarray(eht.item().get('ux'))
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_mm = np.asarray(eht.item().get('mm'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ux = self.getRAdata(eht,'ux')
+        t_ddux = self.getRAdata(eht,'ddux')
+        t_mm = self.getRAdata(eht,'mm')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd

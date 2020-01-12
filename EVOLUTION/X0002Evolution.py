@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.EVOL.ALIMITevol as al
+import UTILS.Calculus as uCalc
+import UTILS.EVOL.ALIMITevol as uEal
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -10,7 +12,7 @@ import UTILS.EVOL.ALIMITevol as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class X0002Evolution(calc.Calculus, al.ALIMITevol, object):
+class X0002Evolution(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, eR.Errors, object):
 
     def __init__(self, dataout, ig, data_prefix):
         super(X0002Evolution, self).__init__(ig)
@@ -19,8 +21,8 @@ class X0002Evolution(calc.Calculus, al.ALIMITevol, object):
         eht = np.load(dataout)
 
         # load temporal evolution
-        t_timec = np.asarray(eht.item().get('t_timec'))
-        t_x0002mean_cnvz = np.asarray(eht.item().get('t_x0002mean_cnvz'))
+        t_timec = self.getRAdata(eht, 't_timec')
+        t_x0002mean_cnvz = self.getRAdata(eht, 't_x0002mean_cnvz')
 
         # share data across the whole class
         self.t_timec = t_timec

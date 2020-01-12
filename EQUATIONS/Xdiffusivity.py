@@ -3,6 +3,8 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 import os
 
 
@@ -12,7 +14,7 @@ import os
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Xdiffusivity(calc.Calculus, al.SetAxisLimit, object):
+class Xdiffusivity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, lc, uconv, bconv, tconv, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
@@ -24,20 +26,20 @@ class Xdiffusivity(calc.Calculus, al.SetAxisLimit, object):
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
         # assign global data to be shared across whole class
 
-        self.dd = np.asarray(eht.item().get('dd')[intc])
-        self.pp = np.asarray(eht.item().get('pp')[intc])
-        self.tt = np.asarray(eht.item().get('tt')[intc])
-        self.ddxi = np.asarray(eht.item().get('ddx' + inuc)[intc])
-        self.ddux = np.asarray(eht.item().get('ddux')[intc])
-        self.ddtt = np.asarray(eht.item().get('ddtt')[intc])
-        self.ddhh = np.asarray(eht.item().get('ddhh')[intc])
-        self.ddcp = np.asarray(eht.item().get('ddcp')[intc])
-        self.ddxiux = np.asarray(eht.item().get('ddx' + inuc + 'ux')[intc])
-        self.ddhhux = np.asarray(eht.item().get('ddhhux')[intc])
-        self.ddttsq = np.asarray(eht.item().get('ddttsq')[intc])
+        self.dd = self.getRAdata(eht,'dd')[intc]
+        self.pp = self.getRAdata(eht,'pp')[intc]
+        self.tt = self.getRAdata(eht,'tt')[intc]
+        self.ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
+        self.ddux = self.getRAdata(eht,'ddux')[intc]
+        self.ddtt = self.getRAdata(eht,'ddtt')[intc]
+        self.ddhh = self.getRAdata(eht,'ddhh')[intc]
+        self.ddcp = self.getRAdata(eht,'ddcp')[intc]
+        self.ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
+        self.ddhhux = self.getRAdata(eht,'ddhhux')[intc]
+        self.ddttsq = self.getRAdata(eht,'ddttsq')[intc]
 
         self.data_prefix = data_prefix
-        self.xzn0 = np.asarray(eht.item().get('xzn0'))
+        self.xzn0 = self.getRAdata(eht,'xzn0')
         self.element = element
         self.inuc = inuc
         self.lc = lc
@@ -154,7 +156,7 @@ class Xdiffusivity(calc.Calculus, al.SetAxisLimit, object):
             return a * np.exp(-(x - x0) ** 2 / (2 * (sigma ** 2)))
 
         # p0 = [1.e15, 6.e8, 5.e7]
-        # coeff, var_matrix = curve_fit(gauss, self.xzn0, Deff, p0=[1.e15, 6.e8, 5.e7])
+        # coeff, var_matrix = curve_fit(gauss, self.xzn0, Deff, p0=[1.e15, 6.e8, 5.e7]
         # Get the fitted curve
         # Deff_fit = gauss(self.xzn0, *coeff)
 

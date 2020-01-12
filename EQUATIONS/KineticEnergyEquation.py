@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,7 +11,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class KineticEnergyEquation(calc.Calculus, al.SetAxisLimit, object):
+class KineticEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, minus_kolmrate, data_prefix):
         super(KineticEnergyEquation, self).__init__(ig)
@@ -19,47 +20,47 @@ class KineticEnergyEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
 
-        ddekux = np.asarray(eht.item().get('ddekux')[intc])
-        ddek = np.asarray(eht.item().get('ddek')[intc])
+        ddekux = self.getRAdata(eht,'ddekux')[intc]
+        ddek = self.getRAdata(eht,'ddek')[intc]
 
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ppux = np.asarray(eht.item().get('ppux')[intc])
+        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
+        ppux = self.getRAdata(eht,'ppux')[intc]
 
         #########################
         # KINETIC ENERGY EQUATION 
         #########################  			
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
 
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_dduy = np.asarray(eht.item().get('dduy'))
-        t_dduz = np.asarray(eht.item().get('dduz'))
+        t_ddux = self.getRAdata(eht,'ddux')
+        t_dduy = self.getRAdata(eht,'dduy')
+        t_dduz = self.getRAdata(eht,'dduz')
 
-        t_dduxux = np.asarray(eht.item().get('dduxux'))
-        t_dduyuy = np.asarray(eht.item().get('dduyuy'))
-        t_dduzuz = np.asarray(eht.item().get('dduzuz'))
+        t_dduxux = self.getRAdata(eht,'dduxux')
+        t_dduyuy = self.getRAdata(eht,'dduyuy')
+        t_dduzuz = self.getRAdata(eht,'dduzuz')
 
         t_fht_ek = 0.5 * (t_dduxux + t_dduyuy + t_dduzuz) / t_dd
 

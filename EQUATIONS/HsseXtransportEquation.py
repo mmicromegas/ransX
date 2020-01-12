@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -10,7 +11,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, object):
+class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
         super(HsseXtransportEquation, self).__init__(ig)
@@ -19,25 +20,25 @@ class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
+        xzn0 = self.getRAdata(eht,'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddxi = np.asarray(eht.item().get('ddx' + inuc)[intc])
-        ddxiux = np.asarray(eht.item().get('ddx' + inuc + 'ux')[intc])
-        ddxidot = np.asarray(eht.item().get('ddx' + inuc + 'dot')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
+        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
 
         ############################
         # HSSE Xi TRANSPORT EQUATION 
         ############################
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddxi = np.asarray(eht.item().get('ddx' + inuc))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
         t_fht_xi = t_ddxi / t_dd
 
         # construct equation-specific mean fields

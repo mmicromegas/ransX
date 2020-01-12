@@ -3,6 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseContinuityEquation(calc.Calculus, al.SetAxisLimit, object):
+class HsseContinuityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix, bconv, tconv):
         super(HsseContinuityEquation, self).__init__(ig)
@@ -20,42 +22,42 @@ class HsseContinuityEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        nx = np.asarray(eht.item().get('nx'))
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        xznl = np.asarray(eht.item().get('xznl'))
-        xznr = np.asarray(eht.item().get('xznr'))
+        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht,'xzn0')
+        xznl = self.getRAdata(eht,'xznl')
+        xznr = self.getRAdata(eht,'xznr')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        mm = np.asarray(eht.item().get('mm')[intc])
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        gg = np.asarray(eht.item().get('gg')[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
+        mm = self.getRAdata(eht,'mm')[intc]
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        gg = self.getRAdata(eht,'gg')[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        divu = np.asarray(eht.item().get('divu')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        divu = self.getRAdata(eht,'divu')[intc]
 
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ux = np.asarray(eht.item().get('ux'))
-        t_ddux = np.asarray(eht.item().get('ddux'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ux = self.getRAdata(eht,'ux')
+        t_ddux = self.getRAdata(eht,'ddux')
 
         t_eht_uxff = (t_ddux - t_dd * t_ux) / t_dd
 
-        # t_mm    = np.asarray(eht.item().get('mm'))
+        # t_mm    = self.getRAdata(eht,'mm'))
         # minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
         # fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
 

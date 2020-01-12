@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 import sys
 
 
@@ -11,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, object):
+class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(AbarFluxTransportEquation, self).__init__(ig)
@@ -20,46 +22,46 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        abar = np.asarray(eht.item().get('abar')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        abar = self.getRAdata(eht,'abar')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
 
-        ddabar = np.asarray(eht.item().get('ddabar')[intc])
-        ddabarux = np.asarray(eht.item().get('ddabarux')[intc])
+        ddabar = self.getRAdata(eht,'ddabar')[intc]
+        ddabarux = self.getRAdata(eht,'ddabarux')[intc]
 
-        ddabaruxux = np.asarray(eht.item().get('ddabaruxux')[intc])
-        ddabaruyuy = np.asarray(eht.item().get('ddabaruyuy')[intc])
-        ddabaruzuz = np.asarray(eht.item().get('ddabaruzuz')[intc])
+        ddabaruxux = self.getRAdata(eht,'ddabaruxux')[intc]
+        ddabaruyuy = self.getRAdata(eht,'ddabaruyuy')[intc]
+        ddabaruzuz = self.getRAdata(eht,'ddabaruzuz')[intc]
 
-        abargradxpp = np.asarray(eht.item().get('abargradxpp')[intc])
+        abargradxpp = self.getRAdata(eht,'abargradxpp')[intc]
 
-        uxddabarsq_sum_xdn_o_an = np.asarray(eht.item().get('uxddabarsq_sum_xdn_o_an')[intc])
-        ddabarsq_sum_xdn_o_an = np.asarray(eht.item().get('ddabarsq_sum_xdn_o_an')[intc])
+        uxddabarsq_sum_xdn_o_an = self.getRAdata(eht,'uxddabarsq_sum_xdn_o_an')[intc]
+        ddabarsq_sum_xdn_o_an = self.getRAdata(eht,'ddabarsq_sum_xdn_o_an')[intc]
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_ddabar = np.asarray(eht.item().get('ddabar'))
-        t_ddabarux = np.asarray(eht.item().get('ddabarux'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_ddux = self.getRAdata(eht,'ddux')
+        t_ddabar = self.getRAdata(eht,'ddabar')
+        t_ddabarux = self.getRAdata(eht,'ddabarux')
 
         ####################
         # Abar FLUX EQUATION 
-        ####################		
+        ####################
 
         # construct equation-specific mean fields
         t_fabar = t_ddabarux - t_ddabar * t_ddux / t_dd

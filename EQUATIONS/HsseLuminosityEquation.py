@@ -3,7 +3,8 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, object):
+class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, bconv, tconv, data_prefix):
         super(HsseLuminosityEquation, self).__init__(ig)
@@ -20,54 +21,54 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ux = np.asarray(eht.item().get('ux')[intc])
-        pp = np.asarray(eht.item().get('pp')[intc])
-        tt = np.asarray(eht.item().get('tt')[intc])
-        cp = np.asarray(eht.item().get('cp')[intc])
-        gg = np.asarray(eht.item().get('gg')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ux = self.getRAdata(eht,'ux')[intc]
+        pp = self.getRAdata(eht,'pp')[intc]
+        tt = self.getRAdata(eht,'tt')[intc]
+        cp = self.getRAdata(eht,'cp')[intc]
+        gg = self.getRAdata(eht,'gg')[intc]
 
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        dduy = np.asarray(eht.item().get('dduy')[intc])
-        dduz = np.asarray(eht.item().get('dduz')[intc])
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        dduy = self.getRAdata(eht,'dduy')[intc]
+        dduz = self.getRAdata(eht,'dduz')[intc]
 
-        dduxux = np.asarray(eht.item().get('dduxux')[intc])
-        dduyuy = np.asarray(eht.item().get('dduyuy')[intc])
-        dduzuz = np.asarray(eht.item().get('dduzuz')[intc])
-        dduxuy = np.asarray(eht.item().get('dduxuy')[intc])
-        dduxuz = np.asarray(eht.item().get('dduxuz')[intc])
+        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
 
-        ddekux = np.asarray(eht.item().get('ddekux')[intc])
-        ddek = np.asarray(eht.item().get('ddek')[intc])
+        ddekux = self.getRAdata(eht,'ddekux')[intc]
+        ddek = self.getRAdata(eht,'ddek')[intc]
 
-        ddei = np.asarray(eht.item().get('ddei')[intc])
-        ddeiux = np.asarray(eht.item().get('ddeiux')[intc])
+        ddei = self.getRAdata(eht,'ddei')[intc]
+        ddeiux = self.getRAdata(eht,'ddeiux')[intc]
 
-        divu = np.asarray(eht.item().get('divu')[intc])
-        ppdivu = np.asarray(eht.item().get('ppdivu')[intc])
-        dddivu = np.asarray(eht.item().get('dddivu')[intc])
-        uxdivu = np.asarray(eht.item().get('uxdivu')[intc])
-        ppux = np.asarray(eht.item().get('ppux')[intc])
+        divu = self.getRAdata(eht,'divu')[intc]
+        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
+        dddivu = self.getRAdata(eht,'dddivu')[intc]
+        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        ppux = self.getRAdata(eht,'ppux')[intc]
 
-        ddenuc1 = np.asarray(eht.item().get('ddenuc1')[intc])
-        ddenuc2 = np.asarray(eht.item().get('ddenuc2')[intc])
+        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
 
-        chim = np.asarray(eht.item().get('chim')[intc])
-        chit = np.asarray(eht.item().get('chit')[intc])
-        chid = np.asarray(eht.item().get('chid')[intc])
+        chim = self.getRAdata(eht,'chim')[intc]
+        chit = self.getRAdata(eht,'chit')[intc]
+        chid = self.getRAdata(eht,'chid')[intc]
 
-        gamma1 = np.asarray(eht.item().get('gamma1')[intc])
+        gamma1 = self.getRAdata(eht,'gamma1')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = np.asarray(eht.item().get('cp')[intc])
-            cv = np.asarray(eht.item().get('cv')[intc])
+            cp = self.getRAdata(eht,'cp')[intc]
+            cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         ###########################
@@ -75,25 +76,25 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, object):
         ##########################  		
 
         # store time series for time derivatives
-        t_timec = np.asarray(eht.item().get('timec'))
-        t_dd = np.asarray(eht.item().get('dd'))
-        t_tt = np.asarray(eht.item().get('tt'))
-        t_pp = np.asarray(eht.item().get('pp'))
+        t_timec = self.getRAdata(eht,'timec')
+        t_dd = self.getRAdata(eht,'dd')
+        t_tt = self.getRAdata(eht,'tt')
+        t_pp = self.getRAdata(eht,'pp')
 
-        t_ddei = np.asarray(eht.item().get('ddei'))
-        t_ddss = np.asarray(eht.item().get('ddss'))
+        t_ddei = self.getRAdata(eht,'ddei')
+        t_ddss = self.getRAdata(eht,'ddss')
 
-        t_ddux = np.asarray(eht.item().get('ddux'))
-        t_dduy = np.asarray(eht.item().get('dduy'))
-        t_dduz = np.asarray(eht.item().get('dduz'))
+        t_ddux = self.getRAdata(eht,'ddux')
+        t_dduy = self.getRAdata(eht,'dduy')
+        t_dduz = self.getRAdata(eht,'dduz')
 
-        t_dduxux = np.asarray(eht.item().get('dduxux'))
-        t_dduyuy = np.asarray(eht.item().get('dduyuy'))
-        t_dduzuz = np.asarray(eht.item().get('dduzuz'))
+        t_dduxux = self.getRAdata(eht,'dduxux')
+        t_dduyuy = self.getRAdata(eht,'dduyuy')
+        t_dduzuz = self.getRAdata(eht,'dduzuz')
 
-        t_uxux = np.asarray(eht.item().get('uxux'))
-        t_uyuy = np.asarray(eht.item().get('uyuy'))
-        t_uzuz = np.asarray(eht.item().get('uzuz'))
+        t_uxux = self.getRAdata(eht,'uxux')
+        t_uyuy = self.getRAdata(eht,'uyuy')
+        t_uzuz = self.getRAdata(eht,'uzuz')
 
         t_fht_ek = 0.5 * (t_dduxux + t_dduyuy + t_dduzuz) / t_dd
         t_fht_ei = t_ddei / t_dd
@@ -106,7 +107,7 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, object):
 
         t_fht_ui_fht_ui = t_fht_ux * t_fht_ux + t_fht_uy * t_fht_uy + t_fht_uz * t_fht_uz
 
-        # t_mm    = np.asarray(eht.item().get('mm'))
+        # t_mm    = self.getRAdata(eht,'mm'))
         # minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
         # fht_ux = minus_dt_mm/(4.*np.pi*(xzn0**2.)*dd)
 

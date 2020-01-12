@@ -3,7 +3,8 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
-
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +12,7 @@ import UTILS.SetAxisLimit as al
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, object):
+class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
         super(XdamkohlerNumber, self).__init__(ig)
@@ -20,18 +21,18 @@ class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = np.asarray(eht.item().get('xzn0'))
-        nx = np.asarray(eht.item().get('nx'))
+        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht,'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
         # assign global data to be shared across whole class
 
-        dd = np.asarray(eht.item().get('dd')[intc])
-        ddxi = np.asarray(eht.item().get('ddx' + inuc)[intc])
-        ddux = np.asarray(eht.item().get('ddux')[intc])
-        ddxiux = np.asarray(eht.item().get('ddx' + inuc + 'ux')[intc])
-        ddxidot = np.asarray(eht.item().get('ddx' + inuc + 'dot')[intc])
+        dd = self.getRAdata(eht,'dd')[intc]
+        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
+        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
@@ -46,7 +47,7 @@ class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, object):
         self.xda = tau_trans / tau_nuc
 
         self.data_prefix = data_prefix
-        self.xzn0 = np.asarray(eht.item().get('xzn0'))
+        self.xzn0 = self.getRAdata(eht,'xzn0')
         self.element = element
         self.inuc = inuc
         self.bconv = bconv
