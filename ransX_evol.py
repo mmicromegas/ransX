@@ -54,6 +54,22 @@ def main():
     if str2bool(params.getForEvol('convturn')['plotMee']):
         plt.execEvolConvTurnoverTime()
 
+    # MEAN RESIDUAL IN CONTINUITY EQUATION WITH MASS FLUX
+    if str2bool(params.getForEvol('contresmean')['plotMee']):
+        plt.execContResMean()
+
+    # MAX RESIDUAL IN CONTINUITY EQUATION WITH MASS FLUX
+    if str2bool(params.getForEvol('contresmax')['plotMee']):
+        plt.execContResMax()
+
+    # MEAN RESIDUAL IN TOTAL ENERGY EQUATION
+    if str2bool(params.getForEvol('teeresmean')['plotMee']):
+        plt.execTeeResMean()
+
+    # MAX RESIDUAL IN TOTAL ENERGY EQUATION
+    if str2bool(params.getForEvol('teeresmax')['plotMee']):
+        plt.execTeeResMax()
+
     # X0002 EVOLUTION
     if str2bool(params.getForEvol('x0002evol')['plotMee']):
         plt.execEvolX0002()

@@ -5,6 +5,11 @@ import EVOLUTION.ConvectionBoundariesPositionEvolution as cnvzpos
 import EVOLUTION.EnergySourceTermEvolution as enesrc
 import EVOLUTION.ConvectiveRMSvelocityEvolution as convrms
 import EVOLUTION.ConvectiveTurnoverTimescaleEvolution as convturn
+import EVOLUTION.ContResMaxEvolution as contResMax
+import EVOLUTION.ContResMeanEvolution as contResMean
+import EVOLUTION.TeeResMaxEvolution as teeResMax
+import EVOLUTION.TeeResMeanEvolution as teeResMean
+
 import EVOLUTION.X0002Evolution as x2evol
 
 import matplotlib.pyplot as plt
@@ -36,16 +41,16 @@ class EvolMasterPlot:
 
         # instantiate
         ransMachMax = machmxevol.MachNumberMaxEvolution(
-            params.getForProp('prop')['dataout'], \
-            params.getForProp('prop')['ig'], \
+            params.getForProp('prop')['dataout'],
+            params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
         # plot maximum mach number evolution
-        ransMachMax.plot_machmax_evolution(params.getForProp('prop')['laxis'], \
-                                           params.getForEvol('machmxevol')['xbl'], \
-                                           params.getForEvol('machmxevol')['xbr'], \
-                                           params.getForEvol('machmxevol')['ybu'], \
-                                           params.getForEvol('machmxevol')['ybd'], \
+        ransMachMax.plot_machmax_evolution(params.getForProp('prop')['laxis'],
+                                           params.getForEvol('machmxevol')['xbl'],
+                                           params.getForEvol('machmxevol')['xbr'],
+                                           params.getForEvol('machmxevol')['ybu'],
+                                           params.getForEvol('machmxevol')['ybd'],
                                            params.getForEvol('machmxevol')['ilg'])
 
     def execEvolMachMean(self):
@@ -53,18 +58,16 @@ class EvolMasterPlot:
 
         # instantiate
         ransMachMean = machmeevol.MachNumberMeanEvolution(
-            params.getForProp('prop')['dataout'], \
-            params.getForProp('prop')['ig'], \
+            params.getForProp('prop')['dataout'],
+            params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy evolution
-        ransMachMean.plot_machmean_evolution(params.getForProp('prop')['laxis'], \
-                                             params.getForEvol('machmeevol')['xbl'], \
-                                             params.getForEvol('machmeevol')['xbr'], \
-                                             params.getForEvol('machmeevol')['ybu'], \
-                                             params.getForEvol('machmeevol')['ybd'], \
+        ransMachMean.plot_machmean_evolution(params.getForProp('prop')['laxis'], params.getForEvol('machmeevol')['xbl'],
+                                             params.getForEvol('machmeevol')['xbr'],
+                                             params.getForEvol('machmeevol')['ybu'],
+                                             params.getForEvol('machmeevol')['ybd'],
                                              params.getForEvol('machmeevol')['ilg'])
-
 
     def execEvolConvVelRMS(self):
         params = self.params
@@ -129,6 +132,74 @@ class EvolMasterPlot:
                                            params.getForEvol('enesource')['ybu'],
                                            params.getForEvol('enesource')['ybd'],
                                            params.getForEvol('enesource')['ilg'])
+
+    def execContResMax(self):
+        params = self.params
+
+        # instantiate
+        ransContResMax = contResMax.ContResMaxEvolution(
+            params.getForProp('prop')['dataout'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
+
+        # plot max residual from continuity equation evolution
+        ransContResMax.plot_resContMax_evolution(params.getForProp('prop')['laxis'],
+                                                 params.getForEvol('contresmax')['xbl'],
+                                                 params.getForEvol('contresmax')['xbr'],
+                                                 params.getForEvol('contresmax')['ybu'],
+                                                 params.getForEvol('contresmax')['ybd'],
+                                                 params.getForEvol('contresmax')['ilg'])
+
+    def execContResMean(self):
+        params = self.params
+
+        # instantiate
+        ransContResMean = contResMean.ContResMeanEvolution(
+            params.getForProp('prop')['dataout'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
+
+        # plot mean residual from continuity equation evolution
+        ransContResMean.plot_resContMean_evolution(params.getForProp('prop')['laxis'],
+                                                   params.getForEvol('contresmean')['xbl'],
+                                                   params.getForEvol('contresmean')['xbr'],
+                                                   params.getForEvol('contresmean')['ybu'],
+                                                   params.getForEvol('contresmean')['ybd'],
+                                                   params.getForEvol('contresmean')['ilg'])
+
+    def execTeeResMax(self):
+        params = self.params
+
+        # instantiate
+        ransTeeResMax = teeResMax.TeeResMaxEvolution(
+            params.getForProp('prop')['dataout'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
+
+        # plot max residual from total energy equation evolution
+        ransTeeResMax.plot_resTeeMax_evolution(params.getForProp('prop')['laxis'],
+                                                 params.getForEvol('teeresmax')['xbl'],
+                                                 params.getForEvol('teeresmax')['xbr'],
+                                                 params.getForEvol('teeresmax')['ybu'],
+                                                 params.getForEvol('teeresmax')['ybd'],
+                                                 params.getForEvol('teeresmax')['ilg'])
+
+    def execTeeResMean(self):
+        params = self.params
+
+        # instantiate
+        ransTeeResMean = teeResMean.TeeResMeanEvolution(
+            params.getForProp('prop')['dataout'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
+
+        # plot mean residual from total energy equation evolution
+        ransTeeResMean.plot_resTeeMean_evolution(params.getForProp('prop')['laxis'],
+                                                   params.getForEvol('teeresmean')['xbl'],
+                                                   params.getForEvol('teeresmean')['xbr'],
+                                                   params.getForEvol('teeresmean')['ybu'],
+                                                   params.getForEvol('teeresmean')['ybd'],
+                                                   params.getForEvol('teeresmean')['ilg'])
 
     def execEvolX0002(self):
         params = self.params
