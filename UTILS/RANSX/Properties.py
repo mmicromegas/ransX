@@ -140,6 +140,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         xbl = self.xbl
         xbr = self.xbr
 
+        tavg = self.tavg
+
         # get grid
         xzn0 = self.xzn0
         yzn0 = self.yzn0
@@ -250,7 +252,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print('#----------------------------------------------------#')
         print('Datafile with space-time averages: ', self.filename)
         print('Central time (in s): ', round(self.timec, 1))
-        print('Averaging windows (in s): ', self.tavg.item(0))
+        print('Averaging windows (in s): ', tavg.item(0))
         print('Time range (in s from-to): ', round(self.trange[0], 1), round(self.trange[1], 1))
 
         print '---------------'
@@ -259,7 +261,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print 'Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc)
         if laxis != 0:
             print 'Extent of convection zone (in Hp): %f' % lcz_vs_hp[itop - ibot - 1]
-        print 'Averaging time window (in s): %f' % self.tavg
+        print 'Averaging time window (in s): %f' % tavg
         print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
         print 'Convective turnover timescale (in s)  %.2e' % tc
         print 'P_turb o P_gas %.2e' % pturb_o_pgas
@@ -300,14 +302,14 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         ig = self.ig
 
-        p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss,
+        p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
              'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
              'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
              'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
              'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr}
 
-        return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'],
+        return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'], 'tavg': p['tavg'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
                 'uconv': p['uconv'], 'xzn0inc': p['xzn0inc'], 'xzn0outc': p['xzn0outc'],
                 'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax': p['machMax'],

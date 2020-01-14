@@ -52,8 +52,6 @@ def main():
         print("ERROR(calcX_evol.py):" + errors.errorOutOfBoundary())
         sys.exit()
 
-    # TODO: add here amplitude of residuals in the convection zone (to find out optimum tavg)
-
     t_xzn0inc, t_xzn0outc, t_TKEsum, t_epsD, t_tD, t_urms = [], [], [], [], [], []
     t_tc, t_tenuc, t_pturb_o_pgas, t_machMax, t_machMean = [], [], [], [], []
     t_resContMean, t_resContMax, t_resTeeMean, t_resTeeMax = [], [], [], []
@@ -139,6 +137,9 @@ def main():
     # otherwise prp may be as assigned before reference
     ransP = pRop.Properties(filename, ig, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
+
+    tavg = {'tavg': prp['tavg']}
+    tevol.update(tavg)
 
     xznl = {'xznl': prp['xznl']}
     tevol.update(xznl)

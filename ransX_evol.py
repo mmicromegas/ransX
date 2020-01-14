@@ -75,8 +75,6 @@ def main():
         plt.execEvolX0002()
 
 
-
-
 # define useful functions
 def str2bool(param):
     # True/False strings to proper boolean
