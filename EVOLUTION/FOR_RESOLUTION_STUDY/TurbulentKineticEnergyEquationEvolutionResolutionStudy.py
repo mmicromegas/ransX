@@ -24,6 +24,7 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
         # declare data lists
         t_timec, t_TKEsum = [], []
         nx, ny, nz = [], [], []
+        tavg, t_tc = [], []
 
         for i in range(len(filename)):
             # load temporal evolution
@@ -34,6 +35,9 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
             ny.append(self.getRAdata(eht[i],'ny'))
             nz.append(self.getRAdata(eht[i],'nz'))
 
+            tavg.append(self.getRAdata(eht[i], 'tavg'))
+            t_tc.append(self.getRAdata(eht[i], 't_tc'))
+
         # share data across the whole class
         self.t_timec = t_timec
         self.t_TKEsum = t_TKEsum
@@ -42,6 +46,9 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
         self.nx = nx
         self.ny = ny
         self.nz = nz
+
+        self.tavg = tavg
+        self.t_tc = t_tc
 
     def plot_tke_evolution(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 
@@ -53,6 +60,9 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
         nx = self.nx
         ny = self.ny
         nz = self.nz
+
+        tavg = self.tavg
+        t_tc = self.t_tc
 
         # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
@@ -89,7 +99,9 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
         plt.title('turbulent kinetic energy evolution')
 
         for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
+                                            + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
+                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
 
         # plt.plot(grd1,plt2,color='g',label = r'$epsD$')
 

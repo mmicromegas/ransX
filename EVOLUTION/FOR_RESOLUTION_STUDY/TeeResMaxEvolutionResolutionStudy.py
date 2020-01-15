@@ -63,6 +63,7 @@ class TeeResMaxEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tool
 
         tavg = self.tavg
 
+
         # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
         plt1_maxres = self.maxresdata(plt1)

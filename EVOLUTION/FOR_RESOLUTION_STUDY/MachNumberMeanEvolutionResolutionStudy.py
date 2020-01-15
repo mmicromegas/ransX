@@ -25,6 +25,7 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         # declare data lists
         t_timec, t_machme = [], []
         nx, ny, nz = [], [], []
+        tavg, t_tc = [], []
 
         for i in range(len(filename)):
             # load temporal evolution
@@ -34,6 +35,9 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
             nx.append(self.getRAdata(eht[i], 'nx'))
             ny.append(self.getRAdata(eht[i], 'ny'))
             nz.append(self.getRAdata(eht[i], 'nz'))
+
+            tavg.append(self.getRAdata(eht[i], 'tavg'))
+            t_tc.append(self.getRAdata(eht[i], 't_tc'))
 
         # share data across the whole class
         self.t_timec = t_timec
@@ -45,6 +49,9 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         self.ny = ny
         self.nz = nz
 
+        self.tavg = tavg
+        self.t_tc = t_tc
+
     def plot_machmean_evolution(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 
         grd = self.t_timec
@@ -54,6 +61,9 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         nx = self.nx
         ny = self.ny
         nz = self.nz
+
+        tavg = self.tavg
+        t_tc = self.t_tc
 
         # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
@@ -90,7 +100,9 @@ class MachNumberMeanEvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.To
         plt.title('mean Mach number evolution')
 
         for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
+                                            + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
+                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
 
         # plt.plot(grd1,plt2,color='g',label = r'$epsD$')
 

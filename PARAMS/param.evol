@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) and OBURN ---------- #
 []
-## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ccptwo_256cubed_200secs_cosma.npy]
-## Dataout File ............................................ ## [prop,dataout,DATA/TEVOL/tseries_ccptwo_256cubed_200secs_cosma_evol.npy]
+## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ccptwo_256cubed_50secs_cosma.npy]
+## Dataout File ............................................ ## [prop,dataout,DATA/TEVOL/tseries_ccptwo_256cubed_50secs_cosma_evol.npy]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo64_cosma_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,1]
