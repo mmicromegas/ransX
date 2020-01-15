@@ -76,6 +76,18 @@ def main():
     if str2bool(params.getForEqs('tmsflx')['plotMee']):
         plt.execTMSflx()
 
+    # Turbulent Radial Velocity RMS
+    if str2bool(params.getForEqs('uxrms')['plotMee']):
+        plt.execUXrms()
+
+    # Density RMS
+    if str2bool(params.getForEqs('ddrms')['plotMee']):
+        plt.execDDrms()
+
+    # Buoyancy
+    if str2bool(params.getForEqs('buoy')['plotMee']):
+        plt.execBuoyancy()
+
     # load network
     network = params.getNetwork()
 

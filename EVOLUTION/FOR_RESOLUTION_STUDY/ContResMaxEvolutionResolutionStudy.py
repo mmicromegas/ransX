@@ -52,6 +52,10 @@ class ContResMaxEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Too
 
     def plot_resContMax_evolution(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 
+        if (LAXIS != 2):
+            print("ERROR(ContResMaxEvolutionResolutionStudy.py): Only LAXIS=2 is supported.")
+            sys.exit()
+
         grd = self.t_timec
         plt1 = self.t_resContMax
         t_tc = self.t_tc
@@ -76,10 +80,6 @@ class ContResMaxEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Too
 
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
-
-        if (LAXIS != 2):
-            print("ERROR(ContResMaxEvolutionResolutionStudy.py): Only LAXIS=2 is supported.")
-            sys.exit()
 
         plt10_tmp = plt1[0]
         plt11_tmp = plt1[0]

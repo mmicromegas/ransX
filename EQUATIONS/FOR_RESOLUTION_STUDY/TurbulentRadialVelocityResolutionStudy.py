@@ -14,10 +14,10 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
-        super(PressureFluxResolutionStudy, self).__init__(ig)
+        super(TurbulentRadialVelocityResolutionStudy, self).__init__(ig)
 
         # load data to list of structured arrays
         eht = []
@@ -27,7 +27,7 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
 
-        ux, ppux, pp, fppx = [], [], [], []
+        ux, uxux, dd, uxrms = [], [], [], []
 
         for i in range(len(filename)):
             # load grid
@@ -41,9 +41,8 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
             # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 		
 
             ux.append(np.asarray(eht[i].item().get('ux')[intc]))
-            pp.append(np.asarray(eht[i].item().get('pp')[intc]))
-            ppux.append(np.asarray(eht[i].item().get('ppux')[intc]))
-            fppx.append(ppux[i] - pp[i] * ux[i])
+            uxux.append(np.asarray(eht[i].item().get('uxux')[intc]))
+            uxrms.append((uxux[i] - ux[i] * ux[i]) ** 0.5)
 
         # share data globally
         self.data_prefix = data_prefix
@@ -51,20 +50,20 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         self.nx = nx
         self.ny = ny
         self.nz = nz
-        self.fppx = fppx
+        self.uxrms = uxrms
 
-    def plot_fppx(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
-        """Plot Pressure flux in the model"""
+    def plot_uxrms(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot TurbulentMass flux in the model"""
 
         if (LAXIS != 2):
-            print("ERROR(PressureFluxResolutionStudy.py): Only LAXIS=2 is supported.")
+            print("ERROR(TurbulentRadialVelocityResolutionStudy.py): Only LAXIS=2 is supported.")
             sys.exit()
 
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        plt1 = self.fppx
+        plt1 = self.uxrms
         nx = self.nx
         ny = self.ny
         nz = self.nz
@@ -97,14 +96,14 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Pressure Flux')
+        plt.title('Radial Velocity RMS')
 
         for i in range(len(grd)):
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$f_p$"
+        setylabel = r"u$^x_{rms}$ (cm/s)"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -116,7 +115,7 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_Pressure_flux.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentRadialVelocity.png')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

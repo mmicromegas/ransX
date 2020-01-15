@@ -5,7 +5,7 @@ import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
 import UTILS.Tools as uT
 import UTILS.Errors as eR
-
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -20,8 +20,8 @@ class TemperatureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, e
 
         # load data to list of structured arrays
         eht = []
-        for file in filename:
-            eht.append(np.load(file))
+        for ffile in filename:
+            eht.append(np.load(ffile))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
@@ -59,18 +59,18 @@ class TemperatureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         grd = self.xzn0
 
         # load DATA to plot		
-        fttx = self.fttx
+        plt1 = self.fttx
         nx = self.nx
         ny = self.ny
         nz = self.nz
 
-        # find maximum resolution data		
+        # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
-        nsq_maxres = self.maxresdata(fttx)
+        plt1_maxres = self.maxresdata(plt1)
 
         plt_interp = []
         for i in range(len(grd)):
-            plt_interp.append(np.interp(grd_maxres, grd[i], fttx[i]))
+            plt_interp.append(np.interp(grd_maxres, grd[i], plt1[i]))
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -78,15 +78,24 @@ class TemperatureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
-        to_plot = [plt]
+        plt10_tmp = plt1[0]
+        plt11_tmp = plt1[0]
+
+        plt1_foraxislimit = []
+        plt1max = np.max(plt1[0])
+        for plt1i in plt1:
+            if (np.max(plt1i) > plt1max):
+                plt1_foraxislimit = plt1i
+
+        # set plot boundaries
+        to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('Temperature Flux')
 
         for i in range(len(grd)):
-            plt.plot(grd[i], fttx[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

@@ -5,7 +5,7 @@ import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
 import UTILS.Tools as uT
 import UTILS.Errors as eR
-
+import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -55,22 +55,26 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
     def plot_X(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mass fraction in the model"""
 
+        if (LAXIS != 2):
+            print("ERROR(XdensityResolutionStudy.py): Only LAXIS=2 is supported.")
+            sys.exit()
+
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        fht_xi = self.fht_xi
+        plt1 = self.fht_xi
         nx = self.nx
         ny = self.ny
         nz = self.nz
 
-        # find maximum resolution data		
+        # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
-        nsq_maxres = self.maxresdata(fht_xi)
+        plt1_maxres = self.maxresdata(plt1)
 
         plt_interp = []
         for i in range(len(grd)):
-            plt_interp.append(np.interp(grd_maxres, grd[i], fht_xi[i]))
+            plt_interp.append(np.interp(grd_maxres, grd[i], plt1[i]))
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -78,15 +82,24 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
-        to_plot = [plt]
+        plt10_tmp = plt1[0]
+        plt11_tmp = plt1[0]
+
+        plt1_foraxislimit = []
+        plt1max = np.max(plt1[0])
+        for plt1i in plt1:
+            if (np.max(plt1i) > plt1max):
+                plt1_foraxislimit = plt1i
+
+        # set plot boundaries
+        to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('X for ' + self.element)
 
         for i in range(len(grd)):
-            plt.plot(grd[i], fht_xi[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
@@ -107,22 +120,26 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot fractional density in the model"""
 
+        if (LAXIS != 2):
+            print("ERROR(XdensityResolutionStudy.py): Only LAXIS=2 is supported.")
+            sys.exit()
+
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        ddxi = self.ddxi
+        plt1 = self.ddxi
         nx = self.nx
         ny = self.ny
         nz = self.nz
 
-        # find maximum resolution data		
+        # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
-        nsq_maxres = self.maxresdata(ddxi)
+        plt1_maxres = self.maxresdata(plt1)
 
         plt_interp = []
         for i in range(len(grd)):
-            plt_interp.append(np.interp(grd_maxres, grd[i], ddxi[i]))
+            plt_interp.append(np.interp(grd_maxres, grd[i], plt1[i]))
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -130,15 +147,24 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
-        to_plot = [plt]
+        plt10_tmp = plt1[0]
+        plt11_tmp = plt1[0]
+
+        plt1_foraxislimit = []
+        plt1max = np.max(plt1[0])
+        for plt1i in plt1:
+            if (np.max(plt1i) > plt1max):
+                plt1_foraxislimit = plt1i
+
+        # set plot boundaries
+        to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('Xrho for ' + self.element)
 
         for i in range(len(grd)):
-            plt.plot(grd[i], ddxi[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

@@ -14,10 +14,10 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class BuoyancyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
-        super(PressureFluxResolutionStudy, self).__init__(ig)
+    def __init__(self, filename, ig, ieos, intc, data_prefix):
+        super(BuoyancyResolutionStudy, self).__init__(ig)
 
         # load data to list of structured arrays
         eht = []
@@ -25,13 +25,17 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
             eht.append(np.load(ffile))
 
         # declare data lists		
-        xzn0, nx, ny, nz = [], [], [], []
+        xzn0, nx, ny, nz, xznr, xznl = [], [], [], [], [], []
 
-        ux, ppux, pp, fppx = [], [], [], []
+        dd, pp, gg, gamma1, gamma2 = [], [], [], [], []
+
+        dlnrhodr, dlnpdr, dlnrhodrs, nsq, b, dx = [], [], [], [], [], []
 
         for i in range(len(filename)):
             # load grid
             xzn0.append(np.asarray(eht[i].item().get('xzn0')))
+            xznl.append(np.asarray(eht[i].item().get('xznl')))
+            xznr.append(np.asarray(eht[i].item().get('xznr')))
 
             nx.append(np.asarray(eht[i].item().get('nx')))
             ny.append(np.asarray(eht[i].item().get('ny')))
@@ -40,10 +44,30 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
             # pick specific Reynolds-averaged mean fields according to:
             # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 		
 
-            ux.append(np.asarray(eht[i].item().get('ux')[intc]))
+            dd.append(np.asarray(eht[i].item().get('dd')[intc]))
             pp.append(np.asarray(eht[i].item().get('pp')[intc]))
-            ppux.append(np.asarray(eht[i].item().get('ppux')[intc]))
-            fppx.append(ppux[i] - pp[i] * ux[i])
+            gg.append(np.asarray(eht[i].item().get('gg')[intc]))
+
+            # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+            if ieos == 1:
+                cp = self.getRAdata(eht[i], 'cp')[intc]
+                cv = self.getRAdata(eht[i], 'cv')[intc]
+                gamma1.append(cp / cv)  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+                gamma2.append(cp / cv)  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110)
+            else:
+                gamma1.append(np.asarray(eht[i].item().get('gamma1')[intc]))
+                gamma2.append(np.asarray(eht[i].item().get('gamma2')[intc]))
+
+            dlnrhodr.append(self.deriv(np.log(dd[i]), xzn0[i]))
+            dlnpdr.append(self.deriv(np.log(pp[i]), xzn0[i]))
+            dlnrhodrs.append((1. / gamma1[i]) * dlnpdr[i])
+            nsq.append(gg[i] * (dlnrhodr[i] - dlnrhodrs[i]))
+
+            b.append(np.zeros(int(nx[i])))
+            dx.append(xznr[i] - xznl[i])
+            for ii in range(0, int(nx[i])):
+                b.append(b[i][ii - 1] + nsq[i][ii] * dx[i][ii])
+
 
         # share data globally
         self.data_prefix = data_prefix
@@ -51,20 +75,20 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         self.nx = nx
         self.ny = ny
         self.nz = nz
-        self.fppx = fppx
+        self.b = b
 
-    def plot_fppx(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
-        """Plot Pressure flux in the model"""
+    def plot_buoyancy(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot buoyancy in the model"""
 
         if (LAXIS != 2):
-            print("ERROR(PressureFluxResolutionStudy.py): Only LAXIS=2 is supported.")
+            print("ERROR(BuoyancyResolutionStudy.py): Only LAXIS=2 is supported.")
             sys.exit()
 
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        plt1 = self.fppx
+        plt1 = self.b
         nx = self.nx
         ny = self.ny
         nz = self.nz
@@ -97,14 +121,14 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Pressure Flux')
+        plt.title('Buoyancy fluctuations')
 
         for i in range(len(grd)):
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
-        setylabel = r"$f_p$"
+        setylabel = r"$buoyancy$"
 
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
@@ -116,7 +140,7 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_Pressure_flux.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_buoyancy.png')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

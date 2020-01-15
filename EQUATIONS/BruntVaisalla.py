@@ -33,7 +33,7 @@ class BruntVaisalla(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object)
         gamma1 = self.getRAdata(eht,'gamma1')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
+        if ieos == 1:
             cp = self.getRAdata(eht,'cp')[intc]
             cv = self.getRAdata(eht,'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110

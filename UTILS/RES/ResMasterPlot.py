@@ -7,6 +7,9 @@ import EQUATIONS.FOR_RESOLUTION_STUDY.PressureFluxResolutionStudy as fppx
 import EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureFluxResolutionStudy as fttx
 import EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyFluxResolutionStudy as fhhx
 import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentMassFluxResolutionStudy as a
+import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentRadialVelocityResolutionStudy as uxRms
+import EQUATIONS.FOR_RESOLUTION_STUDY.DensityRmsResolutionStudy as ddRms
+import EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy as buoy
 
 import EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy as xrho
 import EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy as xflxx
@@ -66,6 +69,7 @@ class ResMasterPlot():
         # instantiate 		
         ransBruntV = bruntv.BruntVaisallaResolutionStudy(params.getForProp('prop')['eht_data'], \
                                                          params.getForProp('prop')['ig'], \
+                                                         params.getForProp('prop')['ieos'], \
                                                          params.getForProp('prop')['intc'], \
                                                          params.getForProp('prop')['prefix'])
 
@@ -205,6 +209,56 @@ class ResMasterPlot():
                              params.getForEqs('pressxflx')['ybu'], \
                              params.getForEqs('pressxflx')['ybd'], \
                              params.getForEqs('pressxflx')['ilg'])
+
+    def execUXrms(self):
+        params = self.params
+
+        # instantiate
+        ransUXrms = uxRms.TurbulentRadialVelocityResolutionStudy(params.getForProp('prop')['eht_data'], \
+                                                      params.getForProp('prop')['ig'], \
+                                                      params.getForProp('prop')['intc'], \
+                                                      params.getForProp('prop')['prefix'])
+
+        ransUXrms.plot_uxrms(params.getForProp('prop')['laxis'], \
+                             params.getForEqs('uxrms')['xbl'], \
+                             params.getForEqs('uxrms')['xbr'], \
+                             params.getForEqs('uxrms')['ybu'], \
+                             params.getForEqs('uxrms')['ybd'], \
+                             params.getForEqs('uxrms')['ilg'])
+
+    def execDDrms(self):
+        params = self.params
+
+        # instantiate
+        ransDDrms = ddRms.DensityRmsResolutionStudy(params.getForProp('prop')['eht_data'], \
+                                                      params.getForProp('prop')['ig'], \
+                                                      params.getForProp('prop')['intc'], \
+                                                      params.getForProp('prop')['prefix'])
+
+        ransDDrms.plot_ddrms(params.getForProp('prop')['laxis'], \
+                             params.getForEqs('ddrms')['xbl'], \
+                             params.getForEqs('ddrms')['xbr'], \
+                             params.getForEqs('ddrms')['ybu'], \
+                             params.getForEqs('ddrms')['ybd'], \
+                             params.getForEqs('ddrms')['ilg'])
+
+    def execBuoyancy(self):
+        params = self.params
+
+        # instantiate
+        ransBuoyancy = buoy.BuoyancyResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                    params.getForProp('prop')['ig'],
+                                                    params.getForProp('prop')['ieos'],
+                                                    params.getForProp('prop')['intc'],
+                                                    params.getForProp('prop')['prefix'])
+
+        ransBuoyancy.plot_buoyancy(params.getForProp('prop')['laxis'], \
+                             params.getForEqs('buoy')['xbl'], \
+                             params.getForEqs('buoy')['xbr'], \
+                             params.getForEqs('buoy')['ybu'], \
+                             params.getForEqs('buoy')['ybd'], \
+                             params.getForEqs('buoy')['ilg'])
+
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

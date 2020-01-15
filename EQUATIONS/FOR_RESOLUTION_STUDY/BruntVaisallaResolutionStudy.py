@@ -5,6 +5,7 @@ import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -15,7 +16,7 @@ import UTILS.Errors as eR
 
 class BruntVaisallaResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(BruntVaisallaResolutionStudy, self).__init__(ig)
 
         # load data to list of structured arrays
@@ -44,7 +45,16 @@ class BruntVaisallaResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.
             dd.append(np.asarray(eht[i].item().get('dd')[intc]))
             pp.append(np.asarray(eht[i].item().get('pp')[intc]))
             gg.append(np.asarray(eht[i].item().get('gg')[intc]))
-            gamma1.append(np.asarray(eht[i].item().get('gamma1')[intc]))
+
+            # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+            if ieos == 1:
+                cp = self.getRAdata(eht[i], 'cp')[intc]
+                cv = self.getRAdata(eht[i], 'cv')[intc]
+                gamma1.append(cp / cv)  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+                gamma2.append(cp / cv)  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110)
+            else:
+                gamma1.append(np.asarray(eht[i].item().get('gamma1')[intc]))
+                gamma2.append(np.asarray(eht[i].item().get('gamma2')[intc]))
 
             dlnrhodr.append(self.deriv(np.log(dd[i]), xzn0[i]))
             dlnpdr.append(self.deriv(np.log(pp[i]), xzn0[i]))
@@ -56,7 +66,6 @@ class BruntVaisallaResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.
             chid.append(np.asarray(eht[i].item().get('chid')[intc]))
             mu.append(np.asarray(eht[i].item().get('abar')[intc]))
             tt.append(np.asarray(eht[i].item().get('tt')[intc]))
-            gamma2.append(np.asarray(eht[i].item().get('gamma2')[intc]))
 
             alpha.append(1. / chid[i])
             delta.append(-chit[i] / chid[i])
@@ -88,22 +97,26 @@ class BruntVaisallaResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.
     def plot_bruntvaisalla(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot BruntVaisalla parameter in the model"""
 
+        if (LAXIS != 2):
+            print("ERROR(BruntVaisallaResolutionStudy.py): Only LAXIS=2 is supported.")
+            sys.exit()
+
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        nsq = self.nsq
+        plt1 = self.nsq
         nx = self.nx
         ny = self.ny
         nz = self.nz
 
-        # find maximum resolution data		
+        # find maximum resolution data
         grd_maxres = self.maxresdata(grd)
-        nsq_maxres = self.maxresdata(nsq)
+        plt1_maxres = self.maxresdata(plt1)
 
         plt_interp = []
         for i in range(len(grd)):
-            plt_interp.append(np.interp(grd_maxres, grd[i], nsq[i]))
+            plt_interp.append(np.interp(grd_maxres, grd[i], plt1[i]))
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -111,15 +124,24 @@ class BruntVaisallaResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        # set plot boundaries   
-        to_plot = [plt]
+        plt10_tmp = plt1[0]
+        plt11_tmp = plt1[0]
+
+        plt1_foraxislimit = []
+        plt1max = np.max(plt1[0])
+        for plt1i in plt1:
+            if (np.max(plt1i) > plt1max):
+                plt1_foraxislimit = plt1i
+
+        # set plot boundaries
+        to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('Brunt-Vaisalla frequency')
 
         for i in range(len(grd)):
-            plt.plot(grd[i], nsq[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

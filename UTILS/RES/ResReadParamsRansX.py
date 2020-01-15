@@ -24,7 +24,7 @@ class ResReadParamsRansX:
         eht_dir = match[0].split(",")[2]
         eht_data_all = match[1].split(",")[2:]
         prefix = match[2].split(",")[2]
-        ieos = match[3].split(",")[2]
+        ieos = int(match[3].split(",")[2])
         ig = int(match[4].split(",")[2])
         intc = int(match[5].split(",")[2])
         laxis = int(match[6].split(",")[2])
