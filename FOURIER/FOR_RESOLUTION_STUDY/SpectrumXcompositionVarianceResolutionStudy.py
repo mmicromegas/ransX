@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import UTILS.PROMPI.PROMPI_data as pd
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 class SpectrumXcompositionVarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):

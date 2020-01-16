@@ -101,7 +101,7 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         ##################
         # Xi FLUX EQUATION 
-        ##################		
+        ##################
 
         # construct equation-specific mean fields
         t_fyi = t_ddxiuy - t_ddxi * t_dduy / t_dd
@@ -141,9 +141,12 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         # RHS -ryx gradx fht_xi
         self.minus_ryx_gradx_fht_xi = -ryx * self.Grad(fht_xi, xzn0)
 
-        # RHS -xff_grady_pp_o_rr
-        # self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi*gradypp)/xzn0
-        self.minus_eht_xff_grady_pp_o_rr = np.zeros(nx)
+        if (ig == 1):
+            # RHS -xff_grady_pp
+            self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi*gradypp)
+        elif (ig == 2):
+            # RHS -xff_grady_pp_o_rr
+            self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi*gradypp)/xzn0
 
         # RHS +uyff_eht_dd_xidot
         self.plus_uyff_eht_dd_xidot = +(ddxidotuy - (dduy / dd) * ddxidot)
@@ -165,6 +168,7 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
+        self.nx = nx
         self.inuc = inuc
         self.element = element
         self.fyi = fyi
@@ -248,7 +252,11 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         rhs4 = self.plus_uyff_eht_dd_xidot
         rhs5 = self.plus_gi
 
-        res = self.minus_resXiFlux
+        if (self.ig == 1):
+            res = -(lhs0 + lhs1 + rhs0 + rhs1 + rhs2 + rhs3 + rhs4)
+            rhs5 = np.zeros(self.nx)
+        elif (self.ig == 2):
+            res = self.minus_resXiFlux
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -268,7 +276,7 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^y$')
             plt.plot(grd1, rhs1, color='g', label=r'$-f_{r} \partial_x \widetilde{u}_y$')
             plt.plot(grd1, rhs2, color='r', label=r'$-R_{xy} \partial_x \widetilde{X}$')
-            plt.plot(grd1, rhs3, color='cyan', label=r"$-\overline{X''\partial_y P/r}$")
+            plt.plot(grd1, rhs3, color='cyan', label=r"$-\overline{X''\partial_y P}$")
             plt.plot(grd1, rhs4, color='purple', label=r"$+\overline{u''_y \rho \dot{X}}$")
             # plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')

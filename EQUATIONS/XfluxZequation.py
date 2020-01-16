@@ -62,6 +62,9 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
 
         gradzpp_o_siny = self.getRAdata(eht,'gradzpp_o_siny')[intc]
+        print("ERROR(XfluxZequation.py): gradzpp missing ... ")
+        sys.exit()
+        # gradzpp = self.getRAdata(eht,'gradzpp')[intc]
 
         ddxiuzuzcoty = self.getRAdata(eht,'ddx' + inuc + 'uzuzcoty')[intc]
         dduzuzcoty = self.getRAdata(eht,'dduzuzcoty')[intc]
@@ -71,6 +74,7 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         xigradxpp = self.getRAdata(eht,'x' + inuc + 'gradxpp')[intc]
         xigradypp = self.getRAdata(eht,'x' + inuc + 'gradypp')[intc]
+        xigradzpp = self.getRAdata(eht,'x' + inuc + 'gradzpp')[intc]
         xigradzpp_o_siny = self.getRAdata(eht,'x' + inuc + 'gradzpp_o_siny')[intc]
 
         ddxidotux = self.getRAdata(eht,'ddx' + inuc + 'dotux')[intc]
@@ -145,9 +149,12 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         # RHS -rzx gradx fht_xi
         self.minus_rzx_gradx_fht_xi = -rzx * self.Grad(fht_xi, xzn0)
 
-        # RHS -xff_gradz_pp_o_siny_rr
-        # self.minus_eht_xff_gradz_pp_o_sinyrr = -(xigradzpp_o_siny - fht_xi*gradzpp_o_siny)/xzn0
-        self.minus_eht_xff_gradz_pp_o_sinyrr = np.zeros(nx)
+        if (ig == 1):
+            # RHS -xff_gradz_pp
+            self.minus_eht_xff_gradz_pp_o_sinyrr = -(xigradzpp - fht_xi*gradzpp)
+        elif (ig == 2):
+            # RHS -xff_gradz_pp_o_siny_rr
+            self.minus_eht_xff_gradz_pp_o_sinyrr = -(xigradzpp_o_siny - fht_xi*gradzpp_o_siny)/xzn0
 
         # RHS +uzff_eht_dd_xidot
         self.plus_uzff_eht_dd_xidot = +(ddxidotuz - (dduz / dd) * ddxidot)
@@ -164,7 +171,7 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         ######################
         # END Xi FLUX EQUATION 
-        ######################	
+        ######################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -252,7 +259,11 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         rhs4 = self.plus_uzff_eht_dd_xidot
         rhs5 = self.plus_gi
 
-        res = self.minus_resXiFlux
+        if (self.ig == 1):
+            res = -(lhs0 + lhs1 + rhs0 + rhs1 + rhs2 + rhs3 + rhs4)
+            rhs5 = np.zeros(self.nx)
+        elif (self.ig == 2):
+            res = self.minus_resXiFlux
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -272,7 +283,7 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^z$')
             plt.plot(grd1, rhs1, color='g', label=r'$-f_{r} \partial_x \widetilde{u}_z$')
             plt.plot(grd1, rhs2, color='r', label=r'$-R_{xz} \partial_x \widetilde{X}$')
-            plt.plot(grd1, rhs3, color='cyan', label=r"$-\overline{X''\partial_z P/r siny}$")
+            plt.plot(grd1, rhs3, color='cyan', label=r"$-\overline{X''\partial_z P}$")
             plt.plot(grd1, rhs4, color='purple', label=r"$+\overline{u''_z \rho \dot{X}}$")
             # plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')

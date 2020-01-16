@@ -81,7 +81,15 @@ import EQUATIONS.HsseLuminosityEquation as hsselumi
 import EQUATIONS.HsseXtransportEquation as hssecomp
 
 # import class for full turbulence velocity field hypothesis
-import EQUATIONS.FullTurbulenceVelocityFieldHypothesis as ftvfh
+import EQUATIONS.FullTurbulenceVelocityFieldHypothesisX as ftvfhX
+import EQUATIONS.FullTurbulenceVelocityFieldHypothesisY as ftvfhY
+import EQUATIONS.FullTurbulenceVelocityFieldHypothesisZ as ftvfhZ
+
+import EQUATIONS.UxfpdIdentity as uxfpd
+import EQUATIONS.UyfpdIdentity as uyfpd
+import EQUATIONS.UzfpdIdentity as uzfpd
+
+import EQUATIONS.DivuDilatation as divu
 
 import matplotlib.pyplot as plt
 
@@ -493,12 +501,12 @@ class MasterPlot():
                                        params.getForEqs(x)['ybd'], \
                                        params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_XfluxX_equation2(params.getForProp('prop')['laxis'], \
-                                        params.getForEqs(x)['xbl'], \
-                                        params.getForEqs(x)['xbr'], \
-                                        params.getForEqs(x)['ybu'], \
-                                        params.getForEqs(x)['ybd'], \
-                                        params.getForEqs(x)['ilg'])
+        #ransXflxx.plot_XfluxX_equation2(params.getForProp('prop')['laxis'], \
+        #                                params.getForEqs(x)['xbl'], \
+        #                                params.getForEqs(x)['xbr'], \
+        #                                params.getForEqs(x)['ybu'], \
+        #                                params.getForEqs(x)['ybd'], \
+        #                                params.getForEqs(x)['ilg'])
 
     def execXflxy(self, inuc, element, x, bconv, tconv, tke_diss, tauL):
         params = self.params
@@ -637,16 +645,16 @@ class MasterPlot():
                          params.getForEqs(x)['ybd'], \
                          params.getForEqs(x)['ilg'])
 
-    def execTke(self,kolmdissrate,bconv,tconv):
+    def execTke(self, kolmdissrate, bconv, tconv):
         params = self.params
 
         # instantiate 		
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'], \
-                                                      params.getForProp('prop')['ig'], \
-                                                      params.getForProp('prop')['ieos'], \
-                                                      params.getForProp('prop')['intc'], \
-                                                      kolmdissrate, bconv, tconv, \
-                                                      params.getForProp('prop')['prefix'])
+                                                     params.getForProp('prop')['ig'], \
+                                                     params.getForProp('prop')['ieos'], \
+                                                     params.getForProp('prop')['intc'], \
+                                                     kolmdissrate, bconv, tconv, \
+                                                     params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy			   
         ransTke.plot_tke(params.getForProp('prop')['laxis'], \
@@ -662,16 +670,16 @@ class MasterPlot():
         # plot evolution of convection boundaries	   
         # ransTke.plot_conv_bndry_location()
 
-    def execTkeEq(self,kolmdissrate,bconv,tconv):
+    def execTkeEq(self, kolmdissrate, bconv, tconv):
         params = self.params
 
         # instantiate 		
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'], \
-                                                      params.getForProp('prop')['ig'], \
-                                                      params.getForProp('prop')['ieos'], \
-                                                      params.getForProp('prop')['intc'], \
-                                                      kolmdissrate, bconv, tconv, \
-                                                      params.getForProp('prop')['prefix'])
+                                                     params.getForProp('prop')['ig'], \
+                                                     params.getForProp('prop')['ieos'], \
+                                                     params.getForProp('prop')['intc'], \
+                                                     kolmdissrate, bconv, tconv, \
+                                                     params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation			     
         ransTke.plot_tke_equation(params.getForProp('prop')['laxis'], \
@@ -2047,65 +2055,138 @@ class MasterPlot():
                                 params.getForEqs('hheq')['ybd'], \
                                 params.getForEqs('hheq')['ilg'])
 
-    def execFtvfh(self, bconv, tconv):
+    def execFtvfhX(self, bconv, tconv):
         params = self.params
 
         # instantiate 		
-        ransFtvfh = ftvfh.FullTurbulenceVelocityFieldHypothesis(params.getForProp('prop')['eht_data'], \
-                                                                params.getForProp('prop')['ig'], \
-                                                                params.getForProp('prop')['ieos'], \
-                                                                params.getForProp('prop')['intc'], \
-                                                                params.getForProp('prop')['prefix'],\
-                                                                bconv,tconv)
+        ransFtvfhX = ftvfhX.FullTurbulenceVelocityFieldHypothesisX(params.getForProp('prop')['eht_data'], \
+                                                                   params.getForProp('prop')['ig'], \
+                                                                   params.getForProp('prop')['fext'], \
+                                                                   params.getForProp('prop')['ieos'], \
+                                                                   params.getForProp('prop')['intc'], \
+                                                                   params.getForProp('prop')['prefix'], \
+                                                                   bconv, tconv)
 
-        ransFtvfh.plot_ftvfhX_equation(params.getForProp('prop')['laxis'], \
-                                       params.getForEqs('ftvfh')['xbl'], \
-                                       params.getForEqs('ftvfh')['xbr'], \
-                                       params.getForEqs('ftvfh')['ybu'], \
-                                       params.getForEqs('ftvfh')['ybd'], \
-                                       params.getForEqs('ftvfh')['ilg'])
+        ransFtvfhX.plot_ftvfhX_equation(params.getForProp('prop')['laxis'],
+                                        params.getForEqs('ftvfh_x')['xbl'],
+                                        params.getForEqs('ftvfh_x')['xbr'],
+                                        params.getForEqs('ftvfh_x')['ybu'],
+                                        params.getForEqs('ftvfh_x')['ybd'],
+                                        params.getForEqs('ftvfh_x')['ilg'])
 
-        ransFtvfh.plot_ftvfhY_equation(params.getForProp('prop')['laxis'], \
-                                       params.getForEqs('ftvfh')['xbl'], \
-                                       params.getForEqs('ftvfh')['xbr'], \
-                                       params.getForEqs('ftvfh')['ybu'], \
-                                       params.getForEqs('ftvfh')['ybd'], \
-                                       params.getForEqs('ftvfh')['ilg'])
+    def execFtvfhY(self, bconv, tconv):
+        params = self.params
 
-        ransFtvfh.plot_ftvfhZ_equation(params.getForProp('prop')['laxis'], \
-                                       params.getForEqs('ftvfh')['xbl'], \
-                                       params.getForEqs('ftvfh')['xbr'], \
-                                       params.getForEqs('ftvfh')['ybu'], \
-                                       params.getForEqs('ftvfh')['ybd'], \
-                                       params.getForEqs('ftvfh')['ilg'])
+        # instantiate
+        ransFtvfhY = ftvfhY.FullTurbulenceVelocityFieldHypothesisY(params.getForProp('prop')['eht_data'],
+                                                                   params.getForProp('prop')['ig'],
+                                                                   params.getForProp('prop')['fext'],
+                                                                   params.getForProp('prop')['ieos'],
+                                                                   params.getForProp('prop')['intc'],
+                                                                   params.getForProp('prop')['prefix'],
+                                                                   bconv, tconv)
 
-        ransFtvfh.plot_uxfpd_identity(params.getForProp('prop')['laxis'], \
-                                      params.getForEqs('ftvfh')['xbl'], \
-                                      params.getForEqs('ftvfh')['xbr'], \
-                                      params.getForEqs('ftvfh')['ybu'], \
-                                      params.getForEqs('ftvfh')['ybd'], \
-                                      params.getForEqs('ftvfh')['ilg'])
+        ransFtvfhY.plot_ftvfhY_equation(params.getForProp('prop')['laxis'],
+                                        params.getForEqs('ftvfh_y')['xbl'],
+                                        params.getForEqs('ftvfh_y')['xbr'],
+                                        params.getForEqs('ftvfh_y')['ybu'],
+                                        params.getForEqs('ftvfh_y')['ybd'],
+                                        params.getForEqs('ftvfh_y')['ilg'])
 
-        ransFtvfh.plot_uyfpd_identity(params.getForProp('prop')['laxis'], \
-                                      params.getForEqs('ftvfh')['xbl'], \
-                                      params.getForEqs('ftvfh')['xbr'], \
-                                      params.getForEqs('ftvfh')['ybu'], \
-                                      params.getForEqs('ftvfh')['ybd'], \
-                                      params.getForEqs('ftvfh')['ilg'])
+    def execFtvfhZ(self, bconv, tconv):
+        params = self.params
 
-        ransFtvfh.plot_uzfpd_identity(params.getForProp('prop')['laxis'], \
-                                      params.getForEqs('ftvfh')['xbl'], \
-                                      params.getForEqs('ftvfh')['xbr'], \
-                                      params.getForEqs('ftvfh')['ybu'], \
-                                      params.getForEqs('ftvfh')['ybd'], \
-                                      params.getForEqs('ftvfh')['ilg'])
+        # instantiate
+        ransFtvfhZ = ftvfhZ.FullTurbulenceVelocityFieldHypothesisZ(params.getForProp('prop')['eht_data'],
+                                                                   params.getForProp('prop')['ig'],
+                                                                   params.getForProp('prop')['fext'],
+                                                                   params.getForProp('prop')['ieos'],
+                                                                   params.getForProp('prop')['intc'],
+                                                                   params.getForProp('prop')['prefix'],
+                                                                   bconv, tconv)
 
-        ransFtvfh.plot_divu(params.getForProp('prop')['laxis'], \
-                            params.getForEqs('ftvfh')['xbl'], \
-                            params.getForEqs('ftvfh')['xbr'], \
-                            params.getForEqs('ftvfh')['ybu'], \
-                            params.getForEqs('ftvfh')['ybd'], \
-                            params.getForEqs('ftvfh')['ilg'])
+        ransFtvfhZ.plot_ftvfhZ_equation(params.getForProp('prop')['laxis'],
+                                        params.getForEqs('ftvfh_z')['xbl'],
+                                        params.getForEqs('ftvfh_z')['xbr'],
+                                        params.getForEqs('ftvfh_z')['ybu'],
+                                        params.getForEqs('ftvfh_z')['ybd'],
+                                        params.getForEqs('ftvfh_z')['ilg'])
+
+    def execUxfpd(self, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransUxfpd = uxfpd.UxfpdIdentity(params.getForProp('prop')['eht_data'],
+                                        params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
+                                        params.getForProp('prop')['ieos'],
+                                        params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['prefix'],
+                                        bconv, tconv)
+
+        ransUxfpd.plot_uxfpd_identity(params.getForProp('prop')['laxis'],
+                                      params.getForEqs('uxfpd')['xbl'],
+                                      params.getForEqs('uxfpd')['xbr'],
+                                      params.getForEqs('uxfpd')['ybu'],
+                                      params.getForEqs('uxfpd')['ybd'],
+                                      params.getForEqs('uxfpd')['ilg'])
+
+    def execUyfpd(self, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransUyfpd = uyfpd.UyfpdIdentity(params.getForProp('prop')['eht_data'],
+                                        params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
+                                        params.getForProp('prop')['ieos'],
+                                        params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['prefix'],
+                                        bconv, tconv)
+
+        ransUyfpd.plot_uyfpd_identity(params.getForProp('prop')['laxis'],
+                                      params.getForEqs('uyfpd')['xbl'],
+                                      params.getForEqs('uyfpd')['xbr'],
+                                      params.getForEqs('uyfpd')['ybu'],
+                                      params.getForEqs('uyfpd')['ybd'],
+                                      params.getForEqs('uyfpd')['ilg'])
+
+    def execUzfpd(self, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransUzfpd = uzfpd.UzfpdIdentity(params.getForProp('prop')['eht_data'],
+                                        params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
+                                        params.getForProp('prop')['ieos'],
+                                        params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['prefix'],
+                                        bconv, tconv)
+
+        ransUzfpd.plot_uzfpd_identity(params.getForProp('prop')['laxis'],
+                                      params.getForEqs('uzfpd')['xbl'],
+                                      params.getForEqs('uzfpd')['xbr'],
+                                      params.getForEqs('uzfpd')['ybu'],
+                                      params.getForEqs('uzfpd')['ybd'],
+                                      params.getForEqs('uzfpd')['ilg'])
+
+    def execDivu(self, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransDivu = divu.DivuDilatation(params.getForProp('prop')['eht_data'],
+                                        params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
+                                        params.getForProp('prop')['ieos'],
+                                        params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['prefix'],
+                                        bconv, tconv)
+
+        ransDivu.plot_divu(params.getForProp('prop')['laxis'],
+                            params.getForEqs('divu')['xbl'],
+                            params.getForEqs('divu')['xbr'],
+                            params.getForEqs('divu')['ybu'],
+                            params.getForEqs('divu')['ybd'],
+                            params.getForEqs('divu')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

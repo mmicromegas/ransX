@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import UTILS.PROMPI.PROMPI_data as pd
 import UTILS.Calculus as calc
 import UTILS.SetAxisLimit as al
+import UTILS.Tools as uT
+import UTILS.Errors as eR
 
 
 class SpectrumUzVarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
@@ -159,7 +161,7 @@ class SpectrumUzVarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('uz "energy" spectrum')
+        plt.title('uz energy spectrum')
 
         for i in range(len(grd)):
             plt.plot(grd[i], spect_uzvar_mean_res[i],

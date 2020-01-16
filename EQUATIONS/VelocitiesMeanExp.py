@@ -77,7 +77,7 @@ class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.title('velocities')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_r$')
         plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_r$')
-        plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
+        #plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
         # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 
         if (self.ig == 1):

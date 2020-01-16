@@ -98,7 +98,7 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.semilogy(grd1, plt2, color='r', label=r"$T$")
         plt.semilogy(grd1, plt3, color='g', label=r"$P$")
         plt.semilogy(grd1, plt8, color='purple', label=r"$M_s$ (Mach)")
-        plt.semilogy(grd1, plt4, color='b', label=r"$M_s^2 = u_r^2/c_s^2$")
+        #plt.semilogy(grd1, plt4, color='b', label=r"$M_s^2 = u_r^2/c_s^2$")
         # plt.semilogy(grd1,plt5,color='m',label = r"$S$")
         # plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
         # plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")
@@ -112,7 +112,7 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
             sys.exit()
 
         # define y LABEL
-        setylabel = r"$q'_{rms}/ \overline{q}$"
+        setylabel = r"$q'_{rms} \ / \ \overline{q}$"
 
         # show x/y LABELS
         plt.xlabel(setxlabel)

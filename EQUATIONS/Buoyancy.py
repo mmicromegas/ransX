@@ -87,7 +87,7 @@ class Buoyancy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
             print("ERROR(Buoyancy.py): " + eR.Errors.errorGeometry())
 
         # define y LABEL
-        setylabel = r"$b (s^{-2}$ cm)"
+        setylabel = r"$b$ (s$^{-2}$ cm)"
 
         # show x/y LABELS
         plt.xlabel(setxlabel)

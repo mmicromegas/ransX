@@ -359,8 +359,26 @@ def main():
                           prp['xzn0outc'])
 
     # FULL TURBULENT VELOCITY FIELD HYPOTHESIS
-    if str2bool(params.getForEqs('ftvfh')['plotMee']):
-        plt.execFtvfh(prp['xzn0inc'], prp['xzn0outc'])
+    if str2bool(params.getForEqs('ftvfh_x')['plotMee']):
+        plt.execFtvfhX(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('ftvfh_y')['plotMee']):
+        plt.execFtvfhY(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('ftvfh_z')['plotMee']):
+        plt.execFtvfhZ(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('uxfpd')['plotMee']):
+        plt.execUxfpd(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('uyfpd')['plotMee']):
+        plt.execUyfpd(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('uzfpd')['plotMee']):
+        plt.execUzfpd(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('divu')['plotMee']):
+        plt.execDivu(prp['xzn0inc'], prp['xzn0outc'])
 
     # load network
     network = params.getNetwork()

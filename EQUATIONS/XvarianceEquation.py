@@ -97,7 +97,7 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         ##########################
         # END Xi VARIANCE EQUATION 		
-        ##########################		
+        ##########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -196,15 +196,16 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, rhs3, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        modelconst = 0.25
         # plot DATA 
-        plt.title('Xvariance equation for ' + self.element)
+        plt.title(r'Xvariance equation for ' + self.element + ' C$_m$ = '+ str(modelconst))
         if (self.ig == 1):
             plt.plot(grd1, lhs0, color='cyan', label=r'$-\partial_t (\overline{\rho} \sigma)$')
             plt.plot(grd1, lhs1, color='purple', label=r'$-\nabla_x (\overline{\rho} \widetilde{u}_x \sigma)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^\sigma$')
             plt.plot(grd1, rhs1, color='g', label=r'$-2 f_i \partial_x \widetilde{X}$')
             plt.plot(grd1, rhs2, color='r', label=r'$+2 \overline{\rho X'' \dot{X}}$')
-            plt.plot(grd1, rhs3, color='k', linewidth=0.8, label=r'$- \overline{\rho} \sigma / \tau_L$')
+            plt.plot(grd1, modelconst*rhs3, color='k', linewidth=0.8, label=r'$- C_m \ \overline{\rho} \sigma / \tau_L$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
         elif (self.ig == 2):
             plt.plot(grd1, lhs0, color='cyan', label=r'$-\partial_t (\overline{\rho} \sigma)$')
@@ -212,7 +213,7 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^\sigma$')
             plt.plot(grd1, rhs1, color='g', label=r'$-2 f_i \partial_r \widetilde{X}$')
             plt.plot(grd1, rhs2, color='r', label=r'$+2 \overline{\rho X'' \dot{X}}$')
-            plt.plot(grd1, rhs3, color='k', linewidth=0.8, label=r'$- \overline{\rho} \sigma / \tau_L$')
+            plt.plot(grd1, modelconst*rhs3, color='k', linewidth=0.8, label=r'$- C \overline{\rho} \sigma / \tau_L$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")

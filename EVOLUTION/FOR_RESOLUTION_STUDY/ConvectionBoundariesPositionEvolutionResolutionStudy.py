@@ -103,10 +103,10 @@ class ConvectionBoundariesPositionEvolutionResolutionStudy(uCalc.Calculus, uEal.
         # plot DATA 
         plt.title('cnvz bndry evolution')
 
-        for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
-                                            + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
-                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
+        #for i in range(len(grd)):
+        #    plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
+        #                                    + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
+        #                                    + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
 
         for i in range(len(grd)):
             plt.plot(grd[i], plt2[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
