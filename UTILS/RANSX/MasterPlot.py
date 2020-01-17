@@ -117,12 +117,12 @@ class MasterPlot():
                           params.getForEqs('rho')['ybd'],
                           params.getForEqs('rho')['ilg'])
 
-        ransCONT.plot_mm_vs_MM(params.getForProp('prop')['laxis'],
-                               params.getForEqs('rho')['xbl'],
-                               params.getForEqs('rho')['xbr'],
-                               params.getForEqs('rho')['ybu'],
-                               params.getForEqs('rho')['ybd'],
-                               params.getForEqs('rho')['ilg'])
+        # ransCONT.plot_mm_vs_MM(params.getForProp('prop')['laxis'],
+        #                       params.getForEqs('rho')['xbl'],
+        #                       params.getForEqs('rho')['xbr'],
+        #                       params.getForEqs('rho')['ybu'],
+        #                       params.getForEqs('rho')['ybd'],
+        #                       params.getForEqs('rho')['ilg'])
 
     def execContEq(self):
         params = self.params
@@ -1236,12 +1236,12 @@ class MasterPlot():
                            params.getForEqs('enuc')['ybd'], \
                            params.getForEqs('enuc')['ilg'])
 
-        ransEnuc.plot_enuc_per_volume(params.getForProp('prop')['laxis'], \
-                                      params.getForEqs('enuc')['xbl'], \
-                                      params.getForEqs('enuc')['xbr'], \
-                                      params.getForEqs('enuc')['ybu'], \
-                                      params.getForEqs('enuc')['ybd'], \
-                                      params.getForEqs('enuc')['ilg'])
+        # ransEnuc.plot_enuc_per_volume(params.getForProp('prop')['laxis'], \
+        #                              params.getForEqs('enuc')['xbl'], \
+        #                              params.getForEqs('enuc')['xbr'], \
+        #                              params.getForEqs('enuc')['ybu'], \
+        #                              params.getForEqs('enuc')['ybd'], \
+        #                              params.getForEqs('enuc')['ilg'])
 
     def execGrav(self):
         params = self.params
