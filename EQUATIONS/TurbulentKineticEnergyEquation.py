@@ -146,8 +146,9 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
+        cmodel = 0.5
         # plot DATA 
-        plt.title('turbulent kinetic energy equation')
+        plt.title(r'TKE equation C$_m$ = ' + str(cmodel))
         if (self.ig == 1):
             plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
             plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
@@ -156,7 +157,7 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")
-            plt.plot(grd1, rhs5, color='k', linewidth=0.7, label=r"$-\overline{\rho} u^{'3}_{rms}/l_c$")
+            plt.plot(grd1, cmodel*rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
         elif (self.ig == 2):
             plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')

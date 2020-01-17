@@ -21,16 +21,17 @@ class ReadParamsRansX:
 
         match = [s for s in self.iinput if param in s]  # choose only lists identified by param
         eht_data = match[0].split(",")[2]
-        prefix = match[1].split(",")[2]
-        ig = int(match[2].split(",")[2])
-        ieos = int(match[3].split(",")[2])
-        intc = int(match[4].split(",")[2])
-        laxis = int(match[5].split(",")[2])
-        fext = match[6].split(",")[2]
-        xbl = float(match[7].split(",")[2])
-        xbr = float(match[8].split(",")[2])
+        plabel = match[1].split(",")[2]
+        prefix = match[2].split(",")[2]
+        ig = int(match[3].split(",")[2])
+        ieos = int(match[4].split(",")[2])
+        intc = int(match[5].split(",")[2])
+        laxis = int(match[6].split(",")[2])
+        fext = match[7].split(",")[2]
+        xbl = float(match[8].split(",")[2])
+        xbr = float(match[9].split(",")[2])
 
-        return {'eht_data': eht_data, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'intc': intc, 'laxis': laxis,
+        return {'eht_data': eht_data, 'plabel': plabel, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'intc': intc, 'laxis': laxis,
                 'fext': fext, 'xbl': xbl, 'xbr': xbr}
 
     def getForEqs(self, param):

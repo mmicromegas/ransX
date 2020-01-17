@@ -15,5 +15,11 @@ class Errors:
     def errorAveragedSnapshots(self):
         return " Zero time-averaged snapshots. Adjust your trange and averaging window. EXITING ..."
 
-    def errorOutputFileExtension(self,fext):
+    def errorOutputFileExtension(self, fext):
         return " Chosen Output File Extension is " + str(fext) + ". Only png and eps are supported for now. EXITING ..."
+
+    def errorProject(self, plabel):
+        return " Project Label Not Recognized. Only oburn and ccp Are Supported For Now. EXITING ..."
+
+    def errorProjectSpecific(self):
+        return " Project Specific Properties Not Set Yet. EXITING ..."

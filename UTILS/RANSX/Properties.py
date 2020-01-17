@@ -17,7 +17,7 @@ import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
 
 class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, laxis, xbl, xbr):
+    def __init__(self, filename, plabel, ig, ieos, intc, laxis, xbl, xbr):
         super(Properties, self).__init__(ig)
 
         # load data to structured array
@@ -116,6 +116,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         self.gamma1 = gamma1
 
         self.filename = filename
+        self.plabel = plabel
         self.tavg = tavg
         self.timec = timec
         self.trange = trange
@@ -129,7 +130,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         # check supported geometries
         if self.ig != 1 and self.ig != 2:
-            print("ERROR(Properties.py):" + self.errorGeometry(self.ig))
+            print("ERROR(Properties.py): " + self.errorGeometry(self.ig))
             sys.exit()
 
         ##############
@@ -285,20 +286,27 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             tauL = 9999999999.
             # sys.exit()
 
-        # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm)
-        indCCP = np.where((xzn0 < 6.66e8))[0]
-        x0002mean_cnvz = np.mean(self.x0002[indCCP])
+        if self.plabel == "ccp":
+            # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm)
+            indCCP = np.where((xzn0 < 6.66e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
 
-        indRES = np.where((xzn0 < 8.0e8) & (xzn0 > 4.5e8))[0]
-        # residual from continuity equation
-        resCont = np.abs(self.minus_resContEquation)
-        resContMax = np.max(resCont[indRES])
-        resContMean = np.mean(resCont[indRES])
+            indRES = np.where((xzn0 < 8.0e8) & (xzn0 > 4.5e8))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
 
-        # residual from total energy equation
-        resTee = np.abs(self.minus_resTeEquation)
-        resTeeMax = np.max(resTee[indRES])
-        resTeeMean = np.mean(resTee[indRES])
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
+        elif self.plabel == "oburn":
+            print("ERROR(Properties.py): " + self.errorProjectSpecific())
+            sys.exit()
+        else:
+            print("ERROR(Properties.py): " + self.errorProject(self.plabel))
+            sys.exit()
 
         ig = self.ig
 
