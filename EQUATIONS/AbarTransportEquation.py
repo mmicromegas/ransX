@@ -68,7 +68,7 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         self.minus_resAbarEquation = -(self.minus_dt_eht_dd_abar + self.minus_div_eht_dd_fht_ux_abar + \
                                        self.minus_div_fabar + self.minus_ddabarsq_sum_xdn_o_an)
 
-        #############################	
+        #############################
         # END ABAR TRANSPORT EQUATION
         #############################
 
