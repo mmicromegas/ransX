@@ -299,9 +299,17 @@ class PROMPI_bindata:
             self.datadict.update({dat: self.data})
 
             self.datadict.update({'xzn0': xzn0})
+            self.datadict.update({'yzn0': yzn0})
+            self.datadict.update({'zzn0': zzn0})
             self.datadict.update({'qqx': self.qqx})
             self.datadict.update({'qqy': self.qqy})
             self.datadict.update({'qqz': self.qqz})
+            self.datadict.update({'time': self.time})
+
+            self.xzn0 = xzn0
+            self.yzn0 = yzn0
+            self.zzn0 = zzn0
+
 
     def datadict(self):
         return self.datadict
@@ -315,7 +323,7 @@ class PROMPI_bindata:
         return self.data
 
     def grid(self):
-        return {'nx': self.qqx, 'ny': self.qqy, 'nz': self.qqz}
+        return {'nx': self.qqx, 'ny': self.qqy, 'nz': self.qqz, 'xzn0': self.xzn0, 'yzn0': self.yzn0, 'zzn0': self.zzn0}
 
 #        OBSOLETE CODE		
 
