@@ -113,7 +113,7 @@ class ConvectiveRMSvelocityEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITe
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 12})
 
         # display PLOT
         plt.show(block=False)

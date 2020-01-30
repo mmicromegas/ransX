@@ -330,7 +330,7 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 12},ncol=2)
 
         # display PLOT
         plt.show(block=False)

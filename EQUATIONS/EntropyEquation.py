@@ -67,7 +67,8 @@ class EntropyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
         self.plus_eht_dd_enuc_T = ddenuc1_o_tt + ddenuc2_o_tt
 
         # RHS approx. +diss tke / T
-        self.plus_disstke_T_approx = tke_diss / tt
+        #self.plus_disstke_T_approx = tke_diss / tt
+        self.plus_disstke_T_approx = np.zeros(nx)
 
         # -res		
         self.minus_resSequation = -(self.minus_dt_eht_dd_fht_ss + self.minus_div_eht_dd_fht_ux_fht_ss + \
@@ -154,7 +155,7 @@ class EntropyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_s $")
         plt.plot(grd1, rhs1, color='c', label=r"$-\overline{\nabla_r f_T /T}$ (not incl.)")
         plt.plot(grd1, rhs2, color='b', label=r"$+\overline{\rho\epsilon_{nuc}/T}$")
-        plt.plot(grd1, rhs3, color='m', label=r"$+\varepsilon_k/T$")
+        plt.plot(grd1, rhs3, color='m', label=r"$+\overline{\varepsilon_k/T}$ set to 0")
 
         plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_s$")
 
@@ -165,7 +166,7 @@ class EntropyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

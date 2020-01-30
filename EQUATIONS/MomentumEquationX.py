@@ -6,6 +6,7 @@ import UTILS.SetAxisLimit as al
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
@@ -21,28 +22,28 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         eht = np.load(filename)
 
         # load grid
-        nx = self.getRAdata(eht,'nx')
-        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht, 'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        gg = self.getRAdata(eht,'gg')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
 
-        ddgg = self.getRAdata(eht,'ddgg')[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
+        ddgg = self.getRAdata(eht, 'ddgg')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddux = self.getRAdata(eht,'ddux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddux = self.getRAdata(eht, 'ddux')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -73,12 +74,12 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # -res
         self.minus_resResXmomentumEquation = \
-            -(self.minus_dt_ddux + self.minus_div_eht_dd_fht_ux_fht_ux + self.minus_div_rxx \
+            -(self.minus_dt_ddux + self.minus_div_eht_dd_fht_ux_fht_ux + self.minus_div_rxx
               + self.minus_G + self.minus_gradx_pp_eht_dd_eht_gg)
 
         #########################
         # END X MOMENTUM EQUATION 
-        #########################	
+        #########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -164,13 +165,13 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # plot DATA 
         plt.title('x momentum equation')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
             plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_x ) $")
             plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_x (\widetilde{R}_{xx})$")
             plt.plot(grd1, rhs2, color='r', label=r"$-(\partial_x \overline{P} - \bar{\rho}\tilde{g}_x)$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
             plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_r ) $")
             plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_r (\widetilde{R}_{rr})$")

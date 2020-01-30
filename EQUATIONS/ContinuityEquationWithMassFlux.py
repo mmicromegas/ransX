@@ -184,7 +184,7 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 12},ncol=2)
 
         # display PLOT
         plt.show(block=False)

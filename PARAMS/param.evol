@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) and OBURN ---------- #
 []
-## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ccptwo_256cubed_5secs_cosma.npy]
-## Dataout File ............................................ ## [prop,dataout,DATA/TEVOL/tseries_ccptwo_256cubed_5secs_cosma_evol.npy]
+## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ccptwo_256cubed_simon_60secs.npy]
+## Dataout File ............................................ ## [prop,dataout,DATA/TEVOL/tseries_ccptwo_256cubed_simon_60secs_evol.npy]
 ## Project Label (oburn, ccp: for now only) ................ ## [prop,plabel,ccp]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo64_liger_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]

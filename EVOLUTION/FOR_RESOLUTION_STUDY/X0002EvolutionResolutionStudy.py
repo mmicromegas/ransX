@@ -104,6 +104,10 @@ class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, obje
                                             + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
                                             + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
 
+        #for i in range(len(grd)):
+        #    plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]))
+
+
         # plt.plot(grd1,plt2,color='g',label = r'$epsD$')
 
         # define and show x/y LABELS
@@ -113,7 +117,7 @@ class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, obje
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 14})
+        plt.legend(loc=ilg, prop={'size': 12})
 
         # display PLOT
         plt.show(block=False)

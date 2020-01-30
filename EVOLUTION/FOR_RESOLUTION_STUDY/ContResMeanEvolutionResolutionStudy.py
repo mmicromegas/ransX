@@ -111,7 +111,7 @@ class ContResMeanEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.To
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10})
 
         # display PLOT
         plt.show(block=False)
