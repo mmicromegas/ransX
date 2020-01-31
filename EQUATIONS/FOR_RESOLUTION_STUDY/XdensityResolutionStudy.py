@@ -115,7 +115,8 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_X.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_' + self.element + '.png')
+
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot fractional density in the model"""
