@@ -20,6 +20,7 @@ def main():
 
     # get list with data source files and central time index
     filename = params.getForProp('prop')['eht_data']
+    plabel = params.getForProp('prop')['plabel']
     intc = params.getForProp('prop')['intc']
 
     # get input properties
@@ -31,7 +32,7 @@ def main():
 
     # get and display simulation properties that you do resolution study of
     for filee in filename:
-        ransP = pRop.Properties(filee, ig, ieos, intc, laxis, xbl, xbr)
+        ransP = pRop.Properties(filee, plabel, ig, ieos, intc, laxis, xbl, xbr)
         ransP.properties()
 
     # instantiate master plot
