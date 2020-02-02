@@ -199,7 +199,7 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_h$")
 
             # define X label
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
         elif (self.ig == 2):
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{h})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{h}$)")
@@ -214,7 +214,7 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_h$")
 
             # define X label
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
         else:
             print(
                 "ERROR (EnthalpyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")

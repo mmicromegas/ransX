@@ -1,11 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,35 +13,31 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class MomentumEquationZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class MomentumEquationZ(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, data_prefix):
         super(MomentumEquationZ, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
-        dduzuycoty = self.getRAdata(eht,'dduzuycoty')[intc]
+        dduxuz = self.getRAdata(eht, 'dduxuz')[intc]
+        dduzuycoty = self.getRAdata(eht, 'dduzuycoty')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_dduz = self.getRAdata(eht,'dduz')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dduz = self.getRAdata(eht, 'dduz')
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
@@ -66,20 +62,26 @@ class MomentumEquationZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # -res
         self.minus_resResZmomentumEquation = \
-            -(self.minus_dt_dduz + self.minus_div_eht_dd_fht_ux_fht_uz + self.minus_div_rzx \
+            -(self.minus_dt_dduz + self.minus_div_eht_dd_fht_ux_fht_uz + self.minus_div_rzx
               + self.minus_G)
 
         #########################
         # END Z MOMENTUM EQUATION 
-        #########################		
+        #########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.dduz = dduz
+        self.fext = fext
 
     def plot_momentum_z(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot dduz stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(MomentumEquationZ.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -99,14 +101,22 @@ class MomentumEquationZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # plot DATA 
         plt.title('dduz')
-        plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_z$')
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_z$')
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_\phi$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{\rho} \widetilde{u}_z$ (g cm$^{-2}$ s$^{-1}$)"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\overline{\rho} \widetilde{u}_z$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\overline{\rho} \widetilde{u}_\phi$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -115,10 +125,18 @@ class MomentumEquationZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduz.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduz.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduz.eps')
 
     def plot_momentum_equation_z(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum z equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(MomentumEquationZ.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -143,28 +161,29 @@ class MomentumEquationZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # plot DATA 
         plt.title('z momentum equation')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_z ) $")
             plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_z ) $")
             plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_x (\widetilde{R}_{zx})$")
             # plt.plot(grd1,rhs1,color='g',label=r"$-\overline{G^{M}_\phi}$")
             plt.plot(grd1, lhs0 + lhs1 + rhs0, color='k', linestyle='--', label='res')
-            setxlabel = r"x (cm)"
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_\phi ) $")
             plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{u}_\phi ) $")
             plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_r (\widetilde{R}_{\phi r})$")
             plt.plot(grd1, rhs1, color='g', label=r"$-\overline{G^{M}_\phi}$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-            setxlabel = r"r (cm)"
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # define and show x/y LABELS
         setylabel = r"g cm$^{-2}$  s$^{-2}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 12})
@@ -173,4 +192,7 @@ class MomentumEquationZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'momentum_z_eq.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_z_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_z_eq.eps')

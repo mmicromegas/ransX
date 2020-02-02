@@ -311,10 +311,10 @@ class FullTurbulenceVelocityFieldHypothesisZ(calc.Calculus, al.SetAxisLimit, uT.
 
         # define and show x/y LABELS
         if self.ig == 1:
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
             plt.xlabel(setxlabel)
         elif self.ig == 2:
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
             plt.xlabel(setxlabel)
 
         setylabel = r"cm s$^{-2}$"

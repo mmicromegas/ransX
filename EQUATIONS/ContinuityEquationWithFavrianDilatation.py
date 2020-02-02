@@ -26,6 +26,8 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
+        yzn0 = self.getRAdata(eht, 'yzn0')
+        zzn0 = self.getRAdata(eht, 'zzn0')
         nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
@@ -69,6 +71,8 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
+        self.yzn0 = yzn0
+        self.zzn0 = zzn0
         self.dd = dd
         self.nx = nx
         self.ig = ig
@@ -107,10 +111,10 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # define and show x/y LABELS
         if self.ig == 1:
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
             plt.xlabel(setxlabel)
         elif self.ig == 2:
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
             plt.xlabel(setxlabel)
 
         setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
@@ -177,10 +181,10 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # define and show x/y LABELS
         if self.ig == 1:
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
             plt.xlabel(setxlabel)
         elif self.ig == 2:
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
             plt.xlabel(setxlabel)
 
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
@@ -206,6 +210,11 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
     def plot_continuity_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of continuity equation in the model"""
 
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         term1 = self.minus_dt_dd
         term2 = self.minus_fht_ux_grad_dd
         term3 = self.minus_dd_div_fht_ux
@@ -225,7 +234,12 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         rc = self.xzn0[idxl:idxr]
 
-        Sr = 4. * np.pi * rc ** 2
+        # handle geometry
+        Sr = 0.
+        if self.ig == 1:
+            Sr = (self.yzn0[-1] - self.yzn0[0]) * (self.zzn0[-1] - self.zzn0[0])
+        elif self.ig == 2:
+            Sr = 4. * np.pi * rc ** 2
 
         int_term1 = integrate.simps(term1_sel * Sr, rc)
         int_term2 = integrate.simps(term2_sel * Sr, rc)
@@ -270,15 +284,20 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
-        group_labels = [r"$-\overline{\rho} \nabla_r \widetilde{u}_r$", r"$-\partial_t \overline{\rho}$",
-                        r"$-\widetilde{u}_r \partial_r \overline{\rho}$", 'res']
+        if self.ig == 1:
+            group_labels = [r"$-\overline{\rho} \widetilde{d}$", r"$-\partial_t \overline{\rho}$",
+                            r"$-\widetilde{u}_x \partial_x \overline{\rho}$", 'res']
 
-        # Set the x tick labels to the group_labels defined above.
-        ax.set_xticklabels(group_labels, fontsize=16)
+            # Set the x tick labels to the group_labels defined above.
+            ax.set_xticklabels(group_labels, fontsize=16)
+        elif self.ig == 2:
+            group_labels = [r"$-\overline{\rho} \nabla_r \widetilde{u}_r$", r"$-\partial_t \overline{\rho}$",
+                            r"$-\widetilde{u}_r \partial_r \overline{\rho}$", 'res']
 
-        # Extremely nice function to auto-rotate the x axis labels.
-        # It was made for dates (hence the name) but it works
-        # for any long x tick labels
+            # Set the x tick labels to the group_labels defined above.
+            ax.set_xticklabels(group_labels, fontsize=16)
+
+        # auto-rotate the x axis labels
         fig.autofmt_xdate()
 
         # display PLOT
@@ -322,7 +341,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         plt.plot(grd1, MM, color='r', label=r'$+\overline{M}$')
         plt.plot(grd1, mm_lnV, color='b', linestyle='--', label=r'$+\overline{m} \ ln \ V$')
 
-        setxlabel = r'r (10$^{8}$ cm)'
+        setxlabel = r'r (cm)'
         setylabel = r"grams"
 
         plt.xlabel(setxlabel)

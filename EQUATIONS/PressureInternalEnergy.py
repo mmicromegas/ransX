@@ -47,9 +47,9 @@ class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         to_plt2 = np.log10(self.ei)
 
         if (self.ig == 1):
-            xlabel_1 = r'x (10$^{8}$ cm)'
+            xlabel_1 = r'x (cm)'
         elif (self.ig == 2):
-            xlabel_1 = r'r (10$^{8}$ cm)'
+            xlabel_1 = r'r (cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()

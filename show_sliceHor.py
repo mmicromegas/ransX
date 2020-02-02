@@ -130,7 +130,7 @@ for filename in bindata:
     fig = plt.figure(figsize=(14, 14))
     ax1 = fig.add_subplot(221)
 
-    fig.suptitle("Temp (UP-LEFT), VelX (UP-RIGHT), Rho(DOWN-LEFT), X2(DOWN-RIGHT) - time: " + str(time) + " s, y = " + str(lhc) + " cm")
+    fig.suptitle("Temp (UP-LEFT), VelX (UP-RIGHT), Rho(DOWN-LEFT), X2(DOWN-RIGHT) - time: " + str(time) + " s, x = " + str(lhc) + " cm")
     im1 = ax1.imshow(temp, interpolation='bilinear', cmap=cm.inferno,
                     origin='lower', extent=[yzn0[0], yzn0[ny-1], zzn0[0], zzn0[nz-1]],
                     vmax=vtmaxv, vmin=vtminv)
@@ -175,3 +175,6 @@ for filename in bindata:
 
     # save PLOT
     plt.savefig('RESULTS/'+ filename + '_ccptwo_2DcutsHor.png')
+	
+	#plt.close('all')
+	

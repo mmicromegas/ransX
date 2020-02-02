@@ -124,3 +124,5 @@ for filename in bindata:
 
     # save PLOT
     plt.savefig('RESULTS/' + filename + '_ccptwo_2DcutsVer.png')
+
+    #plt.close('all')

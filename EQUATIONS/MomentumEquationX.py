@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 
@@ -13,16 +13,15 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, data_prefix):
         super(MomentumEquationX, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
         # load grid
-        nx = self.getRAdata(eht, 'nx')
         xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
@@ -31,7 +30,6 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         dd = self.getRAdata(eht, 'dd')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
-        gg = self.getRAdata(eht, 'gg')[intc]
 
         ddgg = self.getRAdata(eht, 'ddgg')[intc]
         ddux = self.getRAdata(eht, 'ddux')[intc]
@@ -42,7 +40,6 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # store time series for time derivatives
         t_timec = self.getRAdata(eht, 'timec')
-        t_dd = self.getRAdata(eht, 'dd')
         t_ddux = self.getRAdata(eht, 'ddux')
 
         # construct equation-specific mean fields		
@@ -87,16 +84,22 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.ddux = ddux
         self.ux = ux
         self.ig = ig
+        self.fext = fext
 
     def plot_momentum_x(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot ddux stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(MomentumEquationX.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
 
         # load DATA to plot
         plt1 = self.ddux
-        plt2 = self.ux
+        # plt2 = self.ux
         # plt3 = self.vexp
 
         # create FIGURE
@@ -109,25 +112,28 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         to_plot = [plt1]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
+        # plot DATA and set labels
         plt.title('ddux')
-        plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_x$')
-        # plt.plot(grd1,plt2,color='green',label = r'$\overline{u}_x$')
-        # plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_x$')
+            # plt.plot(grd1,plt2,color='green',label = r'$\overline{u}_x$')
+            # plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_r$')
+            # plt.plot(grd1,plt2,color='green',label = r'$\overline{u}_x$')
+            # plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
             setylabel = r"$\overline{\rho} \widetilde{u}_x$ (g cm$^{-2}$ s$^{-1}$)"
-        elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
             setylabel = r"$\overline{\rho} \widetilde{u}_r$ (g cm$^{-2}$ s$^{-1}$)"
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -136,10 +142,18 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.eps')
 
     def plot_momentum_equation_x(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(MomentumEquationX.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -178,22 +192,17 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.plot(grd1, rhs1, color='g', label=r"$-\overline{G^{M}_r}$")
             plt.plot(grd1, rhs2, color='r', label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r)$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
-            # define and show x/y LABELS
-        if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
+        # define and show x/y LABELS
         setylabel = r"g cm$^{-2}$  s$^{-2}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 12})
@@ -202,4 +211,7 @@ class MomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq.eps')

@@ -35,10 +35,10 @@ def main():
     ransdat.SetMatplotlibParams()
 
     for q in q2plot:
-        ransdat.plot_lin_q1(xbl, xbr, q, r'r (10$^{8}$ cm)', q, q)
+        ransdat.plot_lin_q1(xbl, xbr, q, r'r (cm)', q, q)
 
     # for q in q2plot:
-    #    ransdat.plot_log_q1(xbl,xbr,q,r'r (10$^{8}$ cm)',q,q)
+    #    ransdat.plot_log_q1(xbl,xbr,q,r'r (cm)',q,q)
 
     # ransdat.plot_check_heq1()
     # ransdat.plot_check_heq2(xbl,xbr)
@@ -50,12 +50,12 @@ def main():
     # ransdat.PlotNucEnergyGen(xbl,xbr)
 
     # ransdat.plot_lin_q1q2(xbl,xbr,'dd','tt',\
-    #                      r'r (10$^{8}$ cm)',\
+    #                      r'r (cm)',\
     #                      r'log $\rho$ (g cm$^{-3}$)',r'log T (K)',\
     #                      r'$\rho$',r'$T$')
 
     # ransdat.plot_log_q1q2(xbl,xbr,'enuc1','ei',\
-    #                       r'r (10$^{8}$ cm)',\
+    #                       r'r (cm)',\
     #                       r'$\varepsilon_{nuc}$ (erg $s^{-1}$)',\
     #                       r'$\epsilon$ (ergs)',\
     #                       r'$\varepsilon_{nuc}$',r'$\epsilon$')

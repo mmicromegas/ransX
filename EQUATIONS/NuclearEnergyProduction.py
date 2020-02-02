@@ -65,9 +65,9 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
         # define and show x/y LABELS
         if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
         elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
@@ -113,9 +113,9 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
         # define and show x/y LABELS
         if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
         elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()

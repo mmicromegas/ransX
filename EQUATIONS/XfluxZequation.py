@@ -63,7 +63,8 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         gradzpp_o_siny = self.getRAdata(eht,'gradzpp_o_siny')[intc]
         print("ERROR(XfluxZequation.py): gradzpp missing ... ")
-        sys.exit()
+        gradzpp = np.zeros(nx)
+        # sys.exit()
         # gradzpp = self.getRAdata(eht,'gradzpp')[intc]
 
         ddxiuzuzcoty = self.getRAdata(eht,'ddx' + inuc + 'uzuzcoty')[intc]
@@ -74,7 +75,8 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         xigradxpp = self.getRAdata(eht,'x' + inuc + 'gradxpp')[intc]
         xigradypp = self.getRAdata(eht,'x' + inuc + 'gradypp')[intc]
-        xigradzpp = self.getRAdata(eht,'x' + inuc + 'gradzpp')[intc]
+        #xigradzpp = self.getRAdata(eht,'x' + inuc + 'gradzpp')[intc]
+        xigradzpp = np.zeros(nx)
         xigradzpp_o_siny = self.getRAdata(eht,'x' + inuc + 'gradzpp_o_siny')[intc]
 
         ddxidotux = self.getRAdata(eht,'ddx' + inuc + 'dotux')[intc]
@@ -219,9 +221,9 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         # define and show x/y LABELS
         if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
         elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()
@@ -307,9 +309,9 @@ class XfluxZequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         # define and show x/y LABELS
         if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
+            setxlabel = r'x (cm)'
         elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
+            setxlabel = r'r (cm)'
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
             sys.exit()

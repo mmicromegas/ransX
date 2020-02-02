@@ -2,8 +2,8 @@ import numpy as np
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 
@@ -14,9 +14,9 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, data_prefix):
         super(ContinuityEquationWithMassFlux, self).__init__(ig)
 
         # load data to structured array
@@ -24,6 +24,8 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
+        yzn0 = self.getRAdata(eht, 'yzn0')
+        zzn0 = self.getRAdata(eht, 'zzn0')
         nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
@@ -65,7 +67,7 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         self.minus_dd_div_ux = -dd * self.Div(ux, xzn0)
 
         # -res
-        self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_div_fdd + \
+        self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_div_fdd +
                                        self.plus_fdd_o_dd_gradx_dd + self.minus_dd_div_ux)
 
         ########################################
@@ -75,12 +77,20 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
+        self.yzn0 = yzn0
+        self.zzn0 = zzn0
         self.dd = dd
         self.nx = nx
         self.ig = ig
+        self.fext = fext
 
     def plot_rho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithMassFlux.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -103,17 +113,14 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho}$')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            plt.xlabel(setxlabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            plt.xlabel(setxlabel)
 
         setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
-
-        plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 
         # show LEGEND
@@ -123,10 +130,18 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
+        elif self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
 
     def plot_continuity_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithMassFlux.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -152,52 +167,51 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
 
         # plot DATA 
         plt.title('continuity equation with mass flux')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
             plt.plot(grd1, lhs1, color='r', label=r'$-\widetilde{u}_x \partial_x (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='c', label=r"$-\nabla_x f_\rho$")
             plt.plot(grd1, rhs1, color='m', label=r"$+f_\rho / \overline{\rho} \partial_x \overline{\rho}$")
             plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \nabla_x (\overline{u}_x)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
             plt.plot(grd1, lhs1, color='r', label=r'$-\widetilde{u}_r \partial_r (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='c', label=r"$-\nabla_r f_\rho$")
             plt.plot(grd1, rhs1, color='m', label=r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
             plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # define and show x/y LABELS
-        if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            plt.xlabel(setxlabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            plt.xlabel(setxlabel)
 
         setylabel = r"g cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12},ncol=2)
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq.eps')
 
     def plot_continuity_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of continuity equation in the model"""
 
-        # load x GRID
-        grd1 = self.xzn0
-        nx = self.nx
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithMassFlux.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         term1 = self.minus_dt_dd
         term2 = self.minus_fht_ux_grad_dd
@@ -222,7 +236,12 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
 
         rc = self.xzn0[idxl:idxr]
 
-        Sr = 4. * np.pi * rc ** 2
+        # handle geometry
+        Sr = 0.
+        if self.ig == 1:
+            Sr = (self.yzn0[-1] - self.yzn0[0]) * (self.zzn0[-1] - self.zzn0[0])
+        elif self.ig == 2:
+            Sr = 4. * np.pi * rc ** 2
 
         int_term1 = integrate.simps(term1_sel * Sr, rc)
         int_term2 = integrate.simps(term2_sel * Sr, rc)
@@ -269,66 +288,29 @@ class ContinuityEquationWithMassFlux(calc.Calculus, al.SetAxisLimit, uT.Tools, e
 
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
-        group_labels = [r'$-\partial_t (\overline{\rho})$', r'$-\widetilde{u}_r \partial_r (\overline{\rho})$', \
-                        r"$-\nabla_r f_\rho$", r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$", \
-                        r'$-\overline{\rho} \nabla_r (\overline{u}_r)$', 'res']
+        if self.ig == 1:
+            group_labels = [r'$-\partial_t (\overline{\rho})$', r'$-\widetilde{u}_x \partial_x (\overline{\rho})$',
+                            r"$-\nabla_x f_\rho$", r"$+f_\rho / \overline{\rho} \partial_x \overline{\rho}$",
+                            r'$-\overline{\rho} \nabla_x (\overline{u}_x)$', 'res']
 
-        # Set the x tick labels to the group_labels defined above.
-        ax.set_xticklabels(group_labels, fontsize=16)
+            # Set the x tick labels to the group_labels defined above.
+            ax.set_xticklabels(group_labels, fontsize=16)
+        elif self.ig == 2:
+            group_labels = [r'$-\partial_t (\overline{\rho})$', r'$-\widetilde{u}_r \partial_r (\overline{\rho})$',
+                            r"$-\nabla_r f_\rho$", r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$",
+                            r'$-\overline{\rho} \nabla_r (\overline{u}_r)$', 'res']
 
-        # Extremely nice function to auto-rotate the x axis labels.
-        # It was made for dates (hence the name) but it works
-        # for any long x tick labels
+            # Set the x tick labels to the group_labels defined above.
+            ax.set_xticklabels(group_labels, fontsize=16)
+
+        # auto-rotate the x axis labels
         fig.autofmt_xdate()
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq_bar.png')
-
-    def plot_rho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
-        """Plot rho stratification in the model"""
-
-        # load x GRID
-        grd1 = self.xzn0
-
-        # load DATA to plot
-        plt1 = self.dd
-
-        # create FIGURE
-        plt.figure(figsize=(7, 6))
-
-        # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
-
-        # set plot boundaries   
-        to_plot = [plt1]
-        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
-
-        # plot DATA 
-        plt.title('density')
-        plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho}$')
-
-        # define and show x/y LABELS
-        if (self.ig == 1):
-            setxlabel = r'x (10$^{8}$ cm)'
-        elif (self.ig == 2):
-            setxlabel = r'r (10$^{8}$ cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\overline{\rho}$ (g cm$^{-3}$)"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
-
-        # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 18})
-
-        # display PLOT
-        plt.show(block=False)
-
-        # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq_bar.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq_bar.eps')

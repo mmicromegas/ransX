@@ -6,6 +6,7 @@ import UTILS.SetAxisLimit as al
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
@@ -21,47 +22,47 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        gg = self.getRAdata(eht,'gg')[intc]
-        sv = self.getRAdata(eht,'sv')[intc]
-        mm = self.getRAdata(eht,'mm')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
+        sv = self.getRAdata(eht, 'sv')[intc]
+        mm = self.getRAdata(eht, 'mm')[intc]
 
-        uxux = self.getRAdata(eht,'uxux')[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        divu = self.getRAdata(eht,'divu')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        uyuy = self.getRAdata(eht,'uyuy')[intc]
-        uzuz = self.getRAdata(eht,'uzuz')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
 
-        svdduyuy = self.getRAdata(eht,'svdduyuy')[intc]
-        svdduzuz = self.getRAdata(eht,'svdduzuz')[intc]
+        svdduyuy = self.getRAdata(eht, 'svdduyuy')[intc]
+        svdduzuz = self.getRAdata(eht, 'svdduzuz')[intc]
 
-        svdddduyuy = self.getRAdata(eht,'svdddduyuy')[intc]
-        svdddduzuz = self.getRAdata(eht,'svdddduzuz')[intc]
+        svdddduyuy = self.getRAdata(eht, 'svdddduyuy')[intc]
+        svdddduzuz = self.getRAdata(eht, 'svdddduzuz')[intc]
 
-        svgradxpp = self.getRAdata(eht,'svgradxpp')[intc]
+        svgradxpp = self.getRAdata(eht, 'svgradxpp')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ux = self.getRAdata(eht,'ux')
-        t_ddux = self.getRAdata(eht,'ddux')
-        t_mm = self.getRAdata(eht,'mm')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ux = self.getRAdata(eht, 'ux')
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_mm = self.getRAdata(eht, 'mm')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -73,7 +74,7 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         # a is turbulent mass flux
         eht_a = ux - ddux / dd
 
-        ############################## 		
+        ##############################
         # TURBULENT MASS FLUX EQUATION
         ##############################
 
@@ -135,7 +136,7 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         #  self.plus_eht_dd_eht_uxf_dff + self.minus_eht_b_gradx_pp + self.plus_eht_ddf_sv_gradx_ppf + \
         #  self.plus_Ga)
 
-        ################################## 		
+        ##################################
         # END TURBULENT MASS FLUX EQUATION
         ##################################
 
@@ -148,7 +149,7 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         self.eht_a_model3 = (gamma1 * pp * 4. * np.pi * (xzn0 ** 2.)) / (2. * mm * gg) - ux
         self.eht_a_model4 = (mm * gg * ux / (gamma1 * pp * 4. * np.pi * (xzn0 ** 2.))) - 2. * fht_ux
         self.fht_ux_model = gamma1 * pp * fht_ux * 8. * np.pi * (xzn0 ** 2.) / (
-                    ((4. / 3) * np.pi * (xzn0 ** 3.) * dd) * gg)
+                ((4. / 3) * np.pi * (xzn0 ** 3.) * dd) * gg)
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -191,8 +192,8 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         plt.plot(grd1, plt4, color='pink', label=r'$\overline{u}_r$')
         plt.plot(grd1, plt5, color='m', label=r'$\widetilde{u}_r$')
         # plt.plot(grd1,plt6,color='b',label=r'model3')
-        plt.plot(grd1, plt7, color='b', label=r'model4')
-        plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
+        #plt.plot(grd1, plt7, color='b', label=r'model4')
+        #plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
 
         # define and show x/y LABELS
         setxlabel = r"r (cm)"

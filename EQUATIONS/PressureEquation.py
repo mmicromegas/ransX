@@ -236,7 +236,7 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
         plt.plot(grd1, plt1, color='g', label=r'$+dA/dt$')
 
-        setxlabel = r'r (10$^{8}$ cm)'
+        setxlabel = r'r (cm)'
         setylabel = r'$...$'
 
         plt.xlabel(setxlabel)

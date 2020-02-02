@@ -163,33 +163,35 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'], \
-                                                             params.getForProp('prop')['ig'], \
-                                                             params.getForProp('prop')['intc'], \
+        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],
+                                                             params.getForProp('prop')['ig'],
+                                                             params.getForProp('prop')['fext'],
+                                                             params.getForProp('prop')['intc'],
                                                              params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
-        ransCONTfdd.plot_continuity_equation(params.getForProp('prop')['laxis'], \
-                                             params.getForEqs('conteqfdd')['xbl'], \
-                                             params.getForEqs('conteqfdd')['xbr'], \
-                                             params.getForEqs('conteqfdd')['ybu'], \
-                                             params.getForEqs('conteqfdd')['ybd'], \
+        ransCONTfdd.plot_continuity_equation(params.getForProp('prop')['laxis'],
+                                             params.getForEqs('conteqfdd')['xbl'],
+                                             params.getForEqs('conteqfdd')['xbr'],
+                                             params.getForEqs('conteqfdd')['ybu'],
+                                             params.getForEqs('conteqfdd')['ybd'],
                                              params.getForEqs('conteqfdd')['ilg'])
 
     def execContFddEqBar(self):
         params = self.params
 
         # instantiate 
-        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'], \
-                                                             params.getForProp('prop')['ig'], \
-                                                             params.getForProp('prop')['intc'], \
+        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],
+                                                             params.getForProp('prop')['ig'],
+                                                             params.getForProp('prop')['fext'],
+                                                             params.getForProp('prop')['intc'],
                                                              params.getForProp('prop')['prefix'])
 
         # plot continuity equation integral budget					       
-        ransCONTfdd.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'], \
-                                                             params.getForEqsBar('conteqfddBar')['xbl'], \
-                                                             params.getForEqsBar('conteqfddBar')['xbr'], \
-                                                             params.getForEqsBar('conteqfddBar')['ybu'], \
+        ransCONTfdd.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'],
+                                                             params.getForEqsBar('conteqfddBar')['xbl'],
+                                                             params.getForEqsBar('conteqfddBar')['xbr'],
+                                                             params.getForEqsBar('conteqfddBar')['ybu'],
                                                              params.getForEqsBar('conteqfddBar')['ybd'])
 
     def execHssContEq(self, bconv, tconv):
@@ -470,12 +472,12 @@ class MasterPlot():
                               params.getForEqs(x)['ybd'], \
                               params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
-                                        params.getForEqs(x)['xbl'], \
-                                        params.getForEqs(x)['xbr'], \
-                                        params.getForEqs(x)['ybu'], \
-                                        params.getForEqs(x)['ybd'], \
-                                        params.getForEqs(x)['ilg'])
+        #ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
+        #                                params.getForEqs(x)['xbl'], \
+        #                                params.getForEqs(x)['xbr'], \
+        #                                params.getForEqs(x)['ybu'], \
+        #                                params.getForEqs(x)['ybd'], \
+        #                                params.getForEqs(x)['ilg'])
 
     #        ransXflx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],\
     #                            params.getForEqs(x)['xbl'],\
@@ -693,96 +695,102 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'], \
-                                          params.getForProp('prop')['ig'], \
-                                          params.getForProp('prop')['intc'], \
+        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomx.plot_momentum_x(params.getForProp('prop')['laxis'], \
-                                 params.getForEqs('momex')['xbl'], \
-                                 params.getForEqs('momex')['xbr'], \
-                                 params.getForEqs('momex')['ybu'], \
-                                 params.getForEqs('momex')['ybd'], \
+        ransMomx.plot_momentum_x(params.getForProp('prop')['laxis'],
+                                 params.getForEqs('momex')['xbl'],
+                                 params.getForEqs('momex')['xbr'],
+                                 params.getForEqs('momex')['ybu'],
+                                 params.getForEqs('momex')['ybd'],
                                  params.getForEqs('momex')['ilg'])
 
     def execMomxEq(self):
         params = self.params
 
         # instantiate 		
-        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'], \
-                                          params.getForProp('prop')['ig'], \
-                                          params.getForProp('prop')['intc'], \
+        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'], \
-                                          params.getForEqs('momxeq')['xbl'], \
-                                          params.getForEqs('momxeq')['xbr'], \
-                                          params.getForEqs('momxeq')['ybu'], \
-                                          params.getForEqs('momxeq')['ybd'], \
+        ransMomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'],
+                                          params.getForEqs('momxeq')['xbl'],
+                                          params.getForEqs('momxeq')['xbr'],
+                                          params.getForEqs('momxeq')['ybu'],
+                                          params.getForEqs('momxeq')['ybd'],
                                           params.getForEqs('momxeq')['ilg'])
 
     def execMomy(self):
         params = self.params
 
         # instantiate 		
-        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'], \
-                                          params.getForProp('prop')['ig'], \
-                                          params.getForProp('prop')['intc'], \
+        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomy.plot_momentum_y(params.getForProp('prop')['laxis'], \
-                                 params.getForEqs('momey')['xbl'], \
-                                 params.getForEqs('momey')['xbr'], \
-                                 params.getForEqs('momey')['ybu'], \
-                                 params.getForEqs('momey')['ybd'], \
+        ransMomy.plot_momentum_y(params.getForProp('prop')['laxis'],
+                                 params.getForEqs('momey')['xbl'],
+                                 params.getForEqs('momey')['xbr'],
+                                 params.getForEqs('momey')['ybu'],
+                                 params.getForEqs('momey')['ybd'],
                                  params.getForEqs('momey')['ilg'])
 
     def execMomyEq(self):
         params = self.params
 
         # instantiate 		
-        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'], \
-                                          params.getForProp('prop')['ig'], \
-                                          params.getForProp('prop')['intc'], \
+        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomy.plot_momentum_equation_y(params.getForProp('prop')['laxis'], \
-                                          params.getForEqs('momyeq')['xbl'], \
-                                          params.getForEqs('momyeq')['xbr'], \
-                                          params.getForEqs('momyeq')['ybu'], \
-                                          params.getForEqs('momyeq')['ybd'], \
+        ransMomy.plot_momentum_equation_y(params.getForProp('prop')['laxis'],
+                                          params.getForEqs('momyeq')['xbl'],
+                                          params.getForEqs('momyeq')['xbr'],
+                                          params.getForEqs('momyeq')['ybu'],
+                                          params.getForEqs('momyeq')['ybd'],
                                           params.getForEqs('momyeq')['ilg'])
 
     def execMomz(self):
         params = self.params
 
         # instantiate 		
-        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'], \
-                                          params.getForProp('prop')['ig'], \
-                                          params.getForProp('prop')['intc'], \
+        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomz.plot_momentum_z(params.getForProp('prop')['laxis'], \
-                                 params.getForEqs('momez')['xbl'], \
-                                 params.getForEqs('momez')['xbr'], \
-                                 params.getForEqs('momez')['ybu'], \
-                                 params.getForEqs('momez')['ybd'], \
+        ransMomz.plot_momentum_z(params.getForProp('prop')['laxis'],
+                                 params.getForEqs('momez')['xbl'],
+                                 params.getForEqs('momez')['xbr'],
+                                 params.getForEqs('momez')['ybu'],
+                                 params.getForEqs('momez')['ybd'],
                                  params.getForEqs('momez')['ilg'])
 
     def execMomzEq(self):
         params = self.params
 
         # instantiate 		
-        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'], \
-                                          params.getForProp('prop')['ig'], \
-                                          params.getForProp('prop')['intc'], \
+        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomz.plot_momentum_equation_z(params.getForProp('prop')['laxis'], \
-                                          params.getForEqs('momzeq')['xbl'], \
-                                          params.getForEqs('momzeq')['xbr'], \
-                                          params.getForEqs('momzeq')['ybu'], \
-                                          params.getForEqs('momzeq')['ybd'], \
+        ransMomz.plot_momentum_equation_z(params.getForProp('prop')['laxis'],
+                                          params.getForEqs('momzeq')['xbl'],
+                                          params.getForEqs('momzeq')['xbr'],
+                                          params.getForEqs('momzeq')['ybu'],
+                                          params.getForEqs('momzeq')['ybd'],
                                           params.getForEqs('momzeq')['ilg'])
 
     def execEi(self):
