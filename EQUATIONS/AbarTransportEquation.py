@@ -1,10 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(AbarTransportEquation, self).__init__(ig)
@@ -65,7 +65,7 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         self.minus_ddabarsq_sum_xdn_o_an = np.nan_to_num(self.minus_ddabarsq_sum_xdn_o_an)
 
         # -res
-        self.minus_resAbarEquation = -(self.minus_dt_eht_dd_abar + self.minus_div_eht_dd_fht_ux_abar + \
+        self.minus_resAbarEquation = -(self.minus_dt_eht_dd_abar + self.minus_div_eht_dd_fht_ux_abar +
                                        self.minus_div_fabar + self.minus_ddabarsq_sum_xdn_o_an)
 
         #############################
@@ -79,6 +79,11 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
     def plot_abar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot abar stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(AbarTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -101,11 +106,12 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{A}$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{A}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\overline{A}$"
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\overline{A}$"
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -118,6 +124,11 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
     def plot_abar_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot abar equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(AbarTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -142,18 +153,30 @@ class AbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         # plot DATA 
         plt.title('abar equation')
-        plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{A})$')
-        plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_r (\rho \widetilde{u}_r \widetilde{A})$')
-        plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f_A$')
-        plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho A^2 \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
-
-        plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{A})$')
+            plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_x (\rho \widetilde{u}_x \widetilde{A})$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f_A$')
+            plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho A^2 \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{A})$')
+            plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_r (\rho \widetilde{u}_r \widetilde{A})$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f_A$')
+            plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho A^2 \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 12}, ncol=2)

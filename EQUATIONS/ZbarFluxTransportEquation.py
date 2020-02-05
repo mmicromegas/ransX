@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ZbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class ZbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(ZbarFluxTransportEquation, self).__init__(ig)
@@ -20,45 +22,46 @@ class ZbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        nx = self.getRAdata(eht, 'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        zbar = self.getRAdata(eht,'zbar')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        zbar = self.getRAdata(eht, 'zbar')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        ddzbar = self.getRAdata(eht,'ddzbar')[intc]
-        ddzbarux = self.getRAdata(eht,'ddzbarux')[intc]
+        ddzbar = self.getRAdata(eht, 'ddzbar')[intc]
+        ddzbarux = self.getRAdata(eht, 'ddzbarux')[intc]
 
-        ddzbaruxux = self.getRAdata(eht,'ddzbaruxux')[intc]
-        ddzbaruyuy = self.getRAdata(eht,'ddzbaruyuy')[intc]
-        ddzbaruzuz = self.getRAdata(eht,'ddzbaruzuz')[intc]
+        ddzbaruxux = self.getRAdata(eht, 'ddzbaruxux')[intc]
+        ddzbaruyuy = self.getRAdata(eht, 'ddzbaruyuy')[intc]
+        ddzbaruzuz = self.getRAdata(eht, 'ddzbaruzuz')[intc]
 
-        zbargradxpp = self.getRAdata(eht,'zbargradxpp')[intc]
+        zbargradxpp = self.getRAdata(eht, 'zbargradxpp')[intc]
 
-        ddabazbar_sum_xdn_o_an = self.getRAdata(eht,'ddabazbar_sum_xdn_o_an')[intc]
-        uxddabazbar_sum_xdn_o_an = self.getRAdata(eht,'uxddabazbar_sum_xdn_o_an')[intc]
+        ddabazbar_sum_xdn_o_an = self.getRAdata(eht, 'ddabazbar_sum_xdn_o_an')[intc]
+        uxddabazbar_sum_xdn_o_an = self.getRAdata(eht, 'uxddabazbar_sum_xdn_o_an')[intc]
 
-        ddabar_sum_znxdn_o_an = self.getRAdata(eht,'ddabar_sum_znxdn_o_an')[intc]
-        uxddabar_sum_znxdn_o_an = self.getRAdata(eht,'uxddabar_sum_znxdn_o_an')[intc]
+        ddabar_sum_znxdn_o_an = self.getRAdata(eht, 'ddabar_sum_znxdn_o_an')[intc]
+        uxddabar_sum_znxdn_o_an = self.getRAdata(eht, 'uxddabar_sum_znxdn_o_an')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddux = self.getRAdata(eht,'ddux')
-        t_ddzbar = self.getRAdata(eht,'ddzbar')
-        t_ddzbarux = self.getRAdata(eht,'ddzbarux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_ddzbar = self.getRAdata(eht, 'ddzbar')
+        t_ddzbarux = self.getRAdata(eht, 'ddzbarux')
 
         ####################
         # Zbar FLUX EQUATION 
@@ -103,22 +106,31 @@ class ZbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         self.minus_uxffddabar_sum_znxdn_o_an = np.nan_to_num(self.minus_uxffddabar_sum_znxdn_o_an)
         self.minus_uxffddabazbar_sum_xdn_o_an = np.nan_to_num(self.minus_uxffddabazbar_sum_xdn_o_an)
 
-        # RHS +gi 
-        self.plus_gzbar = \
-            -(ddzbaruyuy - (ddzbar / dd) * dduyuy - 2. * (dduy / dd) + 2. * ddzbar * dduy * dduy / (dd * dd)) / xzn0 - \
-            (ddzbaruzuz - (ddzbar / dd) * dduzuz - 2. * (dduz / dd) + 2. * ddzbar * dduz * dduz / (dd * dd)) / xzn0 + \
-            (ddzbaruyuy - (ddzbar / dd) * dduyuy) / xzn0 + \
-            (ddzbaruzuz - (ddzbar / dd) * dduzuz) / xzn0
+        if ig == 1:
+            # RHS +gi
+            self.plus_gzbar = np.zeros(nx)
+        elif ig == 2:
+            # RHS +gi
+            self.plus_gzbar = \
+                -(ddzbaruyuy - (ddzbar / dd) * dduyuy - 2. * (dduy / dd) + 2. * ddzbar * dduy * dduy / (
+                            dd * dd)) / xzn0 - \
+                (ddzbaruzuz - (ddzbar / dd) * dduzuz - 2. * (dduz / dd) + 2. * ddzbar * dduz * dduz / (
+                            dd * dd)) / xzn0 + \
+                (ddzbaruyuy - (ddzbar / dd) * dduyuy) / xzn0 + \
+                (ddzbaruzuz - (ddzbar / dd) * dduzuz) / xzn0
+        else:
+            print("ERROR(ZbarFluxTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
-        # -res				   
-        self.minus_resZbarFlux = -(self.minus_dt_fzbar + self.minus_div_fht_ux_fzbar + self.minus_div_fzbarx + \
-                                   self.minus_fzbar_gradx_fht_ux + self.minus_rxx_gradx_fht_zbar + \
-                                   self.minus_zbarff_gradx_pp_minus_zbarff_gradx_ppf + \
+        # -res
+        self.minus_resZbarFlux = -(self.minus_dt_fzbar + self.minus_div_fht_ux_fzbar + self.minus_div_fzbarx +
+                                   self.minus_fzbar_gradx_fht_ux + self.minus_rxx_gradx_fht_zbar +
+                                   self.minus_zbarff_gradx_pp_minus_zbarff_gradx_ppf +
                                    self.minus_uxffddabazbar_sum_xdn_o_an + self.minus_uxffddabar_sum_znxdn_o_an + self.plus_gzbar)
 
         ########################
         # END Zbar FLUX EQUATION 
-        ########################	
+        ########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -127,6 +139,11 @@ class ZbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
     def plot_zbarflux(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot zbarflux stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ZbarFluxTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -149,10 +166,16 @@ class ZbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         plt.plot(grd1, plt1, color='k', label=r'f')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{\rho} \widetilde{Z'' u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{Z'' u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{Z'' u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -192,30 +215,51 @@ class ZbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, rhs3, rhs4, rhs5, rhs6, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
-        plt.title('zbar flux equation')
-        plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_Z$')
-        plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_r (\widetilde{u}_r f_Z)$')
-        plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^r_Z$')
-        plt.plot(grd1, rhs1, color='g', label=r'$-f_Z \partial_r \widetilde{u}_r$')
-        plt.plot(grd1, rhs2, color='r', label=r'$-R_{rr} \partial_r \widetilde{Z}$')
-        plt.plot(grd1, rhs3, color='cyan',
-                 label=r"$-\overline{Z''} \partial_r \overline{P} - \overline{Z'' \partial_r P'}$")
-        plt.plot(grd1, rhs4, color='purple',
-                 label=r"$-\overline{u''_r \rho A Z \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
-        plt.plot(grd1, rhs5, color='m',
-                 label=r"$-\overline{u''_r \rho A \sum_\alpha Z_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
-        plt.plot(grd1, rhs6, color='yellow', label=r'$+G_Z$')
-        plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        # plot DATA
+        if self.ig == 1:
+            plt.title('zbar flux equation')
+            plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_Z$')
+            plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_x (\widetilde{u}_x f_Z)$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^x_Z$')
+            plt.plot(grd1, rhs1, color='g', label=r'$-f_Z \partial_x \widetilde{u}_x$')
+            plt.plot(grd1, rhs2, color='r', label=r'$-R_{xx} \partial_x \widetilde{Z}$')
+            plt.plot(grd1, rhs3, color='cyan',
+                     label=r"$-\overline{Z''} \partial_x \overline{P} - \overline{Z'' \partial_x P'}$")
+            plt.plot(grd1, rhs4, color='purple',
+                  label=r"$-\overline{u''_x \rho A Z \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
+            plt.plot(grd1, rhs5, color='m',
+                     label=r"$-\overline{u''_x \rho A \sum_\alpha Z_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        elif self.ig ==2 :
+            plt.title('zbar flux equation')
+            plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_Z$')
+            plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_r (\widetilde{u}_r f_Z)$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^r_Z$')
+            plt.plot(grd1, rhs1, color='g', label=r'$-f_Z \partial_r \widetilde{u}_r$')
+            plt.plot(grd1, rhs2, color='r', label=r'$-R_{rr} \partial_r \widetilde{Z}$')
+            plt.plot(grd1, rhs3, color='cyan',
+                     label=r"$-\overline{Z''} \partial_r \overline{P} - \overline{Z'' \partial_r P'}$")
+            plt.plot(grd1, rhs4, color='purple',
+                  label=r"$-\overline{u''_r \rho A Z \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
+            plt.plot(grd1, rhs5, color='m',
+                     label=r"$-\overline{u''_r \rho A \sum_\alpha Z_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
+            plt.plot(grd1, rhs6, color='yellow', label=r'$+G_Z$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"g cm$^{-2}$ s$^{-2}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

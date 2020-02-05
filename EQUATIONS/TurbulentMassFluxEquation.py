@@ -1,10 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(TurbulentMassFluxEquation, self).__init__(ig)
@@ -119,22 +119,25 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         self.minus_eht_b_gradx_pp = -eht_b * self.Grad(pp, xzn0)
 
         # RHS +eht_ddf_sv_gradx_ppf = -eht_dd*svgradxpp
-        # self.plus_eht_ddf_sv_gradx_ppf = +dd*(svgradxpp-sv*self.Grad(pp,xzn0))
-        self.plus_eht_ddf_sv_gradx_ppf = np.zeros(nx)
+        self.plus_eht_ddf_sv_gradx_ppf = +dd*(svgradxpp-sv*self.Grad(pp,xzn0))
+        # self.plus_eht_ddf_sv_gradx_ppf = np.zeros(nx)
 
         # RHS +Ga
-        self.plus_Ga = -dduyuy / xzn0 - dduzuz / xzn0 + dd * (uyuy / xzn0 + uzuz / xzn0)
+        if self.ig == 1:
+            self.plus_Ga = np.zeros(nx)
+        elif self.ig == 2:
+            self.plus_Ga = -dduyuy / xzn0 - dduzuz / xzn0 + dd * (uyuy / xzn0 + uzuz / xzn0)
 
         # RHS minus_resAequation
-        self.minus_resAequation = -(self.minus_dt_eht_dd_a + self.minus_div_eht_dd_fht_ux_eht_a + \
-                                    self.minus_ddf_uxf_uxf_o_dd_gradx_eht_dd + self.plus_rxx_o_dd_gradx_eht_dd + \
-                                    self.minus_eht_dd_div_a_a + self.plus_div_eht_ddf_uxf_uxf + self.minus_eht_dd_eht_a_div_eht_ux + \
-                                    self.plus_eht_dd_eht_uxf_dff + self.minus_eht_b_gradx_pp + self.plus_eht_ddf_sv_gradx_ppf + \
+        self.minus_resAequation = -(self.minus_dt_eht_dd_a + self.minus_div_eht_dd_fht_ux_eht_a +
+                                    self.minus_ddf_uxf_uxf_o_dd_gradx_eht_dd + self.plus_rxx_o_dd_gradx_eht_dd +
+                                    self.minus_eht_dd_div_a_a + self.plus_div_eht_ddf_uxf_uxf + self.minus_eht_dd_eht_a_div_eht_ux +
+                                    self.plus_eht_dd_eht_uxf_dff + self.minus_eht_b_gradx_pp + self.plus_eht_ddf_sv_gradx_ppf +
                                     self.plus_Ga)
 
-        # self.minus_resAequation = -(self.plus_div_rxx + self.minus_eht_dd_div_uxf_uxf + self.minus_eht_dd_eht_a_div_eht_ux + \
-        #  self.plus_eht_dd_eht_uxf_dff + self.minus_eht_b_gradx_pp + self.plus_eht_ddf_sv_gradx_ppf + \
-        #  self.plus_Ga)
+        # self.minus_resAequation = -(self.plus_div_rxx + self.minus_eht_dd_div_uxf_uxf +
+        # self.minus_eht_dd_eht_a_div_eht_ux + \ self.plus_eht_dd_eht_uxf_dff + self.minus_eht_b_gradx_pp +
+        # self.plus_eht_ddf_sv_gradx_ppf + \ self.plus_Ga)
 
         ##################################
         # END TURBULENT MASS FLUX EQUATION
@@ -161,6 +164,10 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
     def plot_a(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean turbulent mass flux in the model"""
 
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TurbulentMassFluxEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # load x GRID
         grd1 = self.xzn0
 
@@ -186,29 +193,45 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
         # plot DATA 
         plt.title(r'turbulent mass flux')
-        plt.plot(grd1, plt1, color='brown', label=r"$a$")
-        # plt.plot(grd1,plt2,color='r',label='model1')
-        # plt.plot(grd1,plt3,color='g',label='model2')
-        plt.plot(grd1, plt4, color='pink', label=r'$\overline{u}_r$')
-        plt.plot(grd1, plt5, color='m', label=r'$\widetilde{u}_r$')
-        # plt.plot(grd1,plt6,color='b',label=r'model3')
-        #plt.plot(grd1, plt7, color='b', label=r'model4')
-        #plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r"$a$")
+            # plt.plot(grd1,plt2,color='r',label='model1')
+            # plt.plot(grd1,plt3,color='g',label='model2')
+            plt.plot(grd1, plt4, color='pink', label=r'$\overline{u}_x$')
+            plt.plot(grd1, plt5, color='m', label=r'$\widetilde{u}_x$')
+            # plt.plot(grd1,plt6,color='b',label=r'model3')
+            # plt.plot(grd1, plt7, color='b', label=r'model4')
+            # plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r"$a$")
+            # plt.plot(grd1,plt2,color='r',label='model1')
+            # plt.plot(grd1,plt3,color='g',label='model2')
+            plt.plot(grd1, plt4, color='pink', label=r'$\overline{u}_r$')
+            plt.plot(grd1, plt5, color='m', label=r'$\widetilde{u}_r$')
+            # plt.plot(grd1,plt6,color='b',label=r'model3')
+            # plt.plot(grd1, plt7, color='b', label=r'model4')
+            # plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{\rho}$ $\overline{u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\overline{\rho}$ $\overline{u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\overline{\rho}$ $\overline{u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
 
         # create FIGURE
-        plt.figure(figsize=(7, 6))
+        # plt.figure(figsize=(7, 6))
 
         # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+        # plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
         # to_plot = [plt1,plt2,plt3,plt4,plt5,plt6]
@@ -219,24 +242,28 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         # self.plus_grad_mm = +self.Grad(mm,xzn0)
 
         # plot DATA 
-        plt.plot(grd1, 1. / self.ux, color='brown', label=r"$1/\overline{u}_r$")
-        plt.plot(grd1, 1. / self.fht_ux, color='r', label=r"$1/\widetilde{u}_r$")
+        # plt.plot(grd1, 1. / self.ux, color='brown', label=r"$1/\overline{u}_r$")
+        # plt.plot(grd1, 1. / self.fht_ux, color='r', label=r"$1/\widetilde{u}_r$")
         # plt.plot(grd1,+self.eht_a_model1,color='g',label='model1')
         # plt.plot(grd1,(1./(self.ux)+(1./(self.fht_ux))),linestyle='--',color='b',label='xx')
         # plt.plot(grd1,1./(self.eht_a+self.fht_ux),color='pink',label='1/a')
-        plt.plot(grd1, -self.plus_grad_mm / self.plus_dt_mm, color='k', linestyle='--', label='drMM/dtMM')
+        # plt.plot(grd1, -self.plus_grad_mm / self.plus_dt_mm, color='k', linestyle='--', label='drMM/dtMM')
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 18})
+        # plt.legend(loc=ilg, prop={'size': 18})
 
         # display PLOT
-        plt.show(block=False)
+        # plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.png')
+        # plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.png')
 
     def plot_a_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """ turbulent mass flux equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TurbulentMassFluxEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -272,34 +299,58 @@ class TurbulentMassFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
         # plot DATA 
         plt.title('turbulent mass flux equation')
-        plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \overline{u''_r})$')
-        plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \overline{u''_r})$")
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \overline{u''_x})$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \overline{u''_x})$")
 
-        plt.plot(grd1, rhs0, color='r',
-                 label=r"$-(\overline{\rho' u'_r u'_r} / \overline{\rho} \partial_r \overline{\rho})$")
-        plt.plot(grd1, rhs1, color='#802A2A', label=r"$+\widetilde{R}_{rr}/\overline{\rho}\partial_r \overline{\rho} $")
-        plt.plot(grd1, rhs2, color='c', label=r"$-\overline{\rho} \nabla_r (\overline{u''_r} \ \overline{u''_r}) $")
-        plt.plot(grd1, rhs3, color='m', label=r"$+\nabla_r \overline{\rho' u'_r u'_r}$")
+            plt.plot(grd1, rhs0, color='r',
+                     label=r"$-(\overline{\rho' u'_x u'_x} / \overline{\rho} \partial_x \overline{\rho})$")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$+\widetilde{R}_{xx}/\overline{\rho}\partial_x \overline{\rho} $")
+            plt.plot(grd1, rhs2, color='c', label=r"$-\overline{\rho} \nabla_x (\overline{u''_x} \ \overline{u''_x}) $")
+            plt.plot(grd1, rhs3, color='m', label=r"$+\nabla_r \overline{\rho' u'_x u'_x}$")
 
-        # plt.plot(grd1,rhs0,color='r',label = r"$+\nabla \widetilde{R}_{xx}$")
-        # plt.plot(grd1,rhs1,color='c',label = r"$-\overline{\rho} \nabla_r \overline{u'_r u'_r}$")
+            # plt.plot(grd1,rhs0,color='r',label = r"$+\nabla \widetilde{R}_{xx}$")
+            # plt.plot(grd1,rhs1,color='c',label = r"$-\overline{\rho} \nabla_r \overline{u'_x u'_x}$")
 
-        plt.plot(grd1, rhs4, color='g', label=r"$-\overline{\rho} \overline{u''_r} \nabla_r \overline{u_r}$")
-        plt.plot(grd1, rhs5, color='y', label=r"$+\overline{\rho} \overline{u'_r d''} $")
-        plt.plot(grd1, rhs6, color='b', label=r"$-b \partial_r \overline{P}$")
-        plt.plot(grd1, rhs7, color='orange', label=r"$+\overline{\rho' v \partial_r P'} \sim 0$")
-        plt.plot(grd1, rhs8, color='skyblue', label=r"$+Ga$")
+            plt.plot(grd1, rhs4, color='g', label=r"$-\overline{\rho} \overline{u''_x} \nabla_x \overline{u_x}$")
+            plt.plot(grd1, rhs5, color='y', label=r"$+\overline{\rho} \overline{u'_x d''} $")
+            plt.plot(grd1, rhs6, color='b', label=r"$-b \partial_x \overline{P}$")
+            plt.plot(grd1, rhs7, color='orange', label=r"$+\overline{\rho' v \partial_x P'}$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_a$")
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \overline{u''_r})$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \overline{u''_r})$")
 
-        plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_a$")
+            plt.plot(grd1, rhs0, color='r',
+                     label=r"$-(\overline{\rho' u'_r u'_r} / \overline{\rho} \partial_r \overline{\rho})$")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$+\widetilde{R}_{rr}/\overline{\rho}\partial_r \overline{\rho} $")
+            plt.plot(grd1, rhs2, color='c', label=r"$-\overline{\rho} \nabla_r (\overline{u''_r} \ \overline{u''_r}) $")
+            plt.plot(grd1, rhs3, color='m', label=r"$+\nabla_r \overline{\rho' u'_r u'_r}$")
+
+            # plt.plot(grd1,rhs0,color='r',label = r"$+\nabla \widetilde{R}_{xx}$")
+            # plt.plot(grd1,rhs1,color='c',label = r"$-\overline{\rho} \nabla_r \overline{u'_r u'_r}$")
+
+            plt.plot(grd1, rhs4, color='g', label=r"$-\overline{\rho} \overline{u''_r} \nabla_r \overline{u_r}$")
+            plt.plot(grd1, rhs5, color='y', label=r"$+\overline{\rho} \overline{u'_r d''} $")
+            plt.plot(grd1, rhs6, color='b', label=r"$-b \partial_r \overline{P}$")
+            plt.plot(grd1, rhs7, color='orange', label=r"$+\overline{\rho' v \partial_r P'}$")
+            plt.plot(grd1, rhs8, color='skyblue', label=r"$+Ga$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_a$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"g cm$^{-2}$ s$^{-2}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        if self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 10})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=3)
 
         # display PLOT
         plt.show(block=False)

@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class AbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(AbarFluxTransportEquation, self).__init__(ig)
@@ -22,42 +22,42 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        abar = self.getRAdata(eht,'abar')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        abar = self.getRAdata(eht, 'abar')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        ddabar = self.getRAdata(eht,'ddabar')[intc]
-        ddabarux = self.getRAdata(eht,'ddabarux')[intc]
+        ddabar = self.getRAdata(eht, 'ddabar')[intc]
+        ddabarux = self.getRAdata(eht, 'ddabarux')[intc]
 
-        ddabaruxux = self.getRAdata(eht,'ddabaruxux')[intc]
-        ddabaruyuy = self.getRAdata(eht,'ddabaruyuy')[intc]
-        ddabaruzuz = self.getRAdata(eht,'ddabaruzuz')[intc]
+        ddabaruxux = self.getRAdata(eht, 'ddabaruxux')[intc]
+        ddabaruyuy = self.getRAdata(eht, 'ddabaruyuy')[intc]
+        ddabaruzuz = self.getRAdata(eht, 'ddabaruzuz')[intc]
 
-        abargradxpp = self.getRAdata(eht,'abargradxpp')[intc]
+        abargradxpp = self.getRAdata(eht, 'abargradxpp')[intc]
 
-        uxddabarsq_sum_xdn_o_an = self.getRAdata(eht,'uxddabarsq_sum_xdn_o_an')[intc]
-        ddabarsq_sum_xdn_o_an = self.getRAdata(eht,'ddabarsq_sum_xdn_o_an')[intc]
+        uxddabarsq_sum_xdn_o_an = self.getRAdata(eht, 'uxddabarsq_sum_xdn_o_an')[intc]
+        ddabarsq_sum_xdn_o_an = self.getRAdata(eht, 'ddabarsq_sum_xdn_o_an')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddux = self.getRAdata(eht,'ddux')
-        t_ddabar = self.getRAdata(eht,'ddabar')
-        t_ddabarux = self.getRAdata(eht,'ddabarux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_ddabar = self.getRAdata(eht, 'ddabar')
+        t_ddabarux = self.getRAdata(eht, 'ddabarux')
 
         ####################
         # Abar FLUX EQUATION 
@@ -98,15 +98,10 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         # override NaNs (happens for ccp setup in PROMPI)
         self.minus_uxffddabarsq_sum_xdn_o_an = np.nan_to_num(self.minus_uxffddabarsq_sum_xdn_o_an)
 
-        if (ig == 1):
+        if ig == 1:
             # RHS +gi
             self.plus_gabar = np.zeros(nx)
-            # -res
-            self.minus_resAbarFlux = -(self.minus_dt_fabar + self.minus_div_fht_ux_fabar + self.minus_div_fabarx + \
-                                       self.minus_fabar_gradx_fht_ux + self.minus_rxx_gradx_fht_abar + \
-                                       self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf + \
-                                       self.minus_uxffddabarsq_sum_xdn_o_an + self.plus_gabar)
-        elif (ig == 2):
+        elif ig == 2:
             # RHS +gi
             self.plus_gabar = \
                 -(ddabaruyuy - (ddabar / dd) * dduyuy - 2. * (dduy / dd) + 2. * ddabar * dduy * dduy / (
@@ -115,19 +110,19 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
                         dd * dd)) / xzn0 + \
                 (ddabaruyuy - (ddabar / dd) * dduyuy) / xzn0 + \
                 (ddabaruzuz - (ddabar / dd) * dduzuz) / xzn0
-
-            # -res
-            self.minus_resAbarFlux = -(self.minus_dt_fabar + self.minus_div_fht_ux_fabar + self.minus_div_fabarx + \
-                                       self.minus_fabar_gradx_fht_ux + self.minus_rxx_gradx_fht_abar + \
-                                       self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf + \
-                                       self.minus_uxffddabarsq_sum_xdn_o_an + self.plus_gabar)
         else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
+            print("ERROR(AbarFluxTransportEquation.py):" + self.errorGeometry(self.ig))
             sys.exit()
+
+        # -res
+        self.minus_resAbarFlux = -(self.minus_dt_fabar + self.minus_div_fht_ux_fabar + self.minus_div_fabarx +
+                                   self.minus_fabar_gradx_fht_ux + self.minus_rxx_gradx_fht_abar +
+                                   self.minus_abarff_gradx_pp_minus_abarff_gradx_ppf +
+                                   self.minus_uxffddabarsq_sum_xdn_o_an + self.plus_gabar)
 
         ########################
         # END Abar FLUX EQUATION 
-        ########################	
+        ########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -137,6 +132,11 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
     def plot_abarflux(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Abarflux stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(AbarFluxTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -159,10 +159,16 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         plt.plot(grd1, plt1, color='k', label=r'f')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{\rho} \widetilde{A'' u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{A'' u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{A'' u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -175,6 +181,11 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
     def plot_abarflux_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot abar flux equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(AbarFluxTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -203,7 +214,7 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
         # plot DATA 
         plt.title('Abar flux equation')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_A$')
             plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_x (\widetilde{u}_x f_A)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^x_A$')
@@ -214,7 +225,7 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
             plt.plot(grd1, rhs4, color='purple',
                      label=r"$-\overline{u''_x \rho A^2 \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_A$')
             plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_r (\widetilde{u}_r f_A)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^r_A$')
@@ -226,23 +237,18 @@ class AbarFluxTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
                      label=r"$-\overline{u''_r \rho A^2 \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
             plt.plot(grd1, rhs5, color='yellow', label=r'$+G_A$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"g cm$^{-2}$ s$^{-2}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 10}, ncol=2)

@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(DensitySpecificVolumeCovarianceEquation, self).__init__(ig)
@@ -20,23 +22,23 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        sv = self.getRAdata(eht,'sv')[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        svux = self.getRAdata(eht,'svux')[intc]
-        svdivu = self.getRAdata(eht,'svdivu')[intc]
-        divu = self.getRAdata(eht,'divu')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        sv = self.getRAdata(eht, 'sv')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        svux = self.getRAdata(eht, 'svux')[intc]
+        svdivu = self.getRAdata(eht, 'svdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_sv = self.getRAdata(eht,'sv')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_sv = self.getRAdata(eht, 'sv')
 
         # construct equation-specific mean fields		
         t_b = 1. - t_sv * t_dd
@@ -64,12 +66,12 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT
         self.plus_two_eht_dd_eht_svf_df = +2. * dd * (svdivu - sv * divu)
 
         # -res
-        self.minus_resBequation = -(self.minus_dt_b + self.minus_ux_gradx_b + self.plus_eht_sv_div_dd_uxff + \
+        self.minus_resBequation = -(self.minus_dt_b + self.minus_ux_gradx_b + self.plus_eht_sv_div_dd_uxff +
                                     self.minus_eht_dd_div_uxf_svf + self.plus_two_eht_dd_eht_svf_df)
 
         ######################################################
         # END DENSITY-SPECIFIC VOLUME COVARIANCE or B EQUATION 
-        ######################################################						
+        ######################################################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -79,6 +81,11 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT
 
     def plot_b(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot density-specific volume covariance stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(DensitySpecificVolumeCovarianceEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -101,11 +108,16 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT
         plt.plot(grd1, plt1, color='brown', label=r'$b$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"b"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"b"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"b"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -118,6 +130,10 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT
 
     def plot_b_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot density-specific volume covariance equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(DensitySpecificVolumeCovarianceEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -143,21 +159,35 @@ class DensitySpecificVolumeCovarianceEquation(calc.Calculus, al.SetAxisLimit, uT
 
         # plot DATA 
         plt.title('b equation')
-        plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t b$")
-        plt.plot(grd1, lhs1, color='m', label=r"$-\overline{u}_r \partial_r b $")
-        plt.plot(grd1, rhs0, color='b', label=r"$+v \nabla_r (\overline{v} \overline{u''_r})$")
-        plt.plot(grd1, rhs1, color='g', label=r"$-v \nabla_r (\overline{\rho} \overline{(u'_r v'})$")
-        plt.plot(grd1, rhs2, color='r', label=r"$+2 \overline{\rho} \overline{v'd'}$")
-        plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t b$")
+            plt.plot(grd1, lhs1, color='m', label=r"$-\overline{u}_x \partial_x b $")
+            plt.plot(grd1, rhs0, color='b', label=r"$+v \nabla_x (\overline{v} \overline{u''_x})$")
+            plt.plot(grd1, rhs1, color='g', label=r"$-v \nabla_x (\overline{\rho} \overline{(u'_x v'})$")
+            plt.plot(grd1, rhs2, color='r', label=r"$+2 \overline{\rho} \overline{v'd'}$")
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t b$")
+            plt.plot(grd1, lhs1, color='m', label=r"$-\overline{u}_r \partial_r b $")
+            plt.plot(grd1, rhs0, color='b', label=r"$+v \nabla_r (\overline{v} \overline{u''_r})$")
+            plt.plot(grd1, rhs1, color='g', label=r"$-v \nabla_r (\overline{\rho} \overline{(u'_r v'})$")
+            plt.plot(grd1, rhs2, color='r', label=r"$+2 \overline{\rho} \overline{v'd'}$")
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"b"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"b"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"b"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

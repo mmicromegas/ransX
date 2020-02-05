@@ -1,10 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class ZbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(ZbarTransportEquation, self).__init__(ig)
@@ -70,8 +70,8 @@ class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         self.minus_ddabazbar_sum_xdn_o_an = np.nan_to_num(self.minus_ddabazbar_sum_xdn_o_an)
 
         # -res
-        self.minus_resZbarEquation = -(self.minus_dt_eht_dd_zbar + \
-                                       self.minus_div_eht_dd_fht_ux_zbar + self.minus_div_fzbar + \
+        self.minus_resZbarEquation = -(self.minus_dt_eht_dd_zbar +
+                                       self.minus_div_eht_dd_fht_ux_zbar + self.minus_div_fzbar +
                                        self.minus_ddabazbar_sum_xdn_o_an + self.plus_ddabar_sum_znxdn_o_an)
 
         #############################
@@ -85,6 +85,11 @@ class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
     def plot_zbar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot zbar stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ZbarTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -125,6 +130,11 @@ class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
     def plot_zbar_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot zbar equation in the model"""
 
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ZbarTransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # load x GRID
         grd1 = self.xzn0
 
@@ -149,23 +159,37 @@ class ZbarTransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         # plot DATA 
         plt.title('zbar equation')
-        plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{Z})$')
-        plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_r (\rho \widetilde{u}_r \widetilde{Z})$')
-        plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f_Z$')
-        plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho Z A \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
-        plt.plot(grd1, rhs2, color='c',
-                 label=r'$-\overline{\rho A \sum_\alpha (Z_\alpha \dot{X}_\alpha^{nuc}/A_\alpha)}$')
-
-        plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{Z})$')
+            plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_x (\rho \widetilde{u}_x \widetilde{Z})$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f_Z$')
+            plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho Z A \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
+            plt.plot(grd1, rhs2, color='c',
+                     label=r'$-\overline{\rho A \sum_\alpha (Z_\alpha \dot{X}_\alpha^{nuc}/A_\alpha)}$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{Z})$')
+            plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_r (\rho \widetilde{u}_r \widetilde{Z})$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f_Z$')
+            plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho Z A \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
+            plt.plot(grd1, rhs2, color='c',
+                     label=r'$-\overline{\rho A \sum_\alpha (Z_\alpha \dot{X}_\alpha^{nuc}/A_\alpha)}$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
