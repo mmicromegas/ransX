@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
         super(EnthalpyEquation, self).__init__(ig)
@@ -46,7 +47,7 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
+        if ieos == 1:
             cp = self.getRAdata(eht, 'cp')[intc]
             cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
@@ -92,13 +93,13 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         self.plus_gamma3_div_ft = +np.zeros(nx)
 
         # -res
-        self.minus_resHHequation = -(self.minus_dt_dd_fht_hh + self.minus_div_dd_fht_ux_fht_hh + self.minus_div_fhh + \
-                                     self.minus_gamma1_pp_div_ux + self.minus_gamma1_eht_ppf_df + self.plus_gamma3_dd_fht_enuc + self.plus_gamma3_disstke + \
-                                     self.plus_gamma3_div_ft)
+        self.minus_resHHequation = -(self.minus_dt_dd_fht_hh + self.minus_div_dd_fht_ux_fht_hh + self.minus_div_fhh +
+                                     self.minus_gamma1_pp_div_ux + self.minus_gamma1_eht_ppf_df +
+                                     self.plus_gamma3_dd_fht_enuc + self.plus_gamma3_disstke + self.plus_gamma3_div_ft)
 
         #######################
         # END ENTHALPY EQUATION 
-        #######################			
+        #######################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -107,6 +108,10 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
     def plot_hh(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian enthalpy stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(EnthalpyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -126,25 +131,22 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
         # plot DATA 
         plt.title(r'enthalpy')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{h}$')
-            # define x LABEL
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{h}$')
+
+        # define x/y LABELS
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{h}$')
-            # define x LABEL
+            setylabel = r"$\widetilde{h}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print(
-                "ERROR (EnthalpyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        # define y LABEL
-        setylabel = r"$\widetilde{h}$ (erg g$^{-1}$)"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\widetilde{h}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -157,6 +159,10 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
     def plot_hh_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot enthalpy equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(EnthalpyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -185,7 +191,7 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
         # plot DATA 
         plt.title('enthalpy equation')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{h})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \widetilde{h}$)")
 
@@ -195,12 +201,8 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
             plt.plot(grd1, rhs3, color='b', label=r"$+\Gamma_3 \overline{\rho}\widetilde{\epsilon}_{nuc}$")
             plt.plot(grd1, rhs4, color='m', label=r"$+\Gamma_3 \varepsilon_k$")
             plt.plot(grd1, rhs5, color='c', label=r"$+\Gamma_3 \nabla_x f_T$ (not incl.)")
-
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_h$")
-
-            # define X label
-            setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{h})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{h}$)")
 
@@ -210,23 +212,22 @@ class EnthalpyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
             plt.plot(grd1, rhs3, color='b', label=r"$+\Gamma_3 \overline{\rho}\widetilde{\epsilon}_{nuc}$")
             plt.plot(grd1, rhs4, color='m', label=r"$+\Gamma_3 \varepsilon_k$")
             plt.plot(grd1, rhs5, color='c', label=r"$+\Gamma_3 \nabla_r f_T$ (not incl.)")
-
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_h$")
 
-            # define X label
-            setxlabel = r'r (cm)'
-        else:
-            print(
-                "ERROR (EnthalpyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
         # define and show x/y LABELS
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
