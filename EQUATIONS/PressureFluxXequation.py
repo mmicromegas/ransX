@@ -1,10 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
         super(PressureFluxXequation, self).__init__(ig)
@@ -21,58 +22,58 @@ class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ppux = self.getRAdata(eht,'ppux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
 
-        uxux = self.getRAdata(eht,'uxux')[intc]
-        uyuy = self.getRAdata(eht,'uyuy')[intc]
-        uzuz = self.getRAdata(eht,'uzuz')[intc]
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
 
-        ddppux = self.getRAdata(eht,'ddppux')[intc]
-        ppuxux = self.getRAdata(eht,'ppuxux')[intc]
-        ppuyuy = self.getRAdata(eht,'ppuyuy')[intc]
-        ppuzuz = self.getRAdata(eht,'ppuzuz')[intc]
+        ddppux = self.getRAdata(eht, 'ddppux')[intc]
+        ppuxux = self.getRAdata(eht, 'ppuxux')[intc]
+        ppuyuy = self.getRAdata(eht, 'ppuyuy')[intc]
+        ppuzuz = self.getRAdata(eht, 'ppuzuz')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
-        dddivu = self.getRAdata(eht,'dddivu')[intc]
-        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
-        uxppdivu = self.getRAdata(eht,'uxppdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
+        dddivu = self.getRAdata(eht, 'dddivu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
+        uxppdivu = self.getRAdata(eht, 'uxppdivu')[intc]
 
-        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
-        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
+        ddenuc1 = self.getRAdata(eht, 'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht, 'ddenuc2')[intc]
 
-        dduxenuc1 = self.getRAdata(eht,'dduxenuc1')[intc]
-        dduxenuc2 = self.getRAdata(eht,'dduxenuc2')[intc]
+        dduxenuc1 = self.getRAdata(eht, 'dduxenuc1')[intc]
+        dduxenuc2 = self.getRAdata(eht, 'dduxenuc2')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
-        gamma3 = self.getRAdata(eht,'gamma3')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
-        gradxpp_o_dd = self.getRAdata(eht,'gradxpp_o_dd')[intc]
-        ppgradxpp_o_dd = self.getRAdata(eht,'ppgradxpp_o_dd')[intc]
+        gradxpp_o_dd = self.getRAdata(eht, 'gradxpp_o_dd')[intc]
+        ppgradxpp_o_dd = self.getRAdata(eht, 'ppgradxpp_o_dd')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_ux = self.getRAdata(eht,'ux')
-        t_pp = self.getRAdata(eht,'pp')
-        t_ppux = self.getRAdata(eht,'ppux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_ux = self.getRAdata(eht, 'ux')
+        t_pp = self.getRAdata(eht, 'pp')
+        t_ppux = self.getRAdata(eht, 'ppux')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -112,27 +113,32 @@ class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         # RHS +gamma3_minus_one_eht_uxf_dd_enuc 		
         self.plus_gamma3_minus_one_eht_uxf_dd_enuc = +(gamma3 - 1.) * (
-                    (dduxenuc1 - ux * ddenuc1) + (dduxenuc2 - ux * ddenuc2))
+                (dduxenuc1 - ux * ddenuc1) + (dduxenuc2 - ux * ddenuc2))
 
         # RHS +eht_ppf_uxff_divuff 	
         self.plus_eht_ppf_uxff_divuff = +eht_ppf_uxff_divuff
 
-        # RHS -eht_ppf_GrM_o_dd	
-        self.minus_eht_ppf_GrM_o_dd = -1. * (-ppuyuy / xzn0 - ppuzuz / xzn0 + pp * (uyuy / xzn0 + uzuz / xzn0))
+        # RHS -eht_ppf_GrM_o_dd
+        if self.ig == 1:
+            self.minus_eht_ppf_GrM_o_dd = np.zeros(nx)
+        elif self.ig == 2:
+            self.minus_eht_ppf_GrM_o_dd = -1. * (-ppuyuy / xzn0 - ppuzuz / xzn0 + pp * (uyuy / xzn0 + uzuz / xzn0))
 
         # RHS -eht_ppf_gradx_pp_o_dd 		
-        # self.minus_eht_ppf_gradx_pp_o_dd = -(ppgradxpp_o_dd	- pp*gradxpp_o_dd)
+        self.minus_eht_ppf_gradx_pp_o_dd = -(ppgradxpp_o_dd	- pp*gradxpp_o_dd)
 
         # this term is approx. zero, just replace the gradx pp with rho gg		
-        self.minus_eht_ppf_gradx_pp_o_dd = np.zeros(nx)
+        # self.minus_eht_ppf_gradx_pp_o_dd = np.zeros(nx)
 
         # -res  
-        self.minus_resPPfluxEquation = -(self.minus_dt_fppx + self.minus_fht_ux_gradx_fppx + self.minus_div_fppxx + \
-                                         self.minus_fppx_gradx_ux + self.plus_eht_uxf_uxff_gradx_pp + self.plus_gamma1_eht_uxf_pp_divu + \
-                                         self.plus_gamma3_minus_one_eht_uxf_dd_enuc + self.plus_eht_ppf_uxff_divuff + self.minus_eht_ppf_GrM_o_dd + \
+        self.minus_resPPfluxEquation = -(self.minus_dt_fppx + self.minus_fht_ux_gradx_fppx + self.minus_div_fppxx +
+                                         self.minus_fppx_gradx_ux + self.plus_eht_uxf_uxff_gradx_pp +
+                                         self.plus_gamma1_eht_uxf_pp_divu +
+                                         self.plus_gamma3_minus_one_eht_uxf_dd_enuc + self.plus_eht_ppf_uxff_divuff +
+                                         self.minus_eht_ppf_GrM_o_dd +
                                          self.minus_eht_ppf_gradx_pp_o_dd)
 
-        ########################		
+        ########################
         # PRESSURE FLUX EQUATION
         ########################
 
@@ -143,6 +149,10 @@ class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
     def plot_fppx(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure flux stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureFluxXEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -162,13 +172,22 @@ class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         # plot DATA 
         plt.title(r'pressure flux x')
-        plt.plot(grd1, plt1, color='brown', label=r'f$_{pr}$')
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r'f$_{px}$')
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'f$_{pr}$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$f_{pr}$ (erg cm$^{-2}$ s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$f_{px}$ (erg cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$f_{pr}$ (erg cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -181,6 +200,10 @@ class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
     def plot_fppx_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot acoustic flux equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureFluxXEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -211,28 +234,44 @@ class PressureFluxXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         # plot DATA 
         plt.title('acoustic flux x equation')
-        plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{pr}$")
-        plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_{pr}$)")
-
-        plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p^r $")
-        plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{pr} \partial_r \overline{u}_r$")
-        plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_r u''_r} \partial_r \overline{P}$")
-        plt.plot(grd1, rhs3, color='firebrick', label=r"$+\Gamma_1 \overline{u'_r P d}$")
-        plt.plot(grd1, rhs4, color='c', label=r"$+(\Gamma_3-1)\overline{u'_r \rho \epsilon_{nuc}}$")
-        plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$+\overline{P'u''_rd''}$")
-        plt.plot(grd1, rhs6, color='b', label=r"$+\overline{P' G_r^M/ \rho}$")
-        plt.plot(grd1, rhs7, color='m', label=r"$+\overline{P'\partial_r P/ \rho} \sim 0$")
-
-        plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_p$")
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{px}$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x f_{px}$)")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p^x $")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{px} \partial_x \overline{u}_x$")
+            plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_x u''_x} \partial_x \overline{P}$")
+            plt.plot(grd1, rhs3, color='firebrick', label=r"$+\Gamma_1 \overline{u'_x P d}$")
+            plt.plot(grd1, rhs4, color='c', label=r"$+(\Gamma_3-1)\overline{u'_x \rho \epsilon_{nuc}}$")
+            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$+\overline{P'u''_x d''}$")
+            plt.plot(grd1, rhs7, color='m', label=r"$+\overline{P'\partial_x P/ \rho}$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_p$")
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{pr}$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_{pr}$)")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p^r $")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{pr} \partial_r \overline{u}_r$")
+            plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_r u''_r} \partial_r \overline{P}$")
+            plt.plot(grd1, rhs3, color='firebrick', label=r"$+\Gamma_1 \overline{u'_r P d}$")
+            plt.plot(grd1, rhs4, color='c', label=r"$+(\Gamma_3-1)\overline{u'_r \rho \epsilon_{nuc}}$")
+            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$+\overline{P'u''_rd''}$")
+            plt.plot(grd1, rhs6, color='b', label=r"$+\overline{P' G_r^M/ \rho}$")
+            plt.plot(grd1, rhs7, color='m', label=r"$+\overline{P'\partial_r P/ \rho} \sim 0$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_p$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"erg cm$^{-2}$ s$^{-2}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"erg cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"erg cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

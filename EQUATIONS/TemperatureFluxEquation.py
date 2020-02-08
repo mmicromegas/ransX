@@ -1,10 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
         super(TemperatureFluxEquation, self).__init__(ig)
@@ -21,74 +22,74 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        tt = self.getRAdata(eht,'tt')[intc]
-        cv = self.getRAdata(eht,'cv')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        cv = self.getRAdata(eht, 'cv')[intc]
 
-        ux = self.getRAdata(eht,'ux')[intc]
-        uy = self.getRAdata(eht,'uy')[intc]
-        uz = self.getRAdata(eht,'uz')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        uxux = self.getRAdata(eht,'uxux')[intc]
-        uyuy = self.getRAdata(eht,'uyuy')[intc]
-        uzuz = self.getRAdata(eht,'uzuz')[intc]
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
 
-        ttux = self.getRAdata(eht,'ttux')[intc]
-        ttuy = self.getRAdata(eht,'ttuy')[intc]
-        ttuz = self.getRAdata(eht,'ttuz')[intc]
+        ttux = self.getRAdata(eht, 'ttux')[intc]
+        ttuy = self.getRAdata(eht, 'ttuy')[intc]
+        ttuz = self.getRAdata(eht, 'ttuz')[intc]
 
-        ttuxux = self.getRAdata(eht,'ttuxux')[intc]
-        ttuyuy = self.getRAdata(eht,'ttuyuy')[intc]
-        ttuzuz = self.getRAdata(eht,'ttuzuz')[intc]
+        ttuxux = self.getRAdata(eht, 'ttuxux')[intc]
+        ttuyuy = self.getRAdata(eht, 'ttuyuy')[intc]
+        ttuzuz = self.getRAdata(eht, 'ttuzuz')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        ddttuxux = self.getRAdata(eht,'ddttuxux')[intc]
-        ddttuyuy = self.getRAdata(eht,'ddttuyuy')[intc]
-        ddttuzuz = self.getRAdata(eht,'ddttuzuz')[intc]
+        ddttuxux = self.getRAdata(eht, 'ddttuxux')[intc]
+        ddttuyuy = self.getRAdata(eht, 'ddttuyuy')[intc]
+        ddttuzuz = self.getRAdata(eht, 'ddttuzuz')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        dddivu = self.getRAdata(eht,'dddivu')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
-        ttdivu = self.getRAdata(eht,'ttdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        dddivu = self.getRAdata(eht, 'dddivu')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
+        ttdivu = self.getRAdata(eht, 'ttdivu')[intc]
 
-        ttgradxpp_o_dd = self.getRAdata(eht,'ttgradxpp_o_dd')[intc]
-        gradxpp_o_dd = self.getRAdata(eht,'gradxpp_o_dd')[intc]
+        ttgradxpp_o_dd = self.getRAdata(eht, 'ttgradxpp_o_dd')[intc]
+        gradxpp_o_dd = self.getRAdata(eht, 'gradxpp_o_dd')[intc]
 
-        uxttdivu = self.getRAdata(eht,'uxttdivu')[intc]
+        uxttdivu = self.getRAdata(eht, 'uxttdivu')[intc]
 
-        uxenuc1_o_cv = self.getRAdata(eht,'uxenuc1_o_cv')[intc]
-        uxenuc2_o_cv = self.getRAdata(eht,'uxenuc2_o_cv')[intc]
+        uxenuc1_o_cv = self.getRAdata(eht, 'uxenuc1_o_cv')[intc]
+        uxenuc2_o_cv = self.getRAdata(eht, 'uxenuc2_o_cv')[intc]
 
-        enuc1_o_cv = self.getRAdata(eht,'enuc1_o_cv')[intc]
-        enuc2_o_cv = self.getRAdata(eht,'enuc2_o_cv')[intc]
+        enuc1_o_cv = self.getRAdata(eht, 'enuc1_o_cv')[intc]
+        enuc2_o_cv = self.getRAdata(eht, 'enuc2_o_cv')[intc]
 
-        gamma3 = self.getRAdata(eht,'gamma3')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma3 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_tt = self.getRAdata(eht,'tt')
-        t_ux = self.getRAdata(eht,'ux')
-        t_ttux = self.getRAdata(eht,'ttux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_tt = self.getRAdata(eht, 'tt')
+        t_ux = self.getRAdata(eht, 'ux')
+        t_ttux = self.getRAdata(eht, 'ttux')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -162,13 +163,9 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.plus_Gtt = np.zeros(nx)
 
         # -res  
-        self.minus_resTTfluxEquation = -(self.minus_dt_ftt + self.minus_fht_ux_gradx_ftt + \
-                                         self.minus_div_fttx + self.minus_ftt_gradx_fht_ux + self.minus_eht_uxf_uxff_gradx_tt + \
-                                         self.minus_eht_ttf_gradx_pp_o_dd + self.minus_gamma3_minus_one_tt_eht_uxf_dff + \
-                                         self.minus_gamma3_minus_one_fht_d_ftt + self.minus_gamma3_eht_uxf_ttf_dff + \
-                                         self.plus_eht_uxf_enuc_o_cv + self.plus_eht_uxf_div_fth_o_cv + self.plus_Gtt)
+        self.minus_resTTfluxEquation = -(self.minus_dt_ftt + self.minus_fht_ux_gradx_ftt + self.minus_div_fttx + self.minus_ftt_gradx_fht_ux + self.minus_eht_uxf_uxff_gradx_tt + self.minus_eht_ttf_gradx_pp_o_dd + self.minus_gamma3_minus_one_tt_eht_uxf_dff + self.minus_gamma3_minus_one_fht_d_ftt + self.minus_gamma3_eht_uxf_ttf_dff + self.plus_eht_uxf_enuc_o_cv + self.plus_eht_uxf_div_fth_o_cv + self.plus_Gtt)
 
-        ###############################		
+        ###############################
         # END TEMPERATURE FLUX EQUATION
         ###############################
 
@@ -179,6 +176,10 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
     def plot_ftt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature flux stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TemperatureFluxEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -201,10 +202,16 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.plot(grd1, plt1, color='brown', label=r'f$_T$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$f_T$ (K cm s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$f_T$ (K cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$f_T$ (K cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -218,6 +225,10 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
     def plot_ftt_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature flux equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TemperatureFluxEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -250,31 +261,54 @@ class TemperatureFluxEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
         # plot DATA 
         plt.title('temperature flux equation')
-        plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_T$")
-        plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_T$)")
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_T$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_x f_T$)")
 
-        plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_T^r $")
-        plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_T \partial_r \widetilde{u}_r$")
-        plt.plot(grd1, rhs2, color='r', label=r"$-\overline{u'_r u''_r} \partial_r \overline{T}$")
-        plt.plot(grd1, rhs3, color='firebrick', label=r"$-\overline{T'\partial_r P / \rho}$")
-        plt.plot(grd1, rhs4, color='c', label=r"$-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
-        # plt.plot(grd1,rhs2+rhs4,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
-        plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-(\Gamma_3 -1)\widetilde{d} f_T$")
-        plt.plot(grd1, rhs6, color='b', label=r"$+\Gamma_3 \overline{u'_r T' d''}$")
-        plt.plot(grd1, rhs7, color='g', label=r"$+\overline{u'_r \varepsilon_{nuc} / c_v }$")
-        plt.plot(grd1, rhs8, color='m', label=r"$+\overline{u'_r \nabla \cdot T / c_v}$")
-        plt.plot(grd1, rhs9, color='y', label=r"$+G_T$ (not calc.)")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_T^r $")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_T \partial_x \widetilde{u}_x$")
+            plt.plot(grd1, rhs2, color='r', label=r"$-\overline{u'_x u''_x} \partial_x \overline{T}$")
+            plt.plot(grd1, rhs3, color='firebrick', label=r"$-\overline{T'\partial_r P / \rho}$")
+            plt.plot(grd1, rhs4, color='c', label=r"$-(\Gamma_3 -1)\overline{T} \ \overline{u'_x d''}$")
+            # plt.plot(grd1,rhs2+rhs4,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
+            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-(\Gamma_3 -1)\widetilde{d} f_T$")
+            plt.plot(grd1, rhs6, color='b', label=r"$+\Gamma_3 \overline{u'_x T' d''}$")
+            plt.plot(grd1, rhs7, color='g', label=r"$+\overline{u'_x \varepsilon_{nuc} / c_v }$")
+            plt.plot(grd1, rhs8, color='m', label=r"$+\overline{u'_x \nabla \cdot T / c_v}$ (not calc.)")
 
-        plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_T$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_T$)")
+
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_T^r $")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_T \partial_r \widetilde{u}_r$")
+            plt.plot(grd1, rhs2, color='r', label=r"$-\overline{u'_r u''_r} \partial_r \overline{T}$")
+            plt.plot(grd1, rhs3, color='firebrick', label=r"$-\overline{T'\partial_r P / \rho}$")
+            plt.plot(grd1, rhs4, color='c', label=r"$-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
+            # plt.plot(grd1,rhs2+rhs4,color='r',label = r"$-\overline{u'_r u''_r} \partial_r \overline{T}-(\Gamma_3 -1)\overline{T} \ \overline{u'_r d''}$")
+            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-(\Gamma_3 -1)\widetilde{d} f_T$")
+            plt.plot(grd1, rhs6, color='b', label=r"$+\Gamma_3 \overline{u'_r T' d''}$")
+            plt.plot(grd1, rhs7, color='g', label=r"$+\overline{u'_r \varepsilon_{nuc} / c_v }$")
+            plt.plot(grd1, rhs8, color='m', label=r"$+\overline{u'_r \nabla \cdot T / c_v}$ (not calc.)")
+            plt.plot(grd1, rhs9, color='y', label=r"$+G_T$ (not calc.)")
+
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"K cm$^{-2}$ s$^{-2}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"K cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"K cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

@@ -1,11 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
         super(PressureEquation, self).__init__(ig)
@@ -22,40 +22,40 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ppux = self.getRAdata(eht,'ppux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
 
-        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
-        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
+        ddenuc1 = self.getRAdata(eht, 'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht, 'ddenuc2')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
-        gamma3 = self.getRAdata(eht,'gamma3')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_pp = self.getRAdata(eht,'pp')
-        t_dd = self.getRAdata(eht,'dd')
-        t_gamma1 = self.getRAdata(eht,'gamma1')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_pp = self.getRAdata(eht, 'pp')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_gamma1 = self.getRAdata(eht, 'gamma1')
 
         # A = p / rho ** gamma
         onedu = 1.820940e06
@@ -93,13 +93,15 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         self.plus_gamma3_minus_one_disstke = +(gamma3 - 1.) * tke_diss
 
         # -res
-        self.minus_resPPequation = -(self.minus_dt_pp + self.minus_fht_ux_grad_pp + self.minus_div_fpp + \
-                                     self.minus_gamma1_pp_div_ux + self.plus_one_minus_gamma1_eht_ppf_df + \
-                                     self.plus_gamma3_minus_one_dd_fht_enuc + self.plus_gamma3_minus_one_disstke)
+        self.minus_resPPequation = -(self.minus_dt_pp + self.minus_fht_ux_grad_pp +
+                                     self.minus_div_fpp + self.minus_gamma1_pp_div_ux +
+                                     self.plus_one_minus_gamma1_eht_ppf_df +
+                                     self.plus_gamma3_minus_one_dd_fht_enuc +
+                                     self.plus_gamma3_minus_one_disstke)
 
         #######################
         # END PRESSURE EQUATION 
-        #######################			
+        #######################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -109,6 +111,10 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
     def plot_pp(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -128,26 +134,22 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
         # plot DATA 
         plt.title(r'pressure')
-
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{P}$')
-            # define x LABEL
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{P}$')
+
+        # define/show x/y LABELS
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            plt.plot(grd1, plt1, color='brown', label=r'$\overline{P}$')
-            # define x LABEL
+            setylabel = r"$\overline{P}$ (erg cm$^{-3}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print(
-                "ERROR (PressureEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-            # define y LABEL
-        setylabel = r"$\overline{P}$ (erg cm$^{-3}$)"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\overline{P}$ (erg cm$^{-3}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -160,6 +162,10 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
     def plot_pp_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot pressure equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -187,25 +193,39 @@ class PressureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
         # plot DATA 
         plt.title('pressure equation')
-        plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{P})$")
-        plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \overline{P}$")
-
-        plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p $")
-        plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\Gamma_1 \bar{P} \bar{d}$")
-        plt.plot(grd1, rhs2, color='r', label=r"$+(1-\Gamma_1) W_P$")
-        plt.plot(grd1, rhs3, color='b', label=r"$+(\Gamma_3 -1)(\overline{\rho}\widetilde{\epsilon}_{nuc})$")
-        plt.plot(grd1, rhs4, color='m', label=r"$+(\Gamma_3 -1)\varepsilon_k$")
-
-        plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_P$")
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{P})$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x \overline{P}$")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p $")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\Gamma_1 \bar{P} \bar{d}$")
+            plt.plot(grd1, rhs2, color='r', label=r"$+(1-\Gamma_1) W_P$")
+            plt.plot(grd1, rhs3, color='b', label=r"$+(\Gamma_3 -1)(\overline{\rho}\widetilde{\epsilon}_{nuc})$")
+            plt.plot(grd1, rhs4, color='m', label=r"$+(\Gamma_3 -1)\varepsilon_k$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_P$")
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{P})$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \overline{P}$")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p $")
+            plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\Gamma_1 \bar{P} \bar{d}$")
+            plt.plot(grd1, rhs2, color='r', label=r"$+(1-\Gamma_1) W_P$")
+            plt.plot(grd1, rhs3, color='b', label=r"$+(\Gamma_3 -1)(\overline{\rho}\widetilde{\epsilon}_{nuc})$")
+            plt.plot(grd1, rhs4, color='m', label=r"$+(\Gamma_3 -1)\varepsilon_k$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_P$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

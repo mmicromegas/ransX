@@ -1,10 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class PressureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, tauL, data_prefix):
         super(PressureVarianceEquation, self).__init__(ig)
@@ -53,7 +53,7 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
+        if ieos == 1:
             cp = self.getRAdata(eht, 'cp')[intc]
             cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
@@ -110,8 +110,8 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
         # -res
         self.minus_resSigmaPPequation = -(
-                self.minus_dt_sigma_pp + self.minus_fht_ux_gradx_sigma_pp + self.minus_div_f_sigma_pp + \
-                self.minus_two_gamma1_pp_ppf_ddff + self.minus_two_fpp_gradx_pp + self.minus_two_gamma1_fht_d_sigma_pp + \
+                self.minus_dt_sigma_pp + self.minus_fht_ux_gradx_sigma_pp + self.minus_div_f_sigma_pp +
+                self.minus_two_gamma1_pp_ppf_ddff + self.minus_two_fpp_gradx_pp + self.minus_two_gamma1_fht_d_sigma_pp +
                 self.minus_two_gamma1_minus_one_eht_ppf_ppf_dff + self.plus_two_gamma3_minus_one_ppf_dd_enuc)
 
         # Kolmogorov dissipation, tauL is Kolmogorov damping timescale 		 
@@ -128,6 +128,10 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
     def plot_sigma_pp(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure variance stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureVarianceEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -150,10 +154,16 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         plt.plot(grd1, plt1, color='brown', label=r'$\sigma_{P}$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\sigma_{P}$ (erg$^2$ cm$^{-6}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\sigma_{P}$ (erg$^2$ cm$^{-6}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\sigma_{P}$ (erg$^2$ cm$^{-6}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -166,6 +176,10 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
     def plot_sigma_pp_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """ pressure variance equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureVarianceEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -194,29 +208,50 @@ class PressureVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, rhs4, rhs5, rhs6, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
-        plt.title('pp variance equation')
-        plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
-        plt.plot(grd1, -lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \sigma_P$")
+        # model for variance dissipation
+        Cm = 0.5
 
-        plt.plot(grd1, rhs0, color='r', label=r"$-\nabla f_{\sigma P}$")
-        plt.plot(grd1, rhs1, color='c', label=r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
-        plt.plot(grd1, rhs2, color='#802A2A', label=r"$-2 f_P \partial_r \overline{P}$")
-        # plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
-        plt.plot(grd1, rhs3, color='m', label=r"$+2 \Gamma_1 \widetilde{d} \sigma_P$")
-        plt.plot(grd1, rhs4, color='g', label=r"$-2(\Gamma_1 -1)\overline{P'P'd''}$")
-        plt.plot(grd1, rhs5, color='olive', label=r"$+2(\Gamma_3 -1)\overline{P' \rho \varepsilon_{nuc}}$")
-        plt.plot(grd1, rhs6, color='k', linewidth=0.8, label=r"$-\sigma_P / \tau_L$")
-        plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
+        # plot DATA 
+        plt.title(r"pp variance equation C$_m$ = " + str(Cm))
+        if self.ig == 1:
+            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
+            plt.plot(grd1, -lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x \sigma_P$")
+            plt.plot(grd1, rhs0, color='r', label=r"$-\nabla f_{\sigma P}$")
+            plt.plot(grd1, rhs1, color='c', label=r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-2 f_P \partial_x \overline{P}$")
+            # plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
+            plt.plot(grd1, rhs3, color='m', label=r"$+2 \Gamma_1 \widetilde{d} \sigma_P$")
+            plt.plot(grd1, rhs4, color='g', label=r"$-2(\Gamma_1 -1)\overline{P'P'd''}$")
+            plt.plot(grd1, rhs5, color='olive', label=r"$+2(\Gamma_3 -1)\overline{P' \rho \varepsilon_{nuc}}$")
+            plt.plot(grd1, Cm*rhs6, color='k', linewidth=0.8, label=r"$-C_m \sigma_P / \tau_L$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
+        elif self.ig == 2:
+            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
+            plt.plot(grd1, -lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \sigma_P$")
+            plt.plot(grd1, rhs0, color='r', label=r"$-\nabla f_{\sigma P}$")
+            plt.plot(grd1, rhs1, color='c', label=r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-2 f_P \partial_r \overline{P}$")
+            # plt.plot(grd1,rhs1+rhs2,color='#802A2A',label = r"$-2 f_P \partial_r \overline{P}-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
+            plt.plot(grd1, rhs3, color='m', label=r"$+2 \Gamma_1 \widetilde{d} \sigma_P$")
+            plt.plot(grd1, rhs4, color='g', label=r"$-2(\Gamma_1 -1)\overline{P'P'd''}$")
+            plt.plot(grd1, rhs5, color='olive', label=r"$+2(\Gamma_3 -1)\overline{P' \rho \varepsilon_{nuc}}$")
+            plt.plot(grd1, Cm*rhs6, color='k', linewidth=0.8, label=r"$-\sigma_P / \tau_L$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\sigma_{P}$ (erg$^2$ cm$^{-3}$ s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\sigma_{P}$ (erg$^2$ cm$^{-3}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\sigma_{P}$ (erg$^2$ cm$^{-3}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

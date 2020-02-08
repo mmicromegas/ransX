@@ -49,8 +49,8 @@ for filename in bindata:
     ilhc = int(np.where(xlm == xlm.min())[0][0])
 
     temp = np.asarray(temp[:,:,ilhc])
-    vtmaxv = 1.9e9
-    vtminv = 1.6e9
+    vtmaxv = 1.3e9
+    vtminv = 1.2e9
     temp[temp > vtmaxv] = vtmaxv
     temp[temp < vtminv] = vtminv
 
@@ -61,8 +61,8 @@ for filename in bindata:
     velx[velx < vvminv] = vvminv
 
     dens = np.asarray(dens[:,:,ilhc])
-    vdmaxv = 0.7e6
-    vdminv = 0.3e6
+    vdmaxv = 0.4e6
+    vdminv = 0.2e6
     dens[dens > vdmaxv] = vdmaxv
     dens[dens < vdminv] = vdminv
 
@@ -82,7 +82,7 @@ for filename in bindata:
 
     fig.suptitle("Temp (UP-LEFT), VelX (UP-RIGHT), Rho(DOWN-LEFT), X2(DOWN-RIGHT) - time: " + str(time) + " s, y = " + str(lhc) + " cm")
     im1 = ax1.imshow(temp, interpolation='bilinear', cmap=cm.inferno,
-                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], zzn0[0], zzn0[nz - 1]],
+                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], xzn0[0], xzn0[nx - 1]],
                      vmax=vtmaxv, vmin=vtminv)
 
     divider = make_axes_locatable(ax1)
@@ -92,7 +92,7 @@ for filename in bindata:
     ax2 = fig.add_subplot(222)
 
     im2 = ax2.imshow(velx, interpolation='bilinear', cmap=cm.bwr,
-                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], zzn0[0], zzn0[nz - 1]],
+                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], xzn0[0], xzn0[nx - 1]],
                      vmax=vvmaxv, vmin=vvminv)
 
     divider = make_axes_locatable(ax2)
@@ -102,7 +102,7 @@ for filename in bindata:
     ax3 = fig.add_subplot(223)
 
     im3 = ax3.imshow(dens, interpolation='bilinear', cmap=cm.copper,
-                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], zzn0[0], zzn0[nz - 1]],
+                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], xzn0[0], xzn0[nx - 1]],
                      vmax=vdmaxv, vmin=vdminv)
 
     divider = make_axes_locatable(ax3)
@@ -113,7 +113,7 @@ for filename in bindata:
 
     # if you want to reverse colormap add _r at the end
     im4 = ax4.imshow(x0002, interpolation='bilinear', cmap=cm.binary_r,
-                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], zzn0[0], zzn0[nz - 1]],
+                     origin='lower', extent=[yzn0[0], yzn0[ny - 1], xzn0[0], xzn0[nx - 1]],
                      vmax=vxmaxv, vmin=vxminv)
 
     divider = make_axes_locatable(ax4)

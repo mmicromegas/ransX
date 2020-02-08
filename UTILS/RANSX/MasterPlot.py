@@ -1740,12 +1740,12 @@ class MasterPlot():
                        params.getForEqs('press')['ybd'], \
                        params.getForEqs('press')['ilg'])
 
-        ransPP.plot_dAdt(params.getForProp('prop')['laxis'], \
-                         params.getForEqs('press')['xbl'], \
-                         params.getForEqs('press')['xbr'], \
-                         params.getForEqs('press')['ybu'], \
-                         params.getForEqs('press')['ybd'], \
-                         params.getForEqs('press')['ilg'])
+        # ransPP.plot_dAdt(params.getForProp('prop')['laxis'], \
+        #                 params.getForEqs('press')['xbl'], \
+        #                 params.getForEqs('press')['xbr'], \
+        #                 params.getForEqs('press')['ybu'], \
+        #                 params.getForEqs('press')['ybd'], \
+        #                 params.getForEqs('press')['ilg'])
 
     def execPPeq(self, tke_diss):
         params = self.params

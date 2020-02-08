@@ -1,10 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
         super(TemperatureEquation, self).__init__(ig)
@@ -21,39 +22,39 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        tt = self.getRAdata(eht,'tt')[intc]
-        cv = self.getRAdata(eht,'cv')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        cv = self.getRAdata(eht, 'cv')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ttux = self.getRAdata(eht,'ttux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ttux = self.getRAdata(eht, 'ttux')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        ttdivu = self.getRAdata(eht,'ttdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ttdivu = self.getRAdata(eht, 'ttdivu')[intc]
 
-        enuc1_o_cv = self.getRAdata(eht,'enuc1_o_cv')[intc]
-        enuc2_o_cv = self.getRAdata(eht,'enuc2_o_cv')[intc]
+        enuc1_o_cv = self.getRAdata(eht, 'enuc1_o_cv')[intc]
+        enuc2_o_cv = self.getRAdata(eht, 'enuc2_o_cv')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
-        gamma3 = self.getRAdata(eht,'gamma3')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_tt = self.getRAdata(eht,'tt')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_tt = self.getRAdata(eht, 'tt')
 
         # construct equation-specific mean fields		
         fht_ux = ddux / dd
@@ -91,13 +92,14 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         # self.plus_tau_grad_u_o_dd_cv = np.zeros(nx)
 
         # -res
-        self.minus_resTTequation = -(self.minus_dt_tt + self.minus_ux_grad_tt + \
-                                     self.minus_div_ftt + self.plus_one_minus_gamma3_tt_div_ux + self.plus_two_minus_gamma3_eht_ttf_df + \
-                                     self.plus_enuc_o_cv + self.plus_disstke_o_cv + self.plus_div_ftt_o_dd_cv)
+        self.minus_resTTequation = -(self.minus_dt_tt + self.minus_ux_grad_tt +
+                                     self.minus_div_ftt + self.plus_one_minus_gamma3_tt_div_ux +
+                                     self.plus_two_minus_gamma3_eht_ttf_df + self.plus_enuc_o_cv +
+                                     self.plus_disstke_o_cv + self.plus_div_ftt_o_dd_cv)
 
         ##########################
         # END TEMPERATURE EQUATION 
-        ##########################			
+        ##########################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -107,6 +109,10 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
 
     def plot_tt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TemperatureEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -127,25 +133,22 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         # plot DATA 
         plt.title(r'temperature')
 
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{T}$')
-            # define x LABEL
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{T}$')
+
+        # define x/y LABELS
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            plt.plot(grd1, plt1, color='brown', label=r'$\overline{T}$')
-            # define x LABEL
+            setylabel = r"$\overline{T} (K)$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print(
-                "ERROR (TemperatureEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-            # define y LABEL
-        setylabel = r"$\overline{T} (K)$"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\overline{T} (K)$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -158,6 +161,10 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
 
     def plot_tt_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TemperatureEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -186,7 +193,7 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
 
         # plot DATA 
         plt.title('temperature equation')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{T})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\overline{u}_x \partial_x \overline{T}$")
 
@@ -198,9 +205,7 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
             plt.plot(grd1, rhs5, color='m', label=r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
-            # define X label
-            setxlabel = r"x (cm)"
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{T})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\overline{u}_r \partial_r \overline{T}$")
 
@@ -210,20 +215,19 @@ class TemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
             plt.plot(grd1, rhs3, color='b', label=r"$+\overline{\epsilon_{nuc} / cv}$")
             plt.plot(grd1, rhs4, color='g', label=r"$+\overline{\varepsilon / cv}$")
             plt.plot(grd1, rhs5, color='m', label=r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")
-
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
-            # define X label
+
+        # show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"K s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-            # define y LABEL
-        setylabel = r"K s$^{-1}$"
-
-        # show x/y LABELS		
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"K s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
