@@ -1,8 +1,8 @@
-import numpy as np
-import sys
 import matplotlib.pyplot as plt
-import UTILS.SetAxisLimit as al
+import UTILS.SetAxisLimit as uSal
+import UTILS.Errors as eR
 import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -11,10 +11,10 @@ import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
+class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, kolmdissrate, bconv, tconv, data_prefix):
-        super(TurbulentKineticEnergyEquation, self)
+    def __init__(self, filename, ig, intc, kolmdissrate, bconv, tconv, data_prefix):
+        super(TurbulentKineticEnergyEquation, self).__init__()
 
         # instantiate turbulent kinetic energy object
         tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
@@ -73,6 +73,10 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
     def plot_tke(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy stratification in the model"""
 
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TurbulentKineticEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # load x GRID
         grd1 = self.xzn0
 
@@ -98,15 +102,14 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
+            setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -119,6 +122,10 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
 
     def plot_tke_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TurbulentKineticEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -146,10 +153,12 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
         # format AXIS, make sure it is exponential
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
-        cmodel = 0.5
+        # model constant for tke dissipation
+        Cm = 0.5
+
         # plot DATA 
-        plt.title(r'TKE equation C$_m$ = ' + str(cmodel))
-        if (self.ig == 1):
+        plt.title(r'TKE equation C$_m$ = ' + str(Cm))
+        if self.ig == 1:
             plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
             plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
@@ -157,9 +166,9 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")
-            plt.plot(grd1, cmodel*rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
+            plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
             plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
@@ -167,31 +176,27 @@ class TurbulentKineticEnergyEquation(al.SetAxisLimit, object):
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_r f_k$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_r f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$")
-            plt.plot(grd1, rhs5, color='k', linewidth=0.7, label=r"$-\overline{\rho} u^{'3}_{rms}/l_c$")
+            plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 10}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

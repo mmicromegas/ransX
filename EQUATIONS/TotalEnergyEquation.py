@@ -1,11 +1,10 @@
 import numpy as np
-import sys
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -14,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, tke_diss, data_prefix):
         super(TotalEnergyEquation, self).__init__(ig)
@@ -130,8 +129,8 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         rxy = dduxuy - ddux * dduy / dd
         rxz = dduxuz - ddux * dduz / dd
 
-        self.minus_r_grad_u = -(rxx * self.Grad(ddux / dd, xzn0) + \
-                                rxy * self.Grad(dduy / dd, xzn0) + \
+        self.minus_r_grad_u = -(rxx * self.Grad(ddux / dd, xzn0) +
+                                rxy * self.Grad(dduy / dd, xzn0) +
                                 rxz * self.Grad(dduz / dd, xzn0))
 
         # +dd Dt fht_ui_fht_ui_o_two
@@ -169,6 +168,10 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
     def plot_et(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean total energy stratification in the model"""
 
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TotalEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # load x GRID
         grd1 = self.xzn0
 
@@ -188,25 +191,22 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         # plot DATA 
         plt.title(r'total energy')
 
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\varepsilon}_t$')
-            # define x LABEL
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\varepsilon}_t$')
+
+        # define x/y LABELS
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\varepsilon}_t$')
-            # define x LABEL
+            setylabel = r"$\widetilde{\varepsilon}_t$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print(
-                "ERROR (TotalEnergyEquation.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        # define y LABEL
-        setylabel = r"$\widetilde{\varepsilon}_t$ (erg g$^{-1}$)"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\widetilde{\varepsilon}_t$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -219,6 +219,10 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
 
     def plot_et_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot total energy equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TotalEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -250,7 +254,7 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
 
         # plot DATA 
         plt.title('total energy equation')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_t )$")
             plt.plot(grd1, lhs1, color='k',
                      label=r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \widetilde{\epsilon}_t$)")
@@ -267,9 +271,7 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
                      label=r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\epsilon_t}$")
-            # define X label
-            setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_t )$")
             plt.plot(grd1, lhs1, color='k',
                      label=r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{\epsilon}_t$)")
@@ -286,16 +288,18 @@ class TotalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
                      label=r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\epsilon_t}$")
-            # define X label
-            setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
-        # define and show x/y LABELS				
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 10}, ncol=2)

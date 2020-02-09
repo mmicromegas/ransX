@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class ReynoldsStressXXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, minus_kolmrate, data_prefix):
         super(ReynoldsStressXXequation, self).__init__(ig)
@@ -147,6 +147,11 @@ class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
     def plot_rxx(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Reynolds stress xx in the model"""
 
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ReynoldsStressXXequation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # load x GRID
         grd1 = self.xzn0
 
@@ -165,13 +170,22 @@ class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
         # plot DATA 
         plt.title('rxx')
-        plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_r u''_r}$")
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_x u''_x}$")
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_r u''_r}$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$R_{xx}$ (erg g$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$R_{xx}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$R_{rr}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -206,7 +220,7 @@ class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
         res = self.minus_resRxxEquation
 
-        # rhs6 = self.minus_onethrd_kolmrate*self.dd
+        rhs6 = self.minus_onethrd_kolmrate*self.dd
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -230,7 +244,7 @@ class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x 2 f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xx}\partial_x \widetilde{u}_x$")
             # plt.plot(grd1, rhs5, color='y', label=r"$2 \mathcal{G}_k^r$")
-            # plt.plot(grd1,rhs6,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
+            plt.plot(grd1,rhs6,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{Rxx}$")
         elif self.ig == 2:
             plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t R_{rr}$')
@@ -242,19 +256,20 @@ class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_r 2 f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{rr}\partial_r \widetilde{u}_r$")
             plt.plot(grd1, rhs5, color='y', label=r"$2 \mathcal{G}_k^r$")
-            # plt.plot(grd1,rhs6,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
+            plt.plot(grd1,rhs6,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{Rrr}$")
 
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
         elif self.ig == 2:
             setxlabel = r"r (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
-
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=1, prop={'size': 10}, ncol=2)
@@ -266,8 +281,8 @@ class ReynoldsStressXXequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         plt.savefig('RESULTS/' + self.data_prefix + 'rxx_eq.png')
         plt.savefig('RESULTS/' + self.data_prefix + 'rxx_eq.eps')
 
-    def tke_dissipation(self):
-        return self.minus_resTkeEquation
+    # def tke_dissipation(self):
+    #    return self.minus_resTkeEquation
 
-    def tke(self):
-        return self.tke
+    # def tke(self):
+    #    return self.tke

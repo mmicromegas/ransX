@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class ReynoldsStressYYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, minus_kolmrate, data_prefix):
         super(ReynoldsStressYYequation, self).__init__(ig)
@@ -114,8 +114,9 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         self.minus_two_ryx_grad_fht_uy = -2. * ryx * self.Grad(fht_uy, xzn0)
 
         # +2 Gkt
-        GrrT = 2. * (dduxuyuy - 2. * dduy * dduxuy / dd - fht_ux * dduyuy + 2. * fht_uy * fht_uy * fht_ux * dd) / xzn0 - \
-               2. * (dduzuzuycoty - 2. * dduycoty * dduyuycoty / dd - 2. * dduycoty * dduzuzcoty / dd + \
+        GrrT = \
+            2. * (dduxuyuy - 2. * dduy * dduxuy / dd - fht_ux * dduyuy + 2. * fht_uy * fht_uy * fht_ux * dd) / xzn0 - \
+               2. * (dduzuzuycoty - 2. * dduycoty * dduyuycoty / dd - 2. * dduycoty * dduzuzcoty / dd +
                      2. * dduzcoty * dduzcoty * dduycoty / (dd * dd)) / xzn0
 
         uyff_GtM = (dduxuzuz - fht_uy * dduxuy) / xzn0 - \
@@ -131,8 +132,8 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
             sys.exit()
 
         # -res		
-        self.minus_resRyyEquation = -(self.minus_dt_ryy + self.minus_div_fht_ux_ryy + self.minus_div_two_fkt + \
-                                      self.plus_two_ppf_divuyff + \
+        self.minus_resRyyEquation = -(self.minus_dt_ryy + self.minus_div_fht_ux_ryy + self.minus_div_two_fkt +
+                                      self.plus_two_ppf_divuyff +
                                       self.minus_two_ryx_grad_fht_uy + self.plus_two_Gkt)
 
         # - kolm_rate 1/3 u'3/lc
@@ -150,6 +151,10 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
     def plot_ryy(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Reynolds stress yy in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ReynoldsStressYYequation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -169,13 +174,22 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
         # plot DATA 
         plt.title('ryy')
-        plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_\theta u''_\theta}$")
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_y u''_y}$")
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_\theta u''_\theta}$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$R_{yy}$ (erg g$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$R_{yy}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$R_{\theta \theta}$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -207,7 +221,7 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
         res = self.minus_resRyyEquation
 
-        # rhs4 = self.minus_onethrd_kolmrate*self.dd
+        rhs4 = self.minus_onethrd_kolmrate*self.dd
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -228,8 +242,8 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs0, color='c', label=r"$+2 \overline{P' \nabla u''_y }$")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\nabla_x 2 f_k^y$")
             plt.plot(grd1, rhs2, color='b', label=r"$-\widetilde{R}_{yx}\partial_x \widetilde{u}_y$")
-            #plt.plot(grd1, rhs3, color='y', label=r"$2 \mathcal{G}_k^t$")
-            # plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
+            # plt.plot(grd1, rhs3, color='y', label=r"$2 \mathcal{G}_k^t$")
+            plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{Ryy}$")
         elif self.ig == 2:
             plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t R_{\theta \theta}$')
@@ -239,19 +253,20 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\nabla_r 2 f_k^t$")
             plt.plot(grd1, rhs2, color='b', label=r"$-\widetilde{R}_{\theta r}\partial_r \widetilde{u}_\theta$")
             plt.plot(grd1, rhs3, color='y', label=r"$2 \mathcal{G}_k^t$")
-            # plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
+            plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{Rtt}$")
 
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
         elif self.ig == 2:
             setxlabel = r"r (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
-
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=1, prop={'size': 10}, ncol=2)
@@ -262,8 +277,8 @@ class ReynoldsStressYYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'ryy_eq.png')
 
-    def tke_dissipation(self):
-        return self.minus_resTkeEquation
+    # def tke_dissipation(self):
+    #    return self.minus_resTkeEquation
 
-    def tke(self):
-        return self.tke
+    # def tke(self):
+    #    return self.tke

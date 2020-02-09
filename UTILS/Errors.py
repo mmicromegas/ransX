@@ -23,3 +23,6 @@ class Errors:
 
     def errorProjectSpecific(self):
         return " Project Specific Properties Not Set Yet. EXITING ..."
+
+    def errorEos(self,ieos):
+        return "EOS " + str(ieos) + "not implemented. EXITING ..."

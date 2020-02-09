@@ -653,7 +653,6 @@ class MasterPlot():
         # instantiate 		
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'], \
                                                      params.getForProp('prop')['ig'], \
-                                                     params.getForProp('prop')['ieos'], \
                                                      params.getForProp('prop')['intc'], \
                                                      kolmdissrate, bconv, tconv, \
                                                      params.getForProp('prop')['prefix'])
@@ -678,7 +677,6 @@ class MasterPlot():
         # instantiate 		
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'], \
                                                      params.getForProp('prop')['ig'], \
-                                                     params.getForProp('prop')['ieos'], \
                                                      params.getForProp('prop')['intc'], \
                                                      kolmdissrate, bconv, tconv, \
                                                      params.getForProp('prop')['prefix'])

@@ -1,8 +1,7 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
@@ -14,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(RelativeRMSflct, self).__init__(ig)
@@ -53,9 +52,9 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
         self.eht_zbarrms = ((np.abs(zbarsq - zbar * zbar)) ** 0.5) / zbar
 
         # for ideal gas eos
-        if (ieos == 1):
+        if ieos == 1:
             gammac = self.getRAdata(eht, 'gammac')[intc]
-            sound = (gammac * pp / dd) ** (0.5)
+            sound = (gammac * pp / dd) ** 0.5
 
         self.ms2 = uxux / sound ** 2.  # mach number squared
 
@@ -66,6 +65,11 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
 
     def plot_relative_rms_flct(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot relative rms fluctuations in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(RelativeRMSflct.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -98,25 +102,21 @@ class RelativeRMSflct(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.semilogy(grd1, plt2, color='r', label=r"$T$")
         plt.semilogy(grd1, plt3, color='g', label=r"$P$")
         plt.semilogy(grd1, plt8, color='purple', label=r"$M_s$ (Mach)")
-        #plt.semilogy(grd1, plt4, color='b', label=r"$M_s^2 = u_r^2/c_s^2$")
+        # plt.semilogy(grd1, plt4, color='b', label=r"$M_s^2 = u_r^2/c_s^2$")
         # plt.semilogy(grd1,plt5,color='m',label = r"$S$")
         # plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
         # plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")
 
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
+            setylabel = r"$q'_{rms} \ / \ \overline{q}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        # define y LABEL
-        setylabel = r"$q'_{rms} \ / \ \overline{q}$"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$q'_{rms} \ / \ \overline{q}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 12})

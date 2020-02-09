@@ -1,10 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, tke_diss, data_prefix):
         super(InternalEnergyEquation, self).__init__(ig)
@@ -21,30 +22,30 @@ class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ddei = self.getRAdata(eht,'ddei')[intc]
-        ddeiux = self.getRAdata(eht,'ddeiux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ddei = self.getRAdata(eht, 'ddei')[intc]
+        ddeiux = self.getRAdata(eht, 'ddeiux')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
 
-        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
-        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
+        ddenuc1 = self.getRAdata(eht, 'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht, 'ddenuc2')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddei = self.getRAdata(eht,'ddei')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddei = self.getRAdata(eht, 'ddei')
         t_fht_ei = t_ddei / t_dd
 
         # construct equation-specific mean fields		
@@ -81,13 +82,13 @@ class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         self.plus_disstke = +tke_diss
 
         # -res
-        self.minus_resEiEquation = -(self.minus_dt_dd_fht_ei + self.minus_div_dd_fht_ux_fht_ei + \
-                                     self.minus_div_fei + self.minus_div_ftt + self.minus_pp_div_ux + self.minus_eht_ppf_df + \
+        self.minus_resEiEquation = -(self.minus_dt_dd_fht_ei + self.minus_div_dd_fht_ux_fht_ei +
+                                     self.minus_div_fei + self.minus_div_ftt + self.minus_pp_div_ux + self.minus_eht_ppf_df +
                                      self.plus_dd_fht_enuc + self.plus_disstke)
 
         ##############################
         # END INTERNAL ENERGY EQUATION 
-        ##############################			
+        ##############################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -96,6 +97,10 @@ class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
 
     def plot_ei(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian internal energy stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(InternalEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -118,10 +123,16 @@ class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\varepsilon}_I$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\widetilde{\varepsilon}_I$ (erg g$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\widetilde{\varepsilon}_I$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\widetilde{\varepsilon}_I$ (erg g$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -134,6 +145,10 @@ class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
 
     def plot_ei_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(InternalEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -162,23 +177,42 @@ class InternalEnergyEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
 
         # plot DATA 
         plt.title('internal energy equation')
-        plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_I )$")
-        plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{\epsilon}_I$)")
+        if self.ig == 1:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_I )$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \widetilde{\epsilon}_I$)")
 
-        plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_I $")
-        plt.plot(grd1, rhs1, color='c', label=r"$-\nabla_r f_T$ (not incl.)")
-        plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\bar{P} \bar{d}$")
-        plt.plot(grd1, rhs3, color='r', label=r"$-W_P$")
-        plt.plot(grd1, rhs4, color='b', label=r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
-        plt.plot(grd1, rhs5, color='m', label=r"$+\varepsilon_k$")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_I $")
+            plt.plot(grd1, rhs1, color='c', label=r"$-\nabla_x f_T$ (not incl.)")
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\bar{P} \bar{d}$")
+            plt.plot(grd1, rhs3, color='r', label=r"$-W_P$")
+            plt.plot(grd1, rhs4, color='b', label=r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
+            plt.plot(grd1, rhs5, color='m', label=r"$+\varepsilon_k$")
 
-        plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\epsilon$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\epsilon$")
+        elif self.ig == 2:
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{\epsilon}_I )$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho}\widetilde{u}_r \widetilde{\epsilon}_I$)")
+
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_I $")
+            plt.plot(grd1, rhs1, color='c', label=r"$-\nabla_r f_T$ (not incl.)")
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\bar{P} \bar{d}$")
+            plt.plot(grd1, rhs3, color='r', label=r"$-W_P$")
+            plt.plot(grd1, rhs4, color='b', label=r"$+\overline{\rho}\widetilde{\epsilon}_{nuc}$")
+            plt.plot(grd1, rhs5, color='m', label=r"$+\varepsilon_k$")
+
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\epsilon$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"erg cm$^{-3}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"erg cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 10}, ncol=2)

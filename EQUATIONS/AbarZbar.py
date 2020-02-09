@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class AbarZbar(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class AbarZbar(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(AbarZbar, self).__init__(ig)
@@ -33,6 +34,11 @@ class AbarZbar(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def plot_abarzbar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot abarzbar in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(AbarZbar.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -57,11 +63,16 @@ class AbarZbar(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
         plt.plot(grd1, plt2, color='b', label=r"$\overline{Z}$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{Z},\overline{A}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\overline{Z},\overline{A}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\overline{Z},\overline{A}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
