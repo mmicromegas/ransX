@@ -1,11 +1,11 @@
 import numpy as np
-import sys
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class PressureInternalEnergy(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(PressureInternalEnergy, self).__init__(ig)
@@ -22,13 +22,13 @@ class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	 
 
-        pp = self.getRAdata(eht,'pp')[intc]
-        ei = self.getRAdata(eht,'ei')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        ei = self.getRAdata(eht, 'ei')[intc]
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -40,19 +40,21 @@ class PressureInternalEnergy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
     def plot_ppei(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot pressure and internal energy stratification in the model"""
 
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(PressureInternalEnergy.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # load x GRID
         grd1 = self.xzn0
 
         to_plt1 = np.log10(self.pp)
         to_plt2 = np.log10(self.ei)
 
-        if (self.ig == 1):
+        if self.ig == 1:
             xlabel_1 = r'x (cm)'
-        elif (self.ig == 2):
+        elif self.ig == 2:
             xlabel_1 = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         ylabel_1 = r'log $\overline{P}$ (erg cm$^{-3}$)'
         ylabel_2 = r'log $\overline{\epsilon}$ (ergs)'

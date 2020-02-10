@@ -407,12 +407,12 @@ class MasterPlot():
                            params.getForEqs(x)['ybd'], \
                            params.getForEqs(x)['ilg'])
 
-        ransXtra.plot_X(params.getForProp('prop')['laxis'], \
-                        params.getForEqs(x)['xbl'], \
-                        params.getForEqs(x)['xbr'], \
-                        params.getForEqs(x)['ybu'], \
-                        params.getForEqs(x)['ybd'], \
-                        params.getForEqs(x)['ilg'])
+        # ransXtra.plot_X(params.getForProp('prop')['laxis'], \
+        #                params.getForEqs(x)['xbl'], \
+        #                params.getForEqs(x)['xbr'], \
+        #                params.getForEqs(x)['ybu'], \
+        #                params.getForEqs(x)['ybd'], \
+        #                params.getForEqs(x)['ilg'])
 
         # ransXtra.plot_gradX(params.getForProp('prop')['laxis'],\
         #                   params.getForEqs(x)['xbl'],\
@@ -420,6 +420,23 @@ class MasterPlot():
         #                   params.getForEqs(x)['ybu'],\
         #                   params.getForEqs(x)['ybd'],\
         #                   params.getForEqs(x)['ilg'])
+
+    def execX(self, inuc, element, x, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+                                           params.getForProp('prop')['ig'],
+                                           inuc, element, bconv, tconv,
+                                           params.getForProp('prop')['intc'],
+                                           params.getForProp('prop')['prefix'])
+
+        ransXtra.plot_X(params.getForProp('prop')['laxis'],
+                        params.getForEqs(x)['xbl'],
+                        params.getForEqs(x)['xbr'],
+                        params.getForEqs(x)['ybu'],
+                        params.getForEqs(x)['ybd'],
+                        params.getForEqs(x)['ilg'])
 
     def execXtrsEq(self, inuc, element, x, bconv, tconv):
         params = self.params
@@ -472,7 +489,7 @@ class MasterPlot():
                               params.getForEqs(x)['ybd'], \
                               params.getForEqs(x)['ilg'])
 
-        #ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
+        # ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
         #                                params.getForEqs(x)['xbl'], \
         #                                params.getForEqs(x)['xbr'], \
         #                                params.getForEqs(x)['ybu'], \
@@ -503,7 +520,7 @@ class MasterPlot():
                                        params.getForEqs(x)['ybd'], \
                                        params.getForEqs(x)['ilg'])
 
-        #ransXflxx.plot_XfluxX_equation2(params.getForProp('prop')['laxis'], \
+        # ransXflxx.plot_XfluxX_equation2(params.getForProp('prop')['laxis'], \
         #                                params.getForEqs(x)['xbl'], \
         #                                params.getForEqs(x)['xbr'], \
         #                                params.getForEqs(x)['ybu'], \
@@ -2180,19 +2197,19 @@ class MasterPlot():
 
         # instantiate
         ransDivu = divu.DivuDilatation(params.getForProp('prop')['eht_data'],
-                                        params.getForProp('prop')['ig'],
-                                        params.getForProp('prop')['fext'],
-                                        params.getForProp('prop')['ieos'],
-                                        params.getForProp('prop')['intc'],
-                                        params.getForProp('prop')['prefix'],
-                                        bconv, tconv)
+                                       params.getForProp('prop')['ig'],
+                                       params.getForProp('prop')['fext'],
+                                       params.getForProp('prop')['ieos'],
+                                       params.getForProp('prop')['intc'],
+                                       params.getForProp('prop')['prefix'],
+                                       bconv, tconv)
 
         ransDivu.plot_divu(params.getForProp('prop')['laxis'],
-                            params.getForEqs('divu')['xbl'],
-                            params.getForEqs('divu')['xbr'],
-                            params.getForEqs('divu')['ybu'],
-                            params.getForEqs('divu')['ybd'],
-                            params.getForEqs('divu')['ilg'])
+                           params.getForEqs('divu')['xbl'],
+                           params.getForEqs('divu')['xbr'],
+                           params.getForEqs('divu')['ybu'],
+                           params.getForEqs('divu')['ybd'],
+                           params.getForEqs('divu')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

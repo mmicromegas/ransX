@@ -1,11 +1,12 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import os
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -14,7 +15,7 @@ import os
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Xdiffusivity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, lc, uconv, bconv, tconv, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
@@ -50,6 +51,10 @@ class Xdiffusivity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def plot_X_Ediffusivity(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Eulerian diffusivity
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(Xdiffusivity.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -171,10 +176,16 @@ class Xdiffusivity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
         # plt.plot(grd1,Dgauss,color='b',label='model gauss')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"cm$^{-2}$ s$^{-1}$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"cm$^{-2}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"cm$^{-2}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 15})

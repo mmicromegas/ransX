@@ -159,8 +159,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # plot DATA 
         plt.title(r'TKE equation C$_m$ = ' + str(Cm))
         if self.ig == 1:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
             plt.plot(grd1, rhs1, color='c', label=r'$+W_p$')
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k$")
@@ -169,8 +169,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
             plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
         elif self.ig == 2:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
             plt.plot(grd1, rhs1, color='c', label=r'$+W_p$')
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_r f_k$")

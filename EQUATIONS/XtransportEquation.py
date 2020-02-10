@@ -2,8 +2,8 @@ import numpy as np
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 
@@ -14,7 +14,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
         super(XtransportEquation, self).__init__(ig)
@@ -104,6 +104,10 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
 
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
         # convert nuc ID to string
         # xnucid = str(self.inuc)
         element = self.element
@@ -133,18 +137,16 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"$\overline{\rho} \widetilde{X}$ (g cm$^{-3}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\overline{\rho} \widetilde{X}$ (g cm$^{-3}$)"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\overline{\rho} \widetilde{X}$ (g cm$^{-3}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -157,6 +159,10 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
 
     def plot_X(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         # xnucid = str(self.inuc)
@@ -187,18 +193,16 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"$\widetilde{X}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\widetilde{X}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\widetilde{X}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -211,6 +215,10 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
 
     def plot_gradX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot grad X stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         # xnucid = str(self.inuc)
@@ -243,18 +251,16 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"$\partial_r \widetilde{X}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\partial_r \widetilde{X}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\partial_r \widetilde{X}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -267,6 +273,10 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
 
     def plot_Xtransport_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho transport equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         # xnucid = str(self.inuc)
@@ -295,39 +305,34 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
 
         # plot DATA
         plt.title('rhoX transport for ' + element)
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1, lhs1, color='cyan', label=r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f$')
             plt.plot(grd1, rhs1, color='g', label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1, lhs1, color='cyan', label=r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f$')
             plt.plot(grd1, rhs1, color='g', label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 12},ncol=2)
@@ -340,6 +345,10 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
 
     def plot_Xtransport_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of composition transport equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         element = self.element
 
@@ -414,8 +423,8 @@ class XtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, ob
 
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
-        group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{X})$', \
-                        r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$', \
+        group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{X})$',
+                        r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$',
                         r'$-\nabla_r f$', r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$', 'res']
 
         # Set the x tick labels to the group_labels defined above.

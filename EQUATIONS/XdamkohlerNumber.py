@@ -1,10 +1,12 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +14,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XdamkohlerNumber(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
         super(XdamkohlerNumber, self).__init__(ig)
@@ -21,18 +23,18 @@ class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
         # assign global data to be shared across whole class
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
-        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
@@ -47,7 +49,7 @@ class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         self.xda = tau_trans / tau_nuc
 
         self.data_prefix = data_prefix
-        self.xzn0 = self.getRAdata(eht,'xzn0')
+        self.xzn0 = self.getRAdata(eht, 'xzn0')
         self.element = element
         self.inuc = inuc
         self.bconv = bconv
@@ -55,6 +57,10 @@ class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
 
     def plot_Xda(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Damkohler number
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XdamkohlerNumber.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -82,10 +88,16 @@ class XdamkohlerNumber(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$D_a^i$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$D_a^i$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$D_a^i$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 15})

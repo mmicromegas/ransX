@@ -1,11 +1,10 @@
 import numpy as np
-import sys
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -14,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class FullTurbulenceVelocityFieldHypothesisX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class FullTurbulenceVelocityFieldHypothesisX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, fext, ieos, intc, data_prefix, bconv, tconv):
         super(FullTurbulenceVelocityFieldHypothesisX, self).__init__(ig)
@@ -142,7 +141,7 @@ class FullTurbulenceVelocityFieldHypothesisX(calc.Calculus, al.SetAxisLimit, uT.
         uzppdivu = self.getRAdata(eht, 'uzppdivu')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
+        if ieos == 1:
             cp = self.getRAdata(eht, 'cp')[intc]
             cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
@@ -316,13 +315,14 @@ class FullTurbulenceVelocityFieldHypothesisX(calc.Calculus, al.SetAxisLimit, uT.
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
+            setylabel = r"cm s$^{-2}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
+            setylabel = r"cm s$^{-2}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
-
-        setylabel = r"cm s$^{-2}$"
-        plt.ylabel(setylabel)
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
@@ -344,4 +344,3 @@ class FullTurbulenceVelocityFieldHypothesisX(calc.Calculus, al.SetAxisLimit, uT.
             plt.savefig('RESULTS/' + self.data_prefix + 'full_turb_velX_field_hypothesis.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'full_turb_velX_field_hypothesis.eps')
-

@@ -236,8 +236,8 @@ class ReynoldsStressYYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         # plot DATA 
         plt.title('reynolds stress yy equation')
         if self.ig == 1:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t R_{yy}$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_x (\widetilde{u}_x R_{yy})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t R_{yy}$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\widetilde{u}_x R_{yy})$")
 
             plt.plot(grd1, rhs0, color='c', label=r"$+2 \overline{P' \nabla u''_y }$")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\nabla_x 2 f_k^y$")
@@ -246,8 +246,8 @@ class ReynoldsStressYYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
             plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{Ryy}$")
         elif self.ig == 2:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t R_{\theta \theta}$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_r (\widetilde{u}_r R_{\theta \theta})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t R_{\theta \theta}$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\widetilde{u}_r R_{\theta \theta})$")
 
             plt.plot(grd1, rhs0, color='c', label=r"$+2 \overline{P' \nabla u''_\theta }$")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\nabla_r 2 f_k^t$")

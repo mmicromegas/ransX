@@ -1,10 +1,11 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XvarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, tauL, bconv, tconv, intc, data_prefix):
         super(XvarianceEquation, self).__init__(ig)
@@ -21,50 +22,50 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        xi = self.getRAdata(eht,'x' + inuc)[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        xi = self.getRAdata(eht, 'x' + inuc)[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
-        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
-        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
-        ddxisq = self.getRAdata(eht,'ddx' + inuc + 'sq')[intc]
-        ddxisqux = self.getRAdata(eht,'ddx' + inuc + 'squx')[intc]
+        ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
+        ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
+        ddxisq = self.getRAdata(eht, 'ddx' + inuc + 'sq')[intc]
+        ddxisqux = self.getRAdata(eht, 'ddx' + inuc + 'squx')[intc]
 
-        ddxiuxux = self.getRAdata(eht,'ddx' + inuc + 'uxux')[intc]
-        ddxiuyuy = self.getRAdata(eht,'ddx' + inuc + 'uyuy')[intc]
-        ddxiuzuz = self.getRAdata(eht,'ddx' + inuc + 'uzuz')[intc]
+        ddxiuxux = self.getRAdata(eht, 'ddx' + inuc + 'uxux')[intc]
+        ddxiuyuy = self.getRAdata(eht, 'ddx' + inuc + 'uyuy')[intc]
+        ddxiuzuz = self.getRAdata(eht, 'ddx' + inuc + 'uzuz')[intc]
 
-        ddxixidot = self.getRAdata(eht,'ddx' + inuc + 'x' + inuc + 'dot')[intc]
-        ddxidotux = self.getRAdata(eht,'ddx' + inuc + 'dotux')[intc]
+        ddxixidot = self.getRAdata(eht, 'ddx' + inuc + 'x' + inuc + 'dot')[intc]
+        ddxidotux = self.getRAdata(eht, 'ddx' + inuc + 'dotux')[intc]
 
-        xigradxpp = self.getRAdata(eht,'x' + inuc + 'gradxpp')[intc]
+        xigradxpp = self.getRAdata(eht, 'x' + inuc + 'gradxpp')[intc]
 
         ######################
         # Xi VARIANCE EQUATION 
-        ######################	
+        ######################
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddux = self.getRAdata(eht,'ddux')
-        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
-        t_ddxisq = self.getRAdata(eht,'ddx' + inuc + 'sq')
-        t_ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_ddxi = self.getRAdata(eht, 'ddx' + inuc)
+        t_ddxisq = self.getRAdata(eht, 'ddx' + inuc + 'sq')
+        t_ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')
 
         # construct equation-specific mean fields
         t_eht_dd_sigmai = t_ddxisq - t_ddxi * t_ddxi / t_dd
@@ -91,8 +92,8 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.plus_two_xiff_eht_dd_xidot = +2. * (ddxixidot - (ddxi / dd) * ddxidot)
 
         # -res
-        self.minus_resXiVariance = -(self.minus_dt_eht_dd_sigmai + self.minus_div_eht_dd_fht_ux_sigmai + \
-                                     self.minus_div_fsigmai + self.minus_two_fxi_gradx_fht_xi + \
+        self.minus_resXiVariance = -(self.minus_dt_eht_dd_sigmai + self.minus_div_eht_dd_fht_ux_sigmai +
+                                     self.minus_div_fsigmai + self.minus_two_fxi_gradx_fht_xi +
                                      self.plus_two_xiff_eht_dd_xidot)
 
         ##########################
@@ -114,6 +115,10 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
     def plot_Xvariance(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xvariance stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XvarianceEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -140,18 +145,16 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.semilogy(grd1, plt1, color='b', label=r"$\sigma_i$")
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"$\widetilde{X''_i X''_i}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\widetilde{X''_i X''_i}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\widetilde{X''_i X''_i}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -164,6 +167,10 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
     def plot_Xvariance_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xi variance equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XvarianceEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -196,46 +203,43 @@ class XvarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, rhs3, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        modelconst = 0.25
+        # model constant for variance dissipation
+        Cm = 0.1
+
         # plot DATA 
-        plt.title(r'Xvariance equation for ' + self.element + ' C$_m$ = '+ str(modelconst))
-        if (self.ig == 1):
+        plt.title(r'Xvariance equation for ' + self.element + ' C$_m$ = ' + str(Cm))
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='cyan', label=r'$-\partial_t (\overline{\rho} \sigma)$')
             plt.plot(grd1, lhs1, color='purple', label=r'$-\nabla_x (\overline{\rho} \widetilde{u}_x \sigma)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^\sigma$')
             plt.plot(grd1, rhs1, color='g', label=r'$-2 f_i \partial_x \widetilde{X}$')
             plt.plot(grd1, rhs2, color='r', label=r'$+2 \overline{\rho X'' \dot{X}}$')
-            plt.plot(grd1, modelconst*rhs3, color='k', linewidth=0.8, label=r'$- C_m \ \overline{\rho} \sigma / \tau_L$')
+            plt.plot(grd1, Cm * rhs3, color='k', linewidth=0.8, label=r'$- C_m \ \overline{\rho} \sigma / \tau_L$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='cyan', label=r'$-\partial_t (\overline{\rho} \sigma)$')
             plt.plot(grd1, lhs1, color='purple', label=r'$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f^\sigma$')
             plt.plot(grd1, rhs1, color='g', label=r'$-2 f_i \partial_r \widetilde{X}$')
             plt.plot(grd1, rhs2, color='r', label=r'$+2 \overline{\rho X'' \dot{X}}$')
-            plt.plot(grd1, modelconst*rhs3, color='k', linewidth=0.8, label=r'$- C \overline{\rho} \sigma / \tau_L$')
+            plt.plot(grd1, Cm * rhs3, color='k', linewidth=0.8, label=r'$- C \overline{\rho} \sigma / \tau_L$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 10})

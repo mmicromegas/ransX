@@ -1,11 +1,11 @@
 import numpy as np
-import sys
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Gravity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class Gravity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(Gravity, self).__init__(ig)
@@ -22,12 +22,12 @@ class Gravity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        grav = self.getRAdata(eht,'gg')[intc]
+        grav = self.getRAdata(eht, 'gg')[intc]
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -37,6 +37,11 @@ class Gravity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def plot_grav(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot gravity in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(Gravity.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -56,27 +61,22 @@ class Gravity(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
         # plot DATA 
         plt.title('Gravitational Acceleration')
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{g}_x$')
-        elif (self.ig == 2):
-            plt.plot(grd1, plt1, color='brown', label=r'$\overline{g}_x$')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\overline{g}_r$')
 
             # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r'$\overline{g}_x$ (cm s$^{-2}$)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r'$\overline{g}_x$ (cm s$^{-2}$)'
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r'$\overline{g}_r$ (cm s$^{-2}$)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

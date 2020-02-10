@@ -1,11 +1,11 @@
 import numpy as np
-import sys
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(NuclearEnergyProduction, self).__init__(ig)
@@ -22,14 +22,13 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick pecific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        enuc = self.getRAdata(eht,'enuc1')[intc] + \
-               self.getRAdata(eht,'enuc2')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        enuc = self.getRAdata(eht, 'enuc1')[intc] + self.getRAdata(eht, 'enuc2')[intc]
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -40,6 +39,11 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
     def plot_enuc(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot nuclear energy production stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(NuclearEnergyProduction.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -64,18 +68,16 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\varepsilon_{nuc}}$')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -88,6 +90,11 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
     def plot_enuc_per_volume(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot nuclear energy production stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(NuclearEnergyProduction.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -112,18 +119,16 @@ class NuclearEnergyProduction(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\varepsilon_{nuc}}$')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg cm$^{-3}$ s$^{-1}$)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg cm$^{-3}$ s$^{-1}$)'
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg cm$^{-3}$ s$^{-1}$)'
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

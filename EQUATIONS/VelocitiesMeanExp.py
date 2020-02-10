@@ -1,11 +1,12 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,7 +14,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(VelocitiesMeanExp, self).__init__(ig)
@@ -22,19 +23,19 @@ class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        ux = self.getRAdata(eht,'ux')[intc]
-        dd = self.getRAdata(eht,'dd')[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_mm = self.getRAdata(eht,'mm')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_mm = self.getRAdata(eht, 'mm')
 
         minus_dt_mm = -self.dt(t_mm, xzn0, t_timec, intc)
 
@@ -53,6 +54,11 @@ class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
     def plot_velocities(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(VelocitiesMeanExp.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -77,26 +83,19 @@ class VelocitiesMeanExp(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.title('velocities')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_r$')
         plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_r$')
-        #plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
+        # plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
         # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 
-        if (self.ig == 1):
-            # define x LABEL
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            # define x LABEL
+            setylabel = r"velocity (cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print(
-                "ERROR(VelocitiesMeanExp.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        # define y LABELS
-        setylabel = r"velocity (cm s$^{-1}$)"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"velocity (cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

@@ -214,8 +214,8 @@ class PressureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         # plot DATA 
         plt.title(r"pp variance equation C$_m$ = " + str(Cm))
         if self.ig == 1:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x \sigma_P$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x \sigma_P$")
             plt.plot(grd1, rhs0, color='r', label=r"$-\nabla f_{\sigma P}$")
             plt.plot(grd1, rhs1, color='c', label=r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-2 f_P \partial_x \overline{P}$")
@@ -226,8 +226,8 @@ class PressureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
             plt.plot(grd1, Cm*rhs6, color='k', linewidth=0.8, label=r"$-C_m \sigma_P / \tau_L$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
         elif self.ig == 2:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \sigma_P$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t \sigma_P$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \sigma_P$")
             plt.plot(grd1, rhs0, color='r', label=r"$-\nabla f_{\sigma P}$")
             plt.plot(grd1, rhs1, color='c', label=r"$-2 \Gamma_1 \overline{P} \ \overline{P'd''}$")
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-2 f_P \partial_r \overline{P}$")

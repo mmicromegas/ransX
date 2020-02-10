@@ -1,10 +1,11 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XfluxYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, inuc, element, bconv, tconv, tke_diss, tauL, intc, data_prefix):
         super(XfluxYequation, self).__init__(ig)
@@ -21,83 +22,83 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        uy = self.getRAdata(eht,'uy')[intc]
-        uz = self.getRAdata(eht,'uz')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        xi = self.getRAdata(eht,'x' + inuc)[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        xi = self.getRAdata(eht, 'x' + inuc)[intc]
 
-        uxy = self.getRAdata(eht,'uxy')[intc]
-        uxz = self.getRAdata(eht,'uxz')[intc]
+        uxy = self.getRAdata(eht, 'uxy')[intc]
+        uxz = self.getRAdata(eht, 'uxz')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
-        ddgg = self.getRAdata(eht,'ddgg')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
+        ddgg = self.getRAdata(eht, 'ddgg')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
-        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
-        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
+        dduxuy = self.getRAdata(eht, 'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht, 'dduxuz')[intc]
 
-        uxux = self.getRAdata(eht,'uxux')[intc]
-        uxuy = self.getRAdata(eht,'uxuy')[intc]
-        uxuz = self.getRAdata(eht,'uxuz')[intc]
-        uyuy = self.getRAdata(eht,'uyuy')[intc]
-        uzuz = self.getRAdata(eht,'uzuz')[intc]
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uxuy = self.getRAdata(eht, 'uxuy')[intc]
+        uxuz = self.getRAdata(eht, 'uxuz')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
 
-        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
-        xiux = self.getRAdata(eht,'x' + inuc + 'ux')[intc]
-        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
-        ddxiuy = self.getRAdata(eht,'ddx' + inuc + 'uy')[intc]
-        ddxiuz = self.getRAdata(eht,'ddx' + inuc + 'uz')[intc]
-        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
+        ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
+        xiux = self.getRAdata(eht, 'x' + inuc + 'ux')[intc]
+        ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
+        ddxiuy = self.getRAdata(eht, 'ddx' + inuc + 'uy')[intc]
+        ddxiuz = self.getRAdata(eht, 'ddx' + inuc + 'uz')[intc]
+        ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
 
-        gradypp = self.getRAdata(eht,'gradypp')[intc]
+        gradypp = self.getRAdata(eht, 'gradypp')[intc]
 
-        ddxiuzuzcoty = self.getRAdata(eht,'ddx' + inuc + 'uzuzcoty')[intc]
-        dduzuzcoty = self.getRAdata(eht,'dduzuzcoty')[intc]
+        ddxiuzuzcoty = self.getRAdata(eht, 'ddx' + inuc + 'uzuzcoty')[intc]
+        dduzuzcoty = self.getRAdata(eht, 'dduzuzcoty')[intc]
 
-        xigradxpp = self.getRAdata(eht,'x' + inuc + 'gradxpp')[intc]
-        xigradypp = self.getRAdata(eht,'x' + inuc + 'gradypp')[intc]
+        xigradxpp = self.getRAdata(eht, 'x' + inuc + 'gradxpp')[intc]
+        xigradypp = self.getRAdata(eht, 'x' + inuc + 'gradypp')[intc]
 
-        ddxidotux = self.getRAdata(eht,'ddx' + inuc + 'dotux')[intc]
-        ddxidotuy = self.getRAdata(eht,'ddx' + inuc + 'dotuy')[intc]
-        ddxidotuz = self.getRAdata(eht,'ddx' + inuc + 'dotuz')[intc]
+        ddxidotux = self.getRAdata(eht, 'ddx' + inuc + 'dotux')[intc]
+        ddxidotuy = self.getRAdata(eht, 'ddx' + inuc + 'dotuy')[intc]
+        ddxidotuz = self.getRAdata(eht, 'ddx' + inuc + 'dotuz')[intc]
 
-        ddxiuxux = self.getRAdata(eht,'ddx' + inuc + 'uxux')[intc]
-        ddxiuyuy = self.getRAdata(eht,'ddx' + inuc + 'uyuy')[intc]
-        ddxiuzuz = self.getRAdata(eht,'ddx' + inuc + 'uzuz')[intc]
-        ddxiuxuy = self.getRAdata(eht,'ddx' + inuc + 'uxuy')[intc]
-        ddxiuxuz = self.getRAdata(eht,'ddx' + inuc + 'uxuz')[intc]
+        ddxiuxux = self.getRAdata(eht, 'ddx' + inuc + 'uxux')[intc]
+        ddxiuyuy = self.getRAdata(eht, 'ddx' + inuc + 'uyuy')[intc]
+        ddxiuzuz = self.getRAdata(eht, 'ddx' + inuc + 'uzuz')[intc]
+        ddxiuxuy = self.getRAdata(eht, 'ddx' + inuc + 'uxuy')[intc]
+        ddxiuxuz = self.getRAdata(eht, 'ddx' + inuc + 'uxuz')[intc]
 
-        xiddgg = self.getRAdata(eht,'x' + inuc + 'ddgg')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        xiddgg = self.getRAdata(eht, 'x' + inuc + 'ddgg')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
-        gamma3 = self.getRAdata(eht,'gamma3')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
-        gamma1 = self.getRAdata(eht,'ux')[intc]
-        gamma3 = self.getRAdata(eht,'ux')[intc]
+        gamma1 = self.getRAdata(eht, 'ux')[intc]
+        gamma3 = self.getRAdata(eht, 'ux')[intc]
 
         fht_rxx = dduxux - ddux * ddux / dd
         fdil = (uxdivu - ux * divu)
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_dduy = self.getRAdata(eht,'dduy')
-        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
-        t_ddxiuy = self.getRAdata(eht,'ddx' + inuc + 'uy')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_dduy = self.getRAdata(eht, 'dduy')
+        t_ddxi = self.getRAdata(eht, 'ddx' + inuc)
+        t_ddxiuy = self.getRAdata(eht, 'ddx' + inuc + 'uy')
 
         ##################
         # Xi FLUX EQUATION 
@@ -120,11 +121,11 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         fzi = ddxiuz - ddxi * dduz / dd
 
         fxxi = ddxiuxux - (ddxi / dd) * dduxux - (ddux / dd) * ddxiux - (
-                    ddux / dd) * ddxiux + 2. * ddxi * ddux * ddux / (dd * dd)
+                ddux / dd) * ddxiux + 2. * ddxi * ddux * ddux / (dd * dd)
         fyxi = ddxiuxuy - (ddxi / dd) * dduxuy - (dduy / dd) * ddxiux - (
-                    ddux / dd) * ddxiuy + 2. * ddxi * dduy * ddux / (dd * dd)
+                ddux / dd) * ddxiuy + 2. * ddxi * dduy * ddux / (dd * dd)
         fzxi = ddxiuxuz - (ddxi / dd) * dduxuz - (dduz / dd) * ddxiux - (
-                    ddux / dd) * ddxiuz + 2. * ddxi * dduz * ddux / (dd * dd)
+                ddux / dd) * ddxiuz + 2. * ddxi * dduz * ddux / (dd * dd)
 
         # LHS -dq/dt 
         self.minus_dt_fyi = -self.dt(t_fyi, xzn0, t_timec, intc)
@@ -141,29 +142,29 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         # RHS -ryx gradx fht_xi
         self.minus_ryx_gradx_fht_xi = -ryx * self.Grad(fht_xi, xzn0)
 
-        if (ig == 1):
+        if ig == 1:
             # RHS -xff_grady_pp
-            self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi*gradypp)
-        elif (ig == 2):
+            self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi * gradypp)
+            self.minus_eht_xff_grady_pp_o_rr = np.zeros(nx) # set to zero, looks like bug
+        elif ig == 2:
             # RHS -xff_grady_pp_o_rr
-            self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi*gradypp)/xzn0
+            self.minus_eht_xff_grady_pp_o_rr = -(xigradypp - fht_xi * gradypp) / xzn0
 
         # RHS +uyff_eht_dd_xidot
         self.plus_uyff_eht_dd_xidot = +(ddxidotuy - (dduy / dd) * ddxidot)
 
         # RHS +gi 
         self.plus_gi = \
-            -((ddxiuxuy - (ddxi / dd) * dduxuy) / xzn0 - \
-              ((ddxiuzuzcoty + (ddxi / dd) * dduzuzcoty) / xzn0))
+            -((ddxiuxuy - (ddxi / dd) * dduxuy) / xzn0 - ((ddxiuzuzcoty + (ddxi / dd) * dduzuzcoty) / xzn0))
 
         # -res				   
-        self.minus_resXiFlux = -(self.minus_dt_fyi + self.minus_div_fht_ux_fyi + self.minus_div_fyxi + \
-                                 self.minus_fxi_gradx_fht_uy + self.minus_ryx_gradx_fht_xi + \
+        self.minus_resXiFlux = -(self.minus_dt_fyi + self.minus_div_fht_ux_fyi + self.minus_div_fyxi +
+                                 self.minus_fxi_gradx_fht_uy + self.minus_ryx_gradx_fht_xi +
                                  self.minus_eht_xff_grady_pp_o_rr + self.plus_uyff_eht_dd_xidot + self.plus_gi)
 
         ######################
         # END Xi FLUX EQUATION 
-        ######################	
+        ######################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -177,6 +178,10 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
     def plot_XfluxY(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XfluxYEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -211,17 +216,16 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         # plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_\theta}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"$\overline{\rho} \widetilde{X''_i u''_\theta}$ (g cm$^{-2}$ s$^{-1}$)"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_\theta}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -234,6 +238,10 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
     def plot_XfluxY_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xi flux equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XfluxYEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -252,10 +260,10 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
         rhs4 = self.plus_uyff_eht_dd_xidot
         rhs5 = self.plus_gi
 
-        if (self.ig == 1):
+        if self.ig == 1:
             res = -(lhs0 + lhs1 + rhs0 + rhs1 + rhs2 + rhs3 + rhs4)
             rhs5 = np.zeros(self.nx)
-        elif (self.ig == 2):
+        elif self.ig == 2:
             res = self.minus_resXiFlux
 
         # create FIGURE
@@ -270,17 +278,17 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
 
         # plot DATA 
         plt.title('Xflux Y equation for ' + self.element)
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_y$')
             plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_x (\widetilde{u}_x f_y)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^y$')
             plt.plot(grd1, rhs1, color='g', label=r'$-f_{r} \partial_x \widetilde{u}_y$')
             plt.plot(grd1, rhs2, color='r', label=r'$-R_{xy} \partial_x \widetilde{X}$')
-            plt.plot(grd1, rhs3, color='cyan', label=r"$-\overline{X''\partial_y P}$")
+            plt.plot(grd1, rhs3, color='cyan', label=r"$-\overline{X''\partial_y P}$ (set to 0 - bug)")
             plt.plot(grd1, rhs4, color='purple', label=r"$+\overline{u''_y \rho \dot{X}}$")
             # plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_{\theta}$')
             plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla (\widetilde{u}_x f_{\theta})$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla f^\theta$')
@@ -290,30 +298,25 @@ class XfluxYequation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object
             plt.plot(grd1, rhs4, color='purple', label=r"$+\overline{u''_\theta \rho \dot{X}}$")
             plt.plot(grd1, rhs5, color='yellow', label=r'$+G$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # convective boundary markers		
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"g cm$^{-2}$ s$^{-2}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"g cm$^{-2}$ s$^{-2}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 10})
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

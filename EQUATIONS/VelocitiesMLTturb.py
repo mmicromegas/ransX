@@ -1,8 +1,7 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import os
@@ -15,7 +14,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)
@@ -50,7 +49,7 @@ class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         gamma2 = self.getRAdata(eht,'gamma2')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
+        if ieos == 1:
             cp = self.getRAdata(eht,'cp')[intc]
             cv = self.getRAdata(eht,'cv')[intc]
             gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
@@ -93,12 +92,13 @@ class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         nabla = self.deriv(lntt, lnpp)
         nabla_ad = (gamma2 - 1.) / gamma2
 
-        if (ieos == 1):
+        if ieos == 1:
             betaT = 0.
-        elif (ieos == 3):
+        elif ieos == 3:
             betaT = -chit / chid
         else:
-            print("ERROR(VeloctiesMLTturb.py): Geometry not implemented")
+            print("ERROR(BruntVaisalla.py): " + self.errorEos(ieos))
+            sys.exit()
 
         vmlt_2 = gg * betaT * (nabla - nabla_ad) * ((lbd ** 2.) / (8. * Hp))
         vmlt_2 = vmlt_2.clip(min=1.)  # get rid of negative values, set to min 1.
@@ -129,6 +129,11 @@ class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
 
     def plot_velocities(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(VelocitiesMLTturb.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -168,22 +173,16 @@ class VelocitiesMLTturb(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obj
         # plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
         # plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
 
-        if (self.ig == 1):
-            # define x LABEL		
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            # define x LABEL			
+            setylabel = r"velocity (cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        # define y LABEL
-        setylabel = r"velocity (cm s$^{-1}$)"
-
-        # show x/y LABELS
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"velocity (cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

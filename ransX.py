@@ -390,6 +390,11 @@ def main():
 
         # COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
+            plt.execX(inuc, elem, 'x_' + elem,
+                         prp['xzn0inc'],
+                         prp['xzn0outc'])
+
+        if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execXrho(inuc, elem, 'xrho_' + elem,
                          prp['xzn0inc'],
                          prp['xzn0outc'])

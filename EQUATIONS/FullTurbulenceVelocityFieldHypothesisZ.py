@@ -1,11 +1,10 @@
 import numpy as np
-import sys
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -14,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class FullTurbulenceVelocityFieldHypothesisZ(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class FullTurbulenceVelocityFieldHypothesisZ(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, fext, ieos, intc, data_prefix, bconv, tconv):
         super(FullTurbulenceVelocityFieldHypothesisZ, self).__init__(ig)
@@ -312,13 +311,14 @@ class FullTurbulenceVelocityFieldHypothesisZ(calc.Calculus, al.SetAxisLimit, uT.
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
+            setylabel = r"cm s$^{-2}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
+            setylabel = r"cm s$^{-2}$"
+            plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
-
-        setylabel = r"cm s$^{-2}$"
-        plt.ylabel(setylabel)
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')

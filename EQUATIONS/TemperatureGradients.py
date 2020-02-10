@@ -1,11 +1,12 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,7 +14,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureGradients(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, ieos, intc, data_prefix):
         super(TemperatureGradients, self).__init__(ig)
@@ -22,23 +23,23 @@ class TemperatureGradients(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf  
 
-        pp = self.getRAdata(eht,'pp')[intc]
-        tt = self.getRAdata(eht,'tt')[intc]
-        mu = self.getRAdata(eht,'abar')[intc]
-        chim = self.getRAdata(eht,'chim')[intc]
-        chit = self.getRAdata(eht,'chit')[intc]
-        gamma2 = self.getRAdata(eht,'gamma2')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        mu = self.getRAdata(eht, 'abar')[intc]
+        chim = self.getRAdata(eht, 'chim')[intc]
+        chit = self.getRAdata(eht, 'chit')[intc]
+        gamma2 = self.getRAdata(eht, 'gamma2')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         lntt = np.log(tt)
@@ -49,7 +50,7 @@ class TemperatureGradients(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         nabla = self.deriv(lntt, lnpp)
         nabla_ad = (gamma2 - 1.) / gamma2
 
-        if (ieos == 1):
+        if ieos == 1:
             nabla_mu = np.zeros(nx)
         else:
             nabla_mu = (chim / chit) * self.deriv(lnmu, lnpp)
@@ -65,6 +66,11 @@ class TemperatureGradients(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
 
     def plot_nablas(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature gradients in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TemperatureGradients.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -87,31 +93,27 @@ class TemperatureGradients(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         # plot DATA 
         plt.title('temperature gradients')
 
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\nabla$')
             plt.plot(grd1, plt2, color='red', label=r'$\nabla_{ad}$')
-            if (self.ieos == 3):
+            if self.ieos == 3:
                 plt.plot(grd1, plt3, color='green', label=r'$\nabla_{\mu}$')
-            # define x LABEL
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r'$\nabla$')
+            plt.plot(grd1, plt2, color='red', label=r'$\nabla_{ad}$')
+            if self.ieos == 3:
+                plt.plot(grd1, plt3, color='green', label=r'$\nabla_{\mu}$')
+
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
-            plt.plot(grd1, plt1, color='brown', label=r'$\nabla$')
-            plt.plot(grd1, plt2, color='red', label=r'$\nabla_{ad}$')
-            if (self.ieos == 3):
-                plt.plot(grd1, plt3, color='green', label=r'$\nabla_{\mu}$')
-            # define x LABEL
+            setylabel = r"$\nabla$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
-        else:
-            print(
-                "ERROR (TemperatureGradients.py): geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        # define y LABEL
-        setylabel = r"$\nabla$"
-
-        # show x/y labels
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"$\nabla$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

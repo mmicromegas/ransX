@@ -1,10 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,7 +13,7 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Degeneracy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class Degeneracy(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(Degeneracy, self).__init__(ig)
@@ -21,12 +22,12 @@ class Degeneracy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        psi = self.getRAdata(eht,'psi')[intc]
+        psi = self.getRAdata(eht, 'psi')[intc]
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -35,6 +36,11 @@ class Degeneracy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def plot_degeneracy(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot degeneracy parameter in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(Degeneracy.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
@@ -57,11 +63,16 @@ class Degeneracy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
         plt.plot(grd1, plt1, color='brown', label=r'$\psi$')
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\psi$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\psi$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\psi$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

@@ -215,8 +215,8 @@ class EnthalpyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         # plot DATA 
         plt.title(r"hh variance equation C$_m$ = " + str(Cm))
         if self.ig == 1:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\rho \sigma_{h})$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \sigma_{h})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\rho \sigma_{h})$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \sigma_{h})$")
 
             plt.plot(grd1, rhs0, color='r', label=r'$-\nabla f_{\sigma \epsilon_h}$')
             # plt.plot(grd1, rhs1, color='c', label=r'$-2 f_\sigma \partial_x \widetilde{h}$')
@@ -227,8 +227,8 @@ class EnthalpyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
             plt.plot(grd1, Cm*rhs5, color='k', linewidth=0.8, label=r"$- C_m \sigma_h / \tau_L$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
         elif self.ig == 2:
-            plt.plot(grd1, -lhs0, color='#FF6EB4', label=r'$-\partial_t (\rho \sigma_{h})$')
-            plt.plot(grd1, -lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma_{h})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\rho \sigma_{h})$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \sigma_{h})$")
 
             plt.plot(grd1, rhs0, color='r', label=r'$-\nabla f_{\sigma \epsilon_h}$')
             # plt.plot(grd1, rhs1, color='c', label=r'$-2 f_\sigma \partial_r \widetilde{h}$')
