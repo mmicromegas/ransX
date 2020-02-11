@@ -37,7 +37,7 @@ class PressureInternalEnergy(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         self.ei = ei
         self.ig = ig
 
-    def plot_ppei(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ppei(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot pressure and internal energy stratification in the model"""
 
         # check supported geometries
@@ -85,6 +85,10 @@ class PressureInternalEnergy(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         ax2.set_ylabel(ylabel_2)
         ax2.tick_params('y')
         ax2.legend(loc=1, prop={'size': 18})
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         plt.show(block=False)
 

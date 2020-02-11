@@ -84,7 +84,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         self.ig = ig
         self.fext = fext
 
-    def plot_rho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_rho(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
 
         # check supported geometries
@@ -112,6 +112,10 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         plt.title('density')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
@@ -135,7 +139,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         elif self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
 
-    def plot_continuity_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_continuity_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
 
         # check supported geometries
@@ -181,6 +185,10 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
             plt.plot(grd1, rhs1, color='m', label=r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
             plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

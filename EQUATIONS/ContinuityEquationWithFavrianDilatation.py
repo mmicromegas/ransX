@@ -81,7 +81,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         self.mm = mm
         self.mm_ver2 = mm_ver2
 
-    def plot_rho(self, laxis, xbl, xbr, ybu, ybd, ilg):
+    def plot_rho(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
 
         # check supported geometries
@@ -108,6 +108,10 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # plot DATA 
         plt.title('density')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho}$')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -137,7 +141,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
 
-    def plot_continuity_equation(self, laxis, xbl, xbr, ybu, ybd, ilg):
+    def plot_continuity_equation(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
 
         # check supported geometries
@@ -178,6 +182,10 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
             plt.plot(grd1, lhs1, color='r', label=r'$- \widetilde{u}_r \partial_r (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_r (\widetilde{u}_r)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

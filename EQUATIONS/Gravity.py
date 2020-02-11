@@ -35,7 +35,7 @@ class Gravity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
         self.ig = ig
         self.grav = grav
 
-    def plot_grav(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_grav(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot gravity in the model"""
 
         # check supported geometries
@@ -77,6 +77,10 @@ class Gravity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
             setylabel = r'$\overline{g}_r$ (cm s$^{-2}$)'
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

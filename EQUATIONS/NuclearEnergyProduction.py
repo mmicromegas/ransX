@@ -37,7 +37,7 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         self.dd = dd
         self.ig = ig
 
-    def plot_enuc(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_enuc(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot nuclear energy production stratification in the model"""
 
         # check supported geometries
@@ -78,6 +78,10 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
             setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

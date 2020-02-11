@@ -43,23 +43,23 @@ def main():
 
     # TEMPERATURE AND DENSITY
     if str2bool(params.getForEqs('ttdd')['plotMee']):
-        plt.execRhoTemp()
+        plt.execRhoTemp(prp['xzn0inc'], prp['xzn0outc'])
 
     # PRESSURE AND INTERNAL ENERGY
     if str2bool(params.getForEqs('ppei')['plotMee']):
-        plt.execPressEi()
+        plt.execPressEi(prp['xzn0inc'], prp['xzn0outc'])
 
     # NUCLEAR ENERGY PRODUCTION
     if str2bool(params.getForEqs('enuc')['plotMee']):
-        plt.execEnuc()
+        plt.execEnuc(prp['xzn0inc'], prp['xzn0outc'])
 
     # GRAVITY
     if str2bool(params.getForEqs('grav')['plotMee']):
-        plt.execGrav()
+        plt.execGrav(prp['xzn0inc'], prp['xzn0outc'])
 
     # TEMPERATURE GRADIENTS
     if str2bool(params.getForEqs('nablas')['plotMee']):
-        plt.execNablas()
+        plt.execNablas(prp['xzn0inc'], prp['xzn0outc'])
 
     # DEGENERACY PARAMETER
     if str2bool(params.getForEqs('psi')['plotMee']):
@@ -75,7 +75,7 @@ def main():
 
     # BRUNT-VAISALLA FREQUENCY
     if str2bool(params.getForEqs('nsq')['plotMee']):
-        plt.execBruntV()
+        plt.execBruntV(prp['xzn0inc'], prp['xzn0outc'])
 
     # BUOYANCY
     if str2bool(params.getForEqs('buo')['plotMee']):
@@ -91,16 +91,16 @@ def main():
 
     # CONTINUITY EQUATION
     if str2bool(params.getForEqs('rho')['plotMee']):
-        plt.execRho()
+        plt.execRho(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('conteq')['plotMee']):
-        plt.execContEq()
+        plt.execContEq(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqsBar('conteqBar')['plotMee']):
         plt.execContEqBar()
 
     if str2bool(params.getForEqs('conteqfdd')['plotMee']):
-        plt.execContFddEq()
+        plt.execContFddEq(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqsBar('conteqfddBar')['plotMee']):
         plt.execContFddEqBar()
@@ -391,8 +391,8 @@ def main():
         # COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execX(inuc, elem, 'x_' + elem,
-                         prp['xzn0inc'],
-                         prp['xzn0outc'])
+                      prp['xzn0inc'],
+                      prp['xzn0outc'])
 
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execXrho(inuc, elem, 'xrho_' + elem,

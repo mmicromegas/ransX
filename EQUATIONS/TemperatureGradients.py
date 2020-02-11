@@ -64,7 +64,7 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         self.ig = ig
         self.ieos = ieos
 
-    def plot_nablas(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_nablas(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature gradients in the model"""
 
         # check supported geometries
@@ -103,6 +103,10 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd1, plt2, color='red', label=r'$\nabla_{ad}$')
             if self.ieos == 3:
                 plt.plot(grd1, plt3, color='green', label=r'$\nabla_{\mu}$')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

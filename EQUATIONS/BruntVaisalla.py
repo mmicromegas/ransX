@@ -98,7 +98,7 @@ class BruntVaisalla(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obje
         self.ig = ig
         self.nx = nx
 
-    def plot_bruntvaisalla(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_bruntvaisalla(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot BruntVaisalla parameter in the model"""
 
         # check supported geometries
@@ -133,6 +133,10 @@ class BruntVaisalla(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obje
             plt.plot(grd1, plt1, color='r', label=r'N$^2$')
             plt.plot(grd1, np.zeros(self.nx), linestyle='--', color='k')
             # plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"
