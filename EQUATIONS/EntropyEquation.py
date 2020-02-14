@@ -86,7 +86,7 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         self.xzn0 = xzn0
         self.fht_ss = fht_ss
 
-    def plot_ss(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ss(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian entropy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -113,6 +113,10 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.title(r'entropy')
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{s}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -134,7 +138,7 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ss.png')
 
-    def plot_ss_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ss_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot entropy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -186,6 +190,10 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
             plt.plot(grd1, rhs3, color='m', label=r"$+\overline{\varepsilon_k/T}$ set to 0")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_s$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

@@ -70,7 +70,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         self.dd = tkefields['dd']
         self.tke = tkefields['tke']
 
-    def plot_tke(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_tke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -98,6 +98,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.title('turbulent kinetic energy')
         plt.plot(grd1, plt1, color='brown', label=r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
         # plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$\frac{1}{2} \overline{u'_i u'_i}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

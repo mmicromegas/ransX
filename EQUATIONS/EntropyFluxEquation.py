@@ -174,7 +174,7 @@ class EntropyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.xzn0 = xzn0
         self.f_ss = f_ss
 
-    def plot_fss(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fss(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian entropy flux stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -201,6 +201,10 @@ class EntropyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         plt.title(r'entropy flux')
         plt.plot(grd1, plt1, color='brown', label=r'f$_s$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -222,7 +226,7 @@ class EntropyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fss.png')
 
-    def plot_fss_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fss_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot entropy flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -289,6 +293,10 @@ class EntropyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_fs$")
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -310,7 +318,7 @@ class EntropyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'fss_eq.png')
 
-    def plot_fss_equation2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fss_equation2(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot entropy flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -379,6 +387,10 @@ class EntropyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
             plt.plot(grd1, rhs8, color='y', label=r"$+G_s$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_fs$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

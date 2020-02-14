@@ -111,7 +111,7 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.xzn0 = xzn0
         self.sigma_ss = sigma_ss
 
-    def plot_sigma_ss(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_ss(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian entropy variance stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -138,6 +138,10 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.title(r'entropy variance')
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\sigma}_s$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -159,7 +163,7 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_ss.png')
 
-    def plot_sigma_ss_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_ss_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot entropy variance equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -221,6 +225,10 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd1, Cm*rhs5, color='k', linewidth=0.8, label=r"$-C_m \overline{\rho} \sigma_s / \tau_L$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\sigma_s}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

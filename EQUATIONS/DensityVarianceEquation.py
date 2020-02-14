@@ -97,7 +97,7 @@ class DensityVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         self.xzn0 = xzn0
         self.sigma_dd = sigma_dd
 
-    def plot_sigma_dd(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_dd(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean density variance in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -124,6 +124,10 @@ class DensityVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         plt.title(r'density variance')
         plt.plot(grd1, plt1, color='brown', label=r"$\sigma_{\rho}$")
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -145,7 +149,7 @@ class DensityVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_dd.png')
 
-    def plot_sigma_dd_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_dd_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ density variance equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -211,6 +215,10 @@ class DensityVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
             plt.plot(grd1, rhs4, color='g', label=r"$-\overline{\rho' \rho' d''}$")
             plt.plot(grd1, Cm*rhs5, color='k', linewidth=0.8, label=r"$-C_m \sigma_\rho / \tau_L$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\sigma_\rho}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

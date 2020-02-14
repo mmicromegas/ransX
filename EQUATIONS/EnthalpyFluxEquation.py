@@ -172,7 +172,7 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         self.xzn0 = xzn0
         self.fhh = fhh
 
-    def plot_fhh(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fhh(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian enthalpy flux stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -199,6 +199,10 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         plt.title(r'enthalpy flux')
         plt.plot(grd1, plt1, color='brown', label=r'f$_h$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -220,7 +224,7 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fhh.png')
 
-    def plot_fhh_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fhh_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -290,6 +294,10 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd1, rhs9, color='y', label=r"$+G_h$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_h$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

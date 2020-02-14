@@ -79,7 +79,7 @@ class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit,
         self.sv = sv
         self.dd = dd
 
-    def plot_b(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_b(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot density-specific volume covariance stratification in the model"""
 
         # check supported geometries
@@ -107,6 +107,10 @@ class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit,
         plt.title('density-specific volume covariance')
         plt.plot(grd1, plt1, color='brown', label=r'$b$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -128,7 +132,7 @@ class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit,
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_b.png')
 
-    def plot_b_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_b_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot density-specific volume covariance equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -173,6 +177,10 @@ class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit,
             plt.plot(grd1, rhs1, color='g', label=r"$-v \nabla_r (\overline{\rho} \overline{(u'_r v'})$")
             plt.plot(grd1, rhs2, color='r', label=r"$+2 \overline{\rho} \overline{v'd'}$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

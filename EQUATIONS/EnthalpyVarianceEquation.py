@@ -126,7 +126,7 @@ class EnthalpyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         self.xzn0 = xzn0
         self.sigma_hh = sigma_hh
 
-    def plot_sigma_hh(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_hh(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian ENTHALPY variance stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -153,6 +153,10 @@ class EnthalpyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         plt.title(r'enthalpy variance')
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\sigma}_{h}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -174,7 +178,7 @@ class EnthalpyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_hh.png')
 
-    def plot_sigma_hh_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_hh_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ sigma hh variance equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -238,6 +242,10 @@ class EnthalpyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
             plt.plot(grd1, rhs4, color='deeppink', label=r"$+2 \Gamma_3 \overline{h'' \varepsilon_{k}} $")
             plt.plot(grd1, Cm*rhs5, color='k', linewidth=0.8, label=r"$-C_m \sigma_h / \tau_L$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

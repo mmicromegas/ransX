@@ -154,7 +154,7 @@ class ReynoldsStressZZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         self.dd = dd
         self.rzz = rzz
 
-    def plot_rzz(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_rzz(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot Reynolds stress zz in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -184,6 +184,10 @@ class ReynoldsStressZZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho} \widetilde{u''_\phi u''_\phi}$")
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -205,7 +209,7 @@ class ReynoldsStressZZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_rzz.png')
 
-    def plot_rzz_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_rzz_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot Reynolds stress rzz equation in the model"""
 
         # check supported geometries
@@ -260,6 +264,10 @@ class ReynoldsStressZZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
             plt.plot(grd1, rhs3, color='y', label=r"$2 \mathcal{G}_k^p$")
             plt.plot(grd1,rhs4,color='k',linewidth=0.7,label = r"$-\overline{\rho} 1/3 u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{Rpp}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

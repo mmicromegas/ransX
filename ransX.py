@@ -67,11 +67,11 @@ def main():
 
     # MEAN AND EXPANSION VELOCITY
     if str2bool(params.getForEqs('velbgr')['plotMee']):
-        plt.execVelocitiesMeanExp()
+        plt.execVelocitiesMeanExp(prp['xzn0inc'], prp['xzn0outc'])
 
     # MLT AND TURBULENT VELOCITY
     if str2bool(params.getForEqs('velmlt')['plotMee']):
-        plt.execVelocitiesMLTturb()
+        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'])
 
     # BRUNT-VAISALLA FREQUENCY
     if str2bool(params.getForEqs('nsq')['plotMee']):
@@ -79,15 +79,15 @@ def main():
 
     # BUOYANCY
     if str2bool(params.getForEqs('buo')['plotMee']):
-        plt.execBuoyancy()
+        plt.execBuoyancy(prp['xzn0inc'], prp['xzn0outc'])
 
     # RELATIVE RMS FLUCTUATIONS
     if str2bool(params.getForEqs('relrmsflct')['plotMee']):
-        plt.execRelativeRmsFlct()
+        plt.execRelativeRmsFlct(prp['xzn0inc'], prp['xzn0outc'])
 
     # ABAR and ZBAR
     if str2bool(params.getForEqs('abzb')['plotMee']):
-        plt.execAbarZbar()
+        plt.execAbarZbar(prp['xzn0inc'], prp['xzn0outc'])
 
     # CONTINUITY EQUATION
     if str2bool(params.getForEqs('rho')['plotMee']):
@@ -107,52 +107,52 @@ def main():
 
     # MOMENTUM X EQUATION
     if str2bool(params.getForEqs('momex')['plotMee']):
-        plt.execMomx()
+        plt.execMomx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('momxeq')['plotMee']):
-        plt.execMomxEq()
+        plt.execMomxEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # MOMENTUM Y EQUATION
     if str2bool(params.getForEqs('momey')['plotMee']):
-        plt.execMomy()
+        plt.execMomy(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('momyeq')['plotMee']):
-        plt.execMomyEq()
+        plt.execMomyEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # MOMENTUM Z EQUATION
     if str2bool(params.getForEqs('momez')['plotMee']):
-        plt.execMomz()
+        plt.execMomz(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('momzeq')['plotMee']):
-        plt.execMomzEq()
+        plt.execMomzEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # REYNOLDS STRESS XX EQUATION
     if str2bool(params.getForEqs('rxx')['plotMee']):
-        plt.execRxx()
+        plt.execRxx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('rexxeq')['plotMee']):
-        plt.execRxxEq(prp['kolm_tke_diss_rate'])
+        plt.execRxxEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
 
     # REYNOLDS STRESS YY EQUATION
     if str2bool(params.getForEqs('ryy')['plotMee']):
-        plt.execRyy()
+        plt.execRyy(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('reyyeq')['plotMee']):
-        plt.execRyyEq(prp['kolm_tke_diss_rate'])
+        plt.execRyyEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
 
     # REYNOLDS STRESS ZZ EQUATION
     if str2bool(params.getForEqs('rzz')['plotMee']):
-        plt.execRzz()
+        plt.execRzz(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('rezzeq')['plotMee']):
-        plt.execRzzEq(prp['kolm_tke_diss_rate'])
+        plt.execRzzEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
 
     # KINETIC ENERGY EQUATION
     if str2bool(params.getForEqs('kine')['plotMee']):
-        plt.execKe()
+        plt.execKe(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('kieq')['plotMee']):
-        plt.execKeEq(prp['kolm_tke_diss_rate'])
+        plt.execKeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('tkie')['plotMee']):
         plt.execTke(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
@@ -164,178 +164,178 @@ def main():
 
     # TOTAL ENERGY EQUATION
     if str2bool(params.getForEqs('toe')['plotMee']):
-        plt.execTe()
+        plt.execTe(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('teeq')['plotMee']):
-        plt.execTeEq(prp['kolm_tke_diss_rate'])
+        plt.execTeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
 
     # INTERNAL ENERGY EQUATION
     if str2bool(params.getForEqs('eint')['plotMee']):
-        plt.execEi()
+        plt.execEi(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('eieq')['plotMee']):
-        plt.execEiEq(prp['tke_diss'])
+        plt.execEiEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # INTERNAL ENERGY FLUX EQUATION
     if str2bool(params.getForEqs('eintflx')['plotMee']):
-        plt.execEiFlx()
+        plt.execEiFlx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('eiflxeq')['plotMee']):
-        plt.execEiFlxEq(prp['tke_diss'])
+        plt.execEiFlxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # INTERNAL ENERGY VARIANCE EQUATION
     if str2bool(params.getForEqs('eintvar')['plotMee']):
-        plt.execEiVar()
+        plt.execEiVar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('eivareq')['plotMee']):
-        plt.execEiVarEq(prp['tke_diss'], prp['tauL'])
+        plt.execEiVarEq(prp['tke_diss'], prp['tauL'], prp['xzn0inc'], prp['xzn0outc'])
 
     # PRESSURE EQUATION
     if str2bool(params.getForEqs('press')['plotMee']):
-        plt.execPP()
+        plt.execPP(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ppeq')['plotMee']):
-        plt.execPPeq(prp['tke_diss'])
+        plt.execPPeq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # PRESSURE FLUX EQUATION in X
     if str2bool(params.getForEqs('pressxflx')['plotMee']):
-        plt.execPPxflx()
+        plt.execPPxflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ppxflxeq')['plotMee']):
-        plt.execPPxflxEq(prp['tke_diss'])
+        plt.execPPxflxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # PRESSURE FLUX EQUATION in Y
     if str2bool(params.getForEqs('pressyflx')['plotMee']):
-        plt.execPPyflx()
+        plt.execPPyflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ppyflxeq')['plotMee']):
-        plt.execPPyflxEq(prp['tke_diss'])
+        plt.execPPyflxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # PRESSURE FLUX EQUATION in Z
     if str2bool(params.getForEqs('presszflx')['plotMee']):
-        plt.execPPzflx()
+        plt.execPPzflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ppzflxeq')['plotMee']):
-        plt.execPPzflxEq(prp['tke_diss'])
+        plt.execPPzflxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # PRESSURE VARIANCE EQUATION
     if str2bool(params.getForEqs('pressvar')['plotMee']):
-        plt.execPPvar()
+        plt.execPPvar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ppvareq')['plotMee']):
-        plt.execPPvarEq(prp['tke_diss'], prp['tauL'])
+        plt.execPPvarEq(prp['tke_diss'], prp['tauL'], prp['xzn0inc'], prp['xzn0outc'])
 
     # TEMPERATURE EQUATION
     if str2bool(params.getForEqs('temp')['plotMee']):
-        plt.execTT()
+        plt.execTT(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('tteq')['plotMee']):
-        plt.execTTeq(prp['tke_diss'])
+        plt.execTTeq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # TEMPERATURE FLUX EQUATION
     if str2bool(params.getForEqs('tempflx')['plotMee']):
-        plt.execTTflx()
+        plt.execTTflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ttflxeq')['plotMee']):
-        plt.execTTflxEq(prp['tke_diss'])
+        plt.execTTflxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # TEMPERATURE VARIANCE EQUATION
     if str2bool(params.getForEqs('tempvar')['plotMee']):
-        plt.execTTvar()
+        plt.execTTvar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ttvareq')['plotMee']):
-        plt.execTTvarEq(prp['tke_diss'], prp['tauL'])
+        plt.execTTvarEq(prp['tke_diss'], prp['tauL'], prp['xzn0inc'], prp['xzn0outc'])
 
     # ENTHALPY EQUATION
     if str2bool(params.getForEqs('enth')['plotMee']):
-        plt.execHH()
+        plt.execHH(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('hheq')['plotMee']):
-        plt.execHHeq(prp['tke_diss'])
+        plt.execHHeq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # ENTHALPY FLUX EQUATION
     if str2bool(params.getForEqs('enthflx')['plotMee']):
-        plt.execHHflx()
+        plt.execHHflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('hhflxeq')['plotMee']):
-        plt.execHHflxEq(prp['tke_diss'])
+        plt.execHHflxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # ENTHALPY VARIANCE EQUATION
     if str2bool(params.getForEqs('enthvar')['plotMee']):
-        plt.execHHvar()
+        plt.execHHvar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('hhvareq')['plotMee']):
-        plt.execHHvarEq(prp['tke_diss'], prp['tauL'])
+        plt.execHHvarEq(prp['tke_diss'], prp['tauL'], prp['xzn0inc'], prp['xzn0outc'])
 
     # ENTROPY EQUATION
     if str2bool(params.getForEqs('entr')['plotMee']):
-        plt.execSS()
+        plt.execSS(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('sseq')['plotMee']):
-        plt.execSSeq(prp['tke_diss'])
+        plt.execSSeq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # ENTROPY FLUX EQUATION
     if str2bool(params.getForEqs('entrflx')['plotMee']):
-        plt.execSSflx()
+        plt.execSSflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ssflxeq')['plotMee']):
-        plt.execSSflxEq(prp['tke_diss'])
+        plt.execSSflxEq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # ENTROPY VARIANCE EQUATION
     if str2bool(params.getForEqs('entrvar')['plotMee']):
-        plt.execSSvar()
+        plt.execSSvar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ssvareq')['plotMee']):
-        plt.execSSvarEq(prp['tke_diss'], prp['tauL'])
+        plt.execSSvarEq(prp['tke_diss'], prp['tauL'], prp['xzn0inc'], prp['xzn0outc'])
 
     # DENSITY VARIANCE EQUATION
     if str2bool(params.getForEqs('densvar')['plotMee']):
-        plt.execDDvar()
+        plt.execDDvar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('ddvareq')['plotMee']):
-        plt.execDDvarEq(prp['tauL'])
+        plt.execDDvarEq(prp['tauL'], prp['xzn0inc'], prp['xzn0outc'])
 
     # TURBULENT MASS FLUX EQUATION a.k.a A EQUATION
     if str2bool(params.getForEqs('tmsflx')['plotMee']):
-        plt.execTMSflx()
+        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('aeq')['plotMee']):
-        plt.execAeq()
+        plt.execAeq(prp['xzn0inc'], prp['xzn0outc'])
 
     # DENSITY-SPECIFIC VOLUME COVARIANCE a.k.a. B EQUATION
     if str2bool(params.getForEqs('dsvc')['plotMee']):
-        plt.execDSVC()
+        plt.execDSVC(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('beq')['plotMee']):
-        plt.execBeq()
+        plt.execBeq(prp['xzn0inc'], prp['xzn0outc'])
 
     # MEAN NUMBER OF NUCLEONS PER ISOTOPE a.k.a ABAR EQUATION
     if str2bool(params.getForEqs('abar')['plotMee']):
-        plt.execAbar()
+        plt.execAbar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('abreq')['plotMee']):
-        plt.execAbarEq()
+        plt.execAbarEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # ABAR FLUX EQUATION
     if str2bool(params.getForEqs('abflx')['plotMee']):
-        plt.execFabarx()
+        plt.execFabarx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('fabxeq')['plotMee']):
-        plt.execFabarxEq()
+        plt.execFabarxEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # MEAN CHARGE PER ISOTOPE a.k.a ZBAR EQUATION
     if str2bool(params.getForEqs('zbar')['plotMee']):
-        plt.execZbar()
+        plt.execZbar(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('zbreq')['plotMee']):
-        plt.execZbarEq()
+        plt.execZbarEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # ZBAR FLUX EQUATION
     if str2bool(params.getForEqs('zbflx')['plotMee']):
-        plt.execFzbarx()
+        plt.execFzbarx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('fzbxeq')['plotMee']):
-        plt.execFzbarxEq()
+        plt.execFzbarxEq(prp['xzn0inc'], prp['xzn0outc'])
 
     # HYDRODYNAMIC CONTINUITY STELLAR STRUCTURE EQUATION
     if str2bool(params.getForEqs('cteqhsse')['plotMee']):

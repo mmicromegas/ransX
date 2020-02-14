@@ -137,7 +137,7 @@ class ZbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         self.xzn0 = xzn0
         self.fzbarx = fzbarx
 
-    def plot_zbarflux(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_zbarflux(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot zbarflux stratification in the model"""
 
         # check supported geometries
@@ -177,6 +177,10 @@ class ZbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
 
@@ -186,7 +190,7 @@ class ZbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_zbarflux.png')
 
-    def plot_zbarflux_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_zbarflux_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot zbar flux equation in the model"""
 
         # load x GRID
@@ -245,6 +249,10 @@ class ZbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
                      label=r"$-\overline{u''_r \rho A \sum_\alpha Z_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
             plt.plot(grd1, rhs6, color='yellow', label=r'$+G_Z$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

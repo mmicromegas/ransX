@@ -144,6 +144,10 @@ class XvarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.title('Xvariance for ' + self.element)
         plt.semilogy(grd1, plt1, color='b', label=r"$\sigma_i$")
 
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'

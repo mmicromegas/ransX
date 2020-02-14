@@ -139,7 +139,7 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.dd = dd
         self.fht_ek = fht_ek
 
-    def plot_ke(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot kinetic energy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -166,6 +166,10 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.title('kinetic energy')
         plt.plot(grd1, plt1, color='brown', label=r'$\frac{1}{2} \widetilde{u_i u_i}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -187,7 +191,7 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ek.png')
 
-    def plot_ke_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ke_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot kinetic energy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -250,6 +254,10 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs5, color='g', label=r"$-\overline{\rho}\widetilde{D}_t \widetilde{u}_i \widetilde{u}_i$")
             plt.plot(grd1, Cm * rhs6, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\epsilon_K}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

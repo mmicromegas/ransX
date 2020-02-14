@@ -127,7 +127,7 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         self.xzn0 = xzn0
         self.sigma_tt = sigma_tt
 
-    def plot_sigma_tt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_tt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature variance stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -154,6 +154,10 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         plt.title(r'temperature variance')
         plt.plot(grd1, plt1, color='brown', label=r'$\sigma_{T}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -176,7 +180,7 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_tt.png')
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_tt.eps')
 
-    def plot_sigma_tt_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_tt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ temperature variance equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -244,6 +248,10 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
             plt.plot(grd1, rhs5, color='olive', label=r"$+2\overline{T' \varepsilon_{nuc}/c_v}$")
             plt.plot(grd1, Cm*rhs6, color='k', linewidth=0.8, label=r"$-C_m \sigma_T / \tau_L$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

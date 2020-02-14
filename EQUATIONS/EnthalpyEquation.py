@@ -106,7 +106,7 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.xzn0 = xzn0
         self.fht_hh = fht_hh
 
-    def plot_hh(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_hh(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian enthalpy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -136,6 +136,10 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{h}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -157,7 +161,7 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_hh.png')
 
-    def plot_hh_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_hh_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot enthalpy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -213,6 +217,10 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
             plt.plot(grd1, rhs4, color='m', label=r"$+\Gamma_3 \varepsilon_k$")
             plt.plot(grd1, rhs5, color='c', label=r"$+\Gamma_3 \nabla_r f_T$ (not incl.)")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_h$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

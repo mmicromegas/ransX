@@ -57,7 +57,7 @@ class Buoyancy(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
         self.b = b
         self.ig = ig
 
-    def plot_buoyancy(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_buoyancy(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot buoyancy in the model"""
 
         # check supported geometries
@@ -87,6 +87,10 @@ class Buoyancy(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
             plt.plot(grd1, plt1, color='brown', label=r'$b$')
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$b$')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

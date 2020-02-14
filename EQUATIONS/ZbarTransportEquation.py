@@ -83,7 +83,7 @@ class ZbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.xzn0 = xzn0
         self.zbar = zbar
 
-    def plot_zbar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_zbar(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot zbar stratification in the model"""
 
         # check supported geometries
@@ -111,6 +111,10 @@ class ZbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.title('zbar')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{Z}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
         setylabel = r"$\overline{Z}$"
@@ -127,7 +131,7 @@ class ZbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_zbar.png')
 
-    def plot_zbar_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_zbar_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot zbar equation in the model"""
 
         # check supported geometries
@@ -175,6 +179,10 @@ class ZbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs2, color='c',
                      label=r'$-\overline{\rho A \sum_\alpha (Z_\alpha \dot{X}_\alpha^{nuc}/A_\alpha)}$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

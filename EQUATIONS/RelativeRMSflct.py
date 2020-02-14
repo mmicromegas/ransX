@@ -63,7 +63,7 @@ class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         self.xzn0 = xzn0
         self.ig = ig
 
-    def plot_relative_rms_flct(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_relative_rms_flct(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot relative rms fluctuations in the model"""
 
         # check supported geometries
@@ -106,6 +106,10 @@ class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         # plt.semilogy(grd1,plt5,color='m',label = r"$S$")
         # plt.semilogy(grd1,plt6,color='k',linestyle='--',label = r"$\overline{A}$")
         # plt.semilogy(grd1,plt7,color='c',linestyle='--',label = r"$\overline{Z}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

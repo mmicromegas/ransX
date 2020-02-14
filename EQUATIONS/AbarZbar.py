@@ -32,7 +32,7 @@ class AbarZbar(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
         self.abar = self.getRAdata(eht, 'abar')[intc]
         self.zbar = self.getRAdata(eht, 'zbar')[intc]
 
-    def plot_abarzbar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_abarzbar(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot abarzbar in the model"""
 
         # check supported geometries
@@ -61,6 +61,10 @@ class AbarZbar(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
         plt.title('abar zbar')
         plt.plot(grd1, plt1, color='r', label=r"$\overline{A}$")
         plt.plot(grd1, plt2, color='b', label=r"$\overline{Z}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

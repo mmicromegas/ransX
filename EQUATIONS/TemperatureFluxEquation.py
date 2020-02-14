@@ -174,7 +174,7 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         self.xzn0 = xzn0
         self.ftt = ftt
 
-    def plot_ftt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ftt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature flux stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -201,6 +201,10 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         plt.title(r'temperature flux')
         plt.plot(grd1, plt1, color='brown', label=r'f$_T$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -223,7 +227,7 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ftt.png')
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ftt.eps')
 
-    def plot_ftt_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ftt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -294,6 +298,10 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
             plt.plot(grd1, rhs9, color='y', label=r"$+G_T$ (not calc.)")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

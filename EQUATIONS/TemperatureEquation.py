@@ -107,7 +107,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.tt = tt
         self.ig = ig
 
-    def plot_tt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_tt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -138,6 +138,10 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{T}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -159,7 +163,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.png')
 
-    def plot_tt_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_tt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -216,6 +220,10 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
             plt.plot(grd1, rhs4, color='g', label=r"$+\overline{\varepsilon / cv}$")
             plt.plot(grd1, rhs5, color='m', label=r"+$\nabla \cdot F_T/ \rho c_v$ (not incl.)")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_T$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # show x/y LABELS
         if self.ig == 1:

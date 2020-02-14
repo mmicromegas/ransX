@@ -77,7 +77,7 @@ class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.xzn0 = xzn0
         self.abar = abar
 
-    def plot_abar(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_abar(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot abar stratification in the model"""
 
         # check supported geometries
@@ -101,6 +101,10 @@ class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         to_plot = [plt1]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # plot DATA 
         plt.title('abar')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{A}$')
@@ -122,7 +126,7 @@ class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_abar.png')
 
-    def plot_abar_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_abar_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot abar equation in the model"""
 
         # check supported geometries
@@ -165,6 +169,10 @@ class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f_A$')
             plt.plot(grd1, rhs1, color='m', label=r'$-\overline{\rho A^2 \sum_\alpha (\dot{X}_\alpha^{nuc}/A_\alpha)}$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

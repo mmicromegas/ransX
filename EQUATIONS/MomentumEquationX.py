@@ -86,7 +86,7 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.ig = ig
         self.fext = fext
 
-    def plot_momentum_x(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_x(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot ddux stratification in the model"""
 
         # check supported geometries
@@ -123,6 +123,10 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             # plt.plot(grd1,plt2,color='green',label = r'$\overline{u}_x$')
             # plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
@@ -147,7 +151,7 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.eps')
 
-    def plot_momentum_equation_x(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_equation_x(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
 
         # check supported geometries
@@ -192,6 +196,10 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.plot(grd1, rhs1, color='g', label=r"$-\overline{G^{M}_r}$")
             plt.plot(grd1, rhs2, color='r', label=r"$-(\partial_r \overline{P} - \bar{\rho}\tilde{g}_r)$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         setylabel = r"g cm$^{-2}$  s$^{-2}$"

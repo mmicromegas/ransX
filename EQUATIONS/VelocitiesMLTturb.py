@@ -127,7 +127,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.rr = rr
         self.vmlt_3 = vmlt_3
 
-    def plot_velocities(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_velocities(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
 
         # check supported geometries
@@ -172,6 +172,10 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         #        plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
         # plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
         # plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

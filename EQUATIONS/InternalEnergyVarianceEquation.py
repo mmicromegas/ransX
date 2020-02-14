@@ -132,7 +132,7 @@ class InternalEnergyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         self.xzn0 = xzn0
         self.sigma_ei = sigma_ei
 
-    def plot_sigma_ei(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_ei(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian internal energy variance stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -159,6 +159,10 @@ class InternalEnergyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         plt.title(r'internal energy variance')
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\sigma}_{\epsilon I}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -180,7 +184,7 @@ class InternalEnergyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_ei.png')
 
-    def plot_sigma_ei_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_sigma_ei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ sigma ei variance equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -257,6 +261,10 @@ class InternalEnergyVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
             plt.plot(grd1, rhs7, color='deeppink', label=r"$+2\overline{\epsilon''_I \varepsilon_{k}} $")
             plt.plot(grd1, Cm * rhs8, color='k', linewidth=0.8, label=r"$-C_m\sigma_\epsilon / \tau_L$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\sigma$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

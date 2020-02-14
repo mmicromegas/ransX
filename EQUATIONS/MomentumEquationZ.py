@@ -75,7 +75,7 @@ class MomentumEquationZ(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.dduz = dduz
         self.fext = fext
 
-    def plot_momentum_z(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_z(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot dduz stratification in the model"""
 
         # check supported geometries
@@ -106,6 +106,10 @@ class MomentumEquationZ(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_\phi$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -130,7 +134,7 @@ class MomentumEquationZ(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduz.eps')
 
-    def plot_momentum_equation_z(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_equation_z(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum z equation in the model"""
 
         # check supported geometries
@@ -173,6 +177,10 @@ class MomentumEquationZ(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_r (\widetilde{R}_{\phi r})$")
             plt.plot(grd1, rhs1, color='g', label=r"$-\overline{G^{M}_\phi}$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         setylabel = r"g cm$^{-2}$  s$^{-2}$"

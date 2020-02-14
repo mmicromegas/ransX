@@ -165,7 +165,7 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.fht_et = fht_ei + fht_ek
         self.ig = ig
 
-    def plot_et(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_et(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean total energy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -196,6 +196,10 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\varepsilon}_t$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -217,7 +221,7 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.png')
 
-    def plot_et_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_et_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot total energy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -288,6 +292,10 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
                      label=r"$+\overline{\rho} \widetilde{D}_t \widetilde{u}_i \widetilde{u}_i/2$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\epsilon_t}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

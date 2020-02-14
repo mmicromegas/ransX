@@ -81,7 +81,7 @@ class MomentumEquationY(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.ig = ig
         self.fext = fext
 
-    def plot_momentum_y(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_y(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot dduy stratification in the model"""
 
         # check supported geometries
@@ -112,6 +112,10 @@ class MomentumEquationY(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{u}_\theta$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -136,7 +140,7 @@ class MomentumEquationY(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduy.eps')
 
-    def plot_momentum_equation_y(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_equation_y(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum y equation in the model"""
 
         # check supported geometries
@@ -183,6 +187,10 @@ class MomentumEquationY(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.plot(grd1, rhs1, color='g', label=r"$-\overline{G^{M}_\theta}$")
             plt.plot(grd1, rhs2, color='r', label=r"$-(1/r) \overline{\partial_\theta P}$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         setylabel = r"g cm$^{-2}$  s$^{-2}$"

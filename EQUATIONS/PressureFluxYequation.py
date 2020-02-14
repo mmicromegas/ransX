@@ -186,7 +186,7 @@ class PressureFluxYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.xzn0 = xzn0
         self.fppy = fppy
 
-    def plot_fppy(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fppy(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure flux stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -216,6 +216,10 @@ class PressureFluxYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'f$_{p\theta}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -237,7 +241,7 @@ class PressureFluxYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fppy.png')
 
-    def plot_fppy_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fppy_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot acoustic flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -299,6 +303,10 @@ class PressureFluxYequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs6, color='b', label=r"$+\overline{P' G_\theta^M/ \rho}$")
             plt.plot(grd1, rhs7, color='m', label=r"$+\overline{P'\partial_\theta P/ \rho r}$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_p$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

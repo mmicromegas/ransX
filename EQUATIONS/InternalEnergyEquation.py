@@ -95,7 +95,7 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         self.xzn0 = xzn0
         self.fht_ei = fht_ei
 
-    def plot_ei(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ei(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian internal energy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -122,6 +122,10 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         plt.title(r'internal energy')
         plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{\varepsilon}_I$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -143,7 +147,7 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ei.png')
 
-    def plot_ei_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_ei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -201,6 +205,10 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             plt.plot(grd1, rhs5, color='m', label=r"$+\varepsilon_k$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\epsilon$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

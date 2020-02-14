@@ -161,7 +161,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         self.ux = ux
         self.fht_ux = fht_ux
 
-    def plot_a(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_a(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean turbulent mass flux in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -212,6 +212,10 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             # plt.plot(grd1, plt7, color='b', label=r'model4')
             # plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -258,7 +262,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # save PLOT
         # plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.png')
 
-    def plot_a_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_a_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ turbulent mass flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -336,6 +340,10 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             plt.plot(grd1, rhs7, color='orange', label=r"$+\overline{\rho' v \partial_r P'}$")
             plt.plot(grd1, rhs8, color='skyblue', label=r"$+Ga$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_a$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

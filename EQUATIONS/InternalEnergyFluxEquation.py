@@ -184,7 +184,7 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         self.xzn0 = xzn0
         self.fei = fei
 
-    def plot_fei(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fei(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian internal energy flux stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -211,6 +211,10 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         plt.title(r'internal energy flux')
         plt.plot(grd1, plt1, color='brown', label=r'f$_I$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -232,7 +236,7 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fei.png')
 
-    def plot_fei_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -302,6 +306,10 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\epsilon$")
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -323,7 +331,7 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'fei_eq.png')
 
-    def plot_fei_equation2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fei_equation2(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy flux equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -403,6 +411,10 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
             plt.plot(grd1, rhs9, color='y', label=r"$+G_{\epsilon}$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_\epsilon$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

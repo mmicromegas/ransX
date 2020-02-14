@@ -109,7 +109,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.pp = pp
         self.dAdt = dAdt
 
-    def plot_pp(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_pp(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -139,6 +139,10 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{P}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define/show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -160,7 +164,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_pp.png')
 
-    def plot_pp_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_pp_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot pressure equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -211,6 +215,10 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
             plt.plot(grd1, rhs3, color='b', label=r"$+(\Gamma_3 -1)(\overline{\rho}\widetilde{\epsilon}_{nuc})$")
             plt.plot(grd1, rhs4, color='m', label=r"$+(\Gamma_3 -1)\varepsilon_k$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_P$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

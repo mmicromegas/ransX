@@ -202,7 +202,7 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.xzn0 = xzn0
         self.fppz = fppz
 
-    def plot_fppz(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fppz(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure flux stratification in the model"""
 
         # load x GRID
@@ -228,6 +228,10 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'f$_{p\phi}$')
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
@@ -249,7 +253,7 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fppz.png')
 
-    def plot_fppz_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_fppz_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot acoustic flux equation in the model"""
 
         # load x GRID
@@ -307,6 +311,10 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, rhs6, color='b', label=r"$+\overline{P' G_\phi^M/ \rho}$")
             plt.plot(grd1, rhs7, color='m', label=r"$+\overline{P'\partial_\phi P/ \rho r \sin{\theta}}$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_p$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

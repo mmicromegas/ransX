@@ -130,7 +130,7 @@ class AbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         self.fabarx = fabarx
         self.ig = ig
 
-    def plot_abarflux(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_abarflux(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot Abarflux stratification in the model"""
 
         # check supported geometries
@@ -170,6 +170,10 @@ class AbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
 
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
 
@@ -179,7 +183,7 @@ class AbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_abarflux.png')
 
-    def plot_abarflux_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_abarflux_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot abar flux equation in the model"""
 
         # check supported geometries
@@ -237,6 +241,10 @@ class AbarFluxTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
                      label=r"$-\overline{u''_r \rho A^2 \sum_\alpha \dot{X}_\alpha^{nuc} / A_\alpha}$")
             plt.plot(grd1, rhs5, color='yellow', label=r'$+G_A$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
