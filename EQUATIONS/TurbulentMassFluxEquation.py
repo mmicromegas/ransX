@@ -257,10 +257,10 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # plt.legend(loc=ilg, prop={'size': 18})
 
         # display PLOT
-        # plt.show(block=False)
+        plt.show(block=False)
 
         # save PLOT
-        # plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.png')
 
     def plot_a_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ turbulent mass flux equation in the model"""
@@ -304,7 +304,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # plot DATA 
         plt.title('turbulent mass flux equation')
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \overline{u''_x})$')
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \overline{u''_x})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \overline{u''_x})$")
 
             plt.plot(grd1, rhs0, color='r',

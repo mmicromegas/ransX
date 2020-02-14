@@ -229,7 +229,7 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         Cm = 0.5
 
         # plot DATA 
-        plt.title('kinetic energy equation')
+        plt.title(r"kinetic energy equation C$_m$ = " + str(Cm))
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{\epsilon}_K)$')
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{\epsilon}_K)$")
