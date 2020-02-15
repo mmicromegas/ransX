@@ -302,7 +302,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Xflux for ' + self.element)
+        plt.title('Xflux X for ' + self.element)
         plt.plot(grd1, plt1, color='k', label=r'f')
         # plt.plot(grd1,plt2,color='c',label=r"$-\widetilde{R}_{rr} \partial_r \widetilde{X}$")
         # plt.plot(grd1,plt3,color='g',label=r"$-\overline{\rho} \ \overline{X} \ u_{mlt}$")
