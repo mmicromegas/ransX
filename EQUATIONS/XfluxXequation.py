@@ -322,7 +322,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
-            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:

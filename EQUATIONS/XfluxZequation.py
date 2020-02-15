@@ -217,7 +217,7 @@ class XfluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.plot(grd1, plt1, color='k', label=r'f')
 
         # convective boundary markers
-        plt.axvline(self.bconv + 0.46e8, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # convective boundary markers		
@@ -227,12 +227,12 @@ class XfluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
-            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_z}$ (g cm$^{-2}$ s$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
-            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_\phi}$ (g cm$^{-2}$ s$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
 
