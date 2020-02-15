@@ -101,8 +101,17 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         for i in range(len(grd)):
             plt.semilogy(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
+        print("[WARNING] (DensityRmsResolutionStudy.py): convective boundary markers taken from 256c run, tavg = 1500 secs")
+        # taken from 256cubed, tavg 1500 sec
+        bconv = 4.1e8
+        tconv = 9.7e8
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        setxlabel = r"x (cm)"
         setylabel = r"$\rho_{rms} \ / \ \overline{\rho}$"
 
         plt.xlabel(setxlabel)

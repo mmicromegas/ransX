@@ -81,6 +81,14 @@ def main():
     if str2bool(params.getForEqs('uxrms')['plotMee']):
         plt.execUXrms()
 
+    # Turbulent Uy Velocity RMS
+    if str2bool(params.getForEqs('uyrms')['plotMee']):
+        plt.execUYrms()
+
+    # Turbulent Uz Velocity RMS
+    if str2bool(params.getForEqs('uzrms')['plotMee']):
+        plt.execUZrms()
+
     # Density RMS
     if str2bool(params.getForEqs('ddrms')['plotMee']):
         plt.execDDrms()

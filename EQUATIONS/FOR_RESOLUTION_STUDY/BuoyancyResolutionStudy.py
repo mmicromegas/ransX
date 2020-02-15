@@ -29,7 +29,7 @@ class BuoyancyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
         dd, pp, gg, gamma1, gamma2 = [], [], [], [], []
 
-        dlnrhodr, dlnpdr, dlnrhodrs, nsq, b, dx = [], [], [], [], [], []
+        dlnrhodr, dlnpdr, dlnrhodrs, nsq, br, dx = [], [], [], [], [], []
 
         for i in range(len(filename)):
             # load grid
@@ -63,10 +63,21 @@ class BuoyancyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
             dlnrhodrs.append((1. / gamma1[i]) * dlnpdr[i])
             nsq.append(gg[i] * (dlnrhodr[i] - dlnrhodrs[i]))
 
-            b.append(np.zeros(int(nx[i])))
             dx.append(xznr[i] - xznl[i])
+
+        b = []
+
+        # print(nsq[0],nx[0],int(nx[0]))
+
+        for i in range(len(filename)):
+            br = np.zeros(int(nx[i]))
             for ii in range(0, int(nx[i])):
-                b.append(b[i][ii - 1] + nsq[i][ii] * dx[i][ii])
+                nsqf = nsq[i]
+                dxf = dx[i]
+                br[ii] = br[ii - 1] + nsqf[ii] * dxf[ii]
+                # print(i,ii)
+
+            b.append(br)
 
 
         # share data globally
@@ -101,6 +112,7 @@ class BuoyancyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         for i in range(len(grd)):
             plt_interp.append(np.interp(grd_maxres, grd[i], plt1[i]))
 
+
         # create FIGURE
         plt.figure(figsize=(7, 6))
 
@@ -121,13 +133,21 @@ class BuoyancyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Buoyancy fluctuations')
+        plt.title('Buoyancy')
 
         for i in range(len(grd)):
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
+        print("[WARNING] (BuoyancyResolutionStudy.py): convective boundary markers taken from 256c run, tavg = 1500 secs")
+        # taken from 256cubed, tavg 1500 sec
+        bconv = 4.1e8
+        tconv = 9.7e8
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        setxlabel = r"x (cm)"
         setylabel = r"$buoyancy$"
 
         plt.xlabel(setxlabel)

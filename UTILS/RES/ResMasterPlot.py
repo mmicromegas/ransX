@@ -8,6 +8,8 @@ import EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureFluxResolutionStudy as fttx
 import EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyFluxResolutionStudy as fhhx
 import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentMassFluxResolutionStudy as a
 import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentRadialVelocityResolutionStudy as uxRms
+import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUyVelocityResolutionStudy as uyRms
+import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUzVelocityResolutionStudy as uzRms
 import EQUATIONS.FOR_RESOLUTION_STUDY.DensityRmsResolutionStudy as ddRms
 import EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy as buoy
 
@@ -214,17 +216,49 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransUXrms = uxRms.TurbulentRadialVelocityResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                      params.getForProp('prop')['ig'], \
-                                                      params.getForProp('prop')['intc'], \
-                                                      params.getForProp('prop')['prefix'])
+        ransUXrms = uxRms.TurbulentRadialVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                                 params.getForProp('prop')['ig'],
+                                                                 params.getForProp('prop')['intc'],
+                                                                 params.getForProp('prop')['prefix'])
 
-        ransUXrms.plot_uxrms(params.getForProp('prop')['laxis'], \
-                             params.getForEqs('uxrms')['xbl'], \
-                             params.getForEqs('uxrms')['xbr'], \
-                             params.getForEqs('uxrms')['ybu'], \
-                             params.getForEqs('uxrms')['ybd'], \
+        ransUXrms.plot_uxrms(params.getForProp('prop')['laxis'],
+                             params.getForEqs('uxrms')['xbl'],
+                             params.getForEqs('uxrms')['xbr'],
+                             params.getForEqs('uxrms')['ybu'],
+                             params.getForEqs('uxrms')['ybd'],
                              params.getForEqs('uxrms')['ilg'])
+
+    def execUYrms(self):
+        params = self.params
+
+        # instantiate
+        ransUYrms = uyRms.TurbulentUyVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                                 params.getForProp('prop')['ig'],
+                                                                 params.getForProp('prop')['intc'],
+                                                                 params.getForProp('prop')['prefix'])
+
+        ransUYrms.plot_uyrms(params.getForProp('prop')['laxis'],
+                             params.getForEqs('uyrms')['xbl'],
+                             params.getForEqs('uyrms')['xbr'],
+                             params.getForEqs('uyrms')['ybu'],
+                             params.getForEqs('uyrms')['ybd'],
+                             params.getForEqs('uyrms')['ilg'])
+
+    def execUZrms(self):
+        params = self.params
+
+        # instantiate
+        ransUZrms = uzRms.TurbulentUzVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                                 params.getForProp('prop')['ig'],
+                                                                 params.getForProp('prop')['intc'],
+                                                                 params.getForProp('prop')['prefix'])
+
+        ransUZrms.plot_uzrms(params.getForProp('prop')['laxis'],
+                             params.getForEqs('uzrms')['xbl'],
+                             params.getForEqs('uzrms')['xbr'],
+                             params.getForEqs('uzrms')['ybu'],
+                             params.getForEqs('uzrms')['ybd'],
+                             params.getForEqs('uzrms')['ilg'])
 
     def execDDrms(self):
         params = self.params
