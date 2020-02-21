@@ -51,6 +51,7 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.nz = nz
         self.fht_xi = fht_xi
         self.ddxi = ddxi
+        self.ig = ig
 
     def plot_X(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mass fraction in the model"""
@@ -102,11 +103,16 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$X_i$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$X_i$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$X_i$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -168,11 +174,17 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\overline{\rho X_i}$"
 
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\overline{\rho X_i}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\overline{\rho X_i}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

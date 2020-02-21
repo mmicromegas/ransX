@@ -51,6 +51,7 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
         self.ny = ny
         self.nz = nz
         self.uxrms = uxrms
+        self.ig = ig
 
     def plot_uxrms(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot TurbulentMass flux in the model"""
@@ -110,11 +111,16 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        setxlabel = r"x (cm)"
-        setylabel = r"u$^x_{rms}$ (cm/s)"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"u$^x_{rms}$ (cm/s)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"u$^x_{rms}$ (cm/s)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

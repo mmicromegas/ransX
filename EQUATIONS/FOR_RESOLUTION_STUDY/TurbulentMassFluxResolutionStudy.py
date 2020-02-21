@@ -51,6 +51,7 @@ class TurbulentMassFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools,
         self.ny = ny
         self.nz = nz
         self.fddx = fddx
+        self.ig = ig
 
     def plot_fddx(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot TurbulentMass flux in the model"""
@@ -102,11 +103,16 @@ class TurbulentMassFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools,
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$f_\rho$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$f_\rho$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$f_\rho$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

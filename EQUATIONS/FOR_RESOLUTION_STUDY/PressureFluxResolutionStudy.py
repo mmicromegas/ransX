@@ -52,6 +52,7 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
         self.ny = ny
         self.nz = nz
         self.fppx = fppx
+        self.ig = ig
 
     def plot_fppx(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Pressure flux in the model"""
@@ -103,11 +104,16 @@ class PressureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.E
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$f_p$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$f_p$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$f_p$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

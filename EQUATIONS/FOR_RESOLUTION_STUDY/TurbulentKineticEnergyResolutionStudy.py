@@ -62,6 +62,7 @@ class TurbulentKineticEnergyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.T
         self.ny = ny
         self.nz = nz
         self.tke = tke
+        self.ig = ig
 
     def plot_tke(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy in the model"""
@@ -113,11 +114,16 @@ class TurbulentKineticEnergyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.T
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\widetilde{k}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\widetilde{k}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\widetilde{k}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})

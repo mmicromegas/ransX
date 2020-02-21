@@ -4,3 +4,9 @@
 *.blockdat
 *.blockhead
 *.docx
+*.npy
+*.ransdat
+*.ranshead
+*.bindata
+*.header
+*.idea

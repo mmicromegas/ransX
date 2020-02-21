@@ -298,18 +298,34 @@ class PROMPI_bindata:
 
             self.datadict.update({dat: self.data})
 
+            self.datadict.update({'xzn0': xznl})
             self.datadict.update({'xzn0': xzn0})
+            self.datadict.update({'xzn0': xznr})
+
+            self.datadict.update({'yznl': yznl})
             self.datadict.update({'yzn0': yzn0})
+            self.datadict.update({'yznr': yznr})
+
+            self.datadict.update({'zznl': zznl})
             self.datadict.update({'zzn0': zzn0})
+            self.datadict.update({'zznr': zznr})
+
             self.datadict.update({'qqx': self.qqx})
             self.datadict.update({'qqy': self.qqy})
             self.datadict.update({'qqz': self.qqz})
             self.datadict.update({'time': self.time})
 
+            self.xznl = xznl
             self.xzn0 = xzn0
-            self.yzn0 = yzn0
-            self.zzn0 = zzn0
+            self.xznr = xznr
 
+            self.yznl = yznl
+            self.yzn0 = yzn0
+            self.yznr = yznr
+
+            self.zznl = zznl
+            self.zzn0 = zzn0
+            self.zznr = zznr
 
     def datadict(self):
         return self.datadict
@@ -323,7 +339,10 @@ class PROMPI_bindata:
         return self.data
 
     def grid(self):
-        return {'nx': self.qqx, 'ny': self.qqy, 'nz': self.qqz, 'xzn0': self.xzn0, 'yzn0': self.yzn0, 'zzn0': self.zzn0}
+        return {'nx': self.qqx, 'ny': self.qqy, 'nz': self.qqz,
+                'xznl': self.xznl,'xzn0': self.xzn0, 'xznr': self.xznr,
+                'yznl': self.yznl,'yzn0': self.yzn0,'yznr': self.yznr,
+                'zznl': self.zznl, 'zzn0': self.zzn0, 'zznr': self.zznr}
 
 #        OBSOLETE CODE		
 

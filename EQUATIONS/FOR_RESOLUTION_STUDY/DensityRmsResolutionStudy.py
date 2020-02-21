@@ -51,6 +51,7 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         self.ny = ny
         self.nz = nz
         self.ddrms = ddrms
+        self.ig = ig
 
     def plot_ddrms(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot TurbulentMass flux in the model"""
@@ -111,11 +112,16 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
 
         # define and show x/y LABELS
-        setxlabel = r"x (cm)"
-        setylabel = r"$\rho_{rms} \ / \ \overline{\rho}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\rho_{rms} \ / \ \overline{\rho}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\rho_{rms} \ / \ \overline{\rho}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
