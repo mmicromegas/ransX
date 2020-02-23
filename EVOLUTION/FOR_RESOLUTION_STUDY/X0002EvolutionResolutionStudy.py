@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.EVOL.ALIMITevol as al
+import UTILS.Calculus as uCalc
+import UTILS.EVOL.ALIMITevol as uEal
 import UTILS.Tools as uT
 
 
@@ -12,7 +12,7 @@ import UTILS.Tools as uT
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, object):
+class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, object):
 
     def __init__(self, filename, ig, data_prefix):
         super(X0002EvolutionResolutionStudy, self).__init__(ig)
@@ -92,6 +92,18 @@ class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, obje
             if (np.max(plt1i) > plt1max):
                 plt1_foraxislimit = plt1i
 
+        # calculate indices for calculating mean for the plot label
+        lmeanbndry = 500.
+        umeanbndry = 1900.
+
+        il, ib = [],[]
+        for i in range(len(self.t_timec)):
+            tll = np.abs(np.asarray(self.t_timec[i]) - np.float(lmeanbndry))
+            il.append(int(np.where(tll == tll.min())[0][0]))
+
+            tlb = np.abs(np.asarray(self.t_timec[i]) - np.float(umeanbndry))
+            ib.append(int(np.where(tlb == tlb.min())[0][0]))
+
         # set plot boundaries
         to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
@@ -100,9 +112,18 @@ class X0002EvolutionResolutionStudy(calc.Calculus, al.ALIMITevol, uT.Tools, obje
         plt.title('bottom 2/3 of cnvz')
 
         for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
+            plotdata = plt1[i]
+            plt.plot(grd[i], plotdata, label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
                                             + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
-                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
+                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs, $\overline{X}$ = '
+                                            + str(np.format_float_scientific(np.mean(plotdata[il[i]:ib[i]]), unique=False, precision=1)))
+            # markers for time window for averages in label
+            plt.axvline(lmeanbndry, linestyle='--', linewidth=0.7, color='k')
+            plt.axvline(umeanbndry, linestyle='--', linewidth=0.7, color='k')
+
+            # print(il[i],ib[i],np.mean(plt1[il[i]:ib[i]]))
+
+        print('WARNING(X0002EvolutionResolutionStudy.py): mean value in the plot label calculated from-to ' + str(lmeanbndry)+'-'+str(umeanbndry) + ' s')
 
         #for i in range(len(grd)):
         #    plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]))

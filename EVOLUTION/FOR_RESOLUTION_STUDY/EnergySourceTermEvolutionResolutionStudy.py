@@ -95,13 +95,33 @@ class EnergySourceTermEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, 
         to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        # calculate indices for calculating mean for the plot label
+        lmeanbndry = 500.
+        umeanbndry = 1900.
+
+        il, ib = [],[]
+        for i in range(len(self.t_timec)):
+            tll = np.abs(np.asarray(self.t_timec[i]) - np.float(lmeanbndry))
+            il.append(int(np.where(tll == tll.min())[0][0]))
+
+            tlb = np.abs(np.asarray(self.t_timec[i]) - np.float(umeanbndry))
+            ib.append(int(np.where(tlb == tlb.min())[0][0]))
+
         # plot DATA 
         plt.title('energy source evolution')
 
         for i in range(len(grd)):
+            plotdata = plt1[i]
             plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
                                             + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
-                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
+                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) +
+                                            ' TOs, $\overline{S}$ = ' +
+                                            str(np.format_float_scientific(np.mean(plotdata[il[i]:ib[i]]), unique=False, precision=1)) + ' erg/s)')
+
+
+        print('WARNING(EnergySourceTermResolutionStudy.py): mean value in the plot label calculated from-to ' + str(lmeanbndry)+'-'+str(umeanbndry) + ' s')
+
+
 
         # plt.plot(grd1,plt2,color='g',label = r'$epsD$')
 

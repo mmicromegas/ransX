@@ -5,6 +5,7 @@ import UTILS.Calculus as uCalc
 import UTILS.EVOL.ALIMITevol as uEal
 import UTILS.Tools as uT
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
@@ -28,12 +29,12 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
 
         for i in range(len(filename)):
             # load temporal evolution
-            t_timec.append(self.getRAdata(eht[i],'t_timec'))
-            t_TKEsum.append(self.getRAdata(eht[i],'t_TKEsum'))
+            t_timec.append(self.getRAdata(eht[i], 't_timec'))
+            t_TKEsum.append(self.getRAdata(eht[i], 't_TKEsum'))
 
-            nx.append(self.getRAdata(eht[i],'nx'))
-            ny.append(self.getRAdata(eht[i],'ny'))
-            nz.append(self.getRAdata(eht[i],'nz'))
+            nx.append(self.getRAdata(eht[i], 'nx'))
+            ny.append(self.getRAdata(eht[i], 'ny'))
+            nz.append(self.getRAdata(eht[i], 'nz'))
 
             tavg.append(self.getRAdata(eht[i], 'tavg'))
             t_tc.append(self.getRAdata(eht[i], 't_tc'))
@@ -95,13 +96,32 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
         to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        # calculate indices for calculating mean for the plot label
+        lmeanbndry = 500.
+        umeanbndry = 1900.
+
+        il, ib = [],[]
+        for i in range(len(self.t_timec)):
+            tll = np.abs(np.asarray(self.t_timec[i]) - np.float(lmeanbndry))
+            il.append(int(np.where(tll == tll.min())[0][0]))
+
+            tlb = np.abs(np.asarray(self.t_timec[i]) - np.float(umeanbndry))
+            ib.append(int(np.where(tlb == tlb.min())[0][0]))
+
         # plot DATA 
         plt.title('turbulent kinetic energy evolution')
 
         for i in range(len(grd)):
+            plotdata = plt1[i]
             plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
-                                            + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
-                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
+                                            + '(tavg = ' + str(np.round(tavg[i], 1)) + ' s = '
+                                            + str(np.round(tavg[i] / np.mean(t_tc[i]), 1)) + ' TOs, $\overline{tke}$ = '
+                                            + str(np.format_float_scientific(np.mean(plotdata[il[i]:ib[i]]), unique=False, precision=1)) + ' ergs)')
+            # markers for time window for averages in label
+            plt.axvline(lmeanbndry, linestyle='--', linewidth=0.7, color='k')
+            plt.axvline(umeanbndry, linestyle='--', linewidth=0.7, color='k')
+
+        print('WARNING(EnergySourceTermResolutionStudy.py): mean value in the plot label calculated from-to ' + str(lmeanbndry)+'-'+str(umeanbndry) + ' s')
 
         # plt.plot(grd1,plt2,color='g',label = r'$epsD$')
 
