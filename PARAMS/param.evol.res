@@ -13,7 +13,7 @@
 ## Mach Number Max Evolution ............................... ## [machmxevol,True,1.,2000.,5.e-2,2.e-3,0]
 ## Mach Number Mean Evolution .............................. ## [machmeevol,True,1.,2000.,3.5e-2,1.5e-3,0]
 ## Convection Boundaries Position Evolution ................ ## [cnvzbndry,False,1.,2000.,1.1e9,0.8e9,4]
-## Energy Source Term Evolution ............................ ## [enesource,True,1.,2000.,5.e45,0.,0]
+## Energy Source Term Evolution ............................ ## [enesource,True,1.,2000.,1.e47,1.e43,0]
 ## Convective RMS Velocity Evolution ....................... ## [convelrms,True,1.,2000.,1.9e7,1.4e6,0]
 ## Convective Turnover Timescale Evolution ................. ## [convturn,False,1.,2000.,80.,50.,0]
 ## Residual Max Continuity Equation Evolution .............. ## [contresmax,False,1.,2000.,1.2e2,0.,0]

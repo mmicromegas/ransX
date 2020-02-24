@@ -96,8 +96,8 @@ class EnergySourceTermEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, 
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 500.
-        umeanbndry = 1900.
+        lmeanbndry = 800.
+        umeanbndry = 1200.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):
@@ -112,7 +112,7 @@ class EnergySourceTermEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, 
 
         for i in range(len(grd)):
             plotdata = plt1[i]
-            plt.plot(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
+            plt.semilogy(grd[i], plt1[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
                                             + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
                                             + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) +
                                             ' TOs, $\overline{S}$ = ' +
@@ -127,7 +127,7 @@ class EnergySourceTermEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, 
 
         # define and show x/y LABELS
         setxlabel = r"t (s)"
-        setylabel = r"u (cms/s)"
+        setylabel = r"ergs/s"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 

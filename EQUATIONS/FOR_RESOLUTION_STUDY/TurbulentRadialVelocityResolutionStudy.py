@@ -28,6 +28,8 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
         xzn0, nx, ny, nz = [], [], [], []
 
         ux, uxux, dd, uxrms = [], [], [], []
+        lum = []
+
 
         for i in range(len(filename)):
             # load grid
@@ -40,6 +42,7 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
             # pick specific Reynolds-averaged mean fields according to:
             # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 		
 
+            lum.append(np.asarray(eht[i].item().get('enuc1')[intc]))
             ux.append(np.asarray(eht[i].item().get('ux')[intc]))
             uxux.append(np.asarray(eht[i].item().get('uxux')[intc]))
             uxrms.append((uxux[i] - ux[i] * ux[i]) ** 0.5)
@@ -51,6 +54,7 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
         self.ny = ny
         self.nz = nz
         self.uxrms = uxrms
+        self.lum = lum
         self.ig = ig
 
     def plot_uxrms(self, LAXIS, xbl, xbr, ybu, ybd, ilg):

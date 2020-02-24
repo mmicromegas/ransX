@@ -97,8 +97,8 @@ class ConvectiveRMSvelocityEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITe
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 500.
-        umeanbndry = 1900.
+        lmeanbndry = 800.
+        umeanbndry = 1200.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):
@@ -141,6 +141,47 @@ class ConvectiveRMSvelocityEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITe
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'urms_evol.png')
+
+    def plot_u_vs_L(self):
+
+        Lsun = 3.839e33 # in ergs/s
+        L = [4.5e43/Lsun,4.5e44/Lsun,4.5e45/Lsun]
+        u = [7.2e6,9.3e6,1.7e7]
+
+        c1 = 1.e11
+        c2 = 1.e7
+        exx1 = 1./3
+        LscalingLaw1 = [c2*(L[0]/c1)**exx1,c2*(L[1]/c1)**exx1,c2*(L[2]/c1)**exx1]
+
+        exx2 = 1./5.
+        LscalingLaw2 = [c2*(L[0]/c1)**exx2,c2*(L[1]/c1)**exx2,c2*(L[2]/c1)**exx2]
+
+        print(LscalingLaw1)
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+        plt.title('tke velocity vs luminosity')
+
+        plt.axis([1.e43/Lsun,1.e46/Lsun,3.e6,3.e7])
+        plt.loglog(L,u,label=r'prompi ccp two-layers (128x128x128)',marker='o',color='b')
+        plt.loglog(L,LscalingLaw1,label=r"$10^7(L/10^{11})^{1/3}$",color='r',linestyle='--')
+        plt.loglog(L,LscalingLaw2,label=r"$10^7(L/10^{11})^{1/5}$",color='g',linestyle='--')
+
+        # define and show x/y LABELS
+        setxlabel = r"L/Lsun"
+        setylabel = r"u (cm/s)"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=0, prop={'size': 12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'L_vs_urms_evol.png')
+
 
     # find data with maximum resolution
     def maxresdata(self, data):

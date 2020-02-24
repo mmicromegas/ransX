@@ -97,8 +97,8 @@ class MachNumberMeanEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 500.
-        umeanbndry = 1900.
+        lmeanbndry = 800.
+        umeanbndry = 1200.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):

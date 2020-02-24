@@ -93,8 +93,8 @@ class MachNumberMaxEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.
                 plt1_foraxislimit = plt1i
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 500.
-        umeanbndry = 1900.
+        lmeanbndry = 800.
+        umeanbndry = 1200.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):

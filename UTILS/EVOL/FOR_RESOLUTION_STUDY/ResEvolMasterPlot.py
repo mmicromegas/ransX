@@ -90,6 +90,8 @@ class ResEvolMasterPlot():
                                           params.getForEvol('convelrms')['ybd'],
                                           params.getForEvol('convelrms')['ilg'])
 
+        ransUrmsEvol.plot_u_vs_L()
+
     def execEvolConvTurnoverTime(self):
         params = self.params
 
