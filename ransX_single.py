@@ -12,13 +12,14 @@
 import UTILS.PROMPI.PROMPI_single as uPs
 import UTILS.SINGLE.ReadParamsSingle as uRps
 import warnings
+import os
 
 
 def main():
     warnings.filterwarnings("ignore")
 
     # read input parameters
-    paramFile = 'param.single'
+    paramFile = os.path.join('PARAMS', 'param.single')
     params = uRps.ReadParamsSingle(paramFile)
 
     datafile = params.getForSingle('single')['datafile']
