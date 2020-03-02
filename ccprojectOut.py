@@ -18,13 +18,18 @@ onex = one
 oneenuc = one
 
 icnt = 0
+
+# character position for filename output
+chp = 18
+
 for fff in bindata:
     filename = os.path.join(dataloc, fff)
     print(filename)
+    # chp = len(filename)
     icnt += 1
     q = ccp.CCproject(filename)
     data = q.getData()
     time = data['time']/onetu
     q.write_output(data, time, ['x','density','pressure','temp','velx','vely','velz','vel','x1','x2','Avalue'],
-                   filename, ['Y','RHO','P','T','UX','UY','UZ','|U|','X1','X2','A'], icnt,
+                   filename[0:chp], ['Y','RHO','P','T','UX','UY','UZ','|U|','X0','X1','A'], icnt,
                    [onelu,onerho,onepr,onete,oneve,oneve,oneve,oneve,onex,onex,onea])
