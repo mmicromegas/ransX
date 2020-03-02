@@ -240,7 +240,9 @@
 % Entropy flux equation
 \erho \fav{D}_t (f_s / \eht{\rho}) = & -\nabla_r f_s^r - f_s \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{s} -\eht{s''}\partial_r \eht{P} - \eht{s''\partial_r P'} + \eht{u''_r ( {\mathcal S} + \nabla \cdot F_T)  / T} + {\mathcal G_s} + {\mathcal N_{fs}}  \label{eq:rans_fs} \\
 % Composition flux equations
-\erho \fav{D}_t (f_\alpha / \eht{\rho}) = &  -\nabla_r f_\alpha^r  - f_\alpha \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{X}_\alpha -\eht{X''_\alpha} \partial_r \eht{P} - \eht{X''_\alpha \partial_r P'} + \overline{u''_r \rho \dot{X}_\alpha^{\rm nuc}} + {\mathcal G_\alpha} + {\mathcal N_{f\alpha}}  \label{eq:rans_falpha} \\
+\erho \fav{D}_t (f_{\alpha r} / \eht{\rho}) = &  -\nabla_r f_\alpha^r  - f_{\alpha r} \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{X}_\alpha -\eht{X''_\alpha} \partial_r \eht{P} - \eht{X''_\alpha \partial_r P'} + \overline{u''_r \rho \dot{X}_\alpha^{\rm nuc}} + {\mathcal G_\alpha} + {\mathcal N_{f\alpha}}  \label{eq:rans_falphar} \\
+\erho \fav{D}_t (f_{\alpha \theta} / \eht{\rho}) = &  -\nabla_r f_\alpha^\theta  - f_{\alpha r} \partial_r \fht{u}_\theta - \fht{R}_{\theta r} \partial_r \fht{X}_\alpha + \overline{u''_\theta \rho \dot{X}_\alpha^{\rm nuc}} + {\mathcal G_{\alpha \theta}} + {\mathcal N_{f\alpha \theta}}  \label{eq:rans_falphat} \\
+\erho \fav{D}_t (f_{\alpha \phi} / \eht{\rho}) = &  -\nabla_r f_\alpha^\phi  - f_{\alpha r} \partial_r \fht{u}_\phi - \fht{R}_{\phi r} \partial_r \fht{X}_\alpha + \overline{u''_\phi \rho \dot{X}_\alpha^{\rm nuc}} + {\mathcal G_{\alpha \phi}} + {\mathcal N_{f\alpha \phi}}  \label{eq:rans_falphap} \\
 \erho \fav{D}_t (f_A / \eht{\rho}) = &  -\nabla_r f_A^r - f_A \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{A} -\eht{A''} \partial_r \eht{P} - \eht{A'' \partial_r P'} - \overline{u''_r \rho A^2\Sigma_\alpha \dot{X}_\alpha^{\rm nuc} / A_\alpha} + {\mathcal G_A} + {\mathcal N_{fA}}                \label{eq:rans_fabar} \\
 \erho \fav{D}_t (f_Z / \eht{\rho}) = &  -\nabla_r f_Z^r  - f_Z \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{Z} -\eht{Z''} \partial_r \eht{P} - \eht{Z'' \partial_r P'} - \overline{u''_r \rho Z A \Sigma_\alpha (\dot{X}_\alpha^{\rm nuc}/ A_\alpha)} - \overline{u''_r \rho A \Sigma_\alpha (Z_\alpha \dot{X}_\alpha^{\rm nuc} / A_\alpha)}  + {\mathcal G_Z} + {\mathcal N_{fZ}}   \label{eq:rans_fzbar}  \\
 % Angular momentum flux equation (z comp.)
@@ -250,8 +252,10 @@
 % TKE flux equation
 \erho \fav{D}_t (f_k / \eht{\rho}) = &  -\nabla_r ( 2 f_k^r + f_P^r ) - (1/2)(\nabla_r \eht{u''_iu''_iP'} + \nabla_r 2 k \partial_r \fht{u}_r - \fht{u''_iu''_r}\nabla_r \fht{R}_{rr} - 2 k \partial_r \eht{P} + \eht{u''_iu''_i}\partial_r \eht{P} - \eht{P'\nabla_r u''_iu''_i}) - \\
 & - (k_i^r\partial_r \fht{u}_i - \fht{u''_iu''_r} \nabla_r \fht{u''_i u''_r} - 2 k^r \partial_r \eht{P} + \eht{u''_r u''_r} \partial_r \eht{P} - \eht{P'\nabla_iu''_iu''_r}) + {\mathcal G_{fk}} + {\mathcal N_{fk}} \\
-% Acoustic flux equation
-\fht{D}_t f_p = & -\nabla_r f_p^r - f_p \partial_r \eht{u}_r + \eht{u''_r u'_r}\partial_r \eht{P} + \Gamma_1 \eht{u'_r P d} + (\Gamma_3 -1)\eht{u'_r \rho \varepsilon_{nuc}} + \eht{P'u''_r d''} - \eht{P' G_r^M / \rho} - \eht{P'\partial_r P/ \rho}  + {\mathcal N_{fp}} 
+% Acoustic flux equations
+\fht{D}_t f_{pr} = & -\nabla_r f_p^r - f_{pr} \partial_r \eht{u}_r + \eht{u'_r u''_r}\partial_r \eht{P} + \Gamma_1 \eht{u'_r P d} + (\Gamma_3 -1)\eht{u'_r \rho \varepsilon_{nuc}} + \eht{P'u''_r d''} - \eht{P' G_r^M / \rho} - \eht{P'\partial_r P/ \rho}  + {\mathcal N_{fpr}} \\
+\fht{D}_t f_{p\theta} = & -\nabla_r f_p^\theta - f_{pr} \partial_r \eht{u}_\theta + \eht{u'_\theta u''_r}\partial_r \eht{P} + \Gamma_1 \eht{u'_\theta P d} + (\Gamma_3 -1)\eht{u'_\theta \rho \varepsilon_{nuc}} + \eht{P'u''_\theta d''} - \eht{P' G_\theta^M / \rho} - \eht{P'\partial_\theta P/ \rho r}  + {\mathcal N_{fp\theta}} \\
+\fht{D}_t f_{p\phi} = & -\nabla_r f_p^\phi - f_{pr} \partial_r \eht{u}_\phi + \eht{u'_\phi u''_r}\partial_r \eht{P} + \Gamma_1 \eht{u'_\phi P d} + (\Gamma_3 -1)\eht{u'_\phi \rho \varepsilon_{nuc}} + \eht{P'u''_\phi d''} - \eht{P' G_\phi^M / \rho} - \eht{P'\partial_\phi P/ \rho r \sin{\theta}}  + {\mathcal N_{fp\phi}}
 \end{align} 
 \end{table}
 
@@ -259,12 +263,22 @@
 
 \begin{table}[!h]
 %\caption{1D RANS (Reynolds variance) equations in Lagrangian form.}
-\label{tab:rans-variances}
+\label{tab:rans-variances1}
 \begin{align}
 % sigma density
 \fht{D}_t \sigma_\rho =  &  - \nabla_r \eht{(\rho' \rho ' u''_r)}  - 2\eht{\rho} \ \eht{\rho'd''} - 2 \eht{\rho'u''_r} \partial_r \eht{\rho} - 2 \fht{d} \ \sigma_\rho - \eht{\rho'\rho'd''} + {\mathcal N_{\sigma_\rho}} \\
 % sigma P
 \fht{D}_t \sigma_P = & - \nabla_r \eht{(P' P' u''_r)} - 2\Gamma_1 \eht{P} \ W_P - 2 f_P \partial_r \eht{P} - 2\Gamma_1 \widetilde{d} \ \sigma_P - (2 \Gamma_1 -1) \eht{P'P'd''} + 2(\Gamma_3 - 1)\eht{P' {\mathcal S}} + {\mathcal N_{\sigma_P}} \\
+\fht{D}_t \sigma_T = & -\nabla_r \eht{(T' T' u''_r)} - 2(\Gamma_3 -1)\eht{T} \ \eht{T'd''} - 2\eht{T'u''_r} \partial_r \eht{T} - 2(\Gamma_3-1)\fht{d}\sigma_T + (3-2\Gamma_3)\eht{T'T'd''} + \eht{2 T' \nabla \cdot F_T/ \rho c_v} + \eht{2 T' \epsilon_{\rm nuc} / c_v} + {\mathcal N_{\sigma T}}  \\
+% sigma ur
+\eht{\rho} \fht{D}_t \sigma_{ur} = & -\nabla_r ( \eht{\rho u''_r u''_r u''_r} ) + 2 \nabla_r f_P + 2 W_b - 2\fht{R}_{rr}\partial_r \fht{u}_r + 2 \overline{P'\nabla_r u''_r} + {\mathcal G_{\sigma_{ur}}} + {\mathcal N_{\sigma_{ur}}} 
+\end{align}
+\end{table}
+
+\begin{table}[!h]
+%\caption{1D RANS (Reynolds variance) equations in Lagrangian form.}
+\label{tab:rans-variances2}
+\begin{align}
 % sigma T
 \fht{D}_t \sigma_T = & -\nabla_r \eht{(T' T' u''_r)} - 2(\Gamma_3 -1)\eht{T} \ \eht{T'd''} - 2\eht{T'u''_r} \partial_r \eht{T} - 2(\Gamma_3-1)\fht{d}\sigma_T + (3-2\Gamma_3)\eht{T'T'd''} + \eht{2 T' \nabla \cdot F_T/ \rho c_v} + \eht{2 T' \epsilon_{\rm nuc} / c_v} + {\mathcal N_{\sigma T}}  \\
 % sigma ur
@@ -3956,7 +3970,7 @@ We can derive the entropy flux equation using the general formula for second ord
 \erho \fav{D}_t (f_s / \eht{\rho}) = &  -\nabla_r f_s^r - f_s \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{s} -\eht{s''}\partial_r \eht{P} - \eht{s''\partial_r P'} + \eht{u''_r ( {\mathcal S} + \nabla \cdot f_T)  / T} + {\mathcal G_s} + {\mathcal N_{fs}}  \label{eq:rans_fs}
 \end{align}
 
-\subsection{Mean composition flux equation}
+\subsection{Mean composition flux equation in $r$ direction.}
 
 We can derive the composition flux equation using the general formula for second order moments, where we substitute $c$ with $X_\alpha$ and $d$ with $u_i$.
 
@@ -4023,6 +4037,9 @@ The exact formulation of the geometry and viscosity terms is:
 {\mathcal N_{fi}} = &-\nabla_r (\eht{X''_i {\color{blue}\tau_{rr}}}) - \eht{{\color{blue}\tau_{rr}}\partial_r X''_i} - \eht{{\color{blue}\tau_{r\theta}}(1/r)\partial_\theta X''_i} - \eht{{\color{blue}\tau_{r\phi}}(1/r\sin{\theta})\partial_\phi X''_i}  {\color{red} +\overline{X''\tau_{\theta \theta} \tau_{\theta \theta}/r} + \overline{X''\tau_{\phi \phi} \tau_{\phi \phi}/r}}  
 \end{align}
 
+\subsection{Mean composition equation in $\theta$ direction.}
+
+t.b.d
 
 
 \subsection{Mean A and Z flux equations}
@@ -4045,7 +4062,7 @@ We can derive the angular momentum flux equation using the general formula for s
 \erho \fav{D}_t (f_{jz} / \rho) = & -\nabla_r f_{jz}^r  - f_{jz} \partial_r \fht{u}_r - \fht{R}_{rr} \partial_r \fht{j_z} -\eht{j''_z} \partial_r \eht{P} - \eht{j''_z \partial_r P'} + {\mathcal G_{jz}} + {\mathcal N_{jz}} \label{eq:rans_fjz}
 \end{align}
 
-\subsection{Pressure flux equation}
+\subsection{Pressure flux equation in $r$ direction}
 
 We can derive the pressure flux equation using the general formula for second order moments, where we substitute $c$ with $P$ and $d$ with $u_r$.
 
@@ -4096,7 +4113,263 @@ D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \
 \begin{align}
   \fht{D}_t \eht{P'u'_r} = & \ -\nabla_r f_p^r - f_p\partial_r \eht{u}_r + \eht{u'_r u''_r}\partial_r \eht{P} +\Gamma_1 \eht{u'_r P d} + (\Gamma_3 -1)\eht{u'_r \rho \varepsilon_{nuc}} + \eht{P'u''_r d''} -\eht{P' G_r^M/\rho} - \eht{P'\partial_{r} P / \rho}  
 \end{align}
+
+\subsection{Pressure flux equation in $x$ direction (Cartesian geometry)}
+
+We can derive the pressure flux equation using the general formula for second order moments, where we substitute $c$ with $P$ and $d$ with $u_x$ (like in previous section).
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_x} = & \ \eht{P'D_t u_x} - \eht{P'u''_x} \partial_x \eht{u}_x + \eht{u'_x D_t P} + \eht{u'_x u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_x} + \eht{P'u''_x d''} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t u_x$ is \href{https://en.wikipedia.org/wiki/Navier-Stokes_equations}{https://en.wikipedia.org/wiki/Navier-Stokes\_equations}: 
+
+\begin{align}
+\rho D_{t} \big(u_{x}\big) = & \ \nabla_x \tau_{xx} + \nabla_y \tau_{xy} + \nabla_z \tau_{xz} - \partial_{x} P + \rho g_x 
+\end{align}
+
+\noindent
+By neglecting viscosity and dividing by $\rho$, it becomes:
+
+\begin{align}
+D_{t} \big(u_{x}\big) = & -\frac{\partial_{x} P}{\rho}  + g_x 
+\end{align}
+
+\noindent
+The evolution equation for $D_t P$ (see Sect.\ref{sect:mean-pressure-eq}) is 
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T + \tau_{ij}\partial_i u_j)
+\end{align}
+
+\noindent
+By neglecting viscosity, it becomes:
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T)
+\end{align}
+
+\noindent We continue here by putting everything together and neglecting heat flux due to conduction and radiation $F_T$:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_x} = & \ \eht{P'\left(- \partial_{x} P / \rho  + g_x \right)} - \eht{P'u''_x} \partial_x \eht{u}_x + \eht{u'_x \left( -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T) \right)} + \eht{u'_x u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_x} + \eht{P'u''_x d''} \\
+  \fht{D}_t \eht{P'u'_x} = & \ -\eht{P'\partial_{x} P / \rho}  + \eht{P'g_x}  - \eht{P'u''_x} \partial_x \eht{u}_x - (1-\Gamma_3-\Gamma_1)\eht{u'_x P d} - (\Gamma_3-1)\eht{u'_xPd} + (\Gamma_3 -1)\eht{u'_x \rho \varepsilon_{nuc}}  + \eht{u'_x u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_r} + \eht{P'u''_x d''} \\
+  \fht{D}_t \eht{P'u'_x} = & \ -\nabla_x f_p^x - f_p\partial_x \eht{u}_x + \eht{u'_x u''_x}\partial_x \eht{P} - (1-\Gamma_3-\Gamma_1)\eht{u'_x P d} - (\Gamma_3-1)\eht{u'_x P d} + (\Gamma_3 -1)\eht{u'_x \rho \varepsilon_{nuc}} + \eht{P'u''_x d''} - \eht{P'\partial_{r} P / \rho}
+\end{align}
   
+\noindent With a little more algebraic modifications, we get the final form:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_x} = & \ -\nabla_x f_p^x - f_p\partial_x \eht{u}_x + \eht{u'_x u''_x}\partial_x \eht{P} +\Gamma_1 \eht{u'_x P d} + (\Gamma_3 -1)\eht{u'_x \rho \varepsilon_{nuc}} + \eht{P'u''_x d''} - \eht{P'\partial_{x} P / \rho}  
+\end{align}
+
+
+\subsection{Pressure flux equation in $\theta$ direction}
+
+We can derive the pressure flux equation using the general formula for second order moments, where we substitute $c$ with $P$ and $d$ with $u_\theta$.
+
+\begin{align}
+\widetilde{D}_t \widetilde{c'd'} = & \ \overline{c' D_t d} - \eht{c'u''_n} \partial_n \eht{d} + \eht{d'D_t c} + \eht{d'u''_n}\partial_n \eht{c} - \partial_n \eht{u''_n c'd'} + \eht{c'd''\partial_n u''_n} \nonumber \\ 
+  \fht{D}_t \eht{P'u'_\theta} = & \ \eht{P'D_t u_\theta} - \eht{P'u''_\theta} \partial_n \eht{u}_\theta + \eht{u'_\theta D_t P} + \eht{u'_\theta u''_n} \partial_n \eht{P} - \partial_n \eht{u''_n P' u'_\theta} + \eht{P'u''_\theta \partial_n u''_n} \nonumber \\
+  \fht{D}_t \eht{P'u'_\theta} = & \ \eht{P'D_t u_\theta} - \eht{P'u''_\theta} \partial_r \eht{u}_\theta + \eht{u'_\theta D_t P} + \eht{u'_\theta u''_r} \partial_r \eht{P} - \nabla_r \eht{P' u''_r u'_\theta} + \eht{P'u''_\theta d''} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t u_\theta$ (see Sect.\ref{sect:hydro-inst-lag}) is 
+
+\begin{align}
+\rho D_{t} \big(u_{\theta}\big) = & \ +\left( \frac{1}{r^{2}} \partial_{r} \big( r^{2} [\tau_{\theta r}]\big) + \frac{1}{r\sin{\theta}}\partial_{\theta}(\sin{\theta}[\tau_{\theta \theta}]\big) + \frac{1}{r\sin{\theta}}\partial_{\phi}\big([\tau_{\theta \phi}]\big) - G_\theta^M - \frac{1}{r} \partial_{\theta} P \right) + \rho g_\theta 
+\end{align}
+
+\noindent
+By neglecting viscosity and dividing by $\rho$, it becomes:
+
+\begin{align}
+D_{t} \big(u_{\theta}\big) = & \ - \frac{G_\theta^M}{\rho} - \frac{1}{r} \frac{\partial_{\theta} P}{\rho} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t P$ (see Sect.\ref{sect:mean-pressure-eq}) is 
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T + \tau_{ij}\partial_i u_j)
+\end{align}
+
+\noindent
+By neglecting viscosity, it becomes:
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T)
+\end{align}
+
+\noindent We continue here by putting everything together and neglecting heat flux due to conduction and radiation $F_T$:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_\theta} = & \ \eht{P'\left(- G_\theta^M/\rho - \partial_{\theta} P / \rho\right)} - \eht{P'u''_r} \partial_r \eht{u}_\theta + \eht{u'_\theta \left( -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T) \right)} + \eht{u'_\theta u''_r} \partial_r \eht{P} - \nabla_r \eht{P' u''_r u'_\theta} + \eht{P'u''_\theta d''} \\
+  \fht{D}_t \eht{P'u'_\theta} = & \ -\eht{P' G_\theta^M/\rho} - \eht{P'\partial_{\theta} P / \rho}  - \eht{P'u''_r} \partial_r \eht{u}_r - (1-\Gamma_3-\Gamma_1)\eht{u'_\theta P d} - (\Gamma_3-1)\eht{u'_\theta Pd} + (\Gamma_3 -1)\eht{u'_\theta \rho \varepsilon_{nuc}}  + \eht{u'_\theta u''_r} \partial_r \eht{P} - \nabla_r \eht{P' u''_r u'_\theta} + \eht{P'u''_\theta d''} \\
+  \fht{D}_t \eht{P'u'_\theta} = & \ -\nabla_r f_p^\theta - f_p\partial_r \eht{u}_\theta + \eht{u'_\theta u''_r}\partial_r \eht{P} - (1-\Gamma_3-\Gamma_1)\eht{u'_\theta P d} - (\Gamma_3-1)\eht{u'_\theta P d} + (\Gamma_3 -1)\eht{u'_\theta \rho \varepsilon_{nuc}} + \eht{P'u''_\theta d''} - \eht{P'\partial_{\theta} P / (\rho r)}
+\end{align}
+  
+\noindent With a little more algebraic modifications, we get the final form:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_\theta} = & \ -\nabla_r f_p^\theta - f_p\partial_r \eht{u}_\theta + \eht{u'_\theta u''_r}\partial_r \eht{P} +\Gamma_1 \eht{u'_\theta P d} + (\Gamma_3 -1)\eht{u'_\theta \rho \varepsilon_{nuc}} + \eht{P'u''_\theta d''} - \eht{P'\partial_{\theta} P / (\rho r)}  
+\end{align}
+
+\subsection{Pressure flux equation in $y$ direction (Cartesian geometry)}
+
+We can derive the pressure flux equation using the general formula for second order moments, where we substitute $c$ with $P$ and $d$ with $u_y$ (like in previous section).
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_y} = & \ \eht{P'D_t u_y} - \eht{P'u''_x} \partial_x \eht{u}_y + \eht{u'_y D_t P} + \eht{u'_y u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_y} + \eht{P'u''_y d''} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t u_y$ is \href{https://en.wikipedia.org/wiki/Navier-Stokes_equations}{https://en.wikipedia.org/wiki/Navier-Stokes\_equations}: 
+
+\begin{align}
+\rho D_{t} \big(u_{y}\big) = & \ \nabla_x \tau_{yx} + \nabla_x \tau_{yy} + \nabla_x \tau_{yz} - \partial_{y} P 
+\end{align}
+
+\noindent
+By neglecting viscosity and dividing by $\rho$, it becomes:
+
+\begin{align}
+D_{t} \big(u_{y}\big) = & -\frac{\partial_{y} P}{\rho}
+\end{align}
+
+\noindent
+The evolution equation for $D_t P$ (see Sect.\ref{sect:mean-pressure-eq}) is 
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T + \tau_{ij}\partial_i u_j)
+\end{align}
+
+\noindent
+By neglecting viscosity, it becomes:
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T)
+\end{align}
+
+\noindent We continue here by putting everything together and neglecting heat flux due to conduction and radiation $F_T$:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_y} = & \ \eht{P'\left(- \partial_{y} P / \rho \right)} - \eht{P'u''_x} \partial_x \eht{u}_y + \eht{u'_y \left( -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T) \right)} + \eht{u'_y u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_y} + \eht{P'u''_y d''} \\
+  \fht{D}_t \eht{P'u'_y} = & \ -\eht{P'\partial_{y} P / \rho}  - \eht{P'u''_x} \partial_x \eht{u}_y - (1-\Gamma_3-\Gamma_1)\eht{u'_y P d} - (\Gamma_3-1)\eht{u'_yPd} + (\Gamma_3 -1)\eht{u'_y \rho \varepsilon_{nuc}}  + \eht{u'_y u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_y u'_x} + \eht{P'u''_y d''} \\
+  \fht{D}_t \eht{P'u'_y} = & \ -\nabla_x f_p^y - f_p\partial_x \eht{u}_y + \eht{u'_y u''_x}\partial_x \eht{P} - (1-\Gamma_3-\Gamma_1)\eht{u'_y P d} - (\Gamma_3-1)\eht{u'_y P d} + (\Gamma_3 -1)\eht{u'_y \rho \varepsilon_{nuc}} + \eht{P'u''_y d''} - \eht{P'\partial_{y} P / \rho}
+\end{align}
+  
+\noindent With a little more algebraic modifications, we get the final form:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_y} = & \ -\nabla_x f_p^y - f_p\partial_x \eht{u}_y + \eht{u'_y u''_x}\partial_x \eht{P} +\Gamma_1 \eht{u'_y P d} + (\Gamma_3 -1)\eht{u'_y \rho \varepsilon_{nuc}} + \eht{P'u''_y d''} - \eht{P'\partial_{y} P / \rho}  
+\end{align}
+
+
+\subsection{Pressure flux equation in $\phi$ direction}
+
+We can derive the pressure flux equation using the general formula for second order moments, where we substitute $c$ with $P$ and $d$ with $u_\phi$.
+
+\begin{align}
+\widetilde{D}_t \widetilde{c'd'} = & \ \overline{c' D_t d} - \eht{c'u''_n} \partial_n \eht{d} + \eht{d'D_t c} + \eht{d'u''_n}\partial_n \eht{c} - \partial_n \eht{u''_n c'd'} + \eht{c'd''\partial_n u''_n} \nonumber \\ 
+  \fht{D}_t \eht{P'u'_\phi} = & \ \eht{P'D_t u_\phi} - \eht{P'u''_\phi} \partial_n \eht{u}_\phi + \eht{u'_\phi D_t P} + \eht{u'_\phi u''_n} \partial_n \eht{P} - \partial_n \eht{u''_n P' u'_\phi} + \eht{P'u''_\phi \partial_n u''_n} \nonumber \\
+  \fht{D}_t \eht{P'u'_\phi} = & \ \eht{P'D_t u_\phi} - \eht{P'u''_\phi} \partial_r \eht{u}_\phi + \eht{u'_\phi D_t P} + \eht{u'_\phi u''_r} \partial_r \eht{P} - \nabla_r \eht{P' u''_r u'_\phi} + \eht{P'u''_\phi d''} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t u_\phi$ (see Sect.\ref{sect:hydro-inst-lag}) is 
+
+\begin{align}
+\rho D_{t} \big(u_{\phi}\big) = & \ +\left( \frac{1}{r^{2}} \partial_{r} \big( r^{2} [\tau_{\phi r}]\big) + \frac{1}{r\sin{\phi}}\partial_{\phi}(\sin{\phi}[\tau_{\phi \theta}]\big) + \frac{1}{r\sin{\phi}}\partial_{\phi}\big([\tau_{\phi \phi}]\big) - G_\phi^M - \frac{1}{r\sin{\theta}} \partial_{\phi} P \right) + \rho g_\phi 
+\end{align}
+
+\noindent
+By neglecting viscosity and dividing by $\rho$, it becomes:
+
+\begin{align}
+D_{t} \big(u_{\phi}\big) = & \ - \frac{G_\phi^M}{\rho} - \frac{1}{r\sin{\theta}} \frac{\partial_{\phi} P}{\rho} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t P$ (see Sect.\ref{sect:mean-pressure-eq}) is 
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T + \tau_{ij}\partial_i u_j)
+\end{align}
+
+\noindent
+By neglecting viscosity, it becomes:
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T)
+\end{align}
+
+\noindent We continue here by putting everything together and neglecting heat flux due to conduction and radiation $F_T$:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_\phi} = & \ \eht{P'\left(- G_\phi^M/\rho - \partial_{\phi} P / \rho\right)} - \eht{P'u''_r} \partial_r \eht{u}_\phi + \eht{u'_\phi \left( -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T) \right)} + \eht{u'_\phi u''_r} \partial_r \eht{P} - \nabla_r \eht{P' u''_r u'_\phi} + \eht{P'u''_\phi d''} \\
+  \fht{D}_t \eht{P'u'_\phi} = & \ -\eht{P' G_\phi^M/\rho} - \eht{P'\partial_{\phi} P / \rho}  - \eht{P'u''_r} \partial_r \eht{u}_r - (1-\Gamma_3-\Gamma_1)\eht{u'_\phi P d} - (\Gamma_3-1)\eht{u'_\phi Pd} + (\Gamma_3 -1)\eht{u'_\phi \rho \varepsilon_{nuc}}  + \eht{u'_\phi u''_r} \partial_r \eht{P} - \nabla_r \eht{P' u''_r u'_\phi} + \eht{P'u''_\phi d''} \\
+  \fht{D}_t \eht{P'u'_\phi} = & \ -\nabla_r f_p^\phi - f_p\partial_r \eht{u}_\phi + \eht{u'_\phi u''_r}\partial_r \eht{P} - (1-\Gamma_3-\Gamma_1)\eht{u'_\phi P d} - (\Gamma_3-1)\eht{u'_\phi P d} + (\Gamma_3 -1)\eht{u'_\phi \rho \varepsilon_{nuc}} + \eht{P'u''_\phi d''} - \eht{P'\partial_{\phi} P / (\rho r \sin{\theta})}
+\end{align}
+  
+\noindent With a little more algebraic modifications, we get the final form:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_\phi} = & \ -\nabla_r f_p^\phi - f_p\partial_r \eht{u}_\phi + \eht{u'_\phi u''_r}\partial_r \eht{P} +\Gamma_1 \eht{u'_\phi P d} + (\Gamma_3 -1)\eht{u'_\phi \rho \varepsilon_{nuc}} + \eht{P'u''_\phi d''} - \eht{P'\partial_{\phi} P / (\rho r \sin{\theta})}  
+\end{align}
+
+\subsection{Pressure flux equation in $z$ direction (Cartesian geometry)}
+
+We can derive the pressure flux equation using the general formula for second order moments, where we substitute $c$ with $P$ and $d$ with $u_z$ (like in previous section).
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_z} = & \ \eht{P'D_t u_z} - \eht{P'u''_x} \partial_x \eht{u}_z + \eht{u'_z D_t P} + \eht{u'_z u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_z} + \eht{P'u''_z d''} 
+\end{align}
+
+\noindent
+The evolution equation for $D_t u_z$ is \href{https://en.wikipedia.org/wiki/Navier-Stokes_equations}{https://en.wikipedia.org/wiki/Navier-Stokes\_equations}: 
+
+\begin{align}
+\rho D_{t} \big(u_{z}\big) = & \ \nabla_x \tau_{zx} + \nabla_x \tau_{zy} + \nabla_x \tau_{zz} - \partial_{z} P 
+\end{align}
+
+\noindent
+By neglecting viscosity and dividing by $\rho$, it becomes:
+
+\begin{align}
+D_{t} \big(u_{z}\big) = & -\frac{\partial_{z} P}{\rho}
+\end{align}
+
+\noindent
+The evolution equation for $D_t P$ (see Sect.\ref{sect:mean-pressure-eq}) is 
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T + \tau_{ij}\partial_i u_j)
+\end{align}
+
+\noindent
+By neglecting viscosity, it becomes:
+
+\begin{align}
+D_t P = & -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T)
+\end{align}
+
+\noindent We continue here by putting everything together and neglecting heat flux due to conduction and radiation $F_T$:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_z} = & \ \eht{P'\left(- \partial_{z} P / \rho \right)} - \eht{P'u''_x} \partial_x \eht{u}_z + \eht{u'_z \left( -(1-\Gamma_3+\Gamma_1)Pd + (\Gamma_3 -1)(-Pd + {\mathcal S} + \nabla \cdot F_T) \right)} + \eht{u'_z u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_x u'_z} + \eht{P'u''_z d''} \\
+  \fht{D}_t \eht{P'u'_z} = & \ -\eht{P'\partial_{z} P / \rho}  - \eht{P'u''_x} \partial_x \eht{u}_z - (1-\Gamma_3-\Gamma_1)\eht{u'_z P d} - (\Gamma_3-1)\eht{u'_zPd} + (\Gamma_3 -1)\eht{u'_z \rho \varepsilon_{nuc}}  + \eht{u'_z u''_x} \partial_x \eht{P} - \nabla_x \eht{P' u''_z u'_x} + \eht{P'u''_z d''} \\
+  \fht{D}_t \eht{P'u'_z} = & \ -\nabla_x f_p^z - f_p\partial_x \eht{u}_z + \eht{u'_z u''_x}\partial_x \eht{P} - (1-\Gamma_3-\Gamma_1)\eht{u'_z P d} - (\Gamma_3-1)\eht{u'_z P d} + (\Gamma_3 -1)\eht{u'_z \rho \varepsilon_{nuc}} + \eht{P'u''_z d''} - \eht{P'\partial_{z} P / \rho}
+\end{align}
+  
+\noindent With a little more algebraic modifications, we get the final form:
+
+\begin{align}
+  \fht{D}_t \eht{P'u'_z} = & \ -\nabla_x f_p^z - f_p\partial_x \eht{u}_z + \eht{u'_z u''_x}\partial_x \eht{P} +\Gamma_1 \eht{u'_z P d} + (\Gamma_3 -1)\eht{u'_z \rho \varepsilon_{nuc}} + \eht{P'u''_z d''} - \eht{P'\partial_{z} P / \rho}  
+\end{align}
+
 
 \section{Derivation of variance equations}
 
