@@ -298,9 +298,9 @@ class PROMPI_bindata:
 
             self.datadict.update({dat: self.data})
 
-            self.datadict.update({'xzn0': xznl})
+            self.datadict.update({'xznl': xznl})
             self.datadict.update({'xzn0': xzn0})
-            self.datadict.update({'xzn0': xznr})
+            self.datadict.update({'xznr': xznr})
 
             self.datadict.update({'yznl': yznl})
             self.datadict.update({'yzn0': yzn0})

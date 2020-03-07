@@ -257,6 +257,10 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.model_1_rogers1989 = -Drr1 * self.Grad(xi, xzn0)
         self.model_2_rogers1989 = -Drr2 * self.Grad(xi, xzn0)
 
+        # turbulent thermal diffusion model (the extra term)
+        self.model_3_turb_thermal_diff = self.model_1_rogers1989 + (Drr1*self.Grad(dd, xzn0)/dd)*xi
+        self.model_4 = (Drr1*self.Grad(dd, xzn0)/dd)*xi
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -267,6 +271,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.fxi2 = fxi2
         self.bconv = bconv
         self.tconv = tconv
+        self.dd = dd
 
     def plot_XfluxX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
@@ -355,11 +360,14 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         grd1 = self.xzn0
 
         # load and calculate DATA to plot
-        plt1 = self.fxi1
-        plt2 = self.fxi2
+        plt1 = self.dd*self.fxi1
+        plt2 = self.dd*self.fxi2
 
-        plt3 = self.model_1_rogers1989
-        plt4 = self.model_2_rogers1989
+        plt3 = self.dd*self.model_1_rogers1989
+        plt4 = self.dd*self.model_2_rogers1989
+
+        plt5 = self.dd*self.model_3_turb_thermal_diff
+        plt6 = self.dd*self.model_4
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -368,16 +376,18 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2, plt3, plt4]
+        to_plot = [plt1, plt2, plt3, plt4, plt5, plt6]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('Xflux for ' + self.element)
-        plt.plot(grd1, plt1, color='k', label=r"$+\widetilde{X''u''_r}$")
-        plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$+\overline{X'u'_r}$")
+        plt.plot(grd1, plt1, color='k', label=r"$+\overline{\rho}\widetilde{X''u''_r}$")
+        plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$+\overline{\rho}\overline{X'u'_r}$")
 
         plt.plot(grd1, plt3, color='g', label=r"$model (1)$")
-        plt.plot(grd1, plt4, color='b', linestyle='--', label=r"$model (2)$")
+        # plt.plot(grd1, plt4, color='b', linestyle='--', label=r"$model (2)$")
+        plt.plot(grd1, plt5, color='m', label=r"$model (1) + D (\nabla \rho / \rho) X$")
+        plt.plot(grd1, plt6, color='pink', label=r"$+D (\nabla \rho / \rho) X$")
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -390,7 +400,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
-            setylabel = r"$f$ (cm s$^{-1}$)"
+            setylabel = r"$f$ (g cm$^{-2}$ s$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
@@ -400,7 +410,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 18})
+        plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)

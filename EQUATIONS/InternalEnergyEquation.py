@@ -147,6 +147,7 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ei.png')
 
+
     def plot_ei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy equation in the model"""
 

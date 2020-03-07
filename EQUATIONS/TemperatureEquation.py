@@ -238,7 +238,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 11}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

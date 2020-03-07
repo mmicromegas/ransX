@@ -335,7 +335,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12},ncol=2)
+        plt.legend(loc=ilg, prop={'size': 13},ncol=2)
 
         # display PLOT
         plt.show(block=False)

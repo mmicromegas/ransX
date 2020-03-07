@@ -32,19 +32,25 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         ux = self.getRAdata(eht, 'ux')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
         ei = self.getRAdata(eht, 'ei')[intc]
+        ek = self.getRAdata(eht, 'ek')[intc]
         tt = self.getRAdata(eht, 'tt')[intc]
 
         ddux = self.getRAdata(eht, 'ddux')[intc]
         dduy = self.getRAdata(eht, 'dduy')[intc]
         dduz = self.getRAdata(eht, 'dduz')[intc]
         ddei = self.getRAdata(eht, 'ddei')[intc]
+        ddek = self.getRAdata(eht, 'ddek')[intc]
+        ddet = self.getRAdata(eht, 'ddet')[intc]
         ddgg = self.getRAdata(eht, 'ddgg')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
 
         dduxux = self.getRAdata(eht, 'dduxux')[intc]
         dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
         dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
         ddeiux = self.getRAdata(eht, 'ddeiux')[intc]
+        ddekux = self.getRAdata(eht, 'ddekux')[intc]
+        ddetux = self.getRAdata(eht, 'ddetux')[intc]
         ddeiuy = self.getRAdata(eht, 'ddeiuy')[intc]
         ddeiuz = self.getRAdata(eht, 'ddeiuz')[intc]
         eiddgg = self.getRAdata(eht, 'eiddgg')[intc]
@@ -179,10 +185,24 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
                                           self.plus_eht_uxff_epsilonk_approx +
                                           self.plus_Gei)
 
+        # other fluxes
+        fht_ek = ddek / dd
+        fht_ux = ddux / dd
+        fht_ei = ddei / dd
+        fht_et = ddet / dd
+
+        fei = ddeiux - ddux * ddei / dd
+        fekx = ddekux - fht_ux * fht_ek
+        fetx = ddetux - fht_ux * fht_et
+        fpx = ppux - pp * ux
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.fei = fei
+        self.fekx = fekx
+        self.fetx = fetx
+        self.fpx = fpx
 
     def plot_fei(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian internal energy flux stratification in the model"""
@@ -196,6 +216,9 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
 
         # load DATA to plot
         plt1 = self.fei
+        plt2 = self.fekx
+        plt3 = self.fpx
+        plt4 = self.fetx
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -204,12 +227,17 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1]
+        to_plot = [plt1, plt2, plt3, plt4]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title(r'internal energy flux')
+        # plt.title(r'internal energy flux')
+        plt.title(r'energy fluxes')
         plt.plot(grd1, plt1, color='brown', label=r'f$_I$')
+        plt.plot(grd1, plt2, color='r', label=r'f$_K$')
+        plt.plot(grd1, plt3, color='g', label=r'f$_P$')
+        # plt.plot(grd1, -plt4, color='b', label=r'-f$_T$')
+        # plt.plot(grd1, plt1 + plt2 + plt3 - plt4, color='k', linestyle='--', label=r'res')
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
@@ -235,6 +263,7 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fei.png')
+
 
     def plot_fei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy flux equation in the model"""

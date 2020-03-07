@@ -492,19 +492,19 @@ class MasterPlot():
                               params.getForEqs(x)['ybd'],
                               params.getForEqs(x)['ilg'])
 
-        # ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
-        #                                params.getForEqs(x)['xbl'], \
-        #                                params.getForEqs(x)['xbr'], \
-        #                                params.getForEqs(x)['ybu'], \
-        #                                params.getForEqs(x)['ybd'], \
-        #                                params.getForEqs(x)['ilg'])
+        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
+                                        params.getForEqs(x)['xbl'], \
+                                        params.getForEqs(x)['xbr'], \
+                                        params.getForEqs(x)['ybu'], \
+                                        params.getForEqs(x)['ybd'], \
+                                        params.getForEqs(x)['ilg'])
 
-    #        ransXflx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],\
-    #                            params.getForEqs(x)['xbl'],\
-    #                            params.getForEqs(x)['xbr'],\
-    #                            params.getForEqs(x)['ybu'],\
-    #                            params.getForEqs(x)['ybd'],\
-    #                            params.getForEqs(x)['ilg'])
+        ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],\
+                                params.getForEqs(x)['xbl'],\
+                                params.getForEqs(x)['xbr'],\
+                                params.getForEqs(x)['ybu'],\
+                                params.getForEqs(x)['ybd'],\
+                                params.getForEqs(x)['ilg'])
 
     def execXflxXeq(self, inuc, element, x, bconv, tconv, tke_diss, tauL):
         params = self.params

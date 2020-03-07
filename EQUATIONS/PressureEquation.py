@@ -75,7 +75,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.minus_dt_pp = -self.dt(t_pp, xzn0, t_timec, intc)
 
         # LHS -fht_ux grad P		
-        self.minus_fht_ux_grad_pp = -fht_ux * self.Grad(pp, xzn0)
+        self.minus_eht_ux_grad_pp = -ux * self.Grad(pp, xzn0)
 
         # RHS -div fpp
         self.minus_div_fpp = -self.Div(fpp, xzn0)
@@ -93,7 +93,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.plus_gamma3_minus_one_disstke = +(gamma3 - 1.) * tke_diss
 
         # -res
-        self.minus_resPPequation = -(self.minus_dt_pp + self.minus_fht_ux_grad_pp +
+        self.minus_resPPequation = -(self.minus_dt_pp + self.minus_eht_ux_grad_pp +
                                      self.minus_div_fpp + self.minus_gamma1_pp_div_ux +
                                      self.plus_one_minus_gamma1_eht_ppf_df +
                                      self.plus_gamma3_minus_one_dd_fht_enuc +
@@ -175,7 +175,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         grd1 = self.xzn0
 
         lhs0 = self.minus_dt_pp
-        lhs1 = self.minus_fht_ux_grad_pp
+        lhs1 = self.minus_eht_ux_grad_pp
 
         rhs0 = self.minus_div_fpp
         rhs1 = self.minus_gamma1_pp_div_ux
@@ -199,7 +199,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         plt.title('pressure equation')
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{P})$")
-            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x \overline{P}$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\overline{u}_x \partial_x \overline{P}$")
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\Gamma_1 \bar{P} \bar{d}$")
             plt.plot(grd1, rhs2, color='r', label=r"$+(1-\Gamma_1) W_P$")
@@ -208,7 +208,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_P$")
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{P})$")
-            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r \overline{P}$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\overline{u}_r \partial_r \overline{P}$")
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-\Gamma_1 \bar{P} \bar{d}$")
             plt.plot(grd1, rhs2, color='r', label=r"$+(1-\Gamma_1) W_P$")

@@ -23,6 +23,7 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
@@ -60,7 +61,10 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.minus_div_rxx = -self.Div(rxx, xzn0)
 
         # RHS -G
-        self.minus_G = -(-dduyuy - dduzuz) / xzn0
+        if self.ig == 1:
+            self.minus_G = np.zeros(nx)
+        elif self.ig == 2:
+            self.minus_G = -(-dduyuy - dduzuz) / xzn0
 
         # RHS -(grad P - rho g)
         # self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg
