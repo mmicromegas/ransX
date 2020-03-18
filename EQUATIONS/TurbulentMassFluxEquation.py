@@ -311,7 +311,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
                      label=r"$-(\overline{\rho' u'_x u'_x} / \overline{\rho}) \partial_x \overline{\rho}$")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$+\widetilde{R}_{xx}/\overline{\rho}\partial_x \overline{\rho} $")
             plt.plot(grd1, rhs2, color='c', label=r"$-\overline{\rho} \nabla_x (\overline{u''_x} \ \overline{u''_x}) $")
-            plt.plot(grd1, rhs3, color='m', label=r"$+\nabla_r \overline{\rho' u'_x u'_x}$")
+            plt.plot(grd1, rhs3, color='m', label=r"$+\nabla_x \overline{\rho' u'_x u'_x}$")
 
             # plt.plot(grd1,rhs0,color='r',label = r"$+\nabla \widetilde{R}_{xx}$")
             # plt.plot(grd1,rhs1,color='c',label = r"$-\overline{\rho} \nabla_r \overline{u'_x u'_x}$")
