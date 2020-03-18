@@ -240,11 +240,11 @@ class ReynoldsStressXXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         plt.title('reynolds stress xx equation')
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t R_{xx}$')
-            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\widetilde{u}_x R_{xx})$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\widetilde{u}_x R_{xx})$")
 
             plt.plot(grd1, rhs0, color='r', label=r"$+2 W_b$")
             plt.plot(grd1, rhs1, color='c', label=r"$+2 \overline{P' \nabla u''_x }$")
-            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_r 2 f_k^x$")
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x 2 f_k^x$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x 2 f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xx}\partial_x \widetilde{u}_x$")
             # plt.plot(grd1, rhs5, color='y', label=r"$2 \mathcal{G}_k^r$")

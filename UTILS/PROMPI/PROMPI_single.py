@@ -121,6 +121,9 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         rr = np.asarray(self.data['xzn0'])
         rrl = np.asarray(self.data['xznl'])
         rrr = np.asarray(self.data['xznr'])
+        # dd = np.asarray(self.data['dd'])
+
+        print('Time: ',np.asarray(self.data['rans_tstart']))
 
         f_1 = self.data[f1]
 
@@ -133,6 +136,8 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         ax1.axis([xbl, xbr, np.min(to_plt1[idxl:idxr]), np.max(to_plt1[idxl:idxr])])
         # ax1.axis([xbl,xbr,-2.5e6,2.5e6])
         ax1.plot(rr, to_plt1, color='b', label=plabel_1)
+
+        print('Max: ',np.max(to_plt1))
 
         xlabel_1 = 'x'
         ylabel_1 = f1
@@ -858,7 +863,9 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
 
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
-        ax1.axis([4.e8, 1.2e9, 1.e-4, 0.1])
+        # ax1.axis([4.e8, 1.2e9, 1.e-4, 0.1])
+        ax1.axis([2.e8, 5.e9, 1.e-4, 0.1])
+
 
         plt.title(r'HSE deviation (evolved)')
 

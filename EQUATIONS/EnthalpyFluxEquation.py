@@ -91,7 +91,7 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         fhhx = ddhhuxux - ddhh * dduxux / dd - 2. * fht_ux * ddhhux + 2. * dd * fht_ux * fht_hh * fht_ux
 
         eht_hhff = hh - ddhh / dd
-        eht_hhff_gradx_ppf = hhgradxpp - fht_hh * self.Grad(pp, xzn0)
+        eht_hhff_gradx_ppf = hhgradxpp - hh * self.Grad(pp, xzn0)
 
         eht_uxff_dd_enuc = (dduxenuc1 + dduxenuc2) - fht_ux * (ddenuc1 + ddenuc2)
 
@@ -271,7 +271,7 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd1, rhs2, color='r', label=r"$-\widetilde{R}_{xx} \partial_x \widetilde{h}$")
             plt.plot(grd1, rhs3, color='firebrick', label=r"$-\Gamma_1 \overline{u''_x P d}$")
             plt.plot(grd1, rhs4, color='c', label=r"$-\overline{h''}\partial_x \overline{P}$")
-            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-\overline{h'' \partial_x P'}$")
+            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-\overline{h'' \partial_x P'} (used -\overline{h' \partial_x P'})$")
             plt.plot(grd1, rhs6, color='b', label=r"$+\Gamma_3 \overline{u''_x \rho \varepsilon_{nuc}}$")
             plt.plot(grd1, rhs7, color='m', label=r"$+\Gamma_3 \overline{u''_x \nabla \cdot T}$")
             plt.plot(grd1, rhs8, color='g', label=r"$+\Gamma_3 \overline{u''_x \varepsilon_k }$")
@@ -287,7 +287,7 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd1, rhs2, color='r', label=r"$-\widetilde{R}_{rr} \partial_r \widetilde{h}$")
             plt.plot(grd1, rhs3, color='firebrick', label=r"$-\Gamma_1 \overline{u''_r P d}$")
             plt.plot(grd1, rhs4, color='c', label=r"$-\overline{h''}\partial_r \overline{P}$")
-            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-\overline{h'' \partial_r P'}$")
+            plt.plot(grd1, rhs5, color='mediumseagreen', label=r"$-\overline{h'' \partial_r P'} (used -\overline{h' \partial_r P'})$")
             plt.plot(grd1, rhs6, color='b', label=r"$+\Gamma_3 \overline{u''_r \rho \varepsilon_{nuc}}$")
             plt.plot(grd1, rhs7, color='m', label=r"$+\Gamma_3 \overline{u''_r \nabla \cdot T}$")
             plt.plot(grd1, rhs8, color='g', label=r"$+\Gamma_3 \overline{u''_r \varepsilon_k }$")

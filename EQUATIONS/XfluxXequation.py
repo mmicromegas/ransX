@@ -410,7 +410,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 14})
+        plt.legend(loc=ilg, prop={'size': 12})
 
         # display PLOT
         plt.show(block=False)

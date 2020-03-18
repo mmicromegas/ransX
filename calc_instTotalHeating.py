@@ -1,4 +1,4 @@
-import UTILS.PROMPI_data as prd
+import UTILS.PROMPI.PROMPI_data as prd
 import numpy as np
 
 
@@ -13,8 +13,10 @@ def threed(a, b, c, param):
 # dataloc = '/home/miro/ransX/DATA/BINDATA/ccp_two_layers/'
 # filename_blck = dataloc+'ccptwo.res128cubed.00315.bindata'
 
-dataloc = '/home/miro/ransX/DATA/BINDATA/ccp_two_layers/'
-filename_blck = dataloc + 'ccptwo.ideal.lres2.01871.bindata'
+# dataloc = 'D:\\ccp_two_layers\\'
+# dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
+dataloc = 'D:\\ccp_two_layers\\BINDATA\\'
+filename_blck = dataloc + 'ccptwo.r512x512x512.cosma.00001.bindata'
 
 dat = ['density', 'enuc1']
 
@@ -43,8 +45,17 @@ enuc1 = block.datadict['enuc1']
 source = rho * enuc1
 
 volone = (xznr[1] - xznr[0]) * (yznr[1] - yznr[0]) * (zznr[1] - zznr[0])
-Vol = np.asarray(threed(nx, ny, nz, volone))
+Vol = np.asarray(threed(nz, ny, nx, volone))
 
 totlum = (Vol * source).sum()
 
+# ccp specs two layes (11/March/2020)
+onelu = 3.752995e49
+factor = 1.2082151e-4
+sourcespec = onelu*factor
+
 print("Total LUminosity in ergs/s is: ", totlum)
+print("Total luminosity according to specs :", sourcespec)
+print("Relative Difference: ",(totlum-sourcespec)/sourcespec)
+
+

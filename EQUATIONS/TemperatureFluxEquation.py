@@ -267,7 +267,7 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         plt.title('temperature flux equation')
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_T$")
-            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_x f_T$)")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x f_T$)")
 
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_T^r $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_T \partial_x \widetilde{u}_x$")

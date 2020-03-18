@@ -152,6 +152,9 @@ class PROMPI_ransdat:
         zznr = {'zznr': self.zznr}
         self.ransd.update(zznr)
 
+        rans_tstart = {'rans_tstart': self.rans_tstart}
+        self.ransd.update(rans_tstart)
+
         i = 0
         #        print(self.ransl)
 

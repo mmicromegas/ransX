@@ -55,7 +55,10 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             # gamma3 = gamma1
 
         # for ccp project
-        x0002 = self.getRAdata(eht, 'x0002')[intc]
+        if plabel == 'ccptwo':
+            x0002 = self.getRAdata(eht, 'x0002')[intc]
+        else:
+            x0002 = np.zeros(nx)
 
         ####################################################################
 
@@ -286,7 +289,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             tauL = 9999999999.
             # sys.exit()
 
-        if self.plabel == "ccp":
+        if self.plabel == "ccp" or self.plabel == "ccpone":
             # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm)
             indCCP = np.where((xzn0 < 6.66e8))[0]
             x0002mean_cnvz = np.mean(self.x0002[indCCP])
