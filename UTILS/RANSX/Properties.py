@@ -305,8 +305,19 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             resTeeMax = np.max(resTee[indRES])
             resTeeMean = np.mean(resTee[indRES])
         elif self.plabel == "oburn":
-            print("ERROR(Properties.py): " + self.errorProjectSpecific())
-            sys.exit()
+            indCCP = np.where((xzn0 < 6.66e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+            indRES = np.where((xzn0 < 8.1e8) & (xzn0 > 4.55e8))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
+
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
         else:
             print("ERROR(Properties.py): " + self.errorProject(self.plabel))
             sys.exit()

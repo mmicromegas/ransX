@@ -15,7 +15,7 @@ import sys
 
 class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
         super(EnthalpyEquation, self).__init__(ig)
 
         # load data to structured array
@@ -105,6 +105,7 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.fht_hh = fht_hh
+        self.fext = fext
 
     def plot_hh(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian enthalpy stratification in the model"""
@@ -159,7 +160,10 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_hh.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_hh.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_hh.eps')
 
     def plot_hh_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot enthalpy equation in the model"""
@@ -241,4 +245,7 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hh_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hh_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hh_eq.eps')

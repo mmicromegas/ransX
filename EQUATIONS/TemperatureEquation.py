@@ -15,7 +15,7 @@ import sys
 
 class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
         super(TemperatureEquation, self).__init__(ig)
 
         # load data to structured array
@@ -106,6 +106,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.xzn0 = xzn0
         self.tt = tt
         self.ig = ig
+        self.fext = fext
 
     def plot_tt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature stratification in the model"""
@@ -161,7 +162,10 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.eps')
 
     def plot_tt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
@@ -244,4 +248,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'tt_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'tt_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'tt_eq.eps')

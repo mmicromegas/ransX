@@ -492,19 +492,19 @@ class MasterPlot():
                               params.getForEqs(x)['ybd'],
                               params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'], \
-                                        params.getForEqs(x)['xbl'], \
-                                        params.getForEqs(x)['xbr'], \
-                                        params.getForEqs(x)['ybu'], \
-                                        params.getForEqs(x)['ybd'], \
+        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
+                                        params.getForEqs(x)['xbl'],
+                                        params.getForEqs(x)['xbr'],
+                                        params.getForEqs(x)['ybu'],
+                                        params.getForEqs(x)['ybd'],
                                         params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],\
-                                params.getForEqs(x)['xbl'],\
-                                params.getForEqs(x)['xbr'],\
-                                params.getForEqs(x)['ybu'],\
-                                params.getForEqs(x)['ybd'],\
-                                params.getForEqs(x)['ilg'])
+        ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
+                                      params.getForEqs(x)['xbl'],
+                                      params.getForEqs(x)['xbr'],
+                                      params.getForEqs(x)['ybu'],
+                                      params.getForEqs(x)['ybd'],
+                                      params.getForEqs(x)['ilg'])
 
     def execXflxXeq(self, inuc, element, x, bconv, tconv, tke_diss, tauL):
         params = self.params
@@ -825,6 +825,7 @@ class MasterPlot():
         # instantiate 		
         ransEi = ei.InternalEnergyEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['ig'],
+                                           params.getForProp('prop')['fext'],
                                            params.getForProp('prop')['intc'],
                                            tke_diss,
                                            params.getForProp('prop')['prefix'])
@@ -843,6 +844,7 @@ class MasterPlot():
         # instantiate 		
         ransEi = ei.InternalEnergyEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['ig'],
+                                           params.getForProp('prop')['fext'],
                                            params.getForProp('prop')['intc'],
                                            tke_diss,
                                            params.getForProp('prop')['prefix'])
@@ -1026,6 +1028,7 @@ class MasterPlot():
         # instantiate 		
         ransSS = ss.EntropyEquation(params.getForProp('prop')['eht_data'],
                                     params.getForProp('prop')['ig'],
+                                    params.getForProp('prop')['fext'],
                                     params.getForProp('prop')['intc'],
                                     tke_diss,
                                     params.getForProp('prop')['prefix'])
@@ -1044,6 +1047,7 @@ class MasterPlot():
         # instantiate 		
         ransSS = ss.EntropyEquation(params.getForProp('prop')['eht_data'],
                                     params.getForProp('prop')['ig'],
+                                    params.getForProp('prop')['fext'],
                                     params.getForProp('prop')['intc'],
                                     tke_diss,
                                     params.getForProp('prop')['prefix'])
@@ -1466,6 +1470,7 @@ class MasterPlot():
         # instantiate 		
         ransKe = ek.KineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
                                           -kolmrate,
                                           params.getForProp('prop')['prefix'])
@@ -1485,6 +1490,7 @@ class MasterPlot():
         # instantiate 		
         ransKe = ek.KineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
                                           -kolmrate,
                                           params.getForProp('prop')['prefix'])
@@ -1505,6 +1511,7 @@ class MasterPlot():
         # instantiate 		
         ransTe = et.TotalEnergyEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['intc'],
                                         -kolmrate,
                                         params.getForProp('prop')['prefix'])
@@ -1524,6 +1531,7 @@ class MasterPlot():
         # instantiate 		
         ransTe = et.TotalEnergyEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['intc'],
                                         -kolmrate,
                                         params.getForProp('prop')['prefix'])
@@ -1805,6 +1813,7 @@ class MasterPlot():
         # instantiate 		
         ransPP = pp.PressureEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
                                      tke_diss,
@@ -1831,6 +1840,7 @@ class MasterPlot():
         # instantiate 		
         ransPP = pp.PressureEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
                                      tke_diss,
@@ -2008,6 +2018,7 @@ class MasterPlot():
         # instantiate 		
         ransTT = tt.TemperatureEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
                                         params.getForProp('prop')['intc'],
                                         tke_diss,
@@ -2027,6 +2038,7 @@ class MasterPlot():
         # instantiate 		
         ransTT = tt.TemperatureEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
+                                        params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
                                         params.getForProp('prop')['intc'],
                                         tke_diss,
@@ -2126,6 +2138,7 @@ class MasterPlot():
         # instantiate 		
         ransHH = hh.EnthalpyEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
                                      tke_diss,
@@ -2145,6 +2158,7 @@ class MasterPlot():
         # instantiate 		
         ransHH = hh.EnthalpyEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
                                      tke_diss,

@@ -15,7 +15,7 @@ import sys
 
 class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, intc, tke_diss, data_prefix):
         super(EntropyEquation, self).__init__(ig)
 
         # load data to structured array
@@ -85,6 +85,7 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.fht_ss = fht_ss
+        self.fext = fext
 
     def plot_ss(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian entropy stratification in the model"""
@@ -136,7 +137,10 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ss.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ss.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ss.eps')
 
     def plot_ss_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot entropy equation in the model"""
@@ -214,4 +218,7 @@ class EntropyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'ss_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'ss_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'ss_eq.eps')

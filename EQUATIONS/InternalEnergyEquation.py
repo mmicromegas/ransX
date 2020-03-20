@@ -15,7 +15,7 @@ import sys
 
 class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, intc, tke_diss, data_prefix):
         super(InternalEnergyEquation, self).__init__(ig)
 
         # load data to structured array
@@ -94,6 +94,7 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.fht_ei = fht_ei
+        self.fext = fext
 
     def plot_ei(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian internal energy stratification in the model"""
@@ -145,8 +146,10 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ei.png')
-
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ei.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ei.eps')
 
     def plot_ei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy equation in the model"""
@@ -230,4 +233,7 @@ class InternalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'ei_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'ei_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'ei_eq.eps')

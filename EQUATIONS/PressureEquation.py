@@ -15,7 +15,7 @@ import sys
 
 class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
         super(PressureEquation, self).__init__(ig)
 
         # load data to structured array
@@ -108,6 +108,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.xzn0 = xzn0
         self.pp = pp
         self.dAdt = dAdt
+        self.fext = fext
 
     def plot_pp(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure stratification in the model"""
@@ -162,7 +163,10 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_pp.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_pp.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_pp.eps')
 
     def plot_pp_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot pressure equation in the model"""
@@ -239,7 +243,10 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'pp_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'pp_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'pp_eq.eps')
 
     def plot_dAdt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot dAdt in the model. A =  p / rho**gamma"""

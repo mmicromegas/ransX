@@ -15,7 +15,7 @@ import sys
 
 class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, intc, tke_diss, data_prefix):
         super(TotalEnergyEquation, self).__init__(ig)
 
         # load data to structured array
@@ -164,6 +164,7 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.xzn0 = xzn0
         self.fht_et = fht_ei + fht_ek
         self.ig = ig
+        self.fext = fext
 
     def plot_et(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean total energy stratification in the model"""
@@ -219,7 +220,10 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.eps')
 
     def plot_et_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot total energy equation in the model"""
@@ -316,4 +320,7 @@ class TotalEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'et_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'et_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'et_eq.eps')

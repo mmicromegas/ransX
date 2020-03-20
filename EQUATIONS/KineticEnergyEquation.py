@@ -15,7 +15,7 @@ import sys
 
 class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, minus_kolmrate, data_prefix):
+    def __init__(self, filename, ig, fext, intc, minus_kolmrate, data_prefix):
         super(KineticEnergyEquation, self).__init__(ig)
 
         # load data to structured array
@@ -138,6 +138,7 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.xzn0 = xzn0
         self.dd = dd
         self.fht_ek = fht_ek
+        self.fext = fext
 
     def plot_ke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot kinetic energy stratification in the model"""
@@ -189,7 +190,10 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ek.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ek.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ek.eps')
 
     def plot_ke_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot kinetic energy equation in the model"""
@@ -278,7 +282,10 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'ek_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'ek_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'ek_eq.eps')
 
     def tke_dissipation(self):
         return self.minus_resTkeEquation
