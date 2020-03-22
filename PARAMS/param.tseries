@@ -1,8 +1,8 @@
 # ----- Parameter file for rans(eXtreme) hheflash tseries ---------- #
 []
-## Input Data Directory .................... ## [tseries,datadir,D:\simonX\ccptwo.256cubed\]
+## Input Data Directory .................... ## [tseries,datadir,D:\ccp_two_layers\128cubedFixedR\]
 ## Input Data Endianness ................... ## [tseries,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [tseries,precision,double]
-## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ccptwo_256cubed_simon_1500secs]
-## Time-Range (in s) ....................... ## [tseries,trange,0.,1999.]
-## Averaging Window (in s) ................. ## [tseries,tavg,1500.]
+## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ccptwo_128c_fixedR_5secs]
+## Time-Range (in s) ....................... ## [tseries,trange,0.,499.]
+## Averaging Window (in s) ................. ## [tseries,tavg,5.]

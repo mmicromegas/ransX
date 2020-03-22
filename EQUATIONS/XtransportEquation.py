@@ -16,7 +16,7 @@ import UTILS.Errors as eR
 
 class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
+    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, intc, data_prefix):
         super(XtransportEquation, self).__init__(ig)
 
         # load data to structured array
@@ -100,6 +100,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.bconv = bconv
         self.tconv = tconv
         self.ig = ig
+        self.fext = fext
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
@@ -155,7 +156,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_' + element + '.eps')
 
     def plot_X(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""
@@ -211,7 +215,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_' + element + '.eps')
 
     def plot_gradX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot grad X stratification in the model"""
@@ -341,7 +348,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.eps')
 
     def plot_Xtransport_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of composition transport equation in the model"""
@@ -439,4 +449,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'xtransport_' + element + '_eq_bar.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'xtransport_' + element + '_eq_bar.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'xtransport_' + element + '_eq_bar.eps')

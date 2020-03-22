@@ -22,17 +22,20 @@ class ReadParamsReaclib:
         match = [s for s in self.input if param in s]  # choose only lists identified by param
         reaclib = match[0].split(",")[2]
         eht_data = match[1].split(",")[2]
-        prefix = match[2].split(",")[2]
-        ieos = match[3].split(",")[2]
-        fext = match[4].split(",")[2]
-        ig = int(match[5].split(",")[2])
-        intc = int(match[6].split(",")[2])
-        laxis = int(match[7].split(",")[2])
-        xbl = float(match[8].split(",")[2])
-        xbr = float(match[9].split(",")[2])
+        plabel = match[2].split(",")[2]
+        prefix = match[3].split(",")[2]
+        ieos = match[4].split(",")[2]
+        fext = match[5].split(",")[2]
+        ig = int(match[6].split(",")[2])
+        intc = int(match[7].split(",")[2])
+        laxis = int(match[8].split(",")[2])
+        fext = match[9].split(",")[2]
+        tnuc = int(match[10].split(",")[2])
+        xbl = float(match[11].split(",")[2])
+        xbr = float(match[12].split(",")[2])
 
-        return {'reaclib': reaclib, 'eht_data': eht_data, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'intc': intc,
-                'laxis': laxis, 'xbl': xbl, 'xbr': xbr}
+        return {'reaclib': reaclib, 'eht_data': eht_data, 'plabel': plabel, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'intc': intc,
+                'laxis': laxis, 'fext': fext, 'tnuc': tnuc, 'xbl': xbl, 'xbr': xbr}
 
     def getForEqs(self, param):
 

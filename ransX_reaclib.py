@@ -24,6 +24,7 @@ def main():
     # get input parameters
     filename = params.getForProp('prop')['eht_data']
     ig = params.getForProp('prop')['ig']
+    plabel = params.getForProp('prop')['plabel']
     ieos = params.getForProp('prop')['ieos']
     intc = params.getForProp('prop')['intc']
     laxis = params.getForProp('prop')['laxis']
@@ -31,7 +32,7 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # calculate properties
-    ransP = pRop.Properties(filename, ig, ieos, intc, laxis, xbl, xbr)
+    ransP = pRop.Properties(filename, plabel, ig, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     # instantiate master plot

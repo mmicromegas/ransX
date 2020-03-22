@@ -1,11 +1,11 @@
 import numpy as np
-from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,10 +13,10 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename_rans, filename_reaclib, ig, inuc, element, bconv, tconv, tc, intc, data_prefix,
-                 network):
+                 fext, tnuc, network):
         super(XtransportVsNuclearTimescales, self).__init__(ig)
 
         # load RANS data to structured array
@@ -57,18 +57,18 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         # print(rlabel)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        tt = self.getRAdata(eht,'tt')[intc]
-        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
-        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
@@ -80,9 +80,9 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         #######################
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddxi = self.getRAdata(eht, 'ddx' + inuc)
         t_fht_xi = t_ddxi / t_dd
 
         # construct equation-specific mean fields
@@ -103,18 +103,17 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         self.plus_ddxidot = +ddxidot
 
         # -res
-        self.minus_resXiTransport = -(self.minus_dt_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + \
-                                      self.minus_div_fxi + self.plus_ddxidot)
+        self.minus_resXiTransport = -(self.minus_dt_dd_fht_xi + self.minus_div_eht_dd_fht_ux_fht_xi + self.minus_div_fxi + self.plus_ddxidot)
 
-        ###########################		
+        ###########################
         # END Xi TRANSPORT EQUATION
-        ###########################		
+        ###########################
 
-        # tau_trans = np.abs(fht_xi/self.Div(fxi/dd,xzn0))
-        # tau_nuc   = np.abs(fht_xi/(ddxidot/dd))
+        tau_trans = np.abs(fht_xi/self.Div(fxi/dd,xzn0))
+        tau_nuc   = np.abs(fht_xi/(ddxidot/dd))
 
-        tau_trans = (fht_xi / self.Div(fxi / dd, xzn0))
-        tau_nuc = (fht_xi / (ddxidot / dd))
+        # tau_trans = (fht_xi / self.Div(fxi / dd, xzn0))
+        # tau_nuc = (fht_xi / (ddxidot / dd))
 
         # tau_trans = ddxi/self.Div(fxi,xzn0)
         # tau_nuc   = ddxi/(ddxidot)
@@ -124,7 +123,7 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
 
         # assign global data to be shared across whole class	
         self.data_prefix = data_prefix
-        self.xzn0 = self.getRAdata(eht,'xzn0')
+        self.xzn0 = self.getRAdata(eht, 'xzn0')
         self.element = element
         self.inuc = inuc
         self.bconv = bconv
@@ -145,9 +144,15 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         self.network = network
         self.eht = eht
         self.intc = intc
+        self.fext = fext
+        self.tnuc = tnuc
 
     def plot_Xtransport_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho transport equation in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportVsNuclearTimescalesEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         # xnucid = str(self.inuc)
@@ -176,39 +181,34 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
 
         # plot DATA 
         plt.title('rhoX transport for ' + element)
-        if (self.ig == 1):
+        if self.ig == 1:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1, lhs1, color='cyan', label=r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f$')
             plt.plot(grd1, rhs1, color='g', label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        elif (self.ig == 2):
+        elif self.ig == 2:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1, lhs1, color='cyan', label=r'$-\nabla_r (\overline{\rho} \widetilde{X} \widetilde{u}_r)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_r f$')
             plt.plot(grd1, rhs1, color='g', label=r'$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r'x (cm)'
-        elif (self.ig == 2):
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
             setxlabel = r'r (cm)'
-        else:
-            print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
-            sys.exit()
-
-        setylabel = r"g cm$^{-3}$ s$^{-1}$"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+            setylabel = r"g cm$^{-3}$ s$^{-1}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 12})
@@ -217,10 +217,17 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.eps')
 
     def plot_Xtimescales(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Damkohler number
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(Xtimescales.py):" + self.errorGeometry(self.ig))
+            sys.exit()
 
         # convert nuc ID to string
         xnucid = str(self.inuc)
@@ -295,60 +302,74 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
 
-        network = self.network
+        if self.tnuc == 1:
 
-        ddxidict = {}
-        fht_yi_list = []
-        for rl in rlabel:
-            if element in rl:
-                rc = rcoeffdict[rl]
-                if rl[0:2] == '1-':
-                    plt.plot(grd1, self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]), label=rl,
-                             linestyle='--')
-                if rl[0:2] == '2-':
-                    rlsplit = rl.split('-')
-                    print(rlsplit)
-                    for elem in rlsplit:
-                        if elem in network:
-                            # print('ele in network: ' + elem)
-                            inuc = self.getInuc(network, elem)
-                            # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc])/dd))
-                            fht_yi_list.append(((self.getRAdata(eht,'ddx' + inuc)[intc] / dd) / float(inuc)))
-                            # ddxi = {ele : self.getRAdata(eht,'ddx'+inuc)[intc])}
-                            # ddxidict.update(ddxi)
-                    if rlsplit[3] == element:
-                        plt.plot(grd1,
-                                 self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[2],
-                                                       fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
-                    if rlsplit[4] == element:
-                        plt.plot(grd1,
-                                 self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
-                                                       fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
-                    # if rlsplit[1] == element:
-                    #    plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[0],fht_yi_list[1],fht_yi_list[2]),label=rl,linestyle=':')
-                    # if rlsplit[2] == element:
-                    #    plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[0],fht_yi_list[1],fht_yi_list[2]),label=rl,linestyle=':')                				
+            network = self.network
 
-                if rl[0:2] == '3-':
-                    rlsplit = rl.split('-')
-                    # print(rlsplit)
-                    for elem in rlsplit:
-                        if elem in network:
-                            # print('ele in network: ' + elem)
-                            inuc = self.getInuc(network, elem)
-                            # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc]/dd))
-                            fht_yi_list.append(((self.getRAdata(eht,'ddx' + inuc)[intc] / dd) / float(inuc)))
-                    if rlsplit[4] == element:
-                        plt.plot(grd1,
-                                 self.GET3NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
-                                                       fht_yi_list[4]), label=rl, linestyle=':')
-                        # print(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6])
+            ddxidict = {}
+            fht_yi_list = []
+            for rl in rlabel:
+                if element in rl:
+                    rc = rcoeffdict[rl]
+                    if rl[0:2] == '1-':
+                        plt.plot(grd1, self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]), label=rl,
+                                 linestyle='--')
+                    if rl[0:2] == '2-':
+                        rlsplit = rl.split('-')
+                        print(rlsplit)
+                        for elem in rlsplit:
+                            if elem in network:
+                                # print('ele in network: ' + elem)
+                                inuc = self.getInuc(network, elem)
+                                # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc])/dd))
+                                fht_yi_list.append(((self.getRAdata(eht, 'ddx' + inuc)[intc] / dd) / float(inuc)))
+                                # ddxi = {ele : self.getRAdata(eht,'ddx'+inuc)[intc])}
+                                # ddxidict.update(ddxi)
+                        if rlsplit[3] == element:
+                            plt.plot(grd1,
+                                     self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[2],
+                                                           fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
+                        if rlsplit[4] == element:
+                            plt.plot(grd1,
+                                     self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
+                                                           fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
+                        # if rlsplit[1] == element:
+                        #    plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[0],fht_yi_list[1],fht_yi_list[2]),label=rl,linestyle=':')
+                        # if rlsplit[2] == element:
+                        #    plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[0],fht_yi_list[1],fht_yi_list[2]),label=rl,linestyle=':')
+
+                    if rl[0:2] == '3-':
+                        rlsplit = rl.split('-')
+                        # print(rlsplit)
+                        for elem in rlsplit:
+                            if elem in network:
+                                # print('ele in network: ' + elem)
+                                inuc = self.getInuc(network, elem)
+                                # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc]/dd))
+                                fht_yi_list.append(((self.getRAdata(eht, 'ddx' + inuc)[intc] / dd) / float(inuc)))
+                        if rlsplit[4] == element:
+                            plt.plot(grd1,
+                                     self.GET3NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
+                                                           fht_yi_list[4]), label=rl, linestyle=':')
+                            # print(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6])
+
+        elif self.tnuc == 0:
+            print("MESSAGE(XtransportVsNuclearTimescalesEquation.py) : Omitting to plot nuclear timescales.")
+        else:
+            print("ERROR(XtransportVsNuclearTimescalesEquation.py):" + self.errorNuclTimescaleMode(self.tnuc))
+            sys.exit()
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
-        setylabel = r"$\tau (s)$"
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$\tau (s)$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$\tau (s)$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 11})
@@ -357,13 +378,16 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.eps')
 
     def GET1NUCtimescale(self, c1l, c2l, c3l, c4l, c5l, c6l, c7l):
 
         temp09 = self.tt * 1.e-9
         rate = np.exp(c1l + c2l * (temp09 ** (-1.)) + c3l * (temp09 ** (-1. / 3.)) + c4l * (
-                    temp09 ** (1. / 3.)) + c5l * temp09 + c6l * (temp09 ** (5. / 3.)) + c7l * np.log(temp09))
+                temp09 ** (1. / 3.)) + c5l * temp09 + c6l * (temp09 ** (5. / 3.)) + c7l * np.log(temp09))
         timescale = 1. / (rate)
 
         return timescale
@@ -372,7 +396,7 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
 
         temp09 = self.tt * 1.e-9
         rate = np.exp(c1l + c2l * (temp09 ** (-1.)) + c3l * (temp09 ** (-1. / 3.)) + c4l * (
-                    temp09 ** (1. / 3.)) + c5l * temp09 + c6l * (temp09 ** (5. / 3.)) + c7l * np.log(temp09))
+                temp09 ** (1. / 3.)) + c5l * temp09 + c6l * (temp09 ** (5. / 3.)) + c7l * np.log(temp09))
         timescale = 1. / (self.dd * yj * yk * rate / yi)
 
         return timescale
@@ -381,7 +405,7 @@ class XtransportVsNuclearTimescales(calc.Calculus, al.SetAxisLimit, uT.Tools, eR
 
         temp09 = self.tt * 1.e-9
         rate = np.exp(c1l + c2l * (temp09 ** (-1.)) + c3l * (temp09 ** (-1. / 3.)) + c4l * (
-                    temp09 ** (1. / 3.)) + c5l * temp09 + c6l * (temp09 ** (5. / 3.)) + c7l * np.log(temp09))
+                temp09 ** (1. / 3.)) + c5l * temp09 + c6l * (temp09 ** (5. / 3.)) + c7l * np.log(temp09))
         timescale = 1. / (self.dd * self.dd * yi1 * yi2 * rate * rate)
         # ipp = 200
         # print(timescale[ipp],self.dd[ipp],yi1[ipp],yi2[ipp],rate[ipp],c1l,c2l,c3l,c4l,c5l,c6l,c7l)

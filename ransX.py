@@ -389,7 +389,7 @@ def main():
         inuc = params.getInuc(network, elem)
 
         # COMPOSITION TRANSPORT EQUATION
-        if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
+        if str2bool(params.getForEqs('x_' + elem)['plotMee']):
             plt.execX(inuc, elem, 'x_' + elem,
                       prp['xzn0inc'],
                       prp['xzn0outc'])

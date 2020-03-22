@@ -1,1 +1,0 @@
-rsync -avz -e ssh mmocak@shen.astro.keele.ac.uk:/home/miro/ransX/DATA/BINDATA/ccp_two_layers/ccptwo.ideal.lres.00996.* .

@@ -12,26 +12,28 @@ class ReaclibMasterPlot():
         params = self.params
 
         # instantiate 
-        ransXtvsn = xtvsn.XtransportVsNuclearTimescales(params.getForProp('prop')['eht_data'], \
-                                                        params.getForProp('prop')['reaclib'], \
-                                                        params.getForProp('prop')['ig'], \
-                                                        inuc, element, bconv, tconv, tauL, \
-                                                        params.getForProp('prop')['intc'], \
-                                                        params.getForProp('prop')['prefix'], \
+        ransXtvsn = xtvsn.XtransportVsNuclearTimescales(params.getForProp('prop')['eht_data'],
+                                                        params.getForProp('prop')['reaclib'],
+                                                        params.getForProp('prop')['ig'],
+                                                        inuc, element, bconv, tconv, tauL,
+                                                        params.getForProp('prop')['intc'],
+                                                        params.getForProp('prop')['prefix'],
+                                                        params.getForProp('prop')['fext'],
+                                                        params.getForProp('prop')['tnuc'],
                                                         params.getNetwork())
 
-        ransXtvsn.plot_Xtimescales(params.getForProp('prop')['laxis'], \
-                                   params.getForEqs(x)['xbl'], \
-                                   params.getForEqs(x)['xbr'], \
-                                   params.getForEqs(x)['ybu'], \
-                                   params.getForEqs(x)['ybd'], \
+        ransXtvsn.plot_Xtimescales(params.getForProp('prop')['laxis'],
+                                   params.getForEqs(x)['xbl'],
+                                   params.getForEqs(x)['xbr'],
+                                   params.getForEqs(x)['ybu'],
+                                   params.getForEqs(x)['ybd'],
                                    params.getForEqs(x)['ilg'])
 
-        ransXtvsn.plot_Xtransport_equation(params.getForProp('prop')['laxis'], \
-                                           params.getForEqs(x)['xbl'], \
-                                           params.getForEqs(x)['xbr'], \
-                                           params.getForEqs(x)['ybu'], \
-                                           params.getForEqs(x)['ybd'], \
+        ransXtvsn.plot_Xtransport_equation(params.getForProp('prop')['laxis'],
+                                           params.getForEqs(x)['xbl'],
+                                           params.getForEqs(x)['xbr'],
+                                           params.getForEqs(x)['ybu'],
+                                           params.getForEqs(x)['ybd'],
                                            params.getForEqs(x)['ilg'])
 
     def SetMatplotlibParams(self):

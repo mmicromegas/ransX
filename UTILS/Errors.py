@@ -26,3 +26,6 @@ class Errors:
 
     def errorEos(self,ieos):
         return "EOS " + str(ieos) + "not implemented. EXITING ..."
+
+    def errorNuclTimescaleMode(self,tnuc):
+        return "Nuclear Timescale Plotting Mode: " + str(tnuc) + "not implemented. EXITING ..."
