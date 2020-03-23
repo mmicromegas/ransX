@@ -29,12 +29,12 @@ class ReaclibMasterPlot():
                                    params.getForEqs(x)['ybd'],
                                    params.getForEqs(x)['ilg'])
 
-        ransXtvsn.plot_Xtransport_equation(params.getForProp('prop')['laxis'],
-                                           params.getForEqs(x)['xbl'],
-                                           params.getForEqs(x)['xbr'],
-                                           params.getForEqs(x)['ybu'],
-                                           params.getForEqs(x)['ybd'],
-                                           params.getForEqs(x)['ilg'])
+        # ransXtvsn.plot_Xtransport_equation(params.getForProp('prop')['laxis'],
+        #                                   params.getForEqs(x)['xbl'],
+        #                                   params.getForEqs(x)['xbr'],
+        #                                   params.getForEqs(x)['ybu'],
+        #                                   params.getForEqs(x)['ybd'],
+        #                                   params.getForEqs(x)['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

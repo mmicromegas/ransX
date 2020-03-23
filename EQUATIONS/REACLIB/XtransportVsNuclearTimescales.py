@@ -217,10 +217,10 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt.show(block=False)
 
         # save PLOT
-        if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
-        if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.eps')
+        # if self.fext == "png":
+        #    plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
+        # if self.fext == "eps":
+        #    plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.eps')
 
     def plot_Xtimescales(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Damkohler number
@@ -299,8 +299,12 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt.text(self.tconv, aoftheuniverse, r"ageOftheUniverse")
 
         # convective boundary markers
-        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
-        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+        # plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        # plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         if self.tnuc == 1:
 
