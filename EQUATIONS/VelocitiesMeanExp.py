@@ -5,7 +5,6 @@ import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
-import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176

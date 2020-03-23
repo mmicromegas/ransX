@@ -27,10 +27,6 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         tavg = self.getRAdata(eht, 'tavg')
         trange = self.getRAdata(eht, 'trange')
 
-        # for i in timec:
-        #    print(i,timec)
-        # sys.exit()
-
         # load grid
         nx = self.getRAdata(eht, 'nx')
         ny = self.getRAdata(eht, 'ny')

@@ -16,7 +16,7 @@ import UTILS.Errors as eR
 
 class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, intc, data_prefix):
+    def __init__(self, filename, plabel, ig, fext, inuc, element, bconv, tconv, intc, data_prefix):
         super(XtransportEquation, self).__init__(ig)
 
         # load data to structured array
@@ -30,6 +30,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
         dd = self.getRAdata(eht, 'dd')[intc]
+        mm = self.getRAdata(eht, 'mm')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
         ddux = self.getRAdata(eht, 'ddux')[intc]
         dduxux = self.getRAdata(eht, 'dduxux')[intc]
@@ -88,6 +89,17 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         cnst = gamma1
         self.minus_cnst_dd_fht_xi_fdil_o_fht_rxx = -cnst * dd * fht_xi * fdil / fht_rxx
 
+        # calculate mass coordinate M
+        #if plabel == 'oburn':
+        #    coremass = 2.1061849325045916e33 # this is from PROMPI, subroutine starinit.f90
+        #    msun = 1.989e33  # in grams
+        #    MM = (coremass + mm)/msun  # convert to solar units
+        #else:
+        #    print("ERROR(XtransportEquation.py):" + self.errorProjectSpecific())
+        #    print("ERROR(XtransportEquation.py): core mass not defined!")
+        #    sys.exit()
+
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -101,6 +113,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.tconv = tconv
         self.ig = ig
         self.fext = fext
+        self.mm = mm
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
@@ -190,7 +203,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         # plot DATA
         plt.title('X for ' + element)
-        plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{X}$')
+        plt.semilogy(grd1, plt1, color='brown', label=r'$\widetilde{X}$')
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -219,6 +232,70 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_' + element + '.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_' + element + '.eps')
+
+    def plot_X_with_MM(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot X stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # convert nuc ID to string
+        # xnucid = str(self.inuc)
+        element = self.element
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.fht_xi
+
+        fig, ax1 = plt.subplots(figsize=(7, 6))
+
+        to_plot = [plt1]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        # plot DATA
+        ax1.semilogy(grd1, plt1, color='brown', label=self.setNucNoUp(str(element)))
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\widetilde{X}$"
+            ax1.set_xlabel(setxlabel)
+            ax1.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\widetilde{X}$"
+            ax1.set_xlabel(setxlabel)
+            ax1.set_ylabel(setylabel)
+
+        # show LEGEND
+        ax1.legend(loc=ilg, prop={'size': 18})
+
+        # convective boundary markers
+        ax1.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        ax1.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        ax2 = ax1.twiny()
+        ax2.set_xlim(ax1.get_xlim())
+
+        newMMlabel_xpos = [3.8e8, 4.7e8, 5.5e8, 6.4e8, 7.3e8, 8.5e8, 9.5e8]
+        newMMlabel = self.mlabels(newMMlabel_xpos)
+        ax2.set_xticks(newMMlabel_xpos)
+
+        ax2.set_xticklabels(newMMlabel)
+        ax2.set_xlabel('enclosed mass (msol)')
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_withMM' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_withMM' + element + '.eps')
+
 
     def plot_gradX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot grad X stratification in the model"""
@@ -453,3 +530,70 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             plt.savefig('RESULTS/' + self.data_prefix + 'xtransport_' + element + '_eq_bar.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'xtransport_' + element + '_eq_bar.eps')
+
+    def mlabels(self, grid):
+        # calculate MM labels
+        xzn0 = np.asarray(self.xzn0)
+        msun = 1.989e33  # in grams
+        M_label = []
+        for grd in grid:
+            xlm = np.abs(xzn0 - grd)
+            idx = int(np.where(xlm == xlm.min())[0][0])
+            M_label.append(str(np.round(self.mm[idx]/msun,1)))
+
+        return M_label
+
+    def setNucNoUp(self, inpt):
+        elmnt = ""
+        if inpt == "neut":
+            elmnt = r"neut"
+        if inpt == "prot":
+            elmnt = r"prot"
+        if inpt == "he4":
+            elmnt = r"He$^{4}$"
+        if inpt == "c12":
+            elmnt = r"C$^{12}$"
+        if inpt == "o16":
+            elmnt = r"O$^{16}$"
+        if inpt == "ne20":
+            elmnt = r"Ne$^{20}$"
+        if inpt == "na23":
+            elmnt = r"Na$^{23}$"
+        if inpt == "mg24":
+            elmnt = r"Mg$^{24}$"
+        if inpt == "si28":
+            elmnt = r"Si$^{28}$"
+        if inpt == "p31":
+            elmnt = r"P$^{31}$"
+        if inpt == "s32":
+            elmnt = r"S$^{32}$"
+        if inpt == "s34":
+            elmnt = r"S$^{34}$"
+        if inpt == "cl35":
+            elmnt = r"Cl$^{35}$"
+        if inpt == "ar36":
+            elmnt = r"Ar$^{36}$"
+        if inpt == "ar38":
+            elmnt = r"Ar$^{38}$"
+        if inpt == "k39":
+            elmnt = r"K$^{39}$"
+        if inpt == "ca40":
+            elmnt = r"Ca$^{40}$"
+        if inpt == "ca42":
+            elmnt = r"Ca$^{42}$"
+        if inpt == "ti44":
+            elmnt = r"Ti$^{44}$"
+        if inpt == "ti46":
+            elmnt = r"Ti$^{46}$"
+        if inpt == "cr48":
+            elmnt = r"Cr$^{48}$"
+        if inpt == "cr50":
+            elmnt = r"Cr$^{50}$"
+        if inpt == "fe52":
+            elmnt = r"Fe$^{52}$"
+        if inpt == "fe54":
+            elmnt = r"Fe$^{54}$"
+        if inpt == "ni56":
+            elmnt = r"Ni$^{56}$"
+
+        return elmnt

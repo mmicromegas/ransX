@@ -398,6 +398,7 @@ class MasterPlot():
 
         # instantiate 		
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+                                           params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
@@ -430,24 +431,36 @@ class MasterPlot():
 
         # instantiate
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+                                           params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['prefix'])
 
-        ransXtra.plot_X(params.getForProp('prop')['laxis'],
-                        params.getForEqs(x)['xbl'],
-                        params.getForEqs(x)['xbr'],
-                        params.getForEqs(x)['ybu'],
-                        params.getForEqs(x)['ybd'],
-                        params.getForEqs(x)['ilg'])
+        if params.getForProp('prop')['plabel'] == "oburn":
+
+            ransXtra.plot_X_with_MM(params.getForProp('prop')['laxis'],
+                            params.getForEqs(x)['xbl'],
+                            params.getForEqs(x)['xbr'],
+                            params.getForEqs(x)['ybu'],
+                            params.getForEqs(x)['ybd'],
+                            params.getForEqs(x)['ilg'])
+
+        else:
+            ransXtra.plot_X(params.getForProp('prop')['laxis'],
+                            params.getForEqs(x)['xbl'],
+                            params.getForEqs(x)['xbr'],
+                            params.getForEqs(x)['ybu'],
+                            params.getForEqs(x)['ybd'],
+                            params.getForEqs(x)['ilg'])
 
     def execXtrsEq(self, inuc, element, x, bconv, tconv):
         params = self.params
 
         # instantiate 
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+                                           params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
@@ -467,6 +480,7 @@ class MasterPlot():
         # instantiate 
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['ig'],
+                                           params.getForProp('prop')['plabel'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['prefix'])
