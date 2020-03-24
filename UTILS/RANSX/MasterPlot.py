@@ -204,6 +204,7 @@ class MasterPlot():
         ranshssecont = hssecont.HsseContinuityEquation(params.getForProp('prop')['eht_data'],
                                                        params.getForProp('prop')['ig'],
                                                        params.getForProp('prop')['ieos'],
+                                                       params.getForProp('prop')['fext'],
                                                        params.getForProp('prop')['intc'],
                                                        params.getForProp('prop')['prefix'],
                                                        bconv, tconv)
@@ -262,6 +263,7 @@ class MasterPlot():
         ranshssemomx = hssemomx.HsseMomentumEquationX(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['ieos'],
+                                                      params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'],
                                                       bconv, tconv)
@@ -297,6 +299,7 @@ class MasterPlot():
         ranshssetemp = hssetemp.HsseTemperatureEquation(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
                                                         params.getForProp('prop')['ieos'],
+                                                        params.getForProp('prop')['fext'],
                                                         params.getForProp('prop')['intc'],
                                                         tke_diss, bconv, tconv,
                                                         params.getForProp('prop')['prefix'])
@@ -332,6 +335,7 @@ class MasterPlot():
         ranshsselumi = hsselumi.HsseLuminosityEquation(params.getForProp('prop')['eht_data'],
                                                        params.getForProp('prop')['ig'],
                                                        params.getForProp('prop')['ieos'],
+                                                       params.getForProp('prop')['fext'],
                                                        params.getForProp('prop')['intc'],
                                                        tke_diss, bconv, tconv,
                                                        params.getForProp('prop')['prefix'])
@@ -382,6 +386,7 @@ class MasterPlot():
         # instantiate 
         ranshssecomp = hssecomp.HsseXtransportEquation(params.getForProp('prop')['eht_data'],
                                                        params.getForProp('prop')['ig'],
+                                                       params.getForProp('prop')['fext'],
                                                        inuc, element, bconv, tconv,
                                                        params.getForProp('prop')['intc'],
                                                        params.getForProp('prop')['prefix'])

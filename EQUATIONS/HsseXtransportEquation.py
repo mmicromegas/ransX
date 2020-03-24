@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -11,34 +12,34 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class HsseXtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, bconv, tconv, intc, data_prefix):
+    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, intc, data_prefix):
         super(HsseXtransportEquation, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ddxi = self.getRAdata(eht,'ddx' + inuc)[intc]
-        ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
-        ddxidot = self.getRAdata(eht,'ddx' + inuc + 'dot')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
+        ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
+        ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
 
         ############################
         # HSSE Xi TRANSPORT EQUATION 
         ############################
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddxi = self.getRAdata(eht,'ddx' + inuc)
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddxi = self.getRAdata(eht, 'ddx' + inuc)
         t_fht_xi = t_ddxi / t_dd
 
         # construct equation-specific mean fields
@@ -59,10 +60,10 @@ class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         self.minus_div_eht_dd_fht_ux_fht_xi = -fht_ux * self.Grad(fht_xi, xzn0)
 
         # -res
-        self.minus_resXiTransport = -(self.minus_dt_fht_xi + self.plus_fht_xidot + self.minus_one_o_dd_div_fxi + \
+        self.minus_resXiTransport = -(self.minus_dt_fht_xi + self.plus_fht_xidot + self.minus_one_o_dd_div_fxi +
                                       self.minus_div_eht_dd_fht_ux_fht_xi)
 
-        ################################		
+        ################################
         # END HSSE Xi TRANSPORT EQUATION
         ################################
 
@@ -75,6 +76,7 @@ class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
 
         self.bconv = bconv
         self.tconv = tconv
+        self.fext = fext
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
@@ -117,7 +119,10 @@ class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_' + element + '.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_' + element + '.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_' + element + '.eps')
 
     def plot_Xtransport_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho transport equation in the model"""
@@ -196,4 +201,7 @@ class HsseXtransportEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_mean_Xtransport_' + element + '.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_mean_Xtransport_' + element + '.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_mean_Xtransport_' + element + '.eps')

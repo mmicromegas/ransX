@@ -1,10 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,89 +12,89 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, bconv, tconv, data_prefix):
+    def __init__(self, filename, ig, ieos, fext, intc, tke_diss, bconv, tconv, data_prefix):
         super(HsseLuminosityEquation, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        tt = self.getRAdata(eht,'tt')[intc]
-        cp = self.getRAdata(eht,'cp')[intc]
-        gg = self.getRAdata(eht,'gg')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        cp = self.getRAdata(eht, 'cp')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        dduy = self.getRAdata(eht,'dduy')[intc]
-        dduz = self.getRAdata(eht,'dduz')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
-        dduxuy = self.getRAdata(eht,'dduxuy')[intc]
-        dduxuz = self.getRAdata(eht,'dduxuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
+        dduxuy = self.getRAdata(eht, 'dduxuy')[intc]
+        dduxuz = self.getRAdata(eht, 'dduxuz')[intc]
 
-        ddekux = self.getRAdata(eht,'ddekux')[intc]
-        ddek = self.getRAdata(eht,'ddek')[intc]
+        ddekux = self.getRAdata(eht, 'ddekux')[intc]
+        ddek = self.getRAdata(eht, 'ddek')[intc]
 
-        ddei = self.getRAdata(eht,'ddei')[intc]
-        ddeiux = self.getRAdata(eht,'ddeiux')[intc]
+        ddei = self.getRAdata(eht, 'ddei')[intc]
+        ddeiux = self.getRAdata(eht, 'ddeiux')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        ppdivu = self.getRAdata(eht,'ppdivu')[intc]
-        dddivu = self.getRAdata(eht,'dddivu')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
-        ppux = self.getRAdata(eht,'ppux')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ppdivu = self.getRAdata(eht, 'ppdivu')[intc]
+        dddivu = self.getRAdata(eht, 'dddivu')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
+        ppux = self.getRAdata(eht, 'ppux')[intc]
 
-        ddenuc1 = self.getRAdata(eht,'ddenuc1')[intc]
-        ddenuc2 = self.getRAdata(eht,'ddenuc2')[intc]
+        ddenuc1 = self.getRAdata(eht, 'ddenuc1')[intc]
+        ddenuc2 = self.getRAdata(eht, 'ddenuc2')[intc]
 
-        chim = self.getRAdata(eht,'chim')[intc]
-        chit = self.getRAdata(eht,'chit')[intc]
-        chid = self.getRAdata(eht,'chid')[intc]
+        chim = self.getRAdata(eht, 'chim')[intc]
+        chit = self.getRAdata(eht, 'chit')[intc]
+        chid = self.getRAdata(eht, 'chid')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         ###########################
         # HSSE LUMINOSITY EQUATION 
-        ##########################  		
+        ##########################
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_tt = self.getRAdata(eht,'tt')
-        t_pp = self.getRAdata(eht,'pp')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_tt = self.getRAdata(eht, 'tt')
+        t_pp = self.getRAdata(eht, 'pp')
 
-        t_ddei = self.getRAdata(eht,'ddei')
-        t_ddss = self.getRAdata(eht,'ddss')
+        t_ddei = self.getRAdata(eht, 'ddei')
+        t_ddss = self.getRAdata(eht, 'ddss')
 
-        t_ddux = self.getRAdata(eht,'ddux')
-        t_dduy = self.getRAdata(eht,'dduy')
-        t_dduz = self.getRAdata(eht,'dduz')
+        t_ddux = self.getRAdata(eht, 'ddux')
+        t_dduy = self.getRAdata(eht, 'dduy')
+        t_dduz = self.getRAdata(eht, 'dduz')
 
-        t_dduxux = self.getRAdata(eht,'dduxux')
-        t_dduyuy = self.getRAdata(eht,'dduyuy')
-        t_dduzuz = self.getRAdata(eht,'dduzuz')
+        t_dduxux = self.getRAdata(eht, 'dduxux')
+        t_dduyuy = self.getRAdata(eht, 'dduyuy')
+        t_dduzuz = self.getRAdata(eht, 'dduzuz')
 
-        t_uxux = self.getRAdata(eht,'uxux')
-        t_uyuy = self.getRAdata(eht,'uyuy')
-        t_uzuz = self.getRAdata(eht,'uzuz')
+        t_uxux = self.getRAdata(eht, 'uxux')
+        t_uyuy = self.getRAdata(eht, 'uyuy')
+        t_uzuz = self.getRAdata(eht, 'uzuz')
 
         t_fht_ek = 0.5 * (t_dduxux + t_dduyuy + t_dduzuz) / t_dd
         t_fht_ei = t_ddei / t_dd
@@ -169,8 +169,8 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         rxy = dduxuy - ddux * dduy / dd
         rxz = dduxuz - ddux * dduz / dd
 
-        self.minus_four_pi_rsq_r_grad_u = -sps * (rxx * self.Grad(ddux / dd, xzn0) + \
-                                                  rxy * self.Grad(dduy / dd, xzn0) + \
+        self.minus_four_pi_rsq_r_grad_u = -sps * (rxx * self.Grad(ddux / dd, xzn0) +
+                                                  rxy * self.Grad(dduy / dd, xzn0) +
                                                   rxz * self.Grad(dduz / dd, xzn0))
 
         # RHS warning ax = overline{+u''_x} 
@@ -199,20 +199,20 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et * self.Grad(sps * dd * fht_ux, xzn0)
 
         # -res		
-        self.minus_resLumEquation = -(self.minus_gradx_fht_lum + self.plus_four_pi_rsq_dd_fht_enuc + \
-                                      self.minus_four_pi_rsq_div_fei + self.minus_four_pi_rsq_div_fth + \
-                                      self.minus_four_pi_rsq_div_fekx + self.minus_four_pi_rsq_div_fpx + self.minus_four_pi_rsq_pp_div_ux + \
-                                      self.minus_four_pi_rsq_r_grad_u + self.plus_four_pi_rsq_wb + \
-                                      self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two + self.minus_four_pi_rsq_dd_dt_et + \
+        self.minus_resLumEquation = -(self.minus_gradx_fht_lum + self.plus_four_pi_rsq_dd_fht_enuc +
+                                      self.minus_four_pi_rsq_div_fei + self.minus_four_pi_rsq_div_fth +
+                                      self.minus_four_pi_rsq_div_fekx + self.minus_four_pi_rsq_div_fpx + self.minus_four_pi_rsq_pp_div_ux +
+                                      self.minus_four_pi_rsq_r_grad_u + self.plus_four_pi_rsq_wb +
+                                      self.plus_four_pi_rsq_dd_Dt_fht_ui_fht_ui_o_two + self.minus_four_pi_rsq_dd_dt_et +
                                       self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux)
 
         #############################
         # END HSS LUMINOSITY EQUATION 
-        #############################  
+        #############################
 
         ####################################
         # STANDARD LUMINOSITY EQUATION EXACT
-        #################################### 		
+        ####################################
 
         # RHS -4 pi r^2 dd dt tt
         self.minus_four_pi_rsq_dd_cp_dt_tt = -sps * dd * cp * self.dt(t_tt, xzn0, t_timec, intc)
@@ -220,8 +220,8 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         # RHS -4 pi r^2 delta dt p
         self.minus_four_pi_rsq_delta_dt_pp = -sps * delta * self.dt(t_pp, xzn0, t_timec, intc)
 
-        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum + self.plus_four_pi_rsq_dd_fht_enuc + \
-                                           self.minus_four_pi_rsq_dd_cp_dt_tt + \
+        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum + self.plus_four_pi_rsq_dd_fht_enuc +
+                                           self.minus_four_pi_rsq_dd_cp_dt_tt +
                                            self.minus_four_pi_rsq_delta_dt_pp)
 
         ########################################
@@ -234,7 +234,7 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
 
         self.minus_dd_tt_dt_fht_ss = -sps * dd * tt * self.dt(t_fht_ss, xzn0, t_timec, intc)
         self.minus_resLumExactEquation2 = -(
-                    self.minus_gradx_fht_lum + self.plus_four_pi_rsq_dd_fht_enuc + self.minus_dd_tt_dt_fht_ss)
+                self.minus_gradx_fht_lum + self.plus_four_pi_rsq_dd_fht_enuc + self.minus_dd_tt_dt_fht_ss)
 
         ########################################
         # END STANDARD LUMINOSITY EQUATION EXACT 2 
@@ -242,33 +242,33 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
 
         #################################
         # ALTERNATIVE LUMINOSITY EQUATION 
-        #################################		
+        #################################
 
         self.minus_four_pi_rsq_dd_fht_ux_pp_fdil_o_fht_rxx = -sps * dd * fht_ux * pp * fdil / fht_rxx
 
         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et * self.Grad(sps * dd * fht_ux, xzn0)
 
         self.minus_resAlternativeLumEq = -(
-                    self.minus_gradx_fht_lum + self.minus_four_pi_rsq_dd_fht_ux_pp_fdil_o_fht_rxx + self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux)
+                self.minus_gradx_fht_lum + self.minus_four_pi_rsq_dd_fht_ux_pp_fdil_o_fht_rxx + self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux)
 
         #####################################
         # END ALTERNATIVE LUMINOSITY EQUATION 
-        #####################################				
+        #####################################
 
         ############################################
         # ALTERNATIVE LUMINOSITY EQUATION SIMPLIFIED
-        ############################################		
+        ############################################
 
         self.minus_four_pi_rsq_dd_fht_ux_dd_o_gamma1 = -sps * fht_ux * dd * gg / gamma1
 
         self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux = +fht_et * self.Grad(sps * dd * fht_ux, xzn0)
 
         self.minus_resAlternativeLumEqSimplified = -(
-                    self.minus_gradx_fht_lum + self.minus_four_pi_rsq_dd_fht_ux_dd_o_gamma1 + self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux)
+                self.minus_gradx_fht_lum + self.minus_four_pi_rsq_dd_fht_ux_dd_o_gamma1 + self.plus_fht_et_gradx_four_pi_rsq_dd_fht_ux)
 
         ################################################
         # END ALTERNATIVE LUMINOSITY EQUATION SIMPLIFIED 
-        ################################################	
+        ################################################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -277,6 +277,7 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         self.nx = nx
         self.bconv = bconv
         self.tconv = tconv
+        self.fext = fext
 
     def plot_et(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean total energy stratification in the model"""
@@ -314,7 +315,10 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_et.eps')
 
     def plot_luminosity_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot luminosity equation in the model"""
@@ -437,7 +441,10 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq.eps')
 
     def plot_luminosity_equation_exact(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot luminosity equation in the model"""
@@ -491,7 +498,10 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'standard_luminosity_exact_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'standard_luminosity_exact_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'standard_luminosity_exact_eq.eps')
 
     def plot_luminosity_equation_exact2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot luminosity equation in the model"""
@@ -541,7 +551,10 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'standard_luminosity_exact2_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'standard_luminosity_exact2_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'standard_luminosity_exact2_eq.eps')
 
     def plot_luminosity_equation_2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot luminosity equation in the model"""
@@ -610,7 +623,10 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq_alternative.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq_alternative.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq_alternative.eps')
 
     def plot_luminosity_equation_3(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot luminosity equation in the model"""
@@ -679,4 +695,7 @@ class HsseLuminosityEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq_alternative_simplified.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq_alternative_simplified.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_luminosity_eq_alternative_simplified.eps')

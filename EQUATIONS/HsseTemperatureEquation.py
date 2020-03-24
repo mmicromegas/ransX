@@ -1,10 +1,10 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -12,53 +12,53 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class HsseTemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, bconv, tconv, data_prefix):
+    def __init__(self, filename, ig, ieos, fext, intc, tke_diss, bconv, tconv, data_prefix):
         super(HsseTemperatureEquation, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
-        nx = self.getRAdata(eht,'nx')
+        xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        tt = self.getRAdata(eht,'tt')[intc]
-        cv = self.getRAdata(eht,'cv')[intc]
-        gg = self.getRAdata(eht,'gg')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        cv = self.getRAdata(eht, 'cv')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        ttux = self.getRAdata(eht,'ttux')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ttux = self.getRAdata(eht, 'ttux')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
 
-        divu = self.getRAdata(eht,'divu')[intc]
-        ttdivu = self.getRAdata(eht,'ttdivu')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
+        ttdivu = self.getRAdata(eht, 'ttdivu')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
 
-        enuc1_o_cv = self.getRAdata(eht,'enuc1_o_cv')[intc]
-        enuc2_o_cv = self.getRAdata(eht,'enuc2_o_cv')[intc]
+        enuc1_o_cv = self.getRAdata(eht, 'enuc1_o_cv')[intc]
+        enuc2_o_cv = self.getRAdata(eht, 'enuc2_o_cv')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
-        gamma3 = self.getRAdata(eht,'gamma3')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
+        gamma3 = self.getRAdata(eht, 'gamma3')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
-        if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             gamma3 = gamma1
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_tt = self.getRAdata(eht,'tt')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_tt = self.getRAdata(eht, 'tt')
 
         # t_mm    = self.getRAdata(eht,'mm'))
         # minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
@@ -102,18 +102,18 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.plus_div_ftt_o_dd_cv_o_ux = np.zeros(nx) / ux
 
         # -res
-        self.minus_resHSSTTequation = -(self.minus_gradx_tt + self.minus_dt_tt_o_ux + \
-                                        self.minus_div_ftt_o_ux + self.plus_one_minus_gamma3_tt_div_ux_o_ux + \
-                                        self.plus_two_minus_gamma3_eht_ttf_df_o_ux + self.plus_enuc_o_cv_o_ux + \
+        self.minus_resHSSTTequation = -(self.minus_gradx_tt + self.minus_dt_tt_o_ux +
+                                        self.minus_div_ftt_o_ux + self.plus_one_minus_gamma3_tt_div_ux_o_ux +
+                                        self.plus_two_minus_gamma3_eht_ttf_df_o_ux + self.plus_enuc_o_cv_o_ux +
                                         self.plus_disstke_o_cv_o_ux + self.plus_div_ftt_o_dd_cv_o_ux)
 
         ##########################
         # END TEMPERATURE EQUATION 
-        ##########################			
+        ##########################
 
         #################################
         # ALTERNATIVE CONTINUITY EQUATION 
-        #################################		
+        #################################
 
         self.minus_gamma3_minus_one_tt_dd_fdil_o_fht_rxx = -(gamma3 - 1.) * tt * dd * fdil / fht_rxx
 
@@ -121,11 +121,11 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
         #####################################
         # END ALTERNATIVE CONTINUITY EQUATION 
-        #####################################		
+        #####################################
 
         ############################################
         # ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
-        ############################################		
+        ############################################
 
         self.minus_gamma3_minus_one_dd_tt_gg_o_gamma1_pp = -(gamma3 - 1.) * dd * tt * gg / (gamma1 * pp)
 
@@ -133,7 +133,7 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
 
         ################################################
         # END ALTERNATIVE CONTINUITY EQUATION SIMPLIFIED
-        ################################################			
+        ################################################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -141,6 +141,7 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.tt = tt
         self.bconv = bconv
         self.tconv = tconv
+        self.fext = fext
 
     def plot_tt(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature stratification in the model"""
@@ -178,7 +179,10 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.eps')
 
     def plot_tt_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
@@ -277,7 +281,10 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq.eps')
 
     def plot_tt_equation_2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
@@ -341,7 +348,10 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq_alternative.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq_alternative.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq_alternative.eps')
 
     def plot_tt_equation_3(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
@@ -405,4 +415,7 @@ class HsseTemperatureEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq_alternative_simplified.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq_alternative_simplified.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_temperature_eq_alternative_simplified.eps')

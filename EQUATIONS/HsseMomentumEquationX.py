@@ -1,11 +1,11 @@
 import numpy as np
-from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
+import UTILS.Calculus as uCalc
+import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -13,45 +13,45 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class HsseMomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, data_prefix, bconv, tconv):
+    def __init__(self, filename, ig, ieos, fext, intc, data_prefix, bconv, tconv):
         super(HsseMomentumEquationX, self).__init__(ig)
 
         # load data to structured array
         eht = np.load(filename)
 
         # load grid
-        xzn0 = self.getRAdata(eht,'xzn0')
+        xzn0 = self.getRAdata(eht, 'xzn0')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
-        dd = self.getRAdata(eht,'dd')[intc]
-        ux = self.getRAdata(eht,'ux')[intc]
-        pp = self.getRAdata(eht,'pp')[intc]
-        gg = self.getRAdata(eht,'gg')[intc]
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
 
-        ddux = self.getRAdata(eht,'ddux')[intc]
-        uxdivu = self.getRAdata(eht,'uxdivu')[intc]
-        divu = self.getRAdata(eht,'divu')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
+        divu = self.getRAdata(eht, 'divu')[intc]
 
-        dduxux = self.getRAdata(eht,'dduxux')[intc]
-        dduyuy = self.getRAdata(eht,'dduyuy')[intc]
-        dduzuz = self.getRAdata(eht,'dduzuz')[intc]
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
 
-        gamma1 = self.getRAdata(eht,'gamma1')[intc]
+        gamma1 = self.getRAdata(eht, 'gamma1')[intc]
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if (ieos == 1):
-            cp = self.getRAdata(eht,'cp')[intc]
-            cv = self.getRAdata(eht,'cv')[intc]
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
 
         # store time series for time derivatives
-        t_timec = self.getRAdata(eht,'timec')
-        t_dd = self.getRAdata(eht,'dd')
-        t_ddux = self.getRAdata(eht,'ddux')
+        t_timec = self.getRAdata(eht, 'timec')
+        t_dd = self.getRAdata(eht, 'dd')
+        t_ddux = self.getRAdata(eht, 'ddux')
         t_fht_ux = t_ddux / t_dd
 
         # construct equation-specific mean fields		
@@ -86,13 +86,12 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         self.minus_dd_fht_ux_gradx_fht_ux = -dd * fht_ux * self.Grad(fht_ux, xzn0)
 
         # -res (geometry dependent)
-        if (ig == 1):
+        if ig == 1:
             self.minus_resResXmomentumEquation = \
-                -(self.minus_gradx_pp + self.minus_dd_gg + self.minus_dd_dt_fht_ux + self.minus_div_rxx + \
-                  +self.minus_dd_fht_ux_gradx_fht_ux)
-        elif (ig == 2):
+                -(self.minus_gradx_pp + self.minus_dd_gg + self.minus_dd_dt_fht_ux + self.minus_div_rxx + +self.minus_dd_fht_ux_gradx_fht_ux)
+        elif ig == 2:
             self.minus_resResXmomentumEquation = \
-                -(self.minus_gradx_pp + self.minus_dd_gg + self.minus_dd_dt_fht_ux + self.minus_div_rxx + \
+                -(self.minus_gradx_pp + self.minus_dd_gg + self.minus_dd_dt_fht_ux + self.minus_div_rxx +
                   self.minus_G + self.minus_dd_fht_ux_gradx_fht_ux)
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
@@ -112,7 +111,7 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         ###################################
         # END ALTERNATIVE MOMENTUM EQUATION 
-        ###################################					
+        ###################################
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -122,6 +121,7 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         self.bconv = bconv
         self.tconv = tconv
         self.ig = ig
+        self.fext = fext
 
     def plot_momentum_x(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot ddux stratification in the model"""
@@ -151,9 +151,9 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         # plt.plot(grd1,plt3,color='red',label = r'$v_{exp}$')
 
         # define and show x/y LABELS
-        if (self.ig == 1):
+        if self.ig == 1:
             setxlabel = r"x (cm)"
-        elif (self.ig == 2):
+        elif self.ig == 2:
             setxlabel = r"r (cm)"
         else:
             print("ERROR: geometry not defined, use ig = 1 for CARTESIAN, ig = 2 for SPHERICAL, EXITING ...")
@@ -172,6 +172,12 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
+
+        # save PLOT
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.eps')
 
     def plot_momentum_equation_x(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
@@ -302,7 +308,10 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq.eps')
 
     def plot_momentum_equation_x_2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
@@ -366,7 +375,10 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq_alternative.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq_alternative.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq_alternative.eps')
 
     def plot_momentum_equation_x_3(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
@@ -429,4 +441,7 @@ class HsseMomentumEquationX(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors,
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq_alternative_simplified.png')
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq_alternative_simplified.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'hsse_momentum_x_eq_alternative_simplified.eps')

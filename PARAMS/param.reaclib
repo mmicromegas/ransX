@@ -37,7 +37,7 @@
 []
 ## s32 Transport Vs Nuclear Timescale ...................... ## [xTimescales_s32,True,3.7e8,9.8e8,1.e9,1.e0,0]
 []
-## s34 Transport Vs Nuclear Timescale ...................... ## [xTimescales_s34,True,3.7e8,9.8e8,1.e7,-1.e0,0]
+## s34 Transport Vs Nuclear Timescale ...................... ## [xTimescales_s34,True,3.7e8,9.8e8,1.e7,1.e0,0]
 []
 ## cl35 Transport Vs Nuclear Timescale ..................... ## [xTimescales_cl35,True,3.7e8,9.8e8,1.e7,1.e0,0]
 []
