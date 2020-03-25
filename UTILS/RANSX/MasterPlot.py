@@ -357,28 +357,28 @@ class MasterPlot():
                                                     params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation exact 2						       
-        ranshsselumi.plot_luminosity_equation_exact2(params.getForProp('prop')['laxis'],
-                                                     params.getForEqs('lueqhsse')['xbl'],
-                                                     params.getForEqs('lueqhsse')['xbr'],
-                                                     params.getForEqs('lueqhsse')['ybu'],
-                                                     params.getForEqs('lueqhsse')['ybd'],
-                                                     params.getForEqs('lueqhsse')['ilg'])
+        # ranshsselumi.plot_luminosity_equation_exact2(params.getForProp('prop')['laxis'],
+        #                                             params.getForEqs('lueqhsse')['xbl'],
+        #                                             params.getForEqs('lueqhsse')['xbr'],
+        #                                             params.getForEqs('lueqhsse')['ybu'],
+        #                                             params.getForEqs('lueqhsse')['ybd'],
+        #                                             params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative
-        ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
-                                                params.getForEqs('lueqhsse')['xbl'],
-                                                params.getForEqs('lueqhsse')['xbr'],
-                                                params.getForEqs('lueqhsse')['ybu'],
-                                                params.getForEqs('lueqhsse')['ybd'],
-                                                params.getForEqs('lueqhsse')['ilg'])
+        # ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
+        #                                        params.getForEqs('lueqhsse')['xbl'],
+        #                                        params.getForEqs('lueqhsse')['xbr'],
+        #                                        params.getForEqs('lueqhsse')['ybu'],
+        #                                        params.getForEqs('lueqhsse')['ybd'],
+        #                                        params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative simplified						       
-        ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],
-                                                params.getForEqs('lueqhsse')['xbl'],
-                                                params.getForEqs('lueqhsse')['xbr'],
-                                                params.getForEqs('lueqhsse')['ybu'],
-                                                params.getForEqs('lueqhsse')['ybd'],
-                                                params.getForEqs('lueqhsse')['ilg'])
+        # ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],
+        #                                        params.getForEqs('lueqhsse')['xbl'],
+        #                                        params.getForEqs('lueqhsse')['xbr'],
+        #                                        params.getForEqs('lueqhsse')['ybu'],
+        #                                        params.getForEqs('lueqhsse')['ybd'],
+        #                                        params.getForEqs('lueqhsse')['ilg'])
 
     def execHssCompEq(self, inuc, element, x, bconv, tconv):
         params = self.params
