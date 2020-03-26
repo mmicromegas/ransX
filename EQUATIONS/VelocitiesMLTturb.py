@@ -78,7 +78,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # fhh = dd*(hhux - hh*ux)
 
         # mlt velocity		
-        alphae = 0.7  # Meakin,Arnett,2007
+        alphae = 0.2  # Meakin,Arnett,2007
         vmlt_1 = fhh / (alphae * dd * fht_cp * tt_rms)
 
         Hp = 2.e8  # this is for oburn
@@ -105,7 +105,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         vmlt_2 = (vmlt_2) ** 0.5
 
         # this should be OS independent
-        dir_model = os.path.join(os.path.realpath('.'), 'DATA', 'INIMODEL', 'imodel.tycho')
+        dir_model = os.path.join(os.path.realpath('.'), 'DATA_D', 'INIMODEL', 'imodel.tycho')
 
         data = np.loadtxt(dir_model, skiprows=26)
         nxmax = 500
@@ -143,9 +143,9 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt2 = self.vexp1
         plt3 = self.vexp2
         plt4 = self.vturb
-        plt5 = self.vmlt_1
-        plt6 = self.vmlt_2
-        plt7 = self.vmlt_3
+        plt5 = self.vmlt_1 # vmlt_1 = fhh / (alphae * dd * fht_cp * tt_rms)  - REFERENCE NEEDED
+        plt6 = self.vmlt_2 # vmlt_2 = gg * betaT * (nabla - nabla_ad) * ((lbd ** 2.) / (8. * Hp)) - REFERENCE NEEDED
+        plt7 = self.vmlt_3 # THIS IS FROM TYCHO's initial model
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -169,7 +169,8 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # plt.plot(grd1,plt2,color='red',label = r'$\widetilde{u}_r$')
         # plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
         plt.plot(grd1, plt4, color='blue', label=r'$u_{turb}$')
-        #        plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
+
+        plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
         # plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
         # plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
 

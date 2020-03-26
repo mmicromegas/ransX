@@ -416,7 +416,8 @@ def main():
                           prp['xzn0inc'],
                           prp['xzn0outc'],
                           prp['tke_diss'],
-                          prp['tauL'])
+                          prp['tauL'],
+                          prp['cnvz_in_hp'])
 
         # COMPOSITION FLUX IN Y
         if str2bool(params.getForEqs('xflxy_' + elem)['plotMee']):
@@ -440,7 +441,8 @@ def main():
                             prp['xzn0inc'],
                             prp['xzn0outc'],
                             prp['tke_diss'],
-                            prp['tauL'])
+                            prp['tauL'],
+                            prp['cnvz_in_hp'])
 
         # COMPOSITION FLUX EQUATION IN Y
         if str2bool(params.getForEqs('xflxyeq_' + elem)['plotMee']):

@@ -16,7 +16,7 @@ import os
 
 class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, bconv, tconv, tke_diss, tauL, intc, data_prefix):
+    def __init__(self, filename, ig, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, data_prefix):
         super(XfluxXequation, self).__init__(ig)
 
         # load data to structured array
@@ -179,52 +179,53 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         alphae = 1.
         u_mlt = fhh / (alphae * fht_cp * sigmatt)
 
-        self.minus_ddxiumlt = -dd * xi * u_mlt
+        # size of convection zone in pressure scale height
+        cnvzsize = tconv - bconv
 
-        # models
-        self.model_1 = self.minus_rxx_gradx_fht_xi
-        self.model_2 = self.minus_ddxiumlt
+        # DIFFUSION gradient models
 
-        # grad models		
+        # model 1
+        alpha0 = 1.5
+        Dumlt = (1. / 3.) * u_mlt * alpha0 * cnvzsize
+        self.minus_Dumlt_gradx_fht_xi = -Dumlt * self.Grad(fht_xi, xzn0)
+        self.model_1 = self.minus_Dumlt_gradx_fht_xi
+
+        # model 2 (diffusivity from Reynolds stress)
+        # self.model_2 = self.minus_rxx_gradx_fht_xi ???
+
         self.plus_gradx_fxi = +self.Grad(fxi, xzn0)
         cnst = gamma1
         self.minus_cnst_dd_fxi_fdil_o_fht_rxx = -cnst * dd * fxi * fdil / fht_rxx
 
-        hp = 2.5e8
+        # read TYCHO's initial model
 
-        # Dgauss gradient model	
-
-        # this should be OS independent
-        dir_model = os.path.join(os.path.realpath('.'), 'DATA', 'INIMODEL', 'imodel.tycho')
-
+        dir_model = os.path.join(os.path.realpath('.'), 'DATA_D', 'INIMODEL', 'imodel.tycho')
         data = np.loadtxt(dir_model, skiprows=26)
         nxmax = 500
 
         rr = data[1:nxmax, 2]
         vmlt = data[1:nxmax, 8]
-        u_mlt = np.interp(xzn0, rr, vmlt)
+        u_mltini = np.interp(xzn0, rr, vmlt)
 
-        # Dumlt1     = (1./3.)*u_mlt*lc
+        # model 3 (diffusivity calculated with u_MLT from initial model)
 
-        alpha = 1.5
-        Dumlt2 = (1. / 3.) * u_mlt * alpha * hp
+        alpha1 = 1.5
+        Dumltini2 = (1. / 3.) * u_mltini * alpha1 * cnvzsize
 
-        alpha = 1.6
-        Dumlt3 = (1. / 3.) * u_mlt * alpha * hp
+        alpha2 = 1.6
+        Dumltini3 = (1. / 3.) * u_mltini * alpha2 * cnvzsize
 
-        def gauss(x, a, x0, sigma):
-            return a * np.exp(-(x - x0) ** 2 / (2 * (sigma ** 2)))
+        self.model_3 = -Dumltini3 * self.Grad(fht_xi, xzn0)
 
-        Dmlt = Dumlt3
+        # model 4 (Dgauss gradient model)
 
-        ampl = max(Dmlt)
+        ampl = max(Dumltini3)
         xx0 = (bconv + 0.46e8 + tconv) / 2.
         width = 4.e7
 
-        Dgauss = gauss(xzn0, ampl, xx0, width)
+        Dgauss = self.gauss(xzn0, ampl, xx0, width)
 
-        self.model_3 = -Dgauss * dd * self.Grad(fht_xi, xzn0)
-        self.model_4 = -Dumlt3 * dd * self.Grad(fht_xi, xzn0)
+        self.model_4 = -Dgauss * self.Grad(fht_xi, xzn0)
 
         # model isotropic turbulence		
 
@@ -258,8 +259,8 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.model_2_rogers1989 = -Drr2 * self.Grad(xi, xzn0)
 
         # turbulent thermal diffusion model (the extra term)
-        self.model_3_turb_thermal_diff = self.model_1_rogers1989 + (Drr1*self.Grad(dd, xzn0)/dd)*xi
-        self.model_4 = (Drr1*self.Grad(dd, xzn0)/dd)*xi
+        self.model_1_rogers1989_minus_turb_thermal_diff = self.model_1_rogers1989 - (Drr1*self.Grad(dd, xzn0)/dd)*xi
+        self.turb_thermal_diff = (Drr1*self.Grad(dd, xzn0)/dd)*xi
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -289,12 +290,6 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # load and calculate DATA to plot
         plt1 = self.fxi
-        plt2 = self.model_1
-        # plt3 = self.model_2
-        # plt4 = self.model_3
-        # plt5 = self.model_4
-        # plt6 = self.model_5
-        # plt7 = self.model_6
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -303,26 +298,16 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2]
+        to_plot = [plt1]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('Xflux X for ' + self.element)
         plt.plot(grd1, plt1, color='k', label=r'f')
-        # plt.plot(grd1,plt2,color='c',label=r"$-\widetilde{R}_{rr} \partial_r \widetilde{X}$")
-        # plt.plot(grd1,plt3,color='g',label=r"$-\overline{\rho} \ \overline{X} \ u_{mlt}$")
-        # plt.plot(grd1,plt4,color='r',label=r"$-D_{gauss} \ \partial_r \widetilde{X}$")
-        # plt.plot(grd1,plt5,color='b',label=r"$-D_{mlt} \ \partial_r \widetilde{X}$",linewidth=0.7)
-        # plt.plot(grd1,plt6,color='g',label=r"$-1/3 C_D (\overline{u''_i u''_i}^2/\varepsilon_{tke}) \ \partial_r \widetilde{X}$")
-        # plt.plot(grd1,plt7,color='c',label=r"$-(D_{rr}+D_{r\theta}+D_{r\phi}) \ \partial_r \widetilde{X}$")
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
-
-        # convective boundary markers		
-        # plt.axvline(self.bconv,linestyle='--',linewidth=0.7,color='k')
-        # plt.axvline(self.tconv,linestyle='--',linewidth=0.7,color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -363,11 +348,15 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt1 = self.dd*self.fxi1
         plt2 = self.dd*self.fxi2
 
-        plt3 = self.dd*self.model_1_rogers1989
-        plt4 = self.dd*self.model_2_rogers1989
+        plt_model_Dumlt = self.dd*self.model_1  # self.model_1 = self.minus_Dumlt_gradx_fht_xi ; Dumlt = (1./3.)*u_mlt*alpha0*cnvzsize
+        # plt_model_Drxx = self.dd*self.model_2      # self.model_2 = self.minus_rxx_gradx_fht_xi
+        plt_model_Dumltini = self.dd*self.model_3  # self.model_3 = -Dumltini3 * self.Grad(fht_xi, xzn0)
+        plt_model_Dgauss = self.dd*self.model_4    # self.model_4 = -Dgauss * self.Grad(fht_xi, xzn0)
 
-        plt5 = self.dd*self.model_3_turb_thermal_diff
-        plt6 = self.dd*self.model_4
+        plt_model_1_rogers1989 = self.dd*self.model_1_rogers1989
+        plt_model_2_rogers1989 = self.dd*self.model_2_rogers1989
+
+        plt_model_1_rogers1989_minus_turb_thermal_diff = self.dd*self.model_1_rogers1989_minus_turb_thermal_diff
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -376,18 +365,23 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2, plt3, plt4, plt5, plt6]
+        to_plot = [plt1, plt2, plt_model_Dumlt, plt_model_Dumltini,
+                   plt_model_Dgauss, plt_model_1_rogers1989, plt_model_2_rogers1989,
+                   plt_model_1_rogers1989_minus_turb_thermal_diff]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('Xflux for ' + self.element)
         plt.plot(grd1, plt1, color='k', label=r"$+\overline{\rho}\widetilde{X''u''_r}$")
-        plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$+\overline{\rho}\overline{X'u'_r}$")
+        # plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$+\overline{\rho}\overline{X'u'_r}$")
 
-        plt.plot(grd1, plt3, color='g', label=r"$model (1)$")
-        # plt.plot(grd1, plt4, color='b', linestyle='--', label=r"$model (2)$")
-        plt.plot(grd1, plt5, color='m', label=r"$model (1) + D (\nabla \rho / \rho) X$")
-        plt.plot(grd1, plt6, color='pink', label=r"$+D (\nabla \rho / \rho) X$")
+        plt.plot(grd1, plt_model_Dumlt, color='r', label=r"$-D_{MLT} \partial_r \widetilde{X}$")
+        # plt.plot(grd1, plt_model_Dumltini, color='pink', label=r"$-D_{MLT}^{ini} \partial_r \widetilde{X}$")
+        plt.plot(grd1, plt_model_Dgauss, color='b', label=r"$-D_{MLT}^{gauss} \partial_r \widetilde{X}$")
+
+        plt.plot(grd1, plt_model_1_rogers1989, color='g', label=r"$Rogers (1)$")
+        # plt.plot(grd1, plt_model_2_rogers1989, color='y', label=r"$Rogers (2)$")
+        plt.plot(grd1, plt_model_1_rogers1989_minus_turb_thermal_diff, color='m', label=r"$Rogers (1) - D (\nabla \rho / \rho) X$")
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -405,12 +399,12 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
-            setylabel = r"$f$ (cm s$^{-1}$)"
+            setylabel = r"$f$ (g cm$^{-2}$ s$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
@@ -656,3 +650,6 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXequation2_' + element + '.png')
+
+    def gauss(self, x, a, x0, sigma):
+        return a * np.exp(-(x - x0) ** 2 / (2 * (sigma ** 2)))

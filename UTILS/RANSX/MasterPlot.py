@@ -357,12 +357,12 @@ class MasterPlot():
                                                     params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation exact 2						       
-        # ranshsselumi.plot_luminosity_equation_exact2(params.getForProp('prop')['laxis'],
-        #                                             params.getForEqs('lueqhsse')['xbl'],
-        #                                             params.getForEqs('lueqhsse')['xbr'],
-        #                                             params.getForEqs('lueqhsse')['ybu'],
-        #                                             params.getForEqs('lueqhsse')['ybd'],
-        #                                             params.getForEqs('lueqhsse')['ilg'])
+        ranshsselumi.plot_luminosity_equation_exact2(params.getForProp('prop')['laxis'],
+                                                     params.getForEqs('lueqhsse')['xbl'],
+                                                     params.getForEqs('lueqhsse')['xbr'],
+                                                     params.getForEqs('lueqhsse')['ybu'],
+                                                     params.getForEqs('lueqhsse')['ybd'],
+                                                     params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative
         # ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
@@ -497,22 +497,22 @@ class MasterPlot():
                                                           params.getForEqsBar(x)['ybu'],
                                                           params.getForEqsBar(x)['ybd'])
 
-    def execXflxx(self, inuc, element, x, bconv, tconv, tke_diss, tauL):
+    def execXflxx(self, inuc, element, x, bconv, tconv, tke_diss, tauL, cnvz_in_hp):
         params = self.params
 
         # instantiate 		
         ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
-                                         inuc, element, bconv, tconv, tke_diss, tauL,
+                                         inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
                                          params.getForProp('prop')['prefix'])
 
-        ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
-                              params.getForEqs(x)['xbl'],
-                              params.getForEqs(x)['xbr'],
-                              params.getForEqs(x)['ybu'],
-                              params.getForEqs(x)['ybd'],
-                              params.getForEqs(x)['ilg'])
+        # ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
+        #                      params.getForEqs(x)['xbl'],
+        #                      params.getForEqs(x)['xbr'],
+        #                      params.getForEqs(x)['ybu'],
+        #                      params.getForEqs(x)['ybd'],
+        #                      params.getForEqs(x)['ilg'])
 
         ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
                                         params.getForEqs(x)['xbl'],
@@ -521,20 +521,20 @@ class MasterPlot():
                                         params.getForEqs(x)['ybd'],
                                         params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
-                                      params.getForEqs(x)['xbl'],
-                                      params.getForEqs(x)['xbr'],
-                                      params.getForEqs(x)['ybu'],
-                                      params.getForEqs(x)['ybd'],
-                                      params.getForEqs(x)['ilg'])
+        # ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
+        #                              params.getForEqs(x)['xbl'],
+        #                              params.getForEqs(x)['xbr'],
+        #                              params.getForEqs(x)['ybu'],
+        #                              params.getForEqs(x)['ybd'],
+        #                              params.getForEqs(x)['ilg'])
 
-    def execXflxXeq(self, inuc, element, x, bconv, tconv, tke_diss, tauL):
+    def execXflxXeq(self, inuc, element, x, bconv, tconv, tke_diss, tauL, cnvz_in_hp):
         params = self.params
 
         # instantiate 
         ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
-                                         inuc, element, bconv, tconv, tke_diss, tauL,
+                                         inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
                                          params.getForProp('prop')['prefix'])
 

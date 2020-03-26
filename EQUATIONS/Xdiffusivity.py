@@ -111,7 +111,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         u_mlt = fhh / (alphae * dd * fht_cp * tt_rms)
 
         # this should be OS independent
-        dir_model = os.path.join(os.path.realpath('.'), 'DATA', 'INIMODEL', 'imodel.tycho')
+        dir_model = os.path.join(os.path.realpath('.'), 'DATA_D', 'INIMODEL', 'imodel.tycho')
 
         data = np.loadtxt(dir_model, skiprows=26)
         nxmax = 500

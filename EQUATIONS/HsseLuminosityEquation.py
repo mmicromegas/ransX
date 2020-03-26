@@ -170,9 +170,11 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             sys.exit()
 
         fht_lum = surface * dd * fht_ux * fht_et
+        fht_lum_for_exact = surface * (ddeiux + ddekux)
 
         # LHS -grad fht_lum 			
         self.minus_gradx_fht_lum = -self.Grad(fht_lum, xzn0)
+        self.minus_gradx_fht_lum_for_exact = -self.Grad(fht_lum_for_exact, xzn0)
 
         # RHS +surface dd fht_enuc
         self.plus_surface_dd_fht_enuc = +surface * dd * fht_enuc
@@ -247,13 +249,13 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
 
         # RHS -surface dd dt tt
         # self.minus_surface_dd_cp_dt_tt = -surface * dd * cp * self.dt(t_tt, xzn0, t_timec, intc)
-        self.minus_surface_dd_cp_dt_tt = -surface * dd * cp * self.dt(t_fht_tt, xzn0, t_timec, intc)
+        self.minus_surface_dd_cp_dt_fht_tt = -surface * dd * cp * self.dt(t_fht_tt, xzn0, t_timec, intc)
 
         # RHS -surface delta dt p
         self.minus_surface_delta_dt_pp = -surface * delta * self.dt(t_pp, xzn0, t_timec, intc)
 
-        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum + self.plus_surface_dd_fht_enuc +
-                                           self.plus_surface_tke_diss + self.minus_surface_dd_cp_dt_tt +
+        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum_for_exact + self.plus_surface_dd_fht_enuc +
+                                           self.plus_surface_tke_diss + self.minus_surface_dd_cp_dt_fht_tt +
                                            self.minus_surface_delta_dt_pp)
 
         # RHS
@@ -273,7 +275,7 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
 
         self.minus_dd_tt_dt_fht_ss = -surface * dd * tt * self.dt(t_fht_ss, xzn0, t_timec, intc)
         self.minus_resLumExactEquation2 = -(
-                self.minus_gradx_fht_lum + self.plus_surface_dd_fht_enuc + self.minus_dd_tt_dt_fht_ss)
+                self.minus_gradx_fht_lum_for_exact + self.plus_surface_dd_fht_enuc + self.minus_dd_tt_dt_fht_ss)
 
         ########################################
         # END STANDARD LUMINOSITY EQUATION EXACT 2 
@@ -556,11 +558,11 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_gradx_fht_lum
+        lhs0 = self.minus_gradx_fht_lum_for_exact
 
         rhs0 = self.plus_surface_dd_fht_enuc
         rhs1 = self.plus_surface_tke_diss
-        rhs2 = self.minus_surface_dd_cp_dt_tt
+        rhs2 = self.minus_surface_dd_cp_dt_fht_tt
         rhs3 = self.minus_surface_delta_dt_pp
 
         rhs4 = self.minus_surface_div_fei
@@ -586,11 +588,11 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # plot DATA 
         plt.title("standard luminosity equation exact")
         if self.ig == 1:
-            plt.plot(grd1[xlimitrange], lhs0[xlimitrange], color='#FF6EB4', label=r"$-\partial_x \widetilde{L}$")
+            plt.plot(grd1[xlimitrange], lhs0[xlimitrange], color='#FF6EB4', label=r"$-\partial_x \overline{L}$")
 
             plt.plot(grd1[xlimitrange], rhs0[xlimitrange], color='#FF8C00', label=r"$+surf \  \overline{\rho} \widetilde{\epsilon}_{nuc}$")
             plt.plot(grd1[xlimitrange], rhs1[xlimitrange], color='y',label = r"$+surf \  \overline{\rho} \widetilde{\varepsilon}_{k}$")
-            plt.plot(grd1[xlimitrange], rhs2[xlimitrange], color='brown', label=r"$-surf \  \overline{\rho} c_P \partial_t \overline{T}$")
+            plt.plot(grd1[xlimitrange], rhs2[xlimitrange], color='brown', label=r"$-surf \  c_P \ \overline{\rho} \partial_t \widetilde{T}$")
             plt.plot(grd1[xlimitrange], rhs3[xlimitrange], color='m', label=r"$-surf \  \delta \partial_t \overline{P}$")
 
             plt.plot(grd1[xlimitrange], rhs4[xlimitrange], color='g', label=r"$-surf \  \nabla_x \overline{\rho }\widetilde{\epsilon''_I u''_x}$")
@@ -606,11 +608,11 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             zeros = np.zeros(self.nx)
             plt.plot(grd1, zeros, color='k', linewidth=0.6, label="zero")
         elif self.ig == 2:
-            plt.plot(grd1[xlimitrange], lhs0[xlimitrange], color='#FF6EB4', label=r"$-\partial_r \widetilde{L}$")
+            plt.plot(grd1[xlimitrange], lhs0[xlimitrange], color='#FF6EB4', label=r"$-\partial_r \overline{L}$")
 
             plt.plot(grd1[xlimitrange], rhs0[xlimitrange], color='#FF8C00', label=r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")
             plt.plot(grd1[xlimitrange], rhs1[xlimitrange], color='y',label = r"$+4 \pi r^2 \overline{\rho} \widetilde{\varepsilon}_{k}^{diss}}$")
-            plt.plot(grd1[xlimitrange], rhs2[xlimitrange], color='brown', label=r"$-4 \pi r^2 \overline{\rho} c_P \partial_t \overline{T}$")
+            plt.plot(grd1[xlimitrange], rhs2[xlimitrange], color='brown', label=r"$-4 \pi r^2 c_P \overline{\rho} \partial_t \widetilde{T}$")
             plt.plot(grd1[xlimitrange], rhs3[xlimitrange], color='m', label=r"$-4 \pi r^2 \delta \partial_t \overline{P}$")
 
             plt.plot(grd1[xlimitrange], res[xlimitrange], color='k', linestyle='--', label=r"res $\sim N$")
@@ -621,7 +623,7 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             # define and show x/y LABELS
 
             plt.plot(grd1[xlimitrange], rhs4[xlimitrange], 'o', color='r', markersize = 2., label=r"$-4 \pi r^2 \nabla_r \overline{\rho }\widetilde{\epsilon''_I u''_r}$")
-            # plt.plot(grd1[xlimitrange], rhs5[xlimitrange], color='b', label=r"$-4 \pi r^2 \nabla_r \overline{\rho} \widetilde{\epsilon_I} \widetilde{u_r}$")
+            plt.plot(grd1[xlimitrange], rhs5[xlimitrange], color='b', label=r"$-4 \pi r^2 \nabla_r \overline{\rho} \widetilde{\epsilon_I} \widetilde{u_r}$")
             # plt.plot(grd1[xlimitrange], rhs4[xlimitrange]-rhs5[xlimitrange] + rhs1[xlimitrange], color='pink', label=r"$rhs4-rhs5+rhs1$")
             # plt.plot(grd1[xlimitrange], rhs4[xlimitrange]+rhs5[xlimitrange], color='yellow', label=r"$rhs4+rhs5$")
 
@@ -713,7 +715,7 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # plot DATA 
         plt.title("standard luminosity equation exact 2")
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_x \widetilde{L}$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_x \overline{L}$")
 
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$+surf \ \overline{\rho} \widetilde{\epsilon}_{nuc}$")
             plt.plot(grd1, rhs1, color='brown', label=r"$-surf \ \overline{\rho} \overline{T} \partial_t \widetilde{s}$")
@@ -727,7 +729,7 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             # ,label=r"$0 = -\partial_r l + \rho 4\pi r^2 \epsilon - \rho surf \ c_p \partial_t T + \rho surf \ \delta \partial_t P \\ Kippenhahn Weigert p.22, Eq.4.26$"
             # define and show x/y LABELS
         elif self.ig == 2:
-            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_r \widetilde{L}$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_r \overline{L}$")
 
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$+4 \pi r^2 \overline{\rho} \widetilde{\epsilon}_{nuc}$")
             plt.plot(grd1, rhs1, color='brown', label=r"$-4 \pi r^2 \overline{\rho} \overline{T} \partial_t \widetilde{s}$")
