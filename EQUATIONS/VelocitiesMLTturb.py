@@ -16,7 +16,7 @@ import sys
 
 class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)
 
         # load data to structured array
@@ -126,6 +126,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         self.rr = rr
         self.vmlt_3 = vmlt_3
+        self.fext = fext
 
     def plot_velocities(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
@@ -196,4 +197,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_velocities_turb.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_velocities_turb.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_velocities_turb.eps')

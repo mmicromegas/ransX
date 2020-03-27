@@ -15,7 +15,7 @@ import sys
 
 class ReynoldsStressXXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, minus_kolmrate, data_prefix):
+    def __init__(self, filename, ig, fext, intc, minus_kolmrate, data_prefix):
         super(ReynoldsStressXXequation, self).__init__(ig)
 
         # load data to structured array
@@ -143,6 +143,7 @@ class ReynoldsStressXXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         self.xzn0 = xzn0
         self.dd = dd
         self.rxx = rxx
+        self.fext = fext
 
     def plot_rxx(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot Reynolds stress xx in the model"""
@@ -198,8 +199,10 @@ class ReynoldsStressXXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rxx.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rxx.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rxx.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rxx.eps')
 
     def plot_rxx_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot Reynolds stress rxx equation in the model"""

@@ -5,7 +5,6 @@ import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
-import sys
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -16,7 +15,7 @@ import sys
 
 class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, data_prefix):
         super(TemperatureGradients, self).__init__(ig)
 
         # load data to structured array
@@ -63,6 +62,7 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         self.nabla_mu = nabla_mu
         self.ig = ig
         self.ieos = ieos
+        self.fext = fext
 
     def plot_nablas(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature gradients in the model"""
@@ -126,4 +126,7 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_nablas.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_nablas.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_nablas.eps')

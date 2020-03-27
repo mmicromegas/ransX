@@ -503,11 +503,19 @@ class MasterPlot():
         # instantiate 		
         ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
+                                         params.getForProp('prop')['fext'],
                                          inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
                                          params.getForProp('prop')['prefix'])
 
         # ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
+        #                      params.getForEqs(x)['xbl'],
+        #                      params.getForEqs(x)['xbr'],
+        #                      params.getForEqs(x)['ybu'],
+        #                      params.getForEqs(x)['ybd'],
+        #                      params.getForEqs(x)['ilg'])
+
+        # ransXflxx.plot_XfluxxX(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
         #                      params.getForEqs(x)['xbr'],
         #                      params.getForEqs(x)['ybu'],
@@ -534,6 +542,7 @@ class MasterPlot():
         # instantiate 
         ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
+                                         params.getForProp('prop')['fext'],
                                          inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
                                          params.getForProp('prop')['prefix'])
@@ -661,6 +670,7 @@ class MasterPlot():
         # instantiate 
         ransXdiff = xdiff.Xdiffusivity(params.getForProp('prop')['eht_data'],
                                        params.getForProp('prop')['ig'],
+                                       params.getForProp('prop')['fext'],
                                        inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL,
                                        params.getForProp('prop')['intc'],
                                        params.getForProp('prop')['prefix'])
@@ -1351,6 +1361,7 @@ class MasterPlot():
         # instantiate 		
         ransNablas = nablas.TemperatureGradients(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
+                                                 params.getForProp('prop')['fext'],
                                                  params.getForProp('prop')['ieos'],
                                                  params.getForProp('prop')['intc'],
                                                  params.getForProp('prop')['prefix'])
@@ -1385,6 +1396,7 @@ class MasterPlot():
         # instantiate 		
         ransVelmeanExp = velmeanexp.VelocitiesMeanExp(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
+                                                      params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'])
 
@@ -1402,6 +1414,7 @@ class MasterPlot():
         # instantiate 		
         ransVelMLTturb = velmltturb.VelocitiesMLTturb(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
+                                                      params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['ieos'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'])
@@ -1574,6 +1587,7 @@ class MasterPlot():
         # instantiate 		
         ransRxx = rxx.ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['fext'],
                                                params.getForProp('prop')['intc'],
                                                -kolmrate,
                                                params.getForProp('prop')['prefix'])
@@ -1593,6 +1607,7 @@ class MasterPlot():
         # instantiate 		
         ransRxx = rxx.ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['fext'],
                                                params.getForProp('prop')['intc'],
                                                -kolmrate,
                                                params.getForProp('prop')['prefix'])

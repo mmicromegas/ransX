@@ -6,6 +6,7 @@ import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import os
+from scipy import integrate
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -16,7 +17,7 @@ import os
 
 class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, data_prefix):
+    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, data_prefix):
         super(XfluxXequation, self).__init__(ig)
 
         # load data to structured array
@@ -33,6 +34,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         uy = self.getRAdata(eht, 'uy')[intc]
         uz = self.getRAdata(eht, 'uz')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
         xi = self.getRAdata(eht, 'x' + inuc)[intc]
 
         uxy = self.getRAdata(eht, 'uxy')[intc]
@@ -262,6 +264,12 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.model_1_rogers1989_minus_turb_thermal_diff = self.model_1_rogers1989 - (Drr1*self.Grad(dd, xzn0)/dd)*xi
         self.turb_thermal_diff = (Drr1*self.Grad(dd, xzn0)/dd)*xi
 
+        # integral model
+        intFii = integrate.cumtrapz(self.minus_rxx_gradx_fht_xi+self.minus_xiff_gradx_pp_minus_xiff_gradx_ppff,xzn0,initial=0)
+        cD = 1.e-16
+        intFi = cD*integrate.cumtrapz(intFii,xzn0,initial=0)
+
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -273,6 +281,10 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.bconv = bconv
         self.tconv = tconv
         self.dd = dd
+        self.intFi = intFi
+        self.intFii = intFii
+        self.fxxi = fxxi
+        self.fext = fext
 
     def plot_XfluxX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
@@ -330,6 +342,64 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxX_' + element + '.png')
 
+    def plot_XfluxxX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot Xflux stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XfluxXEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # convert nuc ID to string
+        xnucid = str(self.inuc)
+        element = self.element
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load and calculate DATA to plot
+        plt1 = self.fxxi
+        plt_model_int = self.intFii
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        # set plot boundaries
+        to_plot = [plt1, plt_model_int]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        # plot DATA
+        plt.title('flux of Xflux X for ' + self.element)
+        plt.plot(grd1, plt1, color='k', label=r'f')
+        plt.plot(grd1, plt_model_int, color='r', label=r'int model')
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_x u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_r u''_r}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxxX_' + element + '.png')
+
     def plot_XfluxXRogers1989(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
 
@@ -358,6 +428,8 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         plt_model_1_rogers1989_minus_turb_thermal_diff = self.dd*self.model_1_rogers1989_minus_turb_thermal_diff
 
+        # plt_model_int = self.intFi
+
         # create FIGURE
         plt.figure(figsize=(7, 6))
 
@@ -383,6 +455,8 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # plt.plot(grd1, plt_model_2_rogers1989, color='y', label=r"$Rogers (2)$")
         plt.plot(grd1, plt_model_1_rogers1989_minus_turb_thermal_diff, color='m', label=r"$Rogers (1) - D (\nabla \rho / \rho) X$")
 
+        # plt.plot(grd1, plt_model_int, color='yellow', label=r"$int model$")
+
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
@@ -404,14 +478,16 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 13}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXRogers1989models_' + element + '.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXRogers1989models_' + element + '.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXRogers1989models_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXRogers1989models_' + element + '.eps')
 
     def plot_Xflux_gradient(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
@@ -555,7 +631,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # this is another inset axes over the main axes
         plt.rc('font', size=12.)
@@ -570,7 +646,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.plot(grd1[ilft:irgt], rhs2[ilft:irgt], color='r')
         plt.plot(grd1[ilft+2:irgt], rhs3[ilft+2:irgt], color='cyan')
         plt.plot(grd1[ilft:irgt], rhs4[ilft:irgt], color='purple')
-        plt.plot(grd1[ilft:irgt], rhs5[ilft:irgt], color='yellow')
+        # plt.plot(grd1[ilft:irgt], rhs5[ilft:irgt], color='yellow')
         plt.plot(grd1[ilft+2:irgt], res[ilft+2:irgt], color='k', linestyle='--', label='res')
 
         # plt.xticks([])
@@ -590,7 +666,10 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXequation_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXequation_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxXequation_' + element + '.eps')
 
     def plot_XfluxX_equation2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xi flux equation in the model"""

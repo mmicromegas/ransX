@@ -17,7 +17,7 @@ import sys
 
 class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL, intc, data_prefix):
+    def __init__(self, filename, ig, fext, inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
 
         # load data to structured array
@@ -101,6 +101,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
 
         self.bconv = bconv
         self.tconv = tconv
+        self.fext = fext
 
     def plot_X_Ediffusivity(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Eulerian diffusivity
@@ -252,4 +253,9 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'Ediff_' + element + '.png')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'Ediff_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'Ediff_' + element + '.eps')
+
+
