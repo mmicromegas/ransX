@@ -478,7 +478,7 @@ def main():
             plt.execDiff(inuc, elem, 'xdiff_' + elem,
                          prp['lc'], prp['uconv'],
                          prp['xzn0inc'],
-                         prp['xzn0outc'])
+                         prp['xzn0outc'], prp['tke_diss'], prp['tauL'])
 
         # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('coeqhsse_' + elem)['plotMee']):

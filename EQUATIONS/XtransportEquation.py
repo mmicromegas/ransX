@@ -209,6 +209,12 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
+        # this is an inset axes over the main axes
+        # a = plt.axes([.27, .4, .44, 0.23])
+        # plt.plot(grd1, plt1, color='r')
+        # plt.setp(a, xlim=[xbl, xbr], ylim=[ybu, ybd], xticks=[], yticks=[])
+        #        setp(a)
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
@@ -223,6 +229,25 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
+
+        # this is another inset axes over the main axes
+        plt.rc('font', size=12.)
+        a = plt.axes([0.26, 0.55, .3, .2])
+        plt.plot(grd1[0:105], plt1[0:105], color='r')
+        # plt.xticks([])
+        # plt.yticks([])
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            plt.xlabel(setxlabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            plt.xlabel(setxlabel)
+
+        plt.rc('font', size=16.)
+
+        # plt.text(5.2, 0.6, r"$\sim 10$x", fontsize=25, color='k')
 
         # display PLOT
         plt.show(block=False)

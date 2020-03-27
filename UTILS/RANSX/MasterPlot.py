@@ -655,13 +655,13 @@ class MasterPlot():
                                          params.getForEqs(x)['ybd'],
                                          params.getForEqs(x)['ilg'])
 
-    def execDiff(self, inuc, element, x, lc, uconv, bconv, tconv):
+    def execDiff(self, inuc, element, x, lc, uconv, bconv, tconv, tke_diss, tauL):
         params = self.params
 
         # instantiate 
         ransXdiff = xdiff.Xdiffusivity(params.getForProp('prop')['eht_data'],
                                        params.getForProp('prop')['ig'],
-                                       inuc, element, lc, uconv, bconv, tconv,
+                                       inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL,
                                        params.getForProp('prop')['intc'],
                                        params.getForProp('prop')['prefix'])
 

@@ -22,6 +22,7 @@ class HsseXtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
@@ -77,6 +78,7 @@ class HsseXtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         self.bconv = bconv
         self.tconv = tconv
         self.fext = fext
+        self.nx = nx
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
@@ -160,7 +162,8 @@ class HsseXtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # plt.plot(grd1,rhs2,color='y',label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_i$")
         # plt.plot(grd1,res,color='k',linestyle='--',label='res')
 
-        xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        # xlimitrange = np.where((grd1 > self.bconv) & (grd1 < self.tconv))
+        xlimitrange = np.where((grd1 > self.xzn0[0]) & (grd1 < self.xzn0[self.nx-1]))
         xlimitbottom = np.where(grd1 < self.bconv)
         xlimittop = np.where(grd1 > self.tconv)
 
@@ -171,17 +174,17 @@ class HsseXtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
                  label=r"$-\widetilde{u}_r \partial_r \widetilde{X}_i$")
         plt.plot(grd1[xlimitrange], res[xlimitrange], color='k', linestyle='--', label='res')
 
-        plt.plot(grd1[xlimitbottom], lhs0[xlimitbottom], '.', color='r', markersize=0.5)
-        plt.plot(grd1[xlimitbottom], rhs0[xlimitbottom], '.', color='g', markersize=0.5)
-        plt.plot(grd1[xlimitbottom], rhs1[xlimitbottom], '.', color='b', markersize=0.5)
-        plt.plot(grd1[xlimitbottom], rhs2[xlimitbottom], '.', color='y', markersize=0.5)
-        plt.plot(grd1[xlimitbottom], res[xlimitbottom], '.', color='k', markersize=0.5)
+        # plt.plot(grd1[xlimitbottom], lhs0[xlimitbottom], '.', color='r', markersize=0.5)
+        # plt.plot(grd1[xlimitbottom], rhs0[xlimitbottom], '.', color='g', markersize=0.5)
+        # plt.plot(grd1[xlimitbottom], rhs1[xlimitbottom], '.', color='b', markersize=0.5)
+        # plt.plot(grd1[xlimitbottom], rhs2[xlimitbottom], '.', color='y', markersize=0.5)
+        # plt.plot(grd1[xlimitbottom], res[xlimitbottom], '.', color='k', markersize=0.5)
 
-        plt.plot(grd1[xlimittop], lhs0[xlimittop], '.', color='r', markersize=0.5)
-        plt.plot(grd1[xlimittop], rhs0[xlimittop], '.', color='g', markersize=0.5)
-        plt.plot(grd1[xlimittop], rhs1[xlimittop], '.', color='b', markersize=0.5)
-        plt.plot(grd1[xlimittop], rhs2[xlimittop], '.', color='y', markersize=0.5)
-        plt.plot(grd1[xlimittop], res[xlimittop], '.', color='k', markersize=0.5)
+        # plt.plot(grd1[xlimittop], lhs0[xlimittop], '.', color='r', markersize=0.5)
+        # plt.plot(grd1[xlimittop], rhs0[xlimittop], '.', color='g', markersize=0.5)
+        # plt.plot(grd1[xlimittop], rhs1[xlimittop], '.', color='b', markersize=0.5)
+        # plt.plot(grd1[xlimittop], rhs2[xlimittop], '.', color='y', markersize=0.5)
+        # plt.plot(grd1[xlimittop], res[xlimittop], '.', color='k', markersize=0.5)
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')

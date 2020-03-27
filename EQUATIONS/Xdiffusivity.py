@@ -17,7 +17,7 @@ import sys
 
 class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, lc, uconv, bconv, tconv, intc, data_prefix):
+    def __init__(self, filename, ig, inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
 
         # load data to structured array
@@ -27,6 +27,8 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf		
         # assign global data to be shared across whole class
 
+
+        dd = self.getRAdata(eht,'dd')[intc]
         self.dd = self.getRAdata(eht,'dd')[intc]
         self.pp = self.getRAdata(eht,'pp')[intc]
         self.tt = self.getRAdata(eht,'tt')[intc]
@@ -38,6 +40,57 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         self.ddxiux = self.getRAdata(eht,'ddx' + inuc + 'ux')[intc]
         self.ddhhux = self.getRAdata(eht,'ddhhux')[intc]
         self.ddttsq = self.getRAdata(eht,'ddttsq')[intc]
+
+        ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
+
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        dduy = self.getRAdata(eht, 'dduy')[intc]
+        dduz = self.getRAdata(eht, 'dduz')[intc]
+        ddgg = self.getRAdata(eht, 'ddgg')[intc]
+
+        dduxux = self.getRAdata(eht, 'dduxux')[intc]
+        dduyuy = self.getRAdata(eht, 'dduyuy')[intc]
+        dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
+
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uxuy = self.getRAdata(eht, 'uxuy')[intc]
+        uxuz = self.getRAdata(eht, 'uxuz')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
+
+        # model isotropic turbulence
+        uxffuxff = (dduxux / dd - ddux * ddux / (dd * dd))
+        uyffuyff = (dduyuy / dd - dduy * dduy / (dd * dd))
+        uzffuzff = (dduzuz / dd - dduz * dduz / (dd * dd))
+
+        uxfuxf = (uxux - ux * ux)
+        uyfuyf = (uyuy - uy * uy)
+        uzfuzf = (uzuz - uz * uz)
+
+        uxfuyf = (uxuy - ux * uy)
+        uxfuzf = (uxuz - ux * uz)
+
+        uxy = self.getRAdata(eht, 'uxy')[intc]
+        uxz = self.getRAdata(eht, 'uxz')[intc]
+
+
+        cd1 = 100.  # assumption
+        cd2 = 10.
+        # q = uxffuxff + uyffuyff + uzffuzff
+        q = uxfuxf + uyfuyf + uzfuzf
+        # self.model_5 = -(dd / (3. * cd1)) * ((q ** 2) / tke_diss) * self.Grad(fht_xi, xzn0)
+
+        Drr = +(tauL / cd2) * uxfuxf + uxy * tauL * (tauL / cd2 ** 2) * (-uxfuyf)
+        Drt = +(tauL / cd2) * uxfuyf - uxy * tauL * (tauL / cd2 ** 2) * (uyfuyf)
+        Drp = +(tauL / cd2) * uxfuzf - uxy * tauL * (tauL / cd2 ** 2) * (uzfuzf)
+
+        # self.model_1_rogers1989 = -Drr1 * self.Grad(xi, xzn0)
+        self.Drr1 = +(tauL / cd1) * uxfuxf + uxy * tauL * (tauL / cd1 ** 2) * (-uxfuyf)
+
+        # self.model_2_rogers1989 = -Drr2 * self.Grad(xi, xzn0)
+        self.Drr2 = +(tauL / cd1) * uxfuxf + uxz * tauL * (tauL / cd1 ** 2) * (-uxfuyf)
 
         self.data_prefix = data_prefix
         self.xzn0 = self.getRAdata(eht,'xzn0')
@@ -107,8 +160,9 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         hp = 2.5e8
 
         # mlt velocity
-        alphae = 1.
+        alphae = 0.1
         u_mlt = fhh / (alphae * dd * fht_cp * tt_rms)
+        Dumlt = (1. / 3.) * u_mlt * lc
 
         # this should be OS independent
         dir_model = os.path.join(os.path.realpath('.'), 'DATA_D', 'INIMODEL', 'imodel.tycho')
@@ -118,41 +172,43 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
 
         rr = data[1:nxmax, 2]
         vmlt_3 = data[1:nxmax, 8]
-        u_mlt = vmlt_3
+        u_mltini = vmlt_3
 
-        Dumlt1 = (1. / 3.) * u_mlt * lc
+        Dumlt1 = (1. / 3.) * u_mltini * lc
 
         alpha = 1.5
-        Dumlt2 = (1. / 3.) * u_mlt * alpha * hp
+        Dumlt2 = (1. / 3.) * u_mltini * alpha * hp
 
         alpha = 1.6
-        Dumlt3 = (1. / 3.) * u_mlt * alpha * hp
+        Dumlt3 = (1. / 3.) * u_mltini * alpha * hp
 
-        # self.lagr = (4.*np.pi*(self.xzn0**2.)*self.dd)**2.
+        self.lagr = (4.*np.pi*(self.xzn0**2.)*self.dd)**2.
 
         term0 = Deff
         term1 = Durms
-        term2 = Dumlt1
-        term3 = Dumlt2
-        term4 = Dumlt3
+        # term2 = Dumlt1
+        # term3 = Dumlt2
+        # term4 = Dumlt3
+        term5 = Dumlt  # u_mlt = fhh / (alphae * dd * fht_cp * tt_rms)
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
 
         # set plot boundaries   
-        to_plot = [term0, term1, term2, term3, term4]
+        to_plot = [term0, term1, term5]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 		
         plt.title(r'Eulerian Diff for ' + self.element)
-        plt.plot(grd1, term0, label=r"$D_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
-        # plt.plot(grd1,term1,label=r"$D_{urms} = (1/3) \ u_{rms} \ l_c $")
+        plt.plot(grd1, term0, linestyle = '-', color='k', label=r"$D_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
+        plt.plot(grd1,term1,label=r"$D_{urms} = (1/3) \ u_{rms} \ l_c $")
         # plt.plot(rr,term2,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ l_c $")
-        plt.plot(rr, term3, label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.5)")
+        # plt.plot(rr,term3, label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.5)")
         # plt.plot(rr,term4,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.6)")
+        plt.plot(grd1,term5,label=r"$D_{mlt} = (1/3) \ u_{MLT} \ l_c $")
 
         # convective boundary markers
-        plt.axvline(self.bconv + 0.46e8, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # https://stackoverflow.com/questions/19206332/gaussian-fit-for-python		
@@ -167,13 +223,15 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
 
         # plt.plot(grd1,Deff_fit,label=r"$gauss fit$",linewidth=0.7)
 
-        ampl = max(term3)
+        ampl = max(term5)
         # xx0 = (self.bconv+0.46e8+self.tconv)/2.
         xx0 = (self.bconv + self.tconv) / 2.
-        # width = 5.e7
+        width = 5.e7
 
-        # Dgauss = gauss(self.xzn0,ampl,xx0,width)
-        # plt.plot(grd1,Dgauss,color='b',label='model gauss')
+        Dgauss = gauss(self.xzn0,ampl,xx0,width)
+        plt.plot(grd1,Dgauss,color='b',label=r"$D_{gauss}$")
+
+        plt.plot(grd1,self.Drr1,color='m',label=r"$D_{rogers1981}$")
 
         # define and show x/y LABELS
         if self.ig == 1:

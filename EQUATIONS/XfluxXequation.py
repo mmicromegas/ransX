@@ -519,8 +519,10 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^x_i$')
             plt.plot(grd1, rhs1, color='g', label=r'$-f_i \partial_x \widetilde{u}_x$')
             plt.plot(grd1, rhs2, color='r', label=r'$-R_{xx} \partial_x \widetilde{X}$')
+            # plt.plot(grd1, rhs3, color='cyan',
+            #         label=r"$-\overline{X''} \partial_x \overline{P} - \overline{X'' \partial_x P'}$")
             plt.plot(grd1, rhs3, color='cyan',
-                     label=r"$-\overline{X''} \partial_x \overline{P} - \overline{X'' \partial_x P'}$")
+                     label=r"$-\overline{X'' \partial_x P}$")
             plt.plot(grd1, rhs4, color='purple', label=r"$+\overline{u''_x \rho \dot{X}}$")
             # plt.plot(grd1,rhs5,color='yellow',label=r'$+G$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
@@ -554,6 +556,35 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
+
+        # this is another inset axes over the main axes
+        plt.rc('font', size=12.)
+        a = plt.axes([0.24, 0.25, .3, .2])
+
+        ilft = 0
+        irgt = 125
+        plt.plot(grd1[ilft:irgt], lhs0[ilft:irgt], color='#8B3626')
+        plt.plot(grd1[ilft:irgt], lhs1[ilft:irgt], color='#FF7256')
+        plt.plot(grd1[ilft:irgt], rhs0[ilft:irgt], color='b')
+        plt.plot(grd1[ilft:irgt], rhs1[ilft:irgt], color='g')
+        plt.plot(grd1[ilft:irgt], rhs2[ilft:irgt], color='r')
+        plt.plot(grd1[ilft+2:irgt], rhs3[ilft+2:irgt], color='cyan')
+        plt.plot(grd1[ilft:irgt], rhs4[ilft:irgt], color='purple')
+        plt.plot(grd1[ilft:irgt], rhs5[ilft:irgt], color='yellow')
+        plt.plot(grd1[ilft+2:irgt], res[ilft+2:irgt], color='k', linestyle='--', label='res')
+
+        # plt.xticks([])
+        # plt.yticks([])
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            plt.xlabel(setxlabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            plt.xlabel(setxlabel)
+
+        plt.rc('font', size=16.)
 
         # display PLOT
         plt.show(block=False)
