@@ -337,7 +337,7 @@ class HsseContinuityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 9})
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

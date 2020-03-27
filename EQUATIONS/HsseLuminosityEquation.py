@@ -541,7 +541,7 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 8}, ncol = 2)
+        plt.legend(loc=ilg, prop={'size': 10}, ncol = 2)
 
         # display PLOT
         plt.show(block=False)
@@ -675,7 +675,7 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 9}, ncol =2)
+        plt.legend(loc=ilg, prop={'size': 10}, ncol = 2)
 
         # display PLOT
         plt.show(block=False)

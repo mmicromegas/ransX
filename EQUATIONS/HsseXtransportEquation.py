@@ -198,7 +198,7 @@ class HsseXtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 14})
+        plt.legend(loc=ilg, prop={'size': 14}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

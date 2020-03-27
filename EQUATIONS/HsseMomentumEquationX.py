@@ -171,9 +171,6 @@ class HsseMomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
-
-        # save PLOT
         if self.fext == 'png':
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
         elif self.fext == 'eps':
@@ -302,7 +299,7 @@ class HsseMomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
