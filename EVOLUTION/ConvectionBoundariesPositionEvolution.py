@@ -50,9 +50,9 @@ class ConvectionBoundariesPositionEvolution(uCalc.Calculus, uEal.ALIMITevol, uT.
 
         # plot DATA 
         plt.title('convection boundary')
-        plt.plot(grd1, plt1, color='r', label=r'$inner$')
+        # plt.plot(grd1, plt1, color='r', label=r'$inner$')
         plt.plot(grd1, plt2, color='g', label=r'$outer$')
-        plt.plot(grd1, plt3, color='b', label=r'$l_c$')
+        # plt.plot(grd1, plt3, color='b', label=r'$l_c$')
 
         # define and show x/y LABELS
         setxlabel = r"t (s)"
@@ -61,10 +61,11 @@ class ConvectionBoundariesPositionEvolution(uCalc.Calculus, uEal.ALIMITevol, uT.
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 8})
+        plt.legend(loc=1, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'cnvzboundary_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'cnvzboundary_evol.eps')

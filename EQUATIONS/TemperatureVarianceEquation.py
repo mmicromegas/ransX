@@ -16,7 +16,7 @@ import sys
 
 class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, tauL, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, tauL, data_prefix):
         super(TemperatureVarianceEquation, self).__init__(ig)
 
         # load data to structured array
@@ -126,6 +126,7 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.sigma_tt = sigma_tt
+        self.fext = fext
 
     def plot_sigma_tt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature variance stratification in the model"""
@@ -177,8 +178,10 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_tt.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_tt.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_tt.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_sigma_tt.eps')
 
     def plot_sigma_tt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ temperature variance equation in the model"""
@@ -272,5 +275,7 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'sigma_tt_eq.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'sigma_tt_eq.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'sigma_tt_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'sigma_tt_eq.eps')

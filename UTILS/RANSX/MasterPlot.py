@@ -365,20 +365,20 @@ class MasterPlot():
                                                      params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative
-        # ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
-        #                                        params.getForEqs('lueqhsse')['xbl'],
-        #                                        params.getForEqs('lueqhsse')['xbr'],
-        #                                        params.getForEqs('lueqhsse')['ybu'],
-        #                                        params.getForEqs('lueqhsse')['ybd'],
-        #                                        params.getForEqs('lueqhsse')['ilg'])
+        ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
+                                                params.getForEqs('lueqhsse')['xbl'],
+                                                params.getForEqs('lueqhsse')['xbr'],
+                                                params.getForEqs('lueqhsse')['ybu'],
+                                                params.getForEqs('lueqhsse')['ybd'],
+                                                params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative simplified						       
-        # ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],
-        #                                        params.getForEqs('lueqhsse')['xbl'],
-        #                                        params.getForEqs('lueqhsse')['xbr'],
-        #                                        params.getForEqs('lueqhsse')['ybu'],
-        #                                        params.getForEqs('lueqhsse')['ybd'],
-        #                                        params.getForEqs('lueqhsse')['ilg'])
+        ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],
+                                                params.getForEqs('lueqhsse')['xbl'],
+                                                params.getForEqs('lueqhsse')['xbr'],
+                                                params.getForEqs('lueqhsse')['ybu'],
+                                                params.getForEqs('lueqhsse')['ybd'],
+                                                params.getForEqs('lueqhsse')['ilg'])
 
     def execHssCompEq(self, inuc, element, x, bconv, tconv):
         params = self.params
@@ -2097,6 +2097,7 @@ class MasterPlot():
         # instantiate 		
         ransTTvar = sigmatt.TemperatureVarianceEquation(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
+                                                        params.getForProp('prop')['fext'],
                                                         params.getForProp('prop')['ieos'],
                                                         params.getForProp('prop')['intc'],
                                                         tke_diss, tauL,
@@ -2116,6 +2117,7 @@ class MasterPlot():
         # instantiate 		
         ransTTvar = sigmatt.TemperatureVarianceEquation(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
+                                                        params.getForProp('prop')['fext'],
                                                         params.getForProp('prop')['ieos'],
                                                         params.getForProp('prop')['intc'],
                                                         tke_diss, tauL,
@@ -2136,6 +2138,7 @@ class MasterPlot():
         # instantiate 		
         ransTTflx = fttx.TemperatureFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
+                                                 params.getForProp('prop')['fext'],
                                                  params.getForProp('prop')['ieos'],
                                                  params.getForProp('prop')['intc'],
                                                  tke_diss,
@@ -2155,6 +2158,7 @@ class MasterPlot():
         # instantiate 		
         ransTTflx = fttx.TemperatureFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
+                                                 params.getForProp('prop')['fext'],
                                                  params.getForProp('prop')['ieos'],
                                                  params.getForProp('prop')['intc'],
                                                  tke_diss,

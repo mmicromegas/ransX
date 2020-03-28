@@ -289,8 +289,10 @@ class ReynoldsStressXXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.E
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'rxx_eq.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'rxx_eq.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'rxx_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'rxx_eq.eps')
 
     # def tke_dissipation(self):
     #    return self.minus_resTkeEquation

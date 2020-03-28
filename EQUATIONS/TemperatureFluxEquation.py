@@ -15,7 +15,7 @@ import sys
 
 class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
         super(TemperatureFluxEquation, self).__init__(ig)
 
         # load data to structured array
@@ -173,6 +173,7 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.ftt = ftt
+        self.fext = fext
 
     def plot_ftt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature flux stratification in the model"""
@@ -224,8 +225,10 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ftt.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ftt.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ftt.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ftt.eps')
 
     def plot_ftt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature flux equation in the model"""
@@ -322,5 +325,7 @@ class TemperatureFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'ftt_eq.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'ftt_eq.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'ftt_eq.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'ftt_eq.eps')
