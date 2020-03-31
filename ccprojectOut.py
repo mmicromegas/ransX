@@ -32,6 +32,7 @@ for fff in bindata:
     data = q.getData()
     time = data['time']/onetu
     print(data['time'],time,onetu)
-    q.write_output(data, time, ['x','density','pressure','temp','Avalue','x1','vel','velx','vely','velz'],
+    # for X1 the source is x2, for X0 the souce is x1
+    q.write_output(data, time, ['x','density','pressure','temp','Avalue','x2','vel','velx','vely','velz'],
                    filename[0:chp], ['Y','RHO','P','TEMP','A','X1','V','VX','VY','VZ'], icnt,
                    [onelu,onerho,onepr,onete,onea,onex,oneve,oneve,oneve,oneve])

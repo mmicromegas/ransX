@@ -201,6 +201,7 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fppx.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_fppx.eps')
 
     def plot_fppx_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot acoustic flux equation in the model"""

@@ -594,17 +594,17 @@ class HsseContinuityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
 
         # set plot boundaries   
         to_plot = [lhs0]
-        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+        self.set_plt_axis(LAXIS, xbl, xbr, 6.e5, 0., to_plot)
 
         # plot DATA 
         plt.title('dilatation flux')
         # plt.plot(grd1,lhs0,color='r',label = r"$\overline{\rho} \overline{u'_r d''}$")
-        plt.plot(grd1, lhs0, color='r', label=r"$\overline{u'_r d''}$")
+        plt.plot(grd1, lhs0, color='r', label=r"$\overline{u'_x d''}$")
         # plt.plot(grd1,lhs1,color='b',label = r"$\partial_t \overline{u''_r}$")
         # plt.plot(grd1,lhs2,color='g',label = r"$\nabla_r \widetilde{R}_{rr} / \overline{\rho}$")
 
         # define and show x/y LABELS
-        setxlabel = r"r (cm)"
+        setxlabel = r"x (cm)"
         setylabel = r"$cm \ s^{-2}$"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)

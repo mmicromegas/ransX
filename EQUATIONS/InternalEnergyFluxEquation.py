@@ -240,14 +240,14 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        # plt.title(r'internal energy flux')
-        plt.title(r'energy fluxes')
+        plt.title(r'internal energy flux')
+        # plt.title(r'energy fluxes')
         plt.plot(grd1, plt1, color='brown', label=r'f$_I$')
-        plt.plot(grd1, plt2, color='r', label=r'f$_K$')
-        plt.plot(grd1, plt3, color='g', label=r'f$_P$')
-        plt.plot(grd1, plt4, color='b', label=r'f$_{Total}$')
-        plt.plot(grd1, res, color='k', linestyle='--', label=r'f$_I$ + f$_K$ + f$_P$ - f$_{Total}$')
-        plt.plot(grd1, plt5, color='m', label=r'$\int$ Source')
+        # plt.plot(grd1, plt2, color='r', label=r'f$_K$')
+        # plt.plot(grd1, plt3, color='g', label=r'f$_P$')
+        # plt.plot(grd1, plt4, color='b', label=r'f$_{Total}$')
+        # plt.plot(grd1, res, color='k', linestyle='--', label=r'f$_I$ + f$_K$ + f$_P$ - f$_{Total}$')
+        # plt.plot(grd1, plt5, color='m', label=r'$\int$ Source')
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
@@ -273,7 +273,7 @@ class InternalEnergyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fei.png')
-
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_fei.eps')
 
     def plot_fei_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy flux equation in the model"""

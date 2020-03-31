@@ -259,8 +259,9 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # display PLOT
         plt.show(block=False)
 
-        # save PLOT
+
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.eps')
 
     def plot_a_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """ turbulent mass flux equation in the model"""
