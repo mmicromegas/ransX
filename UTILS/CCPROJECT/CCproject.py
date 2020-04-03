@@ -1,6 +1,10 @@
 import UTILS.PROMPI.PROMPI_data as prd
 import numpy as np
 import os
+# https://docs.sympy.org/dev/modules/physics/vector/api/fieldfunctions.html#curl
+from sympy.physics.vector import ReferenceFrame
+from sympy.physics.vector import curl
+import sys
 
 
 class CCproject:
@@ -13,7 +17,7 @@ class CCproject:
         # press, temp, gam1, gam2, enuc1, enuc2,
         # 0001, 0002
 
-        dat = ['density', 'velx', 'vely', 'velz', 'energy', 'press', 'temp', '0001', '0002', 'gam1', 'gam2']
+        dat = ['density', 'velx', 'vely', 'velz', 'energy', 'press', 'temp', '0001', '0002']
         block = prd.PROMPI_bindata(filename, dat)
 
         # get time and x-grid
@@ -21,49 +25,109 @@ class CCproject:
         xzn0 = block.datadict['xzn0']
 
         # get density-weighted horizontal averages
-        eh_dens = self.calcEHdata(block, 'density')
 
         # fh_press = self.calcFHdata(block, 'press')
         # fh_temp = self.calcFHdata(block, 'temp')
-
+        
+        eh_rho = self.calcEHdata(block, 'density')
         eh_press = self.calcEHdata(block, 'press')
         eh_temp = self.calcEHdata(block, 'temp')
+        eh_Avalue = self.calcEhAvalue(block)
+        fh_x0002 = self.calcFHdata(block, '0002')
+        fh_vel = self.calcFHvel(block)
 
-	fh_velx = self.calcFHdata(block, 'velx')
+        minq_rho = self.minQ(block,'density')
+        maxq_rho = self.maxQ(block,'density')
+        stdevq_rho = self.stDevQ(block, 'density')
+
+        minq_press = self.minQ(block,'press')
+        maxq_press = self.maxQ(block,'press')
+        stdevq_press = self.stDevPress(block, 'press')
+
+        minq_temp = self.minQ(block,'temp')
+        maxq_temp = self.maxQ(block,'temp')
+        stdevq_temp = self.stDevQ(block, 'temp')
+
+        nx = block.datadict['qqx']
+        minq_Avalue = self.minAvalue(nx, self.calcAvalue(block))
+        maxq_Avalue = self.maxAvalue(nx, self.calcAvalue(block))
+        stdevq_Avalue = self.stDevAvalue(nx, self.calcAvalue(block))
+
+        nx = block.datadict['qqx']
+        minq_Vmag = self.minVmag(nx, block)
+        maxq_Vmag = self.maxVmag(nx, block)
+        stdevq_Vmag = self.stdevVmag(nx, block)
+
+        fh_velx = self.calcFHdata(block, 'velx')
         fh_vely = self.calcFHdata(block, 'vely')
         fh_velz = self.calcFHdata(block, 'velz')
-        fh_x0001 = self.calcFHdata(block, '0001')
-        fh_x0002 = self.calcFHdata(block, '0002')
 
-        eh_gam1 = self.calcEHdata(block, 'gam1')
-        eh_gam2 = self.calcEHdata(block, 'gam2')
+        velxmag = self.calcFH_Vxmag(block)
+        velhormag = self.calcFH_Vhormag(block)
 
+        # fh_x0001 = self.calcFHdata(block, '0001')
+        # fh_x0002 = self.calcFHdata(block, '0002')
+        # eh_gam1 = self.calcEHdata(block, 'gam1')
+        # eh_gam2 = self.calcEHdata(block, 'gam2')
         # fh_enuc1 = self.calcFHdata(block, 'enuc1')
-        fh_vel = self.calcFHvel(block)
-        Avalue = self.calcAvalue(block)
+
         # vorticitymag = self.calcVorticityMagnitude(block)
 
         self.time = time
-        self.eh_dens = eh_dens
+        self.eh_rho = eh_rho
         self.eh_press = eh_press
         self.eh_temp = eh_temp
+        self.eh_Avalue = eh_Avalue
+        self.fh_x0002 = fh_x0002
+        self.vel = fh_vel
+
+        self.minq_rho = minq_rho
+        self.maxq_rho = maxq_rho
+        self.stdevq_rho = stdevq_rho
+
+        self.minq_press = minq_press
+        self.maxq_press = maxq_press
+        self.stdevq_press = stdevq_press
+
+        self.minq_temp = minq_temp
+        self.maxq_temp = maxq_temp
+        self.stdevq_temp = stdevq_temp
+
+        self.minq_Avalue = minq_Avalue
+        self.maxq_Avalue = maxq_Avalue
+        self.stdevq_Avalue = stdevq_Avalue
+
+        self.minq_Vmag = minq_Vmag
+        self.maxq_Vmag = maxq_Vmag
+        self.stdevq_Vmag = stdevq_Vmag
+
         self.velx = fh_velx
         self.vely = fh_vely
         self.velz = fh_velz
-        self.vel = fh_vel
-        self.fh_x0001 = fh_x0001
-        self.fh_x0002 = fh_x0002
-        self.eh_gam1 = eh_gam1
-        self.eh_gam2 = eh_gam2
+
+        self.velxmag = velxmag
+        self.velhormag = velhormag
+
+        self.Hflux = self.calcFH_Hflux(block)
+        self.KEflux = self.calcFH_KEflux(block)
+
+        # self.fh_x0001 = fh_x0001
+        # self.eh_gam1 = eh_gam1
+        # self.eh_gam2 = eh_gam2
         # self.fh_enuc1 = fh_enuc1
-        self.Avalue = Avalue
+
         self.xzn0 = xzn0
 
     def getData(self):
-        return {'x': self.xzn0, 'time': self.time, 'density': self.eh_dens, 'pressure': self.eh_press,
+        return {'x': self.xzn0, 'time': self.time, 'density': self.eh_rho, 'pressure': self.eh_press,
                 'temp': self.eh_temp, 'velx': self.velx, 'vely': self.vely, 'velz': self.velz,
-                'x1': self.fh_x0001, 'x2': self.fh_x0002, 'vel': self.vel, 'Avalue': self.Avalue,
-                'gam1': self.eh_gam1, 'gam2': self.eh_gam2}
+                'x2': self.fh_x0002, 'vel': self.vel, 'Avalue': self.eh_Avalue,
+                'minq_rho': self.minq_rho, 'maxq_rho': self.maxq_rho, 'stdevq_rho': self.stdevq_rho,
+                'minq_press': self.minq_press, 'maxq_press': self.maxq_press, 'stdevq_press': self.stdevq_press,
+                'minq_temp': self.minq_temp, 'maxq_temp': self.maxq_temp, 'stdevq_temp': self.stdevq_temp,
+                'minq_Avalue': self.minq_Avalue, 'maxq_Avalue': self.maxq_Avalue, 'stdevq_Avalue': self.stdevq_Avalue,
+                'minq_Vmag': self.minq_Vmag, 'maxq_Vmag': self.maxq_Vmag, 'stdevq_Vmag': self.stdevq_Vmag,
+                'velxmag' : self.velxmag, 'velhormag': self.velhormag, 'Hflux': self.Hflux, 'KEflux': self.KEflux}
 
     def write_output(self, p, t, columns, filename, outputnames=[], n=1, units=[]):
         """
@@ -184,8 +248,6 @@ class CCproject:
 
         return eh_data
 
-
-
     def calcFHvel(self, block):
 
         nx = block.datadict['qqx']
@@ -224,6 +286,17 @@ class CCproject:
 
     def calcAvalue(self, block):
 
+        rho = block.datadict['density']
+        press = block.datadict['press']
+
+        # calculate A = p/rho**5/3
+        Avalue = press / (rho ** (5. / 3.))
+
+
+        return Avalue
+
+    def calcEhAvalue(self, block):
+
         nx = block.datadict['qqx']
         ny = block.datadict['qqy']
         nz = block.datadict['qqz']
@@ -245,6 +318,7 @@ class CCproject:
             eh_Avalue.append(np.sum(hdata * sterad) / steradtot)
 
         return eh_Avalue
+
 
     def calcVorticityMagnitude(self, block):
 
@@ -364,3 +438,340 @@ class CCproject:
 
         return curlmag
 
+    def minQ(self, block, field):
+
+        nx = block.datadict['qqx']
+        data = block.datadict[field]
+
+        # get min value
+        min_data = []
+        for i in range(nx):
+            hdata = data[i, :, :]
+            min_data.append(np.min(hdata))
+
+        return min_data
+
+    def maxQ(self, block, field):
+
+        nx = block.datadict['qqx']
+        data = block.datadict[field]
+
+        # get max value
+        max_data = []
+        for i in range(nx):
+            hdata = data[i, :, :]
+            max_data.append(np.max(hdata))
+
+        return max_data
+
+    def stDevQ(self, block, field):
+
+        nx = block.datadict['qqx']
+        data = block.datadict[field]
+
+        # calculate standard deviation
+        stdev_data = []
+        for i in range(nx):
+            hdata = data[i, :, :]
+            stdev_data.append(np.std(hdata.astype(np.float64)))
+
+        return stdev_data
+
+    def stDevPress(self, block, field):
+
+        nx = block.datadict['qqx']
+        ny = block.datadict['qqy']
+        nz = block.datadict['qqz']
+        data = block.datadict[field]
+
+        # calculate standard deviation
+        stdev_data = []
+
+        for i in range(nx):
+            mmm = np.mean(data[i,:,:])
+            var = []
+            for j in range(ny):
+                for k in range(nz):
+                        var.append((data[i,j,k]-mmm)**2)
+            varmean = np.mean(var)
+            stdev = np.sqrt(varmean)
+            stdev_data.append(stdev)
+
+        return stdev_data
+
+    def minAvalue(self, nx, Avalue):
+
+        data = Avalue
+
+        # get min value
+        min_data = []
+        for i in range(nx):
+            hdata = data[i, :, :]
+            min_data.append(np.min(hdata))
+
+        return min_data
+
+
+    def maxAvalue(self, nx, Avalue):
+
+        data = Avalue
+
+        # get min value
+        max_data = []
+        for i in range(nx):
+            hdata = data[i, :, :]
+            max_data.append(np.max(hdata))
+
+        return max_data
+
+    def stDevAvalue(self, nx, Avalue):
+
+        data = Avalue
+
+        # calculate standard deviation
+        stdev_data = []
+        for i in range(nx):
+            hdata = data[i, :, :]
+            stdev_data.append(np.std(hdata.astype(np.float64)))
+
+        return stdev_data
+
+    def minVmag(self, nx, block):
+        velx = block.datadict['velx']
+        vely = block.datadict['vely']
+        velz = block.datadict['velz']
+
+        # get velocity
+        vel = np.sqrt(velx ** 2. + vely ** 2. + velz ** 2)
+
+        # get min value
+        min_vmag = []
+        for i in range(nx):
+            hdata = vel[i, :, :]
+            min_vmag.append(np.min(hdata))
+
+        return min_vmag
+
+    def maxVmag(self, nx, block):
+        velx = block.datadict['velx']
+        vely = block.datadict['vely']
+        velz = block.datadict['velz']
+
+        # get velocity
+        vel = np.sqrt(velx ** 2. + vely ** 2. + velz ** 2)
+
+        # get max value
+        max_vmag = []
+        for i in range(nx):
+            hdata = vel[i, :, :]
+            max_vmag.append(np.max(hdata))
+
+        return max_vmag
+
+    def stdevVmag(self, nx, block):
+        velx = block.datadict['velx']
+        vely = block.datadict['vely']
+        velz = block.datadict['velz']
+
+        # get velocity
+        vel = np.sqrt(velx ** 2. + vely ** 2. + velz ** 2)
+
+        # get stdev value
+        stdev_vmag = []
+        for i in range(nx):
+            hdata = vel[i, :, :]
+            stdev_vmag.append(np.std(hdata))
+
+        return stdev_vmag
+
+    def calcFH_Vxmag(self, block):
+
+        nx = block.datadict['qqx']
+        ny = block.datadict['qqy']
+        nz = block.datadict['qqz']
+
+        rho = block.datadict['density']
+        velx = block.datadict['velx']
+
+        # for cartesian geometry
+        sterad = np.ones((nz, ny))
+        steradtot = np.sum(sterad)
+
+        # calculate mean density
+        eh_rho = []
+        for i in range(nx):
+            hdata = rho[i, :, :]
+            eh_rho.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rho = np.asarray(eh_rho)
+
+        # get velocity
+        vel = np.sqrt(velx ** 2.)
+
+        # calculate density-weighted horizontal average
+        eh_data = []
+        for i in range(nx):
+            hdata = rho[i, :, :] * vel[i, :, :]
+            eh_data.append(np.sum(hdata * sterad) / steradtot)
+
+        fh_data = np.asarray(eh_data / eh_rho)
+
+        return fh_data
+
+    def calcFH_Vhormag(self, block):
+
+        nx = block.datadict['qqx']
+        ny = block.datadict['qqy']
+        nz = block.datadict['qqz']
+
+        rho = block.datadict['density']
+        vely = block.datadict['vely']
+        velz = block.datadict['velz']
+
+        # for cartesian geometry
+        sterad = np.ones((nz, ny))
+        steradtot = np.sum(sterad)
+
+        # calculate mean density
+        eh_rho = []
+        for i in range(nx):
+            hdata = rho[i, :, :]
+            eh_rho.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rho = np.asarray(eh_rho)
+
+        # get velocity
+        vel = np.sqrt(vely ** 2. + velz ** 2.)
+
+        # calculate density-weighted horizontal average
+        eh_data = []
+        for i in range(nx):
+            hdata = rho[i, :, :] * vel[i, :, :]
+            eh_data.append(np.sum(hdata * sterad) / steradtot)
+
+        fh_data = np.asarray(eh_data / eh_rho)
+
+        return fh_data
+
+
+    def calcFH_Hflux(self, block):
+
+        nx = block.datadict['qqx']
+        ny = block.datadict['qqy']
+        nz = block.datadict['qqz']
+
+        rho = block.datadict['density']
+        press = block.datadict['press']
+        energy = block.datadict['energy']
+        velx = block.datadict['velx']
+        vely = block.datadict['vely']
+        velz = block.datadict['velz']
+
+        # calculate enthalpy
+        ek = 0.5*(velx**2.+vely*2.+velz*2.)
+        ei = energy - ek
+        hh = ei + press/rho
+        qdata = hh
+
+        # for cartesian geometry
+        sterad = np.ones((nz, ny))
+        steradtot = np.sum(sterad)
+
+        # calculate mean density
+        eh_rho = []
+        for i in range(nx):
+            hdata = rho[i, :, :]
+            eh_rho.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rho = np.asarray(eh_rho)
+
+        # calculate mean rhoQvelx
+        eh_rhoQvelx = []
+        rhoQvelx = rho*qdata*velx
+        for i in range(nx):
+            hdata = rhoQvelx
+            eh_rhoQvelx.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rhoQvelx = np.asarray(eh_rhoQvelx)
+
+        # calculate mean rhoQ
+        eh_rhoQ = []
+        rhoQ = rho*qdata
+        for i in range(nx):
+            hdata = rhoQ
+            eh_rhoQ.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rhoQ = np.asarray(eh_rhoQ)
+
+        # caluclate mean rhovelx
+        eh_rhovelx = []
+        rhovelx = rho*velx
+        for i in range(nx):
+            hdata = rhovelx
+            eh_rhovelx.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rhovelx = np.asarray(eh_rhovelx)
+
+        # get flux
+        flux = eh_rhoQvelx - eh_rhoQ*eh_rhovelx/eh_rho
+
+        return flux
+
+    def calcFH_KEflux(self, block):
+
+        nx = block.datadict['qqx']
+        ny = block.datadict['qqy']
+        nz = block.datadict['qqz']
+
+        rho = block.datadict['density']
+        velx = block.datadict['velx']
+        vely = block.datadict['vely']
+        velz = block.datadict['velz']
+
+        # calculate kinetic energy
+        ek = 0.5*(velx**2.+vely*2.+velz*2.)
+        qdata = ek
+
+        # for cartesian geometry
+        sterad = np.ones((nz, ny))
+        steradtot = np.sum(sterad)
+
+        # calculate mean density
+        eh_rho = []
+        for i in range(nx):
+            hdata = rho[i, :, :]
+            eh_rho.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rho = np.asarray(eh_rho)
+
+        # calculate mean rhoQvelx
+        eh_rhoQvelx = []
+        rhoQvelx = rho*qdata*velx
+        for i in range(nx):
+            hdata = rhoQvelx
+            eh_rhoQvelx.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rhoQvelx = np.asarray(eh_rhoQvelx)
+
+        # calculate mean rhoQ
+        eh_rhoQ = []
+        rhoQ = rho*qdata
+        for i in range(nx):
+            hdata = rhoQ
+            eh_rhoQ.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rhoQ = np.asarray(eh_rhoQ)
+
+        # caluclate mean rhovelx
+        eh_rhovelx = []
+        rhovelx = rho*velx
+        for i in range(nx):
+            hdata = rhovelx
+            eh_rhovelx.append(np.sum(hdata * sterad) / steradtot)
+
+        eh_rhovelx = np.asarray(eh_rhovelx)
+
+        # get flux
+        flux = eh_rhoQvelx - eh_rhoQ*eh_rhovelx/eh_rho
+
+        return flux
