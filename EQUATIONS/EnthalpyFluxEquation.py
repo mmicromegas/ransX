@@ -223,6 +223,7 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_fhh.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_fhh.eps')
 
     def plot_fhh_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot internal energy flux equation in the model"""
@@ -319,3 +320,4 @@ class EnthalpyFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'fhh_eq.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'fhh_eq.eps')

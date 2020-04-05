@@ -689,7 +689,7 @@ class CCproject:
         eh_rhoQvelx = []
         rhoQvelx = rho*qdata*velx
         for i in range(nx):
-            hdata = rhoQvelx
+            hdata = rhoQvelx[i, :, :]
             eh_rhoQvelx.append(np.sum(hdata * sterad) / steradtot)
 
         eh_rhoQvelx = np.asarray(eh_rhoQvelx)
@@ -698,7 +698,7 @@ class CCproject:
         eh_rhoQ = []
         rhoQ = rho*qdata
         for i in range(nx):
-            hdata = rhoQ
+            hdata = rhoQ[i, :, :]
             eh_rhoQ.append(np.sum(hdata * sterad) / steradtot)
 
         eh_rhoQ = np.asarray(eh_rhoQ)
@@ -707,7 +707,7 @@ class CCproject:
         eh_rhovelx = []
         rhovelx = rho*velx
         for i in range(nx):
-            hdata = rhovelx
+            hdata = rhovelx[i, :, :]
             eh_rhovelx.append(np.sum(hdata * sterad) / steradtot)
 
         eh_rhovelx = np.asarray(eh_rhovelx)
@@ -748,7 +748,7 @@ class CCproject:
         eh_rhoQvelx = []
         rhoQvelx = rho*qdata*velx
         for i in range(nx):
-            hdata = rhoQvelx
+            hdata = rhoQvelx[i, :, :]
             eh_rhoQvelx.append(np.sum(hdata * sterad) / steradtot)
 
         eh_rhoQvelx = np.asarray(eh_rhoQvelx)
@@ -757,7 +757,7 @@ class CCproject:
         eh_rhoQ = []
         rhoQ = rho*qdata
         for i in range(nx):
-            hdata = rhoQ
+            hdata = rhoQ[i, :, :]
             eh_rhoQ.append(np.sum(hdata * sterad) / steradtot)
 
         eh_rhoQ = np.asarray(eh_rhoQ)
@@ -766,7 +766,7 @@ class CCproject:
         eh_rhovelx = []
         rhovelx = rho*velx
         for i in range(nx):
-            hdata = rhovelx
+            hdata = rhovelx[i, :, :]
             eh_rhovelx.append(np.sum(hdata * sterad) / steradtot)
 
         eh_rhovelx = np.asarray(eh_rhovelx)

@@ -58,5 +58,5 @@ for fff in bindata:
                     onepr, onepr, onepr,
                     onete, onete, onete,
                     onea, onea, onea,
-                    oneve, oneve, oneve, oneve, oneve, oneflx, oneflx,
-                    oneve,oneve,oneve])
+                    oneve, oneve, oneve, oneve, oneve,
+                    oneve, oneve, oneve, oneflx, oneflx])
