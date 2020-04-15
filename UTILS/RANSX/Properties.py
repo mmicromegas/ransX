@@ -57,6 +57,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # for ccp project
         if plabel == 'ccptwo':
             x0002 = self.getRAdata(eht, 'x0002')[intc]
+        if plabel == 'oburn':
+            x0002 = self.getRAdata(eht, 'x0006')[intc] # track Ne20
         else:
             x0002 = np.zeros(nx)
 
@@ -306,7 +308,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             resTeeMax = np.max(resTee[indRES])
             resTeeMean = np.mean(resTee[indRES])
         elif self.plabel == "oburn":
-            indCCP = np.where((xzn0 < 6.66e8))[0]
+            indCCP = np.where((xzn0 < 8.1e8) & (xzn0 > 4.55e8))[0]
             x0002mean_cnvz = np.mean(self.x0002[indCCP])
 
             indRES = np.where((xzn0 < 8.1e8) & (xzn0 > 4.55e8))[0]

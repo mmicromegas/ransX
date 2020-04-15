@@ -131,6 +131,7 @@ class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_b.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_b.eps')
 
     def plot_b_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot density-specific volume covariance equation in the model"""
@@ -202,3 +203,4 @@ class DensitySpecificVolumeCovarianceEquation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'b_eq.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'b_eq.eps')

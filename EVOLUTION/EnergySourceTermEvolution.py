@@ -63,3 +63,4 @@ class EnergySourceTermEvolution(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, eR.Er
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tenuc_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tenuc_evol.eps')

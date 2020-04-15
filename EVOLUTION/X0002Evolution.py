@@ -50,20 +50,22 @@ class X0002Evolution(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, eR.Errors, objec
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title(r'bottom 2/3 of cnvz')
-        plt.plot(grd1, plt1, color='r', label=r'$X_2$')
+        #plt.title(r'bottom 2/3 of cnvz')
+        plt.title(r'cnvz mean')
+        plt.plot(grd1, plt1, color='r', label=r"X$_{ne20}$")
 
         # define and show x/y LABELS
         setxlabel = r"t (s)"
-        setylabel = r"avg(X2)"
+        setylabel = r"avg(Xne20)"
         plt.xlabel(setxlabel)
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 14})
+        plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'x0002mean_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'x0002mean_evol.eps')

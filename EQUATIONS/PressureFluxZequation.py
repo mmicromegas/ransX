@@ -291,7 +291,7 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{pz}$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_r f_{pz}$")
-            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p^x $")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p^z $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{pz} \partial_x \overline{u}_x$")
             plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_z u''_x} \partial_x \overline{P}$")
             plt.plot(grd1, rhs3, color='firebrick', label=r"$+\Gamma_1 \overline{u'_z P d}$")
@@ -302,7 +302,7 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{p\phi}$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_{p\phi}$")
-            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p^r $")
+            plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p^\phi $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{p\phi} \partial_r \overline{u}_r$")
             plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_\phi u''_r} \partial_r \overline{P}$")
             plt.plot(grd1, rhs3, color='firebrick', label=r"$+\Gamma_1 \overline{u'_\phi P d}$")

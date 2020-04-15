@@ -254,14 +254,21 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         # RHS -surface delta dt p
         self.minus_surface_delta_dt_pp = -surface * delta * self.dt(t_pp, xzn0, t_timec, intc)
 
-        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum_for_exact + self.plus_surface_dd_fht_enuc +
-                                           self.plus_surface_tke_diss + self.minus_surface_dd_cp_dt_fht_tt +
-                                           self.minus_surface_delta_dt_pp)
-
         # RHS
         self.minus_surface_div_dd_fht_ei_fht_ux = -surface * self.Div(dd * fht_ei * fht_ux, xzn0)
 
         self.minus_surface_div_fei = -surface * self.Div(fei, xzn0)
+
+        self.plus_surface_div_dd_fht_ei_fht_ux = +surface * self.Div(dd * fht_ei * fht_ux, xzn0)
+
+        self.plus_surface_div_fei = +surface * self.Div(fei, xzn0)
+
+
+        self.minus_resLumExactEquation = -(self.minus_gradx_fht_lum_for_exact + self.plus_surface_dd_fht_enuc +
+                                           self.plus_surface_tke_diss + self.minus_surface_dd_cp_dt_fht_tt +
+                                           self.minus_surface_delta_dt_pp+self.minus_surface_div_dd_fht_ei_fht_ux+
+                                           self.minus_surface_div_fei)
+
 
         self.plus_eiux_gradx_dd = +surface * eiux * self.Grad(dd, xzn0)
 
@@ -565,8 +572,12 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         rhs2 = self.minus_surface_dd_cp_dt_fht_tt
         rhs3 = self.minus_surface_delta_dt_pp
 
+        # rhs4 = self.plus_surface_div_fei
+        # rhs5 = self.plus_surface_div_dd_fht_ei_fht_ux
+
         rhs4 = self.minus_surface_div_fei
         rhs5 = self.minus_surface_div_dd_fht_ei_fht_ux
+
         rhs6 = self.plus_eiux_gradx_dd
 
         res = self.minus_resLumExactEquation
@@ -598,10 +609,10 @@ class HsseLuminosityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
             plt.plot(grd1[xlimitrange], rhs4[xlimitrange], color='g', label=r"$-surf \  \nabla_x \overline{\rho }\widetilde{\epsilon''_I u''_x}$")
             plt.plot(grd1[xlimitrange], rhs5[xlimitrange], color='b', label=r"$-surf \  \nabla_x \overline{\rho} \widetilde{\epsilon_I} \widetilde{u_x}$")
 
-            plt.plot(grd1[xlimitrange], rhs4[xlimitrange]-rhs5[xlimitrange] + rhs1[xlimitrange], color='pink', label=r"$rhs4-rhs5+rhs1$")
+            # plt.plot(grd1[xlimitrange], rhs4[xlimitrange]-rhs5[xlimitrange] + rhs1[xlimitrange], color='pink', label=r"$rhs4-rhs5+rhs1$")
             # plt.plot(grd1, rhs4+rhs5, color='yellow', label=r"$rhs4+rhs5$")
 
-            # plt.plot(grd1, rhs6, color='r', label=r"$-surf \  \overline{\epsilon_I u_r} \partial_r \overline{\rho}$")
+            #plt.plot(grd1, rhs6, color='r', label=r"$-surf \  \overline{\epsilon_I u_r} \partial_r \overline{\rho}$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N$")
 

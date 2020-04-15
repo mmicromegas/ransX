@@ -92,6 +92,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
 
         # LHS -dq/dt 		
         self.minus_dt_dd_fht_xi = -self.dt(t_dd * t_fht_xi, xzn0, t_timec, intc)
+        self.minus_dt_fht_xi = -self.dt(t_fht_xi, xzn0, t_timec, intc)
 
         # LHS -div(ddXiux)
         self.minus_div_eht_dd_fht_ux_fht_xi = -self.Div(dd * fht_ux * fht_xi, xzn0)
@@ -115,6 +116,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         tau_trans = np.abs(dd*fht_xi/self.Div(fxi,xzn0))
         tau_nuc   = np.abs(dd*fht_xi/(ddxidot))
         tau_ddxi =  np.abs(dd*fht_xi/self.minus_dt_dd_fht_xi)
+        tau_xi =  np.abs(fht_xi/self.minus_dt_fht_xi)
 
         # tau_trans = (fht_xi / self.Div(fxi / dd, xzn0))
         # tau_nuc = (fht_xi / (ddxidot / dd))
@@ -144,6 +146,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         self.tau_trans = tau_trans
         self.tau_nuc = tau_nuc
         self.tau_ddxi = tau_ddxi
+        self.tau_xi = tau_xi
 
         self.fht_xi = fht_xi
         self.network = network
@@ -255,6 +258,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt0 = self.tau_trans
         plt1 = self.tau_nuc
         plt2 = self.tau_ddxi
+        plt3 = self.tau_xi
 
         onebody_interaction = []
         twobody_interaction = []
@@ -287,6 +291,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt.plot(grd1[xlimitrange], plt0[xlimitrange], label=r"$|\tau_{trans}^i|$", color='r')
         plt.plot(grd1[xlimitrange], plt1[xlimitrange], label=r"$|\tau_{nuc}^i|$", color='b')
         plt.plot(grd1[xlimitrange], plt2[xlimitrange], label=r"$|\tau_{\rho X}^i|$", color='m')
+        plt.plot(grd1[xlimitrange], plt3[xlimitrange], label=r"$|\tau_{X}^i|$", color='brown')
 
         xlimitbottom = np.where(grd1 < self.bconv)
         plt.plot(grd1[xlimitbottom], plt0[xlimitbottom], '.', color='r', markersize=0.5)

@@ -83,7 +83,8 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.title('velocities')
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_r$')
         plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_r$')
-        # plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
+        plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
+        plt.plot(grd1, plt2-plt1, color='m', label=r"$-\overline{\rho' u'_r}/\overline{\rho}$")
         # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 
         # convective boundary markers
@@ -102,7 +103,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 18})
+        plt.legend(loc=ilg, prop={'size': 15})
 
         # display PLOT
         plt.show(block=False)

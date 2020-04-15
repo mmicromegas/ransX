@@ -57,7 +57,15 @@ class TurbulentKineticEnergyEquationEvolution(uCalc.Calculus, uEal.ALIMITevol, u
         # plot DATA 
         plt.title('turbulent kinetic energy evolution')
         plt.plot(grd1, plt1, color='r', label=r'$tke$')
-        plt.plot(grd1, plt2, color='g', label=r'$epsD$')
+        # plt.plot(grd1, plt2, color='g', label=r'$epsD$')
+
+        # vertical markers
+        t1 = 460.
+        t2 = 760.
+        t3 = 1060.
+        plt.axvline(t1, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(t2, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(t3, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         setxlabel = r"t (s)"
@@ -66,13 +74,14 @@ class TurbulentKineticEnergyEquationEvolution(uCalc.Calculus, uEal.ALIMITevol, u
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=1, prop={'size': 8})
+        plt.legend(loc=1, prop={'size': 16})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol.eps')
 
     def plot_x0002(self):
         # get data
