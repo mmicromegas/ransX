@@ -322,10 +322,10 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             resTeeMax = np.max(resTee[indRES])
             resTeeMean = np.mean(resTee[indRES])
         elif self.plabel == "dcf":
-            indCCP = np.where((xzn0 < 3.9e8))[0]
+            indCCP = np.where((xzn0 < 2.e9))[0]
             x0002mean_cnvz = np.mean(self.x0002[indCCP])
 
-            indRES = np.where((xzn0 < 3.e9) & (xzn0 > 1.3e9))[0]
+            indRES = np.where((xzn0 < 5.e9) & (xzn0 > 2.e9))[0]
             # residual from continuity equation
             resCont = np.abs(self.minus_resContEquation)
             resContMax = np.max(resCont[indRES])

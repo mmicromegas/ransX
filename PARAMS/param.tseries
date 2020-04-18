@@ -1,8 +1,8 @@
 # ----- Parameter file for rans(eXtreme) hheflash tseries ---------- #
 []
-## Input Data Directory .................... ## [tseries,datadir,D:\simonX\obmlres3\]
+## Input Data Directory .................... ## [tseries,datadir,D:\simonX\galileo\simon_dcf_192x96x96\]
 ## Input Data Endianness ................... ## [tseries,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [tseries,precision,double]
-## Output-File ............................. ## [tseries,dataout,DATA_D/TSERIES/tseries_oburn384x192x192_trange0s-1321s_tavg600s]
-## Time-Range (in s) ....................... ## [tseries,trange,0.,1321.]
-## Averaging Window (in s) ................. ## [tseries,tavg,600.]
+## Output-File ............................. ## [tseries,dataout,DATA_D/TSERIES/tseries_dcf192x96x96_tavg1000s]
+## Time-Range (in s) ....................... ## [tseries,trange,1800.,2994.]
+## Averaging Window (in s) ................. ## [tseries,tavg,1000.]

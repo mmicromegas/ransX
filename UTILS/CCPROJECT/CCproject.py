@@ -2,8 +2,8 @@ import UTILS.PROMPI.PROMPI_data as prd
 import numpy as np
 import os
 # https://docs.sympy.org/dev/modules/physics/vector/api/fieldfunctions.html#curl
-from sympy.physics.vector import ReferenceFrame
-from sympy.physics.vector import curl
+# from sympy.physics.vector import ReferenceFrame
+# from sympy.physics.vector import curl
 import sys
 
 
@@ -39,6 +39,10 @@ class CCproject:
         minq_rho = self.minQ(block,'density')
         maxq_rho = self.maxQ(block,'density')
         stdevq_rho = self.stDevQ(block, 'density')
+
+        minq_x2 = self.minQ(block,'0002')
+        maxq_x2 = self.maxQ(block,'0002')
+        stdevq_x2 = self.stDevQ(block, '0002')
 
         minq_press = self.minQ(block,'press')
         maxq_press = self.maxQ(block,'press')
@@ -85,6 +89,10 @@ class CCproject:
         self.maxq_rho = maxq_rho
         self.stdevq_rho = stdevq_rho
 
+        self.minq_x2 = minq_x2
+        self.maxq_x2 = maxq_x2
+        self.stdevq_x2 = stdevq_x2
+
         self.minq_press = minq_press
         self.maxq_press = maxq_press
         self.stdevq_press = stdevq_press
@@ -123,6 +131,7 @@ class CCproject:
                 'temp': self.eh_temp, 'velx': self.velx, 'vely': self.vely, 'velz': self.velz,
                 'x2': self.fh_x0002, 'vel': self.vel, 'Avalue': self.eh_Avalue,
                 'minq_rho': self.minq_rho, 'maxq_rho': self.maxq_rho, 'stdevq_rho': self.stdevq_rho,
+                'minq_x2': self.minq_x2, 'maxq_x2': self.maxq_x2, 'stdevq_x2': self.stdevq_x2,
                 'minq_press': self.minq_press, 'maxq_press': self.maxq_press, 'stdevq_press': self.stdevq_press,
                 'minq_temp': self.minq_temp, 'maxq_temp': self.maxq_temp, 'stdevq_temp': self.stdevq_temp,
                 'minq_Avalue': self.minq_Avalue, 'maxq_Avalue': self.maxq_Avalue, 'stdevq_Avalue': self.stdevq_Avalue,

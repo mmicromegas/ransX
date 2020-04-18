@@ -35,11 +35,11 @@ def main():
 
     ransdat.SetMatplotlibParams()
 
-    for q in q2plot:
-        ransdat.plot_lin_q1(xbl, xbr, q, r'r (cm)', q, q)
+    #for q in q2plot:
+    #    ransdat.plot_lin_q1(xbl, xbr, q, r'r (cm)', q, q)
 
-    # for q in q2plot:
-    #    ransdat.plot_log_q1(xbl,xbr,q,r'r (cm)',q,q)
+    for q in q2plot:
+        ransdat.plot_log_q1(xbl,xbr,q,r'r (cm)',q,q)
 
     # ransdat.plot_check_heq1()
     # ransdat.plot_check_heq2(xbl,xbr)

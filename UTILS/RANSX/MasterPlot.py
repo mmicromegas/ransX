@@ -483,8 +483,9 @@ class MasterPlot():
 
         # instantiate 
         ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
-                                           params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['plabel'],
+                                           params.getForProp('prop')['ig'],
+                                           params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['prefix'])

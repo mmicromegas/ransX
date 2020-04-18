@@ -15,7 +15,7 @@
 ## X-axis Right boundary for properties .................... ## [prop,xbr,9.8e8]
 ## Nuclear network ......................................... ## [network,neut,prot,he4,c12,o16,ne20,na23,mg24,si28,p31,s32,s34,cl35,ar36,ar38,k39,ca40,ca42,ti44,ti46,cr48,cr50,fe52,fe54,ni56] 
 []
-## Neutrons Transport Vs Nuclear Timescale ................. ## [xTimescales_neut,True,3.7e8,9.8e8,1.e5,1.e1,0]
+## Neutrons Transport Vs Nuclear Timescale ................. ## [xTimescales_neut,True,3.7e8,9.8e8,1.e5,1.e1,0] 
 []
 ## Protons Transport Vs Nuclear Timescale .................. ## [xTimescales_prot,True,3.7e8,9.8e8,1.e5,1.e0,0]
 []

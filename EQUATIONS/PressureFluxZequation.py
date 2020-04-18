@@ -290,7 +290,7 @@ class PressureFluxZequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.title('acoustic flux z equation')
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{pz}$")
-            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_r f_{pz}$")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x f_{pz}$")
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p^z $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{pz} \partial_x \overline{u}_x$")
             plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_z u''_x} \partial_x \overline{P}$")

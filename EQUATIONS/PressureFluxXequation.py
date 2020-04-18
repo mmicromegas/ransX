@@ -241,7 +241,7 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         plt.title('acoustic flux x equation')
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{px}$")
-            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x f_{px}$)")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_x \partial_x f_{px}$")
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_x f_p^x $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{px} \partial_x \overline{u}_x$")
             plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_x u''_x} \partial_x \overline{P}$")
@@ -252,7 +252,7 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_p$")
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t f_{pr}$")
-            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_{pr}$)")
+            plt.plot(grd1, lhs1, color='k', label=r"$-\widetilde{u}_r \partial_r f_{pr}$")
             plt.plot(grd1, rhs0, color='#FF8C00', label=r"$-\nabla_r f_p^r $")
             plt.plot(grd1, rhs1, color='#802A2A', label=r"$-f_{pr} \partial_r \overline{u}_r$")
             plt.plot(grd1, rhs2, color='r', label=r"$+\overline{u'_r u''_r} \partial_r \overline{P}$")

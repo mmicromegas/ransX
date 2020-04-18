@@ -62,14 +62,16 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
 
         idxl, idxr = self.idx_bndry(xbl, xbr)
 
-        to_plt1 = f_1
+        #to_plt1 = f_1
+        to_plt1 = f_1 + self.data['enuc2']
+        print('Time:', self.data['rans_tstart'])
 
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
         # ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
         ax1.semilogy(rr, to_plt1, color='b', label=plabel_1)
 
-        fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\INIMODEL\\imodel.monstar'
+        fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
         tdata = open(fmonstar, 'r')
 
         header_line1 = tdata.readline().split()
@@ -109,7 +111,7 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
 
         ax1.semilogy(rr, epspp_i + epscno_i + epshe_i, color='k', linestyle='--', label='monstar ini')
 
-        print(to_plt1)
+        # print(to_plt1)
 
         ax1.set_xlabel(xlabel_1)
         ax1.set_ylabel(ylabel_1)
@@ -874,8 +876,13 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
 
         for i in range(nx - 2, -1, -1):
             pp[i] = pp[i + 1] - dd[i] * gg[i] * (xznr[i] - xznl[i])
+            #print(i,pp[i],dd[i],gg[i])
 
         ax1.semilogy(xzn0, np.abs((pp - press)) / press, color='r', label='(pp hydrostatic - press)/press')
+
+        #print(pp)
+        #print('*******************')
+        #print(press)
 
         ax1.set_xlabel(r'x')
         ax1.set_ylabel(r'(delta pp)/pp')
