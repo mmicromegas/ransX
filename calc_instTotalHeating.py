@@ -16,7 +16,7 @@ def threed(a, b, c, param):
 # dataloc = 'D:\\ccp_two_layers\\'
 # dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
 dataloc = 'D:\\ccp_two_layers\\BINDATA\\'
-filename_blck = dataloc + 'ccptwo.r512x512x512.cosma.00001.bindata'
+filename_blck = dataloc + 'ccptwo.r256x256x256.cosma.00001.bindata'
 
 dat = ['density', 'enuc1']
 
@@ -54,8 +54,8 @@ onelu = 3.752995e49
 factor = 1.2082151e-4
 sourcespec = onelu*factor
 
-print("Total LUminosity in ergs/s is: ", totlum)
-print("Total luminosity according to specs :", sourcespec)
+print("Total Luminosity in ergs/s is: ", totlum)
+print("Total Luminosity according to specs :", sourcespec)
 print("Relative Difference: ",(totlum-sourcespec)/sourcespec)
 
 

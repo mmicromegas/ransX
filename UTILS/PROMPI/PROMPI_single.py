@@ -62,13 +62,14 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
 
         idxl, idxr = self.idx_bndry(xbl, xbr)
 
-        #to_plt1 = f_1
-        to_plt1 = f_1 + self.data['enuc2']
+        to_plt1 = f_1
+        #to_plt1 = f_1*self.data['dd']
+        #to_plt1 = f_1 + self.data['enuc2']
         print('Time:', self.data['rans_tstart'])
 
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
-        # ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
+        #ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
         ax1.semilogy(rr, to_plt1, color='b', label=plabel_1)
 
         fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
@@ -84,12 +85,18 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         epspp = []
         epscno = []
         epshe = []
+        prot,he4,he3 = [],[],[]
+        dd = []
         for i in range(1996):
             rl = tdata.readline().split()
             rrm.append(rl[2])
+            dd.append(rl[6])
             epspp.append(rl[7])
             epscno.append(rl[8])
             epshe.append(rl[9])
+            prot.append(rl[11])
+            he4.append(rl[12])
+            he3.append(rl[13])
 
             # rrm.append(tdata.readline().split()[2])
             # epspp.append(tdata.readline().split()[7])
@@ -101,15 +108,29 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         # print(epspp,epscno,epshe)
 
         rrm = np.asarray(rrm[::-1], dtype=float)
+        dd = np.asarray(dd[::-1], dtype=float)
         epspp = np.asarray(epspp[::-1], dtype=float)
         epscno = np.asarray(epscno[::-1], dtype=float)
         epshe = np.asarray(epshe[::-1], dtype=float)
+        prot = np.asarray(prot[::-1], dtype=float)
+        he4 = np.asarray(he4[::-1], dtype=float)
+        he3 = np.asarray(he3[::-1], dtype=float)
 
+        dd_i = np.interp(rr, 10 ** rrm, dd)
         epspp_i = np.interp(rr, 10 ** rrm, epspp)
         epscno_i = np.interp(rr, 10 ** rrm, epscno)
         epshe_i = np.interp(rr, 10 ** rrm, epshe)
 
-        ax1.semilogy(rr, epspp_i + epscno_i + epshe_i, color='k', linestyle='--', label='monstar ini')
+        prot_i = np.interp(rr, 10 ** rrm, prot)
+        he4_i = np.interp(rr, 10 ** rrm, he4)
+        he3_i = np.interp(rr, 10 ** rrm, he3)
+
+        #print(he3)
+
+        ax1.semilogy(rr, (epspp_i + epscno_i + epshe_i), color='k', linestyle='--', label='monstar ini')
+        #ax1.semilogy(rr, prot_i, color='k', linestyle='--', label='monstar ini')
+        #ax1.semilogy(rr, he4_i, color='k', linestyle='--', label='monstar ini')
+        #ax1.semilogy(rr, he3_i, color='k', linestyle='--', label='monstar ini')
 
         # print(to_plt1)
 
@@ -866,7 +887,7 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
         # ax1.axis([4.e8, 1.2e9, 1.e-4, 0.1])
-        ax1.axis([2.e8, 5.e9, 1.e-4, 0.1])
+        ax1.axis([4.e8, 6.e9, 1.e-4, 0.1])
 
 
         plt.title(r'HSE deviation (evolved)')
