@@ -58,7 +58,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         if plabel == 'ccptwo':
             x0002 = self.getRAdata(eht, 'x0002')[intc]
         if plabel == 'oburn':
-            x0002 = self.getRAdata(eht, 'x0006')[intc] # track Ne20
+            x0002 = self.getRAdata(eht, 'x0002')[intc] # track prot
         else:
             x0002 = np.zeros(nx)
 

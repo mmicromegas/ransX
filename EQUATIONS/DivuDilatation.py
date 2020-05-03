@@ -245,6 +245,12 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.eht_ppf_uzf_divuff = ppuz * divu - ppuz * (dddivu / dd) - pp * uz * divu + pp * uz * (dddivu / dd)
         self.eht_divu1 = divu
         self.eht_divu2 = divux + divuy + divuz
+        #print(divux)
+        #print('************')
+        #print(divuy)
+        #print('************')
+        #print(divuz)
+        #print('************')
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix

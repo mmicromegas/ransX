@@ -3,7 +3,7 @@
 ## Input Reaclib Data ...................................... ## [prop,reaclib,fine_structure_of_cr_zones_in_stars/REACLIB/netsu_oburn_modified]
 ## Input Tseries Data ...................................... ## [prop,eht_data,fine_structure_of_cr_zones_in_stars/tseries_oburn_mlres3_tavg300secs.npy]
 ## Project Label (oburn, ccp: for now only) ................ ## [prop,plabel,oburn]
-## Filename Prefix For Plots ............................... ## [prop,prefix,obmlres3_tavg300_intc898timec1060s_]
+## Filename Prefix For Plots ............................... ## [prop,prefix,obmlres3_tavg300_intc898timec1060s_def2]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,3]
 ## File Extension For Plots ................................ ## [prop,fext,png]
 ## Geomergy; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,2]

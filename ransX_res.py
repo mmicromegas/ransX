@@ -31,9 +31,9 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # get and display simulation properties that you do resolution study of
-    for filee in filename:
-        ransP = pRop.Properties(filee, plabel, ig, ieos, intc, laxis, xbl, xbr)
-        ransP.properties()
+    #for filee in filename:
+    #    ransP = pRop.Properties(filee, plabel, ig, ieos, intc, laxis, xbl, xbr)
+    #    ransP.properties()
 
     # instantiate master plot
     plt = mPlot.ResMasterPlot(params)
@@ -103,6 +103,8 @@ def main():
     # COMPOSITION MASS FRACTION AND FLUX
     for elem in network[1:]:  # skip network identifier in the list
         inuc = params.getInuc(network, elem)
+        if str2bool(params.getForEqs('x_' + elem)['plotMee']):
+            plt.execX(inuc, elem, 'x_' + elem)
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execXrho(inuc, elem, 'xrho_' + elem)
         if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']):

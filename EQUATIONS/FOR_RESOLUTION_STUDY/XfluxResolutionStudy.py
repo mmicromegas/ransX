@@ -26,9 +26,11 @@ class XfluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
 
-        dd, ddux, ddxi, ddxiux, fxi = [], [], [], [], []
+        timec, dd, ddux, ddxi, ddxiux, fxi = [], [], [], [], [], []
 
         for i in range(len(filename)):
+            # load time
+            timec.append(np.asarray(eht[i].item().get('timec')[intc]))
             # load grid
             xzn0.append(np.asarray(eht[i].item().get('xzn0')))
 
@@ -52,6 +54,7 @@ class XfluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         self.nz = nz
         self.fxi = fxi
         self.ig = ig
+        self.timec = timec
 
     def plot_fxi(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot entropy flux in the model"""
@@ -96,7 +99,8 @@ class XfluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.title('Xflux for ' + self.element)
 
         for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]) +
+                                            ' t: ' + str(round(self.timec[i])) + ' s')
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -111,7 +115,7 @@ class XfluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 18})
+        plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)

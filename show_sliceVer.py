@@ -6,8 +6,9 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import os
 
-dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
+# dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
 # filename_blck = dataloc+'ccptwo.res128cubed.fixedmu.opto3.01014.bindata'
+dataloc = 'D:\\simonX\\galileo\\'
 
 bindata = [filee for filee in sorted(os.listdir(dataloc)) if "bindata" in filee]
 

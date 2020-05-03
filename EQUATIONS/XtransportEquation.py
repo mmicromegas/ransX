@@ -1,7 +1,9 @@
 import numpy as np
+import matplotlib.cm as cm
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import UTILS.Calculus as uCalc
 import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
@@ -114,6 +116,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.ig = ig
         self.fext = fext
         self.mm = mm
+        self.t_timec = t_timec
+        self.t_fht_xi = t_fht_xi
+        self.t_ddxi = t_ddxi
+        self.ddxidot = ddxidot
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
@@ -321,6 +327,137 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_withMM' + element + '.eps')
 
+    def plot_X_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot X stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # convert nuc ID to string
+        # xnucid = str(self.inuc)
+        element = self.element
+
+        t_timec = self.t_timec
+
+        # load x GRID
+        nx = self.nx
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        #plt1 = np.log10(self.t_fht_xi).T
+        plt1 = self.t_fht_xi.T
+
+        indRES = np.where((grd1 < 9.e8) & (grd1 > 4.e8))[0]
+
+        pltMax = np.max(plt1[indRES])
+        pltMin = np.min(plt1[indRES])
+
+        pltMax = 0.2
+        pltMin = 0.0
+
+        # create FIGURE
+        # plt.figure(figsize=(7, 6))
+
+        #print(t_timec[0], t_timec[-1], grd1[0], grd1[-1])
+
+        fig, ax = plt.subplots(figsize=(14, 7))
+        # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
+        fig.suptitle("X (256x256x256) (" + element + ")")
+
+        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
+                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       vmax=pltMax, vmin=pltMin)
+
+        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(im, cax=cax, orientation='vertical')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_space_time_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_space_time_' + element + '.eps')
+
+
+    def plot_rhoX_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot X stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # convert nuc ID to string
+        # xnucid = str(self.inuc)
+        element = self.element
+
+        t_timec = self.t_timec
+
+        # load x GRID
+        nx = self.nx
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.t_ddxi.T
+
+        indRES = np.where((grd1 < 8.1e8) & (grd1 > 4.55e8))[0]
+
+        pltMax = np.max(plt1[indRES])
+        pltMin = np.min(plt1[indRES])
+
+        # create FIGURE
+        # plt.figure(figsize=(7, 6))
+
+        fig, ax = plt.subplots(figsize=(14, 7))
+        # fig.suptitle("rhoX (" + self.setNucNoUp(str(element)) + ") (g cm-3)")
+        fig.suptitle("rhoX (" + element + ")")
+        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.autumn,
+                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       vmax=pltMax, vmin=pltMin)
+
+        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(im, cax=cax, orientation='vertical')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_space_time_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rhoX_space_time_' + element + '.eps')
 
     def plot_gradX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot grad X stratification in the model"""
@@ -430,6 +567,57 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # shade area one
+        ind = np.where((grd1 < 5.17e8) & (grd1 > 4.53e8))[0]
+
+        rinc = grd1[ind[0]]
+        routc = grd1[ind[-1]]
+
+        il = ind[0]
+        ir = ind[-1]
+
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+
+        # shade area two
+        ind = np.where((grd1 < 4.53e8) & (grd1 > self.bconv))[0]
+
+        rinc = grd1[ind[0]]
+        routc = grd1[ind[-1]]
+
+        il = ind[0]
+        ir = ind[-1]
+
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'gold', edgecolor='w')
+
+        # shade area three
+        ind = np.where((grd1 < 5.8e8) & (grd1 > 5.17e8))[0]
+
+        rinc = grd1[ind[0]]
+        routc = grd1[ind[-1]]
+
+        il = ind[0]
+        ir = ind[-1]
+
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'chartreuse', edgecolor='w')
+
+        # shade area four
+        ind = np.where((grd1 < 7.5e8) & (grd1 > 5.8e8))[0]
+
+        rinc = grd1[ind[0]]
+        routc = grd1[ind[-1]]
+
+        il = ind[0]
+        ir = ind[-1]
+
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], '#CFCFCF', edgecolor='w')
+
+
+        #xzn0 = np.asarray(self.xzn0)
+        #idx = np.where(rhs1 == rhs1.min())[0]
+
+        # ne20 burn min
+        plt.axvline(x=5.7e8, color='k', linewidth=1, linestyle='dotted')
 
         # define and show x/y LABELS
         if self.ig == 1:

@@ -118,6 +118,11 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         tau_ddxi =  np.abs(dd*fht_xi/self.minus_dt_dd_fht_xi)
         tau_xi =  np.abs(fht_xi/self.minus_dt_fht_xi)
 
+        #tau_trans = np.abs(fht_xi/self.Div(fxi/dd,xzn0))
+        #tau_nuc   = np.abs(fht_xi/(ddxidot/dd))
+        #tau_ddxi =  np.abs(dd*fht_xi/self.minus_dt_dd_fht_xi)
+        #tau_xi =  np.abs(fht_xi/self.minus_dt_fht_xi)
+
         # tau_trans = (fht_xi / self.Div(fxi / dd, xzn0))
         # tau_nuc = (fht_xi / (ddxidot / dd))
 

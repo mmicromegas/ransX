@@ -29,6 +29,8 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
 
         dd = self.getRAdata(eht, 'dd')[intc]
         enuc = self.getRAdata(eht, 'enuc1')[intc] + self.getRAdata(eht, 'enuc2')[intc]
+        # enuc = self.getRAdata(eht, 'enuc1')[intc]
+
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -59,6 +61,8 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
 
         # set plot boundaries   
         to_plot = [plt1]
+        # ybu = 1.e16 # for oburn semilogy
+        # ybd = 1.e3 # for oburn semilogy
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 

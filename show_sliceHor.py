@@ -7,8 +7,10 @@ import matplotlib.pyplot as plt
 import os
 
 
-dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
+#dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
 #filename_blck = dataloc+'ccptwo.res128cubed.fixedmu.opto3.01014.bindata'
+dataloc = 'D:\\simonX\\galileo\\'
+filename_blck = dataloc + 'dcf.45.nnuc13.192x96x96.00566.bindata'
 
 bindata = [filee for filee in sorted(os.listdir(dataloc)) if "bindata" in filee]
 
@@ -17,7 +19,7 @@ for filename in bindata:
 
     dat = ['temp','velx','density','0002']
 
-    lhc = 8.e8
+    lhc = 1.3e9
 
     block = prd.PROMPI_bindata(dataloc+filename,dat)
 
@@ -58,7 +60,7 @@ for filename in bindata:
         temp_r = htemp-eh_temp
         temp[i,:,:] = temp_r[:,:]
 
-    mtemp = 5.e6
+    mtemp = 7.e5
     temp[temp > mtemp] = mtemp
     temp[temp < -mtemp] = -mtemp
 
@@ -78,7 +80,7 @@ for filename in bindata:
 
     velx = velx[ilhc][:,:]
 
-    mvelx = 2.e7
+    mvelx = 5.e6
     velx[velx > mvelx] = mvelx
     velx[velx < -mvelx] = -mvelx
 
@@ -96,7 +98,7 @@ for filename in bindata:
         dens_r = hdens-eh_dens
         dens[i,:,:] = dens_r[:,:]
 
-    mdens = 2.e3
+    mdens = 5.e1
     dens[dens > mdens] = mdens
     dens[dens < -mdens] = -mdens
 
@@ -112,7 +114,7 @@ for filename in bindata:
         x0002_r = hx0002-eh_x0002
         x0002[i,:,:] = x0002_r[:,:]
 
-    mx0002 = 0.03
+    mx0002 = 0.01
     x0002[x0002 > mx0002] = mx0002
     x0002[x0002 < -mx0002] = -mx0002
 

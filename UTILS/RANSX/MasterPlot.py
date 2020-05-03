@@ -459,6 +459,20 @@ class MasterPlot():
                             params.getForEqs(x)['ybd'],
                             params.getForEqs(x)['ilg'])
 
+        ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
+                           params.getForEqs(x)['ilg'])
+
+        #ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
+        #                   params.getForEqs(x)['xbl'],
+        #                   params.getForEqs(x)['xbr'],
+        #                   params.getForEqs(x)['ybu'],
+        #                   params.getForEqs(x)['ybd'],
+        #                   params.getForEqs(x)['ilg'])
+
     def execXtrsEq(self, inuc, element, x, bconv, tconv):
         params = self.params
 

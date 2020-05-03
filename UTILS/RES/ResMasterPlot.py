@@ -13,6 +13,7 @@ import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUzVelocityResolutionStudy as uzRm
 import EQUATIONS.FOR_RESOLUTION_STUDY.DensityRmsResolutionStudy as ddRms
 import EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy as buoy
 
+import EQUATIONS.FOR_RESOLUTION_STUDY.XResolutionStudy as xx
 import EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy as xrho
 import EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy as xflxx
 
@@ -24,62 +25,72 @@ class ResMasterPlot():
     def __init__(self, params):
         self.params = params
 
+    def execX(self, inuc, element, x):
+        params = self.params
+
+        # instantiate
+        ransX = xx.XResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                params.getForProp('prop')['ig'],
+                                                inuc, element,
+                                                params.getForProp('prop')['intc'],
+                                                params.getForProp('prop')['prefix'])
+
+        ransX.plot_X(params.getForProp('prop')['laxis'],
+                        params.getForEqs(x)['xbl'],
+                        params.getForEqs(x)['xbr'],
+                        params.getForEqs(x)['ybu'],
+                        params.getForEqs(x)['ybd'],
+                        params.getForEqs(x)['ilg'])
+
     def execXrho(self, inuc, element, x):
         params = self.params
 
         # instantiate 		
-        ransXrho = xrho.XdensityResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                params.getForProp('prop')['ig'], \
-                                                inuc, element, \
-                                                params.getForProp('prop')['intc'], \
+        ransXrho = xrho.XdensityResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                params.getForProp('prop')['ig'],
+                                                inuc, element,
+                                                params.getForProp('prop')['intc'],
                                                 params.getForProp('prop')['prefix'])
 
-        ransXrho.plot_X(params.getForProp('prop')['laxis'], \
-                        params.getForEqs(x)['xbl'], \
-                        params.getForEqs(x)['xbr'], \
-                        params.getForEqs(x)['ybu'], \
-                        params.getForEqs(x)['ybd'], \
-                        params.getForEqs(x)['ilg'])
-
-        ransXrho.plot_Xrho(params.getForProp('prop')['laxis'], \
-                           params.getForEqs(x)['xbl'], \
-                           params.getForEqs(x)['xbr'], \
-                           params.getForEqs(x)['ybu'], \
-                           params.getForEqs(x)['ybd'], \
+        ransXrho.plot_Xrho(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
                            params.getForEqs(x)['ilg'])
 
     def execXflxx(self, inuc, element, x):
         params = self.params
 
         # instantiate 		
-        ransXflxx = xflxx.XfluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                               params.getForProp('prop')['ig'], \
-                                               inuc, element, \
-                                               params.getForProp('prop')['intc'], \
+        ransXflxx = xflxx.XfluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               inuc, element,
+                                               params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
 
-        ransXflxx.plot_fxi(params.getForProp('prop')['laxis'], \
-                           params.getForEqs(x)['xbl'], \
-                           params.getForEqs(x)['xbr'], \
-                           params.getForEqs(x)['ybu'], \
-                           params.getForEqs(x)['ybd'], \
+        ransXflxx.plot_fxi(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
                            params.getForEqs(x)['ilg'])
 
     def execBruntV(self):
         params = self.params
 
         # instantiate 		
-        ransBruntV = bruntv.BruntVaisallaResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                         params.getForProp('prop')['ig'], \
-                                                         params.getForProp('prop')['ieos'], \
-                                                         params.getForProp('prop')['intc'], \
+        ransBruntV = bruntv.BruntVaisallaResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                         params.getForProp('prop')['ig'],
+                                                         params.getForProp('prop')['ieos'],
+                                                         params.getForProp('prop')['intc'],
                                                          params.getForProp('prop')['prefix'])
 
-        ransBruntV.plot_bruntvaisalla(params.getForProp('prop')['laxis'], \
-                                      params.getForEqs('nsq')['xbl'], \
-                                      params.getForEqs('nsq')['xbr'], \
-                                      params.getForEqs('nsq')['ybu'], \
-                                      params.getForEqs('nsq')['ybd'], \
+        ransBruntV.plot_bruntvaisalla(params.getForProp('prop')['laxis'],
+                                      params.getForEqs('nsq')['xbl'],
+                                      params.getForEqs('nsq')['xbr'],
+                                      params.getForEqs('nsq')['ybu'],
+                                      params.getForEqs('nsq')['ybd'],
                                       params.getForEqs('nsq')['ilg'])
 
     def execTemp(self):
