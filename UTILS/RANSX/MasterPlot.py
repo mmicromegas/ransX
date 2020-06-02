@@ -459,12 +459,12 @@ class MasterPlot():
                             params.getForEqs(x)['ybd'],
                             params.getForEqs(x)['ilg'])
 
-        ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
-                           params.getForEqs(x)['xbl'],
-                           params.getForEqs(x)['xbr'],
-                           params.getForEqs(x)['ybu'],
-                           params.getForEqs(x)['ybd'],
-                           params.getForEqs(x)['ilg'])
+        #ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
+        #                   params.getForEqs(x)['xbl'],
+        #                   params.getForEqs(x)['xbr'],
+        #                   params.getForEqs(x)['ybu'],
+        #                   params.getForEqs(x)['ybd'],
+        #                  params.getForEqs(x)['ilg'])
 
         #ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
         #                   params.getForEqs(x)['xbl'],
@@ -731,6 +731,13 @@ class MasterPlot():
                          params.getForEqs('tkie')['ybu'],
                          params.getForEqs('tkie')['ybd'],
                          params.getForEqs('tkie')['ilg'])
+
+        ransTke.plot_TKE_space_time(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeeq')['xbl'],
+                                  params.getForEqs('tkeeq')['xbr'],
+                                  params.getForEqs('tkeeq')['ybu'],
+                                  params.getForEqs('tkeeq')['ybd'],
+                                  params.getForEqs('tkeeq')['ilg'])
 
         # plot turbulent kinetic energy evolution	   
         # ransTke.plot_tke_evolution()
@@ -1488,6 +1495,14 @@ class MasterPlot():
                                       params.getForProp('prop')['prefix'])
 
         ransRms.plot_relative_rms_flct(params.getForProp('prop')['laxis'],
+                                       bconv, tconv,
+                                       params.getForEqs('relrmsflct')['xbl'],
+                                       params.getForEqs('relrmsflct')['xbr'],
+                                       params.getForEqs('relrmsflct')['ybu'],
+                                       params.getForEqs('relrmsflct')['ybd'],
+                                       params.getForEqs('relrmsflct')['ilg'])
+
+        ransRms.plot_relative_rms_flct2(params.getForProp('prop')['laxis'],
                                        bconv, tconv,
                                        params.getForEqs('relrmsflct')['xbl'],
                                        params.getForEqs('relrmsflct')['xbr'],

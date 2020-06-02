@@ -3,7 +3,9 @@ import UTILS.SetAxisLimit as uSal
 import UTILS.Errors as eR
 import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
 import sys
-
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import numpy as np
+import matplotlib.cm as cm
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -69,6 +71,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         self.ig = ig
         self.dd = tkefields['dd']
         self.tke = tkefields['tke']
+
+        self.nx = tkefields['nx']
+        self.t_timec = tkefields['t_timec']
+        self.t_tke = tkefields['t_tke']
 
     def plot_tke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy stratification in the model"""
@@ -207,6 +213,63 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.png')
+
+    def plot_TKE_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        t_timec = self.t_timec
+
+        # load x GRID
+        nx = self.nx
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.t_tke.T
+
+        #indRES = np.where((grd1 < 1.2e9) & (grd1 > 2.e8))[0]
+
+        #pltMax = np.max(plt1[indRES])
+        #pltMin = np.min(plt1[indRES])
+
+        pltMax = np.max(plt1)
+        pltMin = np.min(plt1)
+
+        # create FIGURE
+        # plt.figure(figsize=(7, 6))
+
+        fig, ax = plt.subplots(figsize=(14, 7))
+        # fig.suptitle("rhoX (" + self.setNucNoUp(str(element)) + ") (g cm-3)")
+        fig.suptitle("TKE")
+        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.autumn,
+                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       vmax=pltMax, vmin=pltMin)
+
+        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(im, cax=cax, orientation='vertical')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TKE_space_time.png')
 
     def tke_dissipation(self):
         return self.minus_resTkeEquation

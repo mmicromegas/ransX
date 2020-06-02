@@ -148,6 +148,21 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
         self.dd = dd
         self.pp = pp
         self.uxux = uxux
+        self.t_timec = t_timec # for the space-time diagrams
+
+        if self.ig == 1:
+            self.t_tke = t_tke
+        elif self.ig == 2:
+            dx = (xzn0[-1]-xzn0[0])/nx
+            dumx = xzn0[0]+np.arange(1,nx,1)*dx
+            t_tke2 = []
+
+            # interpolation due to non-equidistant radial grid
+            for i in range(int(t_tke.shape[0])):
+                t_tke2.append(np.interp(dumx,xzn0,t_tke[i,:]))
+
+            t_tke_forspacetimediagram = np.asarray(t_tke2)
+            self.t_tke = t_tke_forspacetimediagram # for the space-time diagrams
 
     def getTKEfield(self):
         # return fields
@@ -159,7 +174,8 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
                  'plus_wb': self.plus_wb,
                  'plus_wp': self.plus_wp,
                  'minus_r_grad_u': self.minus_r_grad_u,
-                 'minus_resTkeEquation': self.minus_resTkeEquation}
+                 'minus_resTkeEquation': self.minus_resTkeEquation,
+                 'nx': self.nx, 't_timec': self.t_timec,'t_tke': self.t_tke}
 
         return {'dd': field['dd'], 'tke': field['tke'], 'xzn0': field['xzn0'],
                 'minus_dt_dd_tke': field['minus_dt_dd_tke'],
@@ -170,4 +186,5 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
                 'plus_wb': field['plus_wb'],
                 'plus_wp': field['plus_wp'],
                 'minus_r_grad_u': field['minus_r_grad_u'],
-                'minus_resTkeEquation': field['minus_resTkeEquation']}
+                'minus_resTkeEquation': field['minus_resTkeEquation'],
+                'nx': field['nx'], 't_timec': field['t_timec'],'t_tke': field['t_tke']}
