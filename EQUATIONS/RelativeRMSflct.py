@@ -130,3 +130,63 @@ class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_rel_rms_fluctuations.png')
+
+    def plot_relative_rms_flct2(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+        """Plot relative rms fluctuations in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(RelativeRMSflct.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.eht_ddrms
+        plt2 = self.eht_ttrms
+        plt3 = self.eht_pprms
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        # set plot boundaries
+        to_plot = [plt1, -plt2+plt3]
+        #self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+        self.set_plt_axis(LAXIS, xbl, xbr, 1.e0, 1.e-8, to_plot)
+
+        # plot DATA
+        plt.title('drho/rho')
+        plt.semilogy(grd1, plt1, color='brown', label=r"$+\rho' / \overline{\rho}$")
+        plt.semilogy(grd1, -plt2 + plt3, color='r', linestyle='--',label=r"$-T' / \overline{T} + P' / \overline{P}$")
+        plt.semilogy(grd1, -plt2, color='r', label=r"$-T' / \overline{T}$")
+        plt.semilogy(grd1, plt3, color='g', label=r"$+P / \overline{P}$")
+        plt.semilogy(grd1, +plt2, color='r', label=r"$+T' / \overline{T}$")
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$q'_{rms} \ / \ \overline{q}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$q'_{rms} \ / \ \overline{q}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 12})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_rel_rms_fluctuations2.png')
+

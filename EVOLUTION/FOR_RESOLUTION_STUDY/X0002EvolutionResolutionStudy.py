@@ -93,7 +93,7 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
                 plt1_foraxislimit = plt1i
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 800.
+        lmeanbndry = 1000.
         umeanbndry = 1200.
 
         il, ib = [],[]
@@ -113,10 +113,13 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
 
         for i in range(len(grd)):
             plotdata = plt1[i]
-            plt.plot(grd[i], plotdata, label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
+            grid = grd[i]
+            xrate = (plotdata[ib[i]]-plotdata[il[i]])/(grid[ib[i]]-grid[il[i]])
+            plt.plot(grid, plotdata, label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
                                             + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
                                             + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs, $\overline{X}$ = '
-                                            + str(np.format_float_scientific(np.mean(plotdata[il[i]:ib[i]]), unique=False, precision=1)))
+                                            + str(np.format_float_scientific(np.mean(plotdata[il[i]:ib[i]]), unique=False, precision=2))
+                                            + ' $\dot{X}$ = ' + str(np.format_float_scientific(xrate, unique=False, precision=2)))
             # markers for time window for averages in label
             plt.axvline(lmeanbndry, linestyle='--', linewidth=0.7, color='k')
             plt.axvline(umeanbndry, linestyle='--', linewidth=0.7, color='k')
@@ -138,7 +141,7 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 10})
 
         # display PLOT
         plt.show(block=False)

@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) and CCP TWO-LAYERS PROJECT ---------- #
 []
 ## Input Data .............................................. ## [prop,eht_data,modeling_of_turbulent_composition_flux_in_stars/tseries_ccptwo_256x256x256_cosma_1000secs.npy]
-## Project Label (oburn, ccp: for now only) ................ ## [prop,plabel,ccp]
+## Project Label (oburn, ccp: for now only) ................ ## [prop,plabel,ccptwo]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_tavg1000_intc20timec821s_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,1]

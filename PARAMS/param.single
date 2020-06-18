@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) oburn single ---------- #
 []
-## Input-Data Directory .................... ## [single,datafile,D:\simonX\galileo\simon_dcf_mres\hheflash3d.45.nnuc13.mrez.00002.ransdat]
+## Input-Data Directory .................... ## [single,datafile,D:\simonX\obmlres3\ob3d.45.nnuc25.mlrez.00001.ransdat]
 ## Input Data Endianness ................... ## [single,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [single,precision,double]
-## Limit X-grid ............................ ## [single,xlimit,4.e8,6.e9]
-## List Of Mean Fields To Plot ............. ## [single,toplot,ux,dd,tt,pp,ei,enuc1,x0005]
+## Limit X-grid ............................ ## [single,xlimit,3.7e8,9.8e8]
+## List Of Mean Fields To Plot ............. ## [single,toplot,enuc1]

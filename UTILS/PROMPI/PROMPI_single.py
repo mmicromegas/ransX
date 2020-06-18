@@ -1,12 +1,13 @@
 import PROMPI_data as prd
 import numpy as np
 import matplotlib.pyplot as plt
+import UTILS.Calculus as uCalc
 from pylab import *
 
 
 # class for plotting background stratification of PROMPI models from ransdat
 
-class PROMPI_single(prd.PROMPI_ransdat, object):
+class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
     def __init__(self, filename, endianness, precision):
         super(PROMPI_single, self).__init__(filename, endianness, precision)
@@ -536,18 +537,35 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         tt = self.data['tt']
         dd = self.data['dd']
 
+        # for 25 element network
         xc12 = self.data['x0004']
         xo16 = self.data['x0005']
         xne20 = self.data['x0006']
         xsi28 = self.data['x0009']
-        #        enuc = self.data['enuc1']+self.data['enuc2']
+
+        # for 15 elements network
+        #xc12 = self.data['x0004']
+        #xo16 = self.data['x0005']
+        #xne20 = self.data['x0006']
+        #xsi28 = self.data['x0008']
+
+        #  enuc = self.data['enuc1']+self.data['enuc2']
+
+
+        #xo16 = self.data['x0003']
+        #xne20 = self.data['x0004']
+        #xc12 = np.zeros(xne20.shape[0])
+        #xsi28 = np.zeros(xne20.shape[0])
+
         enuc1 = self.data['enuc1']
         enuc2 = np.abs(self.data['enuc2'])
 
         plt.figure(figsize=(7, 6))
 
-        lb = 1.e4
-        ub = 1.e14
+        lb = -1.e15
+        ub = 1.e15
+
+        plt.yscale('symlog')
 
         plt.axis([xbl, xbr, lb, ub])
 
@@ -653,27 +671,44 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         en_si28 = c1_si28 * (t9 ** 3. / 2.) * xsi28 * (np.exp(-142.07 / t9)) * rate_ne20_alpha_gamma_code
         en_si28_acf88 = c1_si28 * (t9 ** 3. / 2.) * xsi28 * (np.exp(-142.07 / t9)) * rate_ne20_alpha_gamma
 
-        plt.semilogy(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
-        plt.semilogy(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
-        plt.semilogy(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
-        plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
-        plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28, label='total', color='k')
+        #plt.semilogy(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
+        #plt.semilogy(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
+        #plt.semilogy(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
+        #plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
+        #plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
 
-        #        plt.semilogy(rc,en_c12_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
-        #        plt.semilogy(rc,en_o16_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
-        #        plt.semilogy(rc,en_ne20_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
-        #        plt.semilogy(rc,en_si28_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
+        plt.plot(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
+        plt.plot(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
+        plt.plot(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
+        plt.plot(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
+        plt.plot(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
+
+        #print("en_ne20")
+        #print(en_ne20)
+        #print("*****")
+        #print(en_si28)
+
+        #plt.semilogy(rc,en_c12_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
+        #plt.semilogy(rc,en_o16_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
+        #plt.semilogy(rc,en_ne20_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
+        #plt.semilogy(rc,en_si28_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
         #        plt.semilogy(rc,en_c12_acf88+en_o16_acf88+en_ne20_acf88+en_si28_acf88,label='total',color='k')
 
-        # plt.semilogy(rc,enuc1,color='m',linestyle='--',label='nuc code')
+        #plt.semilogy(rc,enuc1,color='m',linestyle='--',label='enuc1')
         # plt.semilogy(rc,enuc2,color='r',linestyle='--',label='-neut code')
-        # plt.semilogy(rc,enuc1-enuc2,color='b',linestyle='--',label='nuc+neut code')
+        #plt.semilogy(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
+
+        plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
+        # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
+        plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
+
+        print(enuc1)
 
         # convective boundary markers
         plt.axvline(4.46e8, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(8.5e8, linestyle='--', linewidth=0.7, color='k')
 
-        plt.legend(loc=1, prop={'size': 15})
+        plt.legend(loc=5, prop={'size': 12}, ncol=2)
 
         plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
         plt.xlabel('r ($10^8$ cm)')
@@ -682,7 +717,7 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
-        savefig('RESULTS/oburnini_nuclear_energy_gen.png')
+        savefig('RESULTS/oburn25_nuclear_energy_gen_new_INI.png')
 
     def plot_check_heq1(self):
         xzn0 = np.asarray(self.data['xzn0'])
@@ -887,8 +922,9 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
         # ax1.axis([4.e8, 1.2e9, 1.e-4, 0.1])
-        ax1.axis([4.e8, 6.e9, 1.e-4, 0.1])
-
+        # ax1.axis([4.e8, 6.e9, 1.e-8, 0.9])
+        ax1.axis([3.0e8, 1.e9, 1.e-8, 1.])
+        #ax1.axis([3.4e8, 4.04e8, 1.e-8, 1.])
 
         plt.title(r'HSE deviation (evolved)')
 
@@ -897,13 +933,13 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
 
         for i in range(nx - 2, -1, -1):
             pp[i] = pp[i + 1] - dd[i] * gg[i] * (xznr[i] - xznl[i])
-            #print(i,pp[i],dd[i],gg[i])
+            print(i,pp[i],dd[i],gg[i])
 
         ax1.semilogy(xzn0, np.abs((pp - press)) / press, color='r', label='(pp hydrostatic - press)/press')
 
-        #print(pp)
-        #print('*******************')
-        #print(press)
+        print(pp)
+        print('*******************')
+        print(press)
 
         ax1.set_xlabel(r'x')
         ax1.set_ylabel(r'(delta pp)/pp')
@@ -932,6 +968,45 @@ class PROMPI_single(prd.PROMPI_ransdat, object):
         ax1.legend(loc=1, prop={'size': 18})
 
         savefig('RESULTS/uxcheck.png')
+
+        plt.show(block=False)
+
+    def PlotTrippleAlphaNucEnergyGen(self, xbl, xbr):
+        """Plot nuclear reaction timescales"""
+
+        rc = np.asarray(self.data['xzn0'])
+        tt = self.data['tt']
+        dd = self.data['dd']
+
+        xhe4 = self.data['x0003']
+
+        #  enuc = self.data['enuc1']+self.data['enuc2']
+        enuc1 = self.data['enuc1']
+        enuc2 = np.abs(self.data['enuc2'])
+
+
+        # Clayton, Principles of Stellar Evolution and Nucleosynthesis, page 414, eq.5-105
+        f = 1. # screening factor
+        epsilon3alpha = 4.4e-8*(dd**2.)*(xhe4**3.)*((tt/1.e8)**40.)*f
+        print(epsilon3alpha)
+
+        plt.figure(figsize=(7, 6))
+
+
+        lb = 1.e-10
+        ub = 1.e14
+        plt.axis([xbl, xbr, lb, ub])
+
+        plt.semilogy(rc,epsilon3alpha,color='r',label=r"$\epsilon(3\alpha) \sim 4.4 \times 10^{-8} \rho^2 X(He^4)^3 T_8^{40}$")
+        plt.semilogy(rc,enuc1,color='m',linestyle='--',label='nuc code (boost 100x)')
+
+        setxlabel = r'r (cm)'
+        # setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
+        setylabel = r'$\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+
+        plt.legend(loc=3, prop={'size': 14})
 
         plt.show(block=False)
 

@@ -30,6 +30,8 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
 
         dd = self.getRAdata(eht, 'dd')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
 
         ddux = self.getRAdata(eht, 'ddux')[intc]
@@ -38,6 +40,13 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         uxux = self.getRAdata(eht, 'uxux')[intc]
         uyuy = self.getRAdata(eht, 'uyuy')[intc]
         uzuz = self.getRAdata(eht, 'uzuz')[intc]
+
+        uxuy = self.getRAdata(eht, 'uxuy')[intc]
+        uxuz = self.getRAdata(eht, 'uxuz')[intc]
+
+        dduxuxux = self.getRAdata(eht, 'dduxuxux')[intc]
+        dduxuyuy = self.getRAdata(eht, 'dduxuyuy')[intc]
+        dduxuzuz = self.getRAdata(eht, 'dduxuzuz')[intc]
 
         ddppux = self.getRAdata(eht, 'ddppux')[intc]
         ppuxux = self.getRAdata(eht, 'ppuxux')[intc]
@@ -142,6 +151,14 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # PRESSURE FLUX EQUATION
         ########################
 
+        # acoustic flux model (uxuxux approx. dduxuxux/dd)
+        eht_uxuxux = dduxuxux/dd - 3.*ux*uxux + 2.*ux*ux*ux
+        eht_uxuyuy = dduxuyuy/dd - 2.*uy*uxuy - ux*uyuy + 2.*ux*uy*uy
+        eht_uxuzuz = dduxuzuz/dd - 2.*uy*uxuz - ux*uzuz + 2.*ux*uz*uz
+
+        a = 1./2.
+        self.minus_a_eht_uxuiui = -a*dd*(eht_uxuxux+eht_uxuyuy+eht_uxuzuz)
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -159,6 +176,7 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
 
         # load DATA to plot
         plt1 = self.fppx
+        plt2 = self.minus_a_eht_uxuiui
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -173,7 +191,8 @@ class PressureFluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         # plot DATA 
         plt.title(r'pressure flux x')
         if self.ig == 1:
-            plt.plot(grd1, plt1, color='brown', label=r'f$_{px}$')
+            plt.plot(grd1, plt1, color='brown', label=r"f$_{px}$")
+            plt.plot(grd1, plt2, color='red', label=r"-a$\overline{u'_x u'_i u'_i}$")
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'f$_{pr}$')
 

@@ -59,6 +59,16 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             x0002 = self.getRAdata(eht, 'x0002')[intc]
         if plabel == 'oburn':
             x0002 = self.getRAdata(eht, 'x0002')[intc] # track prot
+        if plabel == 'neshell':
+            x0002 = self.getRAdata(eht, 'x0002')[intc] # track
+        if plabel == 'heflash':
+            x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
+        if plabel == 'thpulse':
+            x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
+        if plabel == 'cflash':
+            x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
+        if plabel == 'heflash':
+            x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
         else:
             x0002 = np.zeros(nx)
 
@@ -292,7 +302,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             tauL = 9999999999.
             # sys.exit()
 
-        if self.plabel == "ccp" or self.plabel == "ccpone":
+        if self.plabel == "ccptwo" or self.plabel == "ccpone":
             # ccp project - get averaged X in bottom 2/3 of convection zone (approx. 4-8e8cm)
             indCCP = np.where((xzn0 < 6.66e8))[0]
             x0002mean_cnvz = np.mean(self.x0002[indCCP])
@@ -326,6 +336,76 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             x0002mean_cnvz = np.mean(self.x0002[indCCP])
 
             indRES = np.where((xzn0 < 5.e9) & (xzn0 > 2.e9))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
+
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
+        elif self.plabel == "neshell":
+            indCCP = np.where((xzn0 < 3.85e8) & (xzn0 > 3.6e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+            indRES = np.where((xzn0 < 3.85e8) & (xzn0 > 3.6e8))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
+
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
+        elif self.plabel == "heflash":
+            indCCP = np.where((xzn0 < 8.e8) & (xzn0 > 5.e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+            indRES = np.where((xzn0 < 8.e8) & (xzn0 > 5.e8))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
+
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
+        elif self.plabel == "thpulse":
+            indCCP = np.where((xzn0 < 1.2e9) & (xzn0 > 8.e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+            indRES = np.where((xzn0 < 1.2e9) & (xzn0 > 8.e8))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
+
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
+        elif self.plabel == "cflash":
+            indCCP = np.where((xzn0 < 7.5e8) & (xzn0 > 5.e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+            indRES = np.where((xzn0 < 7.5e8) & (xzn0 > 5.e8))[0]
+            # residual from continuity equation
+            resCont = np.abs(self.minus_resContEquation)
+            resContMax = np.max(resCont[indRES])
+            resContMean = np.mean(resCont[indRES])
+
+            # residual from total energy equation
+            resTee = np.abs(self.minus_resTeEquation)
+            resTeeMax = np.max(resTee[indRES])
+            resTeeMean = np.mean(resTee[indRES])
+        elif self.plabel == "heflash":
+            indCCP = np.where((xzn0 < 8.e8) & (xzn0 > 5.5e8))[0]
+            x0002mean_cnvz = np.mean(self.x0002[indCCP])
+
+            indRES = np.where((xzn0 < 8.e8) & (xzn0 > 5.5e8))[0]
             # residual from continuity equation
             resCont = np.abs(self.minus_resContEquation)
             resContMax = np.max(resCont[indRES])

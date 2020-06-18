@@ -34,6 +34,7 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         chim = self.getRAdata(eht, 'chim')[intc]
         chit = self.getRAdata(eht, 'chit')[intc]
         gamma2 = self.getRAdata(eht, 'gamma2')[intc]
+        # print(chim,chit,gamma2)
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if ieos == 1:

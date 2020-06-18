@@ -37,7 +37,7 @@ class ReadParamsRansX:
     def getForEqs(self, param):
 
         match = [s for s in self.iinput if param in s]  # choose only lists identified by param
-        # print(param,match)
+        #print(param,match)
         match_split = match[0].split(",")
         # equation = match_split[0]
         plotMee = match_split[1]

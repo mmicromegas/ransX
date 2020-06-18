@@ -227,6 +227,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         grd1 = self.xzn0
 
         # load DATA to plot
+        #plt1 = np.log10(self.t_tke.T)
         plt1 = self.t_tke.T
 
         #indRES = np.where((grd1 < 1.2e9) & (grd1 > 2.e8))[0]
@@ -235,7 +236,13 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         #pltMin = np.min(plt1[indRES])
 
         pltMax = np.max(plt1)
+        #pltMax = 3.e12 # for the thpulse
+        #pltMax = 2.e12 # for neshell nucb10x
+        pltMax = 2.e12
         pltMin = np.min(plt1)
+
+        #pltMin = 7.
+        #pltMax = 14.
 
         # create FIGURE
         # plt.figure(figsize=(7, 6))

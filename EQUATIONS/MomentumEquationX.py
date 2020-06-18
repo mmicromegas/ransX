@@ -31,6 +31,7 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         dd = self.getRAdata(eht, 'dd')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
+        gg = self.getRAdata(eht, 'gg')[intc]
 
         ddgg = self.getRAdata(eht, 'ddgg')[intc]
         ddux = self.getRAdata(eht, 'ddux')[intc]
@@ -67,8 +68,8 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             self.minus_G = -(-dduyuy - dduzuz) / xzn0
 
         # RHS -(grad P - rho g)
-        # self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg
-        self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp, xzn0) + ddgg
+        self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp,xzn0) +dd*gg
+        #self.minus_gradx_pp_eht_dd_eht_gg = -self.Grad(pp, xzn0) + ddgg
 
         # for i in range(nx):
         #    print(2.*ddgg[i],dd[i]*gg[i]		

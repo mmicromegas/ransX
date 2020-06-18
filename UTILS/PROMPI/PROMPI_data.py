@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-
+import os
 
 class PROMPI_ransdat:
 
@@ -223,7 +223,7 @@ class PROMPI_bindata:
         for line in range(self.nvar):
             line = fhead.readline().strip()
             self.varl.append(line)
-            # print(line)
+            #print(line)
 
         self.interior_mass = float(fhead.readline())
 
@@ -240,8 +240,13 @@ class PROMPI_bindata:
         # parse grid  (todo: get rid of the hard-coded values
         # perhaps readline format?
 
-        il_l = 8
-        il_r = 22
+        # oburn, ccptwo
+        #il_l = 8
+        #il_r = 22
+
+        # neshell/cosma
+        il_l = 9
+        il_r = 23
 
         i0_l = 23
         i0_r = 38
@@ -267,7 +272,14 @@ class PROMPI_bindata:
             zzn0.append(float(line[i0_l:i0_r].strip()))
             zznr.append(float(line[ir_l:ir_r].strip()))
 
+        #print(zzn0)
+        #print(zznl)
+        #print(zznr)
+        #sys.exit()
+
         self.datadict = {}
+
+        # print(self.qqx,self.qqy,self.qqz)
 
         for dat in ldat:
             ivar = self.varl.index(dat)
@@ -278,6 +290,10 @@ class PROMPI_bindata:
             # print(ivar,irecl,nbyte,dstart,self.qqx,self.qqy,self.qqz)
 
             fblock = open(filename, 'rb')
+            #out = os.fstat(fblock.fileno()).st_size
+            #print('right after tell',out)
+            #sys.exit()
+
 
             # offset read pointer (argument offset is a byte count)         
             fblock.seek(dstart)
@@ -293,9 +309,15 @@ class PROMPI_bindata:
             #       >>> dt = np.dtype('d')  # double-precision floating-point number
 
             self.data = np.fromfile(fblock, dtype='<f4', count=irecl)
+            #self.data = np.fromfile(fblock,dtype='<f')
+            #print(len(self.data))
+            #sys.exit()
+            #for i in range(1048576):
+            #    print(np.int(64.*64.*64),i,self.data[i])
+            #sys.exit()
 
             self.data = np.reshape(self.data, (self.qqx, self.qqy, self.qqz), order='F')
-            #           print(self.data)
+            #print(self.data)
 
             fblock.close()
 

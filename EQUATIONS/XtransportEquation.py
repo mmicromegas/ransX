@@ -121,6 +121,22 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.t_ddxi = t_ddxi
         self.ddxidot = ddxidot
 
+        if self.ig == 1:
+            self.t_fht_xi = t_fht_xi
+        elif self.ig == 2:
+            dx = (xzn0[-1]-xzn0[0])/nx
+            dumx = xzn0[0]+np.arange(1,nx,1)*dx
+            t_fht_xi2 = []
+
+            # interpolation due to non-equidistant radial grid
+            for i in range(int(t_fht_xi.shape[0])):
+                t_fht_xi2.append(np.interp(dumx,xzn0,t_fht_xi[i,:]))
+
+            t_fht_xi_forspacetimediagram = np.asarray(t_fht_xi2)
+            self.t_fht_xi = t_fht_xi_forspacetimediagram # for the space-time diagrams
+
+
+
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xrho stratification in the model"""
 
@@ -345,16 +361,16 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         grd1 = self.xzn0
 
         # load DATA to plot
-        #plt1 = np.log10(self.t_fht_xi).T
-        plt1 = self.t_fht_xi.T
+        plt1 = np.log10(self.t_fht_xi).T
+        #plt1 = self.t_fht_xi.T
 
         indRES = np.where((grd1 < 9.e8) & (grd1 > 4.e8))[0]
 
         pltMax = np.max(plt1[indRES])
         pltMin = np.min(plt1[indRES])
 
-        pltMax = 0.2
-        pltMin = 0.0
+        pltMax = -1.
+        pltMin = -6.
 
         # create FIGURE
         # plt.figure(figsize=(7, 6))
@@ -569,55 +585,55 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # shade area one
-        ind = np.where((grd1 < 5.17e8) & (grd1 > 4.53e8))[0]
+        #ind = np.where((grd1 < 5.17e8) & (grd1 > 4.53e8))[0]
 
-        rinc = grd1[ind[0]]
-        routc = grd1[ind[-1]]
+        #rinc = grd1[ind[0]]
+        #routc = grd1[ind[-1]]
 
-        il = ind[0]
-        ir = ind[-1]
+        #il = ind[0]
+        #ir = ind[-1]
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         # shade area two
-        ind = np.where((grd1 < 4.53e8) & (grd1 > self.bconv))[0]
+        #ind = np.where((grd1 < 4.53e8) & (grd1 > self.bconv))[0]
 
-        rinc = grd1[ind[0]]
-        routc = grd1[ind[-1]]
+        #rinc = grd1[ind[0]]
+        #routc = grd1[ind[-1]]
 
-        il = ind[0]
-        ir = ind[-1]
+        #il = ind[0]
+        #ir = ind[-1]
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'gold', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'gold', edgecolor='w')
 
         # shade area three
-        ind = np.where((grd1 < 5.8e8) & (grd1 > 5.17e8))[0]
+        #ind = np.where((grd1 < 5.8e8) & (grd1 > 5.17e8))[0]
 
-        rinc = grd1[ind[0]]
-        routc = grd1[ind[-1]]
+        #rinc = grd1[ind[0]]
+        #routc = grd1[ind[-1]]
 
-        il = ind[0]
-        ir = ind[-1]
+        #il = ind[0]
+        #ir = ind[-1]
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'chartreuse', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'chartreuse', edgecolor='w')
 
         # shade area four
-        ind = np.where((grd1 < 7.5e8) & (grd1 > 5.8e8))[0]
+        #ind = np.where((grd1 < 7.5e8) & (grd1 > 5.8e8))[0]
 
-        rinc = grd1[ind[0]]
-        routc = grd1[ind[-1]]
+        #rinc = grd1[ind[0]]
+        #routc = grd1[ind[-1]]
 
-        il = ind[0]
-        ir = ind[-1]
+        #il = ind[0]
+        #ir = ind[-1]
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], '#CFCFCF', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], '#CFCFCF', edgecolor='w')
 
 
         #xzn0 = np.asarray(self.xzn0)
         #idx = np.where(rhs1 == rhs1.min())[0]
 
         # ne20 burn min
-        plt.axvline(x=5.7e8, color='k', linewidth=1, linestyle='dotted')
+        #plt.axvline(x=5.7e8, color='k', linewidth=1, linestyle='dotted')
 
         # define and show x/y LABELS
         if self.ig == 1:
