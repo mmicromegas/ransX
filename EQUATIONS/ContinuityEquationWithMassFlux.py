@@ -6,7 +6,8 @@ import UTILS.Calculus as uCalc
 import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
-
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib.cm as cm
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -38,6 +39,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         # store time series for time derivatives
         t_timec = self.getRAdata(eht, 'timec')
         t_dd = self.getRAdata(eht, 'dd')
+        t_frho = self.getRAdata(eht, 'ddux') - self.getRAdata(eht, 'dd')*self.getRAdata(eht, 'ux')
 
         # t_mm    = self.getRAdata(eht,'mm'))
         # minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
@@ -74,6 +76,21 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         # END CONTINUITY EQUATION WITH MASS FLUX
         ########################################
 
+        # for space-time diagrams
+        if self.ig == 1:
+            self.t_frho = t_frho
+        elif self.ig == 2:
+            dx = (xzn0[-1]-xzn0[0])/nx
+            dumx = xzn0[0]+np.arange(1,nx,1)*dx
+            t_frho2 = []
+
+            # interpolation due to non-equidistant radial grid
+            for i in range(int(t_frho.shape[0])):
+                t_frho2.append(np.interp(dumx,xzn0,t_frho[i,:]))
+
+            t_frho_forspacetimediagram = np.asarray(t_frho2)
+            self.t_frho = t_frho_forspacetimediagram # for the space-time diagrams
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -83,6 +100,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         self.nx = nx
         self.ig = ig
         self.fext = fext
+        self.t_timec = t_timec
 
     def plot_rho(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
@@ -228,6 +246,13 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         term5 = self.minus_dd_div_ux
         term6 = self.minus_resContEquation
 
+        # hack for the ccp setup getting rid of bndry noise
+        fct1 = 0.5e-1
+        fct2 = 1.e-1
+        xbl = xbl + fct1*xbl
+        xbr = xbr - fct2*xbl
+        print(xbl,xbr)
+
         # calculate INDICES for grid boundaries 
         if laxis == 1 or laxis == 2:
             idxl, idxr = self.idx_bndry(xbl, xbr)
@@ -322,3 +347,69 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
             plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq_bar.png')
         elif self.fext == 'eps':
             plt.savefig('RESULTS/' + self.data_prefix + 'continuityWithMassFlux_eq_bar.eps')
+
+    def plot_Frho_space_time(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+        """Plot Frho space time diagram"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithMassFlux.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        t_timec = self.t_timec
+
+        # load x GRID
+        nx = self.nx
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.t_frho.T
+        #plt1 = self.t_frho.T
+
+        indRES = np.where((grd1 < 9.e8) & (grd1 > 4.e8))[0]
+
+        #pltMax = np.max(plt1[indRES])
+        #pltMin = np.min(plt1[indRES])
+
+        pltMax = 0.5e10
+        pltMin = -4.e10
+
+        # create FIGURE
+        # plt.figure(figsize=(7, 6))
+
+        #print(t_timec[0], t_timec[-1], grd1[0], grd1[-1])
+
+        fig, ax = plt.subplots(figsize=(14, 7))
+        # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
+        fig.suptitle(r'$f_\rho (256x256x256)$')
+
+        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
+                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       vmax=pltMax, vmin=pltMin)
+
+        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(im, cax=cax, orientation='vertical')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Frho_space_time' +'.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Frho_space_time' + '.eps')
+

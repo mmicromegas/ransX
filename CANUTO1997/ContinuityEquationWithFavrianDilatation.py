@@ -48,17 +48,14 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # CONTINUITY EQUATION WITH FAVRIAN DILATATION
         #############################################
 
-        # LHS -dq/dt 		
-        self.minus_dt_dd = -self.dt(t_dd, xzn0, t_timec, intc)
-
-        # LHS -fht_ux Grad dd
-        self.minus_fht_ux_grad_dd = -fht_ux * self.Grad(dd, xzn0)
+        # LHS -Dq/Dt
+        self.minus_Dt_dd = -(self.dt(t_dd, xzn0, t_timec, intc) + fht_ux * self.Grad(dd, xzn0))
 
         # RHS -dd Div fht_ux 
         self.minus_dd_div_fht_ux = -dd * self.Div(fht_ux, xzn0)
 
         # -res
-        self.minus_resContEquation = -(self.minus_dt_dd + self.minus_fht_ux_grad_dd + self.minus_dd_div_fht_ux)
+        self.minus_resContEquation = -(self.minus_Dt_dd + self.minus_dd_div_fht_ux)
 
         #################################################
         # END CONTINUITY EQUATION WITH FAVRIAN DILATATION
@@ -137,9 +134,9 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho_canuto1997.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho_canuto1997.eps')
 
     def plot_continuity_equation(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
@@ -152,8 +149,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_dd
-        lhs1 = self.minus_fht_ux_grad_dd
+        lhs0 = self.minus_Dt_dd
 
         rhs0 = self.minus_dd_div_fht_ux
 
@@ -166,20 +162,18 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [lhs0, lhs1, rhs0, res]
+        to_plot = [lhs0, rhs0, res]
         self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('continuity equation with Favrian dilatation')
 
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
-            plt.plot(grd1, lhs1, color='r', label=r'$- \widetilde{u}_x \partial_x (\overline{\rho})$')
+            plt.plot(grd1, lhs0, color='g', label=r'$-\widetilde{D}_t (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_x (\widetilde{u}_x)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
         elif self.ig == 2:
-            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
-            plt.plot(grd1, lhs1, color='r', label=r'$- \widetilde{u}_r \partial_r (\overline{\rho})$')
+            plt.plot(grd1, lhs0, color='g', label=r'$-\widetilde{D}_t (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_r (\widetilde{u}_r)$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
@@ -211,9 +205,9 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_canuto1997.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_canuto1997.eps')
 
     def plot_continuity_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of continuity equation in the model"""
@@ -223,8 +217,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
             print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
-        term1 = self.minus_dt_dd
-        term2 = self.minus_fht_ux_grad_dd
+        term1 = self.minus_Dt_dd
         term3 = self.minus_dd_div_fht_ux
         term4 = self.minus_resContEquation
 
@@ -243,7 +236,6 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
             idxr = self.nx - 1
 
         term1_sel = term1[idxl:idxr]
-        term2_sel = term2[idxl:idxr]
         term3_sel = term3[idxl:idxr]
         term4_sel = term4[idxl:idxr]
 
@@ -257,7 +249,6 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
             Sr = 4. * np.pi * rc ** 2
 
         int_term1 = integrate.simps(term1_sel * Sr, rc)
-        int_term2 = integrate.simps(term2_sel * Sr, rc)
         int_term3 = integrate.simps(term3_sel * Sr, rc)
         int_term4 = integrate.simps(term4_sel * Sr, rc)
 
@@ -273,7 +264,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         fc = 1.
 
         # note the change: I'm only supplying y data.
-        y = [int_term1 / fc, int_term2 / fc, int_term3 / fc, int_term4 / fc]
+        y = [int_term1 / fc, int_term3 / fc, int_term4 / fc]
 
         # calculate how many bars there will be
         N = len(y)
@@ -300,13 +291,13 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
         if self.ig == 1:
-            group_labels = [r"$-\overline{\rho} \widetilde{d}$", r"$-\partial_t \overline{\rho}$",
+            group_labels = [r"$-\widetilde{D}_t \overline{\rho}$",
                             r"$-\widetilde{u}_x \partial_x \overline{\rho}$", 'res']
 
             # Set the x tick labels to the group_labels defined above.
             ax.set_xticklabels(group_labels, fontsize=16)
         elif self.ig == 2:
-            group_labels = [r"$-\overline{\rho} \nabla_r \widetilde{u}_r$", r"$-\partial_t \overline{\rho}$",
+            group_labels = [r"$-\widetilde{D}_t \overline{\rho}$",
                             r"$-\widetilde{u}_r \partial_r \overline{\rho}$", 'res']
 
             # Set the x tick labels to the group_labels defined above.
@@ -325,56 +316,6 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar_canuto1997.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar.eps')
-
-    def plot_mm_vs_MM(self, laxis, xbl, xbr, ybu, ybd, ilg):
-        """Plot mm vs MM in the model"""
-
-        # load x GRID
-        grd1 = self.xzn0
-
-        mm = self.mm_ver2
-        MM = self.mm
-        mm_lnV = mm * np.log(self.vol)
-
-        # create FIGURE
-        plt.figure(figsize=(7, 6))
-
-        # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
-
-        # set plot boundaries   
-        to_plot = [mm, MM, mm_lnV]
-        self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
-
-        # plot DATA 
-        plt.title('mm vs MM')
-
-        plt.plot(grd1, mm, color='g', label=r'$+\overline{m}$')
-        plt.plot(grd1, MM, color='r', label=r'$+\overline{M}$')
-        plt.plot(grd1, mm_lnV, color='b', linestyle='--', label=r'$+\overline{m} \ ln \ V$')
-
-        setxlabel = r'r (cm)'
-        setylabel = r"grams"
-
-        plt.xlabel(setxlabel)
-        plt.ylabel(setylabel)
-
-        # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
-
-        # display PLOT
-        plt.show(block=False)
-
-        # check supported file output extension
-        if self.fext != "png" and self.fext != "eps":
-            print("ERROR(ContinuityEquationWithFavrianDilatation.py):" + self.errorOutputFileExtension(self.fext))
-            sys.exit()
-
-        # save PLOT
-        if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mm_vs_MM_eq.png')
-        if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mm_vs_MM_eq.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'continuityFavreDil_eq_bar_canuto1997.eps')

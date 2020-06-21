@@ -5,7 +5,8 @@ import UTILS.SetAxisLimit as uSal
 import UTILS.Tools as uT
 import UTILS.Errors as eR
 import sys
-
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib.cm as cm
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -252,6 +253,30 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         #print(divuz)
         #print('************')
 
+        eht_ux = ux
+        fht_ux = ddux/dd
+
+        self.favrian_d = self.Div(fht_ux, xzn0)
+        self.reynolds_d = self.Div(eht_ux, xzn0)
+
+        # for space-time diagrams
+        t_divu = self.getRAdata(eht, 'divu')
+        t_timec = self.getRAdata(eht, 'timec')
+        if self.ig == 1:
+            self.t_divu = t_divu
+        elif self.ig == 2:
+            dx = (xzn0[-1]-xzn0[0])/nx
+            dumx = xzn0[0]+np.arange(1,nx,1)*dx
+            t_divu2 = []
+
+            # interpolation due to non-equidistant radial grid
+            for i in range(int(t_divu.shape[0])):
+                t_divu2.append(np.interp(dumx,xzn0,t_divu[i,:]))
+
+            t_divu_forspacetimediagram = np.asarray(t_divu2)
+            self.t_divu = t_divu_forspacetimediagram # for the space-time diagrams
+
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -267,6 +292,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.bconv = bconv
         self.tconv = tconv
 
+        self.t_timec = t_timec
+
     def plot_divu(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot divu in the model"""
 
@@ -281,6 +308,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # load DATA to plot
         plt1 = self.eht_divu1
         plt2 = self.eht_divu2
+        plt3 = self.favrian_d
+        plt4 = self.reynolds_d
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -295,8 +324,10 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # plot DATA
         if self.ig == 1:
             plt.title('divu (cartesian)')
-            plt.plot(grd1, plt1, color='r', label=r"$divu1$")
-            plt.plot(grd1, plt2, color='g', label=r"$divu2$")
+            #plt.plot(grd1, plt2, color='g', label=r"$divu2$")
+            plt.plot(grd1, plt3, color='g', label=r"+$\nabla_x \widetilde{u}_x$")
+            plt.plot(grd1, plt4, color='b', label=r"+$\nabla_x \overline{u}_x$")
+            plt.plot(grd1, plt1, color='r', linestyle='dotted',label=r"+$\overline{\nabla \cdot {\bf u}}$")
         elif self.ig == 2:
             plt.title('divu (spherical)')
             plt.plot(grd1, plt1, color='r', label=r"$divu1$")
@@ -319,7 +350,7 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)
@@ -334,3 +365,68 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.savefig('RESULTS/' + self.data_prefix + 'divu.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'divu.eps')
+
+    def plot_divu_space_time(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+        """Plot Frho space time diagram"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(ContinuityEquationWithMassFlux.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        t_timec = self.t_timec
+
+        # load x GRID
+        nx = self.nx
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.t_divu.T
+        #plt1 = self.t_divu.T
+
+        indRES = np.where((grd1 < 9.e8) & (grd1 > 4.e8))[0]
+
+        #pltMax = np.max(plt1[indRES])
+        #pltMin = np.min(plt1[indRES])
+
+        pltMax = 5.e-5
+        pltMin = -5.e-5
+
+        # create FIGURE
+        # plt.figure(figsize=(7, 6))
+
+        #print(t_timec[0], t_timec[-1], grd1[0], grd1[-1])
+
+        fig, ax = plt.subplots(figsize=(14, 7))
+        # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
+        fig.suptitle(r'$\nabla \cdot {\bf u} (256x256x256)$')
+
+        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
+                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       vmax=pltMax, vmin=pltMin)
+
+        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        fig.colorbar(im, cax=cax, orientation='vertical')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'time (s)'
+            setylabel = r"r ($10^8$ cm)"
+            ax.set_xlabel(setxlabel)
+            ax.set_ylabel(setylabel)
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_divu_space_time' +'.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_divu_space_time' + '.eps')

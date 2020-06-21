@@ -179,6 +179,14 @@ class MasterPlot():
                                              params.getForEqs('conteqfdd')['ybd'],
                                              params.getForEqs('conteqfdd')['ilg'])
 
+        ransCONTfdd.plot_Frho_space_time(params.getForProp('prop')['laxis'],
+                                             bconv, tconv,
+                                             params.getForEqs('conteqfdd')['xbl'],
+                                             params.getForEqs('conteqfdd')['xbr'],
+                                             params.getForEqs('conteqfdd')['ybu'],
+                                             params.getForEqs('conteqfdd')['ybd'],
+                                             params.getForEqs('conteqfdd')['ilg'])
+
     def execContFddEqBar(self):
         params = self.params
 
@@ -2374,6 +2382,14 @@ class MasterPlot():
                            params.getForEqs('divu')['ybu'],
                            params.getForEqs('divu')['ybd'],
                            params.getForEqs('divu')['ilg'])
+
+        ransDivu.plot_divu_space_time(params.getForProp('prop')['laxis'],
+                                             bconv, tconv,
+                                             params.getForEqs('conteqfdd')['xbl'],
+                                             params.getForEqs('conteqfdd')['xbr'],
+                                             params.getForEqs('conteqfdd')['ybu'],
+                                             params.getForEqs('conteqfdd')['ybd'],
+                                             params.getForEqs('conteqfdd')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """
