@@ -138,7 +138,9 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.xzn0 = xzn0
         self.dd = dd
         self.fht_ek = fht_ek
+        self.fekx = fekx
         self.fext = fext
+
 
     def plot_ke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot kinetic energy stratification in the model"""
@@ -194,6 +196,43 @@ class KineticEnergyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_ek.png')
         elif self.fext == 'eps':
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_ek.eps')
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        # set plot boundaries
+        to_plot = [self.fekx]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        plt.plot(grd1,self.fekx)
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$F_K$ (erg cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"$F_K$ (erg cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # save PLOT
+        if self.fext == 'png':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_fekx.png')
+        elif self.fext == 'eps':
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_fekx.eps')
+
+        plt.show(block=False)
+
 
     def plot_ke_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot kinetic energy equation in the model"""
