@@ -97,6 +97,10 @@ def main():
     if str2bool(params.getForEqs('buoy')['plotMee']):
         plt.execBuoyancy()
 
+    # Dilatation
+    if str2bool(params.getForEqs('divu')['plotMee']):
+        plt.execDilatation()
+
     # load network
     network = params.getNetwork()
 
