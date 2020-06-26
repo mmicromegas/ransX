@@ -16,6 +16,7 @@ import EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy as buoy
 import EQUATIONS.FOR_RESOLUTION_STUDY.XResolutionStudy as xx
 import EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy as xrho
 import EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy as xflxx
+import EQUATIONS.FOR_RESOLUTION_STUDY.DivuResolutionStudy as divu
 
 import matplotlib.pyplot as plt
 
@@ -97,16 +98,16 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTT = tt.TemperatureResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                               params.getForProp('prop')['ig'], \
-                                               params.getForProp('prop')['intc'], \
+        ransTT = tt.TemperatureResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
 
-        ransTT.plot_tt(params.getForProp('prop')['laxis'], \
-                       params.getForEqs('temp')['xbl'], \
-                       params.getForEqs('temp')['xbr'], \
-                       params.getForEqs('temp')['ybu'], \
-                       params.getForEqs('temp')['ybd'], \
+        ransTT.plot_tt(params.getForProp('prop')['laxis'],
+                       params.getForEqs('temp')['xbl'],
+                       params.getForEqs('temp')['xbr'],
+                       params.getForEqs('temp')['ybu'],
+                       params.getForEqs('temp')['ybd'],
                        params.getForEqs('temp')['ilg'])
 
     def execTke(self):
@@ -114,113 +115,113 @@ class ResMasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransTke = tke.TurbulentKineticEnergyResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                            params.getForProp('prop')['ig'], \
-                                                            params.getForProp('prop')['intc'], \
+        ransTke = tke.TurbulentKineticEnergyResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                            params.getForProp('prop')['ig'],
+                                                            params.getForProp('prop')['intc'],
                                                             params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy			   
-        ransTke.plot_tke(params.getForProp('prop')['laxis'], \
-                         params.getForEqs('tkie')['xbl'], \
-                         params.getForEqs('tkie')['xbr'], \
-                         params.getForEqs('tkie')['ybu'], \
-                         params.getForEqs('tkie')['ybd'], \
+        ransTke.plot_tke(params.getForProp('prop')['laxis'],
+                         params.getForEqs('tkie')['xbl'],
+                         params.getForEqs('tkie')['xbr'],
+                         params.getForEqs('tkie')['ybu'],
+                         params.getForEqs('tkie')['ybd'],
                          params.getForEqs('tkie')['ilg'])
 
     def execEiFlx(self):
         params = self.params
 
         # instantiate 		
-        ransEiFlx = feix.InternalEnergyFluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                           params.getForProp('prop')['ig'], \
-                                                           params.getForProp('prop')['intc'], \
+        ransEiFlx = feix.InternalEnergyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                           params.getForProp('prop')['ig'],
+                                                           params.getForProp('prop')['intc'],
                                                            params.getForProp('prop')['prefix'])
 
-        ransEiFlx.plot_feix(params.getForProp('prop')['laxis'], \
-                            params.getForEqs('eintflx')['xbl'], \
-                            params.getForEqs('eintflx')['xbr'], \
-                            params.getForEqs('eintflx')['ybu'], \
-                            params.getForEqs('eintflx')['ybd'], \
+        ransEiFlx.plot_feix(params.getForProp('prop')['laxis'],
+                            params.getForEqs('eintflx')['xbl'],
+                            params.getForEqs('eintflx')['xbr'],
+                            params.getForEqs('eintflx')['ybu'],
+                            params.getForEqs('eintflx')['ybd'],
                             params.getForEqs('eintflx')['ilg'])
 
     def execSSflx(self):
         params = self.params
 
         # instantiate 		
-        ransSSflx = fssx.EntropyFluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                    params.getForProp('prop')['ig'], \
-                                                    params.getForProp('prop')['intc'], \
+        ransSSflx = fssx.EntropyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                    params.getForProp('prop')['ig'],
+                                                    params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['prefix'])
 
-        ransSSflx.plot_fssx(params.getForProp('prop')['laxis'], \
-                            params.getForEqs('entrflx')['xbl'], \
-                            params.getForEqs('entrflx')['xbr'], \
-                            params.getForEqs('entrflx')['ybu'], \
-                            params.getForEqs('entrflx')['ybd'], \
+        ransSSflx.plot_fssx(params.getForProp('prop')['laxis'],
+                            params.getForEqs('entrflx')['xbl'],
+                            params.getForEqs('entrflx')['xbr'],
+                            params.getForEqs('entrflx')['ybu'],
+                            params.getForEqs('entrflx')['ybd'],
                             params.getForEqs('entrflx')['ilg'])
 
     def execTTflx(self):
         params = self.params
 
         # instantiate 		
-        ransTTflx = fttx.TemperatureFluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                        params.getForProp('prop')['ig'], \
-                                                        params.getForProp('prop')['intc'], \
+        ransTTflx = fttx.TemperatureFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                        params.getForProp('prop')['ig'],
+                                                        params.getForProp('prop')['intc'],
                                                         params.getForProp('prop')['prefix'])
 
-        ransTTflx.plot_fttx(params.getForProp('prop')['laxis'], \
-                            params.getForEqs('tempflx')['xbl'], \
-                            params.getForEqs('tempflx')['xbr'], \
-                            params.getForEqs('tempflx')['ybu'], \
-                            params.getForEqs('tempflx')['ybd'], \
+        ransTTflx.plot_fttx(params.getForProp('prop')['laxis'],
+                            params.getForEqs('tempflx')['xbl'],
+                            params.getForEqs('tempflx')['xbr'],
+                            params.getForEqs('tempflx')['ybu'],
+                            params.getForEqs('tempflx')['ybd'],
                             params.getForEqs('tempflx')['ilg'])
 
     def execHHflx(self):
         params = self.params
 
         # instantiate 		
-        ransHHflx = fhhx.EnthalpyFluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                     params.getForProp('prop')['ig'], \
-                                                     params.getForProp('prop')['intc'], \
+        ransHHflx = fhhx.EnthalpyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['prefix'])
 
-        ransHHflx.plot_fhhx(params.getForProp('prop')['laxis'], \
-                            params.getForEqs('enthflx')['xbl'], \
-                            params.getForEqs('enthflx')['xbr'], \
-                            params.getForEqs('enthflx')['ybu'], \
-                            params.getForEqs('enthflx')['ybd'], \
+        ransHHflx.plot_fhhx(params.getForProp('prop')['laxis'],
+                            params.getForEqs('enthflx')['xbl'],
+                            params.getForEqs('enthflx')['xbr'],
+                            params.getForEqs('enthflx')['ybu'],
+                            params.getForEqs('enthflx')['ybd'],
                             params.getForEqs('enthflx')['ilg'])
 
     def execTMSflx(self):
         params = self.params
 
         # instantiate 		
-        ransTMSflx = a.TurbulentMassFluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                        params.getForProp('prop')['ig'], \
-                                                        params.getForProp('prop')['intc'], \
+        ransTMSflx = a.TurbulentMassFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                        params.getForProp('prop')['ig'],
+                                                        params.getForProp('prop')['intc'],
                                                         params.getForProp('prop')['prefix'])
 
-        ransTMSflx.plot_fddx(params.getForProp('prop')['laxis'], \
-                             params.getForEqs('tmsflx')['xbl'], \
-                             params.getForEqs('tmsflx')['xbr'], \
-                             params.getForEqs('tmsflx')['ybu'], \
-                             params.getForEqs('tmsflx')['ybd'], \
+        ransTMSflx.plot_fddx(params.getForProp('prop')['laxis'],
+                             params.getForEqs('tmsflx')['xbl'],
+                             params.getForEqs('tmsflx')['xbr'],
+                             params.getForEqs('tmsflx')['ybu'],
+                             params.getForEqs('tmsflx')['ybd'],
                              params.getForEqs('tmsflx')['ilg'])
 
     def execPPxflx(self):
         params = self.params
 
         # instantiate 		
-        ransPPxflx = fppx.PressureFluxResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                      params.getForProp('prop')['ig'], \
-                                                      params.getForProp('prop')['intc'], \
+        ransPPxflx = fppx.PressureFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                      params.getForProp('prop')['ig'],
+                                                      params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'])
 
-        ransPPxflx.plot_fppx(params.getForProp('prop')['laxis'], \
-                             params.getForEqs('pressxflx')['xbl'], \
-                             params.getForEqs('pressxflx')['xbr'], \
-                             params.getForEqs('pressxflx')['ybu'], \
-                             params.getForEqs('pressxflx')['ybd'], \
+        ransPPxflx.plot_fppx(params.getForProp('prop')['laxis'],
+                             params.getForEqs('pressxflx')['xbl'],
+                             params.getForEqs('pressxflx')['xbr'],
+                             params.getForEqs('pressxflx')['ybu'],
+                             params.getForEqs('pressxflx')['ybd'],
                              params.getForEqs('pressxflx')['ilg'])
 
     def execUXrms(self):
@@ -275,16 +276,16 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransDDrms = ddRms.DensityRmsResolutionStudy(params.getForProp('prop')['eht_data'], \
-                                                      params.getForProp('prop')['ig'], \
-                                                      params.getForProp('prop')['intc'], \
-                                                      params.getForProp('prop')['prefix'])
+        ransDDrms = ddRms.DensityRmsResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                    params.getForProp('prop')['ig'],
+                                                    params.getForProp('prop')['intc'],
+                                                    params.getForProp('prop')['prefix'])
 
-        ransDDrms.plot_ddrms(params.getForProp('prop')['laxis'], \
-                             params.getForEqs('ddrms')['xbl'], \
-                             params.getForEqs('ddrms')['xbr'], \
-                             params.getForEqs('ddrms')['ybu'], \
-                             params.getForEqs('ddrms')['ybd'], \
+        ransDDrms.plot_ddrms(params.getForProp('prop')['laxis'],
+                             params.getForEqs('ddrms')['xbl'],
+                             params.getForEqs('ddrms')['xbr'],
+                             params.getForEqs('ddrms')['ybu'],
+                             params.getForEqs('ddrms')['ybd'],
                              params.getForEqs('ddrms')['ilg'])
 
     def execBuoyancy(self):
@@ -297,13 +298,29 @@ class ResMasterPlot():
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['prefix'])
 
-        ransBuoyancy.plot_buoyancy(params.getForProp('prop')['laxis'], \
-                             params.getForEqs('buoy')['xbl'], \
-                             params.getForEqs('buoy')['xbr'], \
-                             params.getForEqs('buoy')['ybu'], \
-                             params.getForEqs('buoy')['ybd'], \
-                             params.getForEqs('buoy')['ilg'])
+        ransBuoyancy.plot_buoyancy(params.getForProp('prop')['laxis'],
+                                   params.getForEqs('buoy')['xbl'],
+                                   params.getForEqs('buoy')['xbr'],
+                                   params.getForEqs('buoy')['ybu'],
+                                   params.getForEqs('buoy')['ybd'],
+                                   params.getForEqs('buoy')['ilg'])
 
+
+    def execDilatation(self):
+        params = self.params
+
+        # instantiate
+        ransDilatation = divu.DivuResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                    params.getForProp('prop')['ig'],
+                                                    params.getForProp('prop')['intc'],
+                                                    params.getForProp('prop')['prefix'])
+
+        ransDilatation.plot_divu(params.getForProp('prop')['laxis'],
+                                 params.getForEqs('divu')['xbl'],
+                                 params.getForEqs('divu')['xbr'],
+                                 params.getForEqs('divu')['ybu'],
+                                 params.getForEqs('divu')['ybd'],
+                                 params.getForEqs('divu')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

@@ -139,6 +139,8 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.plot(grd1, plt2-plt1, color='m', label=r"$-\overline{\rho' u'_r}/\overline{\rho}$")
             # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 
+        plt.axhline(y=0., linestyle='dotted',color='k')
+
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')

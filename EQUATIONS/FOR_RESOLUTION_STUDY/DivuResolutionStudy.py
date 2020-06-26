@@ -14,10 +14,10 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class DivuResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
-        super(DensityRmsResolutionStudy, self).__init__(ig)
+        super(DivuResolutionStudy, self).__init__(ig)
 
         # load data to list of structured arrays
         eht = []
@@ -27,7 +27,7 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
 
-        ux, ddsq, dd, ddrms = [], [], [], []
+        divu = []
 
         for i in range(len(filename)):
             # load grid
@@ -40,9 +40,7 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
             # pick specific Reynolds-averaged mean fields according to:
             # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 		
 
-            dd.append(np.asarray(eht[i].item().get('dd')[intc]))
-            ddsq.append(np.asarray(eht[i].item().get('ddsq')[intc]))
-            ddrms.append(((ddsq[i] - dd[i] * dd[i]) ** 0.5)/dd[i])
+            divu.append(np.asarray(eht[i].item().get('divu')[intc]))
 
         # share data globally
         self.data_prefix = data_prefix
@@ -50,21 +48,21 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         self.nx = nx
         self.ny = ny
         self.nz = nz
-        self.ddrms = ddrms
+        self.divu = divu
         self.ig = ig
 
-    def plot_ddrms(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_divu(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot TurbulentMass flux in the model"""
 
         if (LAXIS != 2):
-            print("ERROR(DensityRmsResolutionStudy.py): Only LAXIS=2 is supported.")
+            print("ERROR(DivuResolutionStudy.py): Only LAXIS=2 is supported.")
             sys.exit()
 
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        plt1 = self.ddrms
+        plt1 = self.divu
         nx = self.nx
         ny = self.ny
         nz = self.nz
@@ -97,31 +95,24 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Relative Density RMS fluctuations')
+        plt.title('Divu')
 
         for i in range(len(grd)):
-            plt.semilogy(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
-
-        print("[WARNING] (DensityRmsResolutionStudy.py): convective boundary markers taken from 256c run, tavg = 1500 secs")
-        # taken from 256cubed, tavg 1500 sec
-        bconv = 4.1e8
-        tconv = 9.7e8
-        # convective boundary markers
-        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
-
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
-            setylabel = r"$\rho_{rms} \ / \ \overline{\rho}$"
+            setylabel = r"$\overline{\nabla \cdot {\bf u}}$"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r"r (cm)"
-            setylabel = r"$\rho_{rms} \ / \ \overline{\rho}$"
+            setylabel = r"$\overline{\nabla \cdot {\bf u}}$"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
+
+        plt.axhline(y=0., linestyle='--',color='k')
 
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 18})
@@ -130,8 +121,8 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_DensityRMS.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_DensityRMS.eps')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_divu.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_divu.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

@@ -98,6 +98,7 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_enuc.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_enuc.eps')
 
     def plot_enuc_per_volume(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot nuclear energy production stratification in the model"""

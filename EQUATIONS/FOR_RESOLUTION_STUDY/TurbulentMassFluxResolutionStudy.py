@@ -122,6 +122,7 @@ class TurbulentMassFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools,
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentMass_flux.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentMass_flux.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

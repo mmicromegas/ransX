@@ -253,6 +253,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         #print(divuz)
         #print('************')
 
+        self.fht_divu = dddivu/dd
+
         eht_ux = ux
         fht_ux = ddux/dd
 
@@ -310,6 +312,7 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt2 = self.eht_divu2
         plt3 = self.favrian_d
         plt4 = self.reynolds_d
+        plt5 = self.fht_divu
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -328,10 +331,13 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
             plt.plot(grd1, plt3, color='g', label=r"+$\nabla_x \widetilde{u}_x$")
             plt.plot(grd1, plt4, color='b', label=r"+$\nabla_x \overline{u}_x$")
             plt.plot(grd1, plt1, color='r', linestyle='dotted',label=r"+$\overline{\nabla \cdot {\bf u}}$")
+            plt.plot(grd1, plt5, color='m', linestyle='dotted',label=r"+$\overline{\rho \nabla \cdot {\bf u}}/\overline{\rho}$")
         elif self.ig == 2:
             plt.title('divu (spherical)')
             plt.plot(grd1, plt1, color='r', label=r"$divu1$")
             plt.plot(grd1, plt2, color='g', label=r"$divu2$")
+
+        plt.axhline(y=0., linestyle='--',color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
