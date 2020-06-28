@@ -134,6 +134,7 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentRadialVelocity.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentRadialVelocity.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

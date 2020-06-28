@@ -25,6 +25,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
         nx = self.getRAdata(eht, 'nx')
+        ny = self.getRAdata(eht, 'ny')
+        nz = self.getRAdata(eht, 'nz')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
@@ -284,6 +286,9 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.xzn0 = xzn0
         self.dd = dd
         self.nx = nx
+        self.ny = ny
+        self.nz = nz
+
         self.ig = ig
 
         self.pp = pp
@@ -404,7 +409,7 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         fig, ax = plt.subplots(figsize=(14, 7))
         # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
-        fig.suptitle(r'$\nabla \cdot {\bf u} (256x256x256)$')
+        fig.suptitle(r"$\nabla \cdot {\bf u}$ " + str(self.nx) + ' x ' + str(self.ny) + ' x ' + str(self.nz))
 
         im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
                        origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',

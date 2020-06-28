@@ -28,6 +28,8 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         yzn0 = self.getRAdata(eht, 'yzn0')
         zzn0 = self.getRAdata(eht, 'zzn0')
         nx = self.getRAdata(eht, 'nx')
+        ny = self.getRAdata(eht, 'ny')
+        nz = self.getRAdata(eht, 'nz')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
@@ -98,6 +100,8 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         self.zzn0 = zzn0
         self.dd = dd
         self.nx = nx
+        self.ny = ny
+        self.nz = nz
         self.ig = ig
         self.fext = fext
         self.t_timec = t_timec
@@ -370,7 +374,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         #pltMax = np.max(plt1[indRES])
         #pltMin = np.min(plt1[indRES])
 
-        pltMax = 0.5e10
+        pltMax = 0.2e10
         pltMin = -4.e10
 
         # create FIGURE
@@ -380,7 +384,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
 
         fig, ax = plt.subplots(figsize=(14, 7))
         # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
-        fig.suptitle(r'$f_\rho (256x256x256)$')
+        fig.suptitle(r"$f_\rho$ " + str(self.nx) + ' x ' + str(self.ny) + ' x ' + str(self.nz))
 
         im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
                        origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',

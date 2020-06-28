@@ -238,7 +238,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         pltMax = np.max(plt1)
         #pltMax = 3.e12 # for the thpulse
         #pltMax = 2.e12 # for neshell nucb10x
-        pltMax = 2.e12
+        pltMax = 1.e14
         pltMin = np.min(plt1)
 
         #pltMin = 7.
