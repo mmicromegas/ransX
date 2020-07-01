@@ -51,6 +51,30 @@ def main():
     if str2bool(params.getForEqsBar('conteqBar')['plotMee']):
         plt.execContEqBar()
 
+    # MOMENTUM X EQUATION
+    if str2bool(params.getForEqs('momex')['plotMee']):
+        plt.execMomx(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('momxeq')['plotMee']):
+        plt.execMomxEq(prp['xzn0inc'], prp['xzn0outc'])
+
+    # MOMENTUM Y EQUATION
+    if str2bool(params.getForEqs('momey')['plotMee']):
+        plt.execMomy(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('momyeq')['plotMee']):
+        plt.execMomyEq(prp['xzn0inc'], prp['xzn0outc'])
+
+    # MOMENTUM Z EQUATION
+    if str2bool(params.getForEqs('momez')['plotMee']):
+        plt.execMomz(prp['xzn0inc'], prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('momzeq')['plotMee']):
+        plt.execMomzEq(prp['xzn0inc'], prp['xzn0outc'])
+
+    # TURBULENT KINETIC ENERGY FLUX
+    if str2bool(params.getForEqs('keflx')['plotMee']):
+        plt.execKeflx(prp['xzn0inc'], prp['xzn0outc'])
 
 # True/False strings to proper boolean
 def str2bool(param):

@@ -152,9 +152,9 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux_canuto1997.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux_canuto1997.eps')
 
     def plot_momentum_equation_x(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
@@ -189,10 +189,11 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # plot DATA 
         plt.title('x momentum equation')
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
-            plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_x ) $")
-            plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_x (\widetilde{R}_{xx})$")
-            plt.plot(grd1, rhs2, color='r', label=r"$-(\partial_x \overline{P} - \bar{\rho}\tilde{g}_x)$")
+            #plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
+            #plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_x ) $")
+            plt.plot(grd1,lhs0+lhs1,color='c',label=r"$-\overline{\rho} D_t \widetilde{u}_x$")
+            plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_x (\overline{\rho} R_{xx})$")
+            plt.plot(grd1, rhs2, color='r', label=r"$-(\partial_x \overline{p} - \overline{\rho} g_x)$")
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
@@ -225,6 +226,6 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq_canuto1997.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'momentum_x_eq_canuto1997.eps')

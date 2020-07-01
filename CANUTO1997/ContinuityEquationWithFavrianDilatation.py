@@ -34,6 +34,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
         dd = self.getRAdata(eht, 'dd')[intc]
+        ux = self.getRAdata(eht, 'ux')[intc]
         ddux = self.getRAdata(eht, 'ddux')[intc]
         mm = self.getRAdata(eht, 'mm')[intc]
 
@@ -64,6 +65,10 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         # ad hoc variables
         vol = (4. / 3.) * np.pi * xzn0 ** 3
         mm_ver2 = dd * vol
+
+        # -Div fdd for boundary identification
+        fdd = ddux - dd * ux
+        self.minus_div_fdd = -self.Div(fdd, xzn0)
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -169,13 +174,29 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         plt.title('continuity equation with Favrian dilatation')
 
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='g', label=r'$-\widetilde{D}_t (\overline{\rho})$')
-            plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_x (\widetilde{u}_x)$')
+            plt.plot(grd1, lhs0, color='g', label=r'$-D_t \overline{\rho}$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \ \nabla_x \widetilde{u}_x$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
         elif self.ig == 2:
-            plt.plot(grd1, lhs0, color='g', label=r'$-\widetilde{D}_t (\overline{\rho})$')
-            plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \nabla_r (\widetilde{u}_r)$')
+            plt.plot(grd1, lhs0, color='g', label=r'$-D_t \overline{\rho}$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \ \nabla_r \widetilde{u}_r$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
+
+        # shade boundaries
+        ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
+        rinc = grd1[ind1[0]]
+        routc = grd1[ind1[-1]]
+
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+
+        ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
+        rinc = grd1[ind2[0]]
+        routc = grd1[ind2[-1]]
+
+        #print(rinc,routc,ind2[0],ind2[-1],ind2,(self.nx/2),self.nx)
+        #print(self.nx)
+
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')

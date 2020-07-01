@@ -65,6 +65,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
                 #sys.exit()
             t_mm = np.asarray(t_mm_l)
         elif self.ig == 2:
+            t_dd = self.getRAdata(eht, 'dd')
             t_mm = self.getRAdata(eht, 'mm')
 
         minus_dt_mm = -self.dt(t_mm, xzn0, t_timec, intc)
