@@ -125,6 +125,9 @@ class PROMPI_ransdat:
         nz = {'nz': self.qqz}
         self.ransd.update(nz)
 
+        nnuc = {'nnuc': self.nnuc}
+        self.ransd.update(nnuc)
+
         xzn0 = {'xzn0': self.xzn0}
         self.ransd.update(xzn0)
 

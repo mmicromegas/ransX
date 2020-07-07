@@ -17,6 +17,7 @@ import EQUATIONS.FOR_RESOLUTION_STUDY.XResolutionStudy as xx
 import EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy as xrho
 import EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy as xflxx
 import EQUATIONS.FOR_RESOLUTION_STUDY.DivuResolutionStudy as divu
+import EQUATIONS.FOR_RESOLUTION_STUDY.DivFrhoResolutionStudy as divfrho
 
 import matplotlib.pyplot as plt
 
@@ -321,6 +322,22 @@ class ResMasterPlot():
                                  params.getForEqs('divu')['ybu'],
                                  params.getForEqs('divu')['ybd'],
                                  params.getForEqs('divu')['ilg'])
+
+    def execDivFrho(self):
+        params = self.params
+
+        # instantiate
+        ransDivFrho = divfrho.DivFrhoResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                    params.getForProp('prop')['ig'],
+                                                    params.getForProp('prop')['intc'],
+                                                    params.getForProp('prop')['prefix'])
+
+        ransDivFrho.plot_divfrho(params.getForProp('prop')['laxis'],
+                                 params.getForEqs('divfrho')['xbl'],
+                                 params.getForEqs('divfrho')['xbr'],
+                                 params.getForEqs('divfrho')['ybu'],
+                                 params.getForEqs('divfrho')['ybd'],
+                                 params.getForEqs('divfrho')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

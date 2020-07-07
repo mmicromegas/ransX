@@ -101,6 +101,10 @@ def main():
     if str2bool(params.getForEqs('divu')['plotMee']):
         plt.execDilatation()
 
+    # Div of Turbulent Mass Flux
+    if str2bool(params.getForEqs('divfrho')['plotMee']):
+        plt.execDivFrho()
+
     # load network
     network = params.getNetwork()
 

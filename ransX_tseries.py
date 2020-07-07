@@ -126,6 +126,9 @@ def main():
     nz = {'nx': ts.rans()['nz']}
     eht.update(nz)
 
+    nnuc = {'nnuc': ts.rans()['nnuc']}
+    eht.update(nnuc)
+
     xzn0 = {'xzn0': ts.rans()['xzn0']}
     eht.update(xzn0)
 

@@ -47,6 +47,14 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         uxux = self.getRAdata(eht, 'uxux')[intc]
         gamma1 = self.getRAdata(eht, 'gamma1')[intc]
 
+        if plabel == 'ccptwo':
+            ddux = self.getRAdata(eht, 'ddux')[intc]
+            ddxi = self.getRAdata(eht, 'ddx0001')[intc]
+            ddxiux = self.getRAdata(eht, 'ddx0001ux')[intc]
+            fxi = ddxiux - ddxi * ddux / dd
+        else:
+            fxi = np.zeros(nx)
+
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if ieos == 1:
             cp = self.getRAdata(eht, 'cp')[intc]
@@ -58,9 +66,9 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         if plabel == 'ccptwo':
             x0002 = self.getRAdata(eht, 'x0002')[intc]
         if plabel == 'oburn':
-            x0002 = self.getRAdata(eht, 'x0002')[intc] # track prot
+            x0002 = self.getRAdata(eht, 'x0002')[intc]  # track prot
         if plabel == 'neshell':
-            x0002 = self.getRAdata(eht, 'x0002')[intc] # track
+            x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
         if plabel == 'heflash':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
         if plabel == 'thpulse':
@@ -139,6 +147,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         self.laxis = laxis
 
         self.x0002 = x0002
+        self.fxi = fxi
 
     def properties(self):
         """ Print properties of your simulation"""
@@ -206,11 +215,18 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # Get rid of the numerical mess at outer boundary 
         diss[idxr:self.nx] = 0.
 
-        diss_max = diss.max()
-        ind = np.where((diss > 0.02 * diss_max))[0]
+        if self.plabel == "ccptwo":
+            fxi_max = self.fxi.max()
+            ind = np.where((np.abs(self.fxi) > 0.001 * fxi_max))[0]
 
-        xzn0inc = xzn0[ind[0]]
-        xzn0outc = xzn0[ind[-1]]
+            xzn0inc = xzn0[ind[0]]
+            xzn0outc = xzn0[ind[-1]]
+        else:
+            diss_max = diss.max()
+            ind = np.where((diss > 0.02 * diss_max))[0]
+
+            xzn0inc = xzn0[ind[0]]
+            xzn0outc = xzn0[ind[-1]]
 
         ibot = ind[0]
         itop = ind[-1]
@@ -422,7 +438,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ig = self.ig
 
         p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
-             'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc, 'cnvz_in_hp' : cnvz_in_hp,
+             'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc, 'cnvz_in_hp': cnvz_in_hp,
              'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
              'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,

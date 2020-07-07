@@ -297,10 +297,10 @@ def main():
 
     # TURBULENT MASS FLUX EQUATION a.k.a A EQUATION
     if str2bool(params.getForEqs('tmsflx')['plotMee']):
-        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'],prp['lc'])
 
     if str2bool(params.getForEqs('aeq')['plotMee']):
-        plt.execAeq(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execAeq(prp['xzn0inc'], prp['xzn0outc'],prp['lc'])
 
     # DENSITY-SPECIFIC VOLUME COVARIANCE a.k.a. B EQUATION
     if str2bool(params.getForEqs('dsvc')['plotMee']):

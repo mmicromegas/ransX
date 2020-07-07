@@ -1241,14 +1241,15 @@ class MasterPlot():
                                          params.getForEqs('ddvareq')['ybd'],
                                          params.getForEqs('ddvareq')['ilg'])
 
-    def execTMSflx(self, bconv, tconv,):
+    def execTMSflx(self, bconv, tconv, lc):
         params = self.params
 
         # instantiate 		
         ransTMSflx = a.TurbulentMassFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['intc'],
-                                                 params.getForProp('prop')['prefix'])
+                                                 params.getForProp('prop')['prefix'],
+                                                 lc)
 
         ransTMSflx.plot_a(params.getForProp('prop')['laxis'],
                           bconv, tconv,
@@ -1258,14 +1259,15 @@ class MasterPlot():
                           params.getForEqs('tmsflx')['ybd'],
                           params.getForEqs('tmsflx')['ilg'])
 
-    def execAeq(self, bconv, tconv):
+    def execAeq(self, bconv, tconv, lc):
         params = self.params
 
         # instantiate 		
         ransTMSflx = a.TurbulentMassFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['intc'],
-                                                 params.getForProp('prop')['prefix'])
+                                                 params.getForProp('prop')['prefix'],
+                                                 lc)
 
         ransTMSflx.plot_a_equation(params.getForProp('prop')['laxis'],
                                    bconv, tconv,
@@ -1467,6 +1469,14 @@ class MasterPlot():
                                           params.getForProp('prop')['prefix'])
 
         ransBruntV.plot_bruntvaisalla(params.getForProp('prop')['laxis'],
+                                      bconv, tconv,
+                                      params.getForEqs('nsq')['xbl'],
+                                      params.getForEqs('nsq')['xbr'],
+                                      params.getForEqs('nsq')['ybu'],
+                                      params.getForEqs('nsq')['ybd'],
+                                      params.getForEqs('nsq')['ilg'])
+
+        ransBruntV.plot_ri(params.getForProp('prop')['laxis'],
                                       bconv, tconv,
                                       params.getForEqs('nsq')['xbl'],
                                       params.getForEqs('nsq')['xbr'],

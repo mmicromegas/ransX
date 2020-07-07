@@ -562,7 +562,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         plt.figure(figsize=(7, 6))
 
-        lb = -1.e15
+        lb = -1.e2
         ub = 1.e15
 
         plt.yscale('symlog')
@@ -717,7 +717,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
-        savefig('RESULTS/oburn25_nuclear_energy_gen_new_INI.png')
+        savefig('RESULTS/oburn25_nuclear_energy_gen.png')
 
     def plot_check_heq1(self):
         xzn0 = np.asarray(self.data['xzn0'])
