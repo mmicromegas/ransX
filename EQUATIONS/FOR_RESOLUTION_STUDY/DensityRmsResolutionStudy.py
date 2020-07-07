@@ -104,8 +104,8 @@ class DensityRmsResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Err
 
         print("[WARNING] (DensityRmsResolutionStudy.py): convective boundary markers taken from 256c run, tavg = 1500 secs")
         # taken from 256cubed, tavg 1500 sec
-        bconv = 4.1e8
-        tconv = 9.7e8
+        bconv = 4.e8
+        tconv = 9.09e8
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')

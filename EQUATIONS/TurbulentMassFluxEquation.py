@@ -15,7 +15,7 @@ import sys
 
 class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, intc, data_prefix, lc):
         super(TurbulentMassFluxEquation, self).__init__(ig)
 
         # load data to structured array
@@ -30,6 +30,11 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
 
         dd = self.getRAdata(eht, 'dd')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
         gg = self.getRAdata(eht, 'gg')[intc]
         sv = self.getRAdata(eht, 'sv')[intc]
@@ -154,11 +159,19 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         self.fht_ux_model = gamma1 * pp * fht_ux * 8. * np.pi * (xzn0 ** 2.) / (
                 ((4. / 3) * np.pi * (xzn0 ** 3.) * dd) * gg)
 
+        # downgradient model
+        uturb = np.sqrt((uxux - ux*ux)+(uyuy - uy*uy)+(uzuz - uz*uz))
+        self.coeff = 3.5e-4
+        self.eht_a_grad_model = +self.coeff*uturb*lc*self.Grad(dd,xzn0)
+
+        # print(self.eht_a_grad_model)
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.eht_a = eht_a
         self.ux = ux
+        self.dd = dd
         self.fht_ux = fht_ux
 
     def plot_a(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
@@ -172,7 +185,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         grd1 = self.xzn0
 
         # load DATA to plot
-        plt1 = self.eht_a
+        plt1 = -self.dd*self.eht_a
         plt2 = self.eht_a_model1
         plt3 = self.eht_a_model2
         plt4 = self.ux
@@ -180,6 +193,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         plt6 = self.eht_a_model3
         plt7 = self.eht_a_model4
         plt8 = self.fht_ux_model
+        plt9 = self.eht_a_grad_model
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -188,20 +202,21 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2, plt3, plt4, plt5, plt6, plt7, plt8]
+        to_plot = [plt1, plt2, plt3, plt4, plt5, plt6, plt7, plt8, plt9]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title(r'turbulent mass flux')
+        plt.title(r'turbulent mass flux'+ ' c = ' + str(self.coeff))
         if self.ig == 1:
-            plt.plot(grd1, plt1, color='brown', label=r"$a$")
+            plt.plot(grd1, plt1, color='brown', label=r"$+\overline{\rho' u'_x}$")
             # plt.plot(grd1,plt2,color='r',label='model1')
             # plt.plot(grd1,plt3,color='g',label='model2')
-            plt.plot(grd1, plt4, color='pink', label=r'$\overline{u}_x$')
-            plt.plot(grd1, plt5, color='m', label=r'$\widetilde{u}_x$')
+            # plt.plot(grd1, plt4, color='pink', label=r'$\overline{u}_x$')
+            # plt.plot(grd1, plt5, color='m', label=r'$\widetilde{u}_x$')
             # plt.plot(grd1,plt6,color='b',label=r'model3')
             # plt.plot(grd1, plt7, color='b', label=r'model4')
             # plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
+            plt.plot(grd1, plt9, color='r', linestyle='--', label=r"$+c*u_{rms}*l_c * \partial_r \overline{\rho}$")
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r"$a$")
             # plt.plot(grd1,plt2,color='r',label='model1')
@@ -212,6 +227,9 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             # plt.plot(grd1, plt7, color='b', label=r'model4')
             # plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
 
+        # horizontal line at y = 0
+        plt.axhline(0.0, linestyle='dotted', linewidth=0.7, color='k')
+
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
@@ -219,7 +237,8 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
-            setylabel = r"$\overline{\rho}$ $\overline{u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            #setylabel = r"$\overline{\rho}$ $\overline{u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            setylabel = r"+$\overline{\rho' u'_x}$ (g cm$^{-2}$ s$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
@@ -359,7 +378,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 10}, ncol=3)
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=1)
 
         # display PLOT
         plt.show(block=False)

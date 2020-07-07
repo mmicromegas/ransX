@@ -100,6 +100,13 @@ class DivuResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, o
         for i in range(len(grd)):
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
 
+        bconv = 4.e8
+        tconv = 9.09e8
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"

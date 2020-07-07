@@ -14,10 +14,10 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class DivFrhoResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
-        super(TurbulentRadialVelocityResolutionStudy, self).__init__(ig)
+        super(DivFrhoResolutionStudy, self).__init__(ig)
 
         # load data to list of structured arrays
         eht = []
@@ -25,11 +25,9 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
             eht.append(np.load(ffile))
 
         # declare data lists		
-        xzn0, nx, ny, nz = [], [], [], []
+        xzn0, nx, ny, nz, tavg = [], [], [], [], []
 
-        ux, uxux, dd, uxrms = [], [], [], []
-        lum = []
-
+        divfrho = []
 
         for i in range(len(filename)):
             # load grid
@@ -38,14 +36,13 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
             nx.append(np.asarray(eht[i].item().get('nx')))
             ny.append(np.asarray(eht[i].item().get('ny')))
             nz.append(np.asarray(eht[i].item().get('nz')))
+            tavg.append(np.asarray(eht[i].item().get('tavg')))
 
             # pick specific Reynolds-averaged mean fields according to:
             # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf 		
 
-            lum.append(np.asarray(eht[i].item().get('enuc1')[intc]))
-            ux.append(np.asarray(eht[i].item().get('ux')[intc]))
-            uxux.append(np.asarray(eht[i].item().get('uxux')[intc]))
-            uxrms.append((uxux[i] - ux[i] * ux[i]) ** 0.5)
+            divfrho.append(self.Div((np.asarray(eht[i].item().get('ddux')[intc])-
+                           np.asarray(eht[i].item().get('dd')[intc])*np.asarray(eht[i].item().get('ux')[intc])),np.asarray(eht[i].item().get('xzn0'))))
 
         # share data globally
         self.data_prefix = data_prefix
@@ -53,22 +50,22 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
         self.nx = nx
         self.ny = ny
         self.nz = nz
-        self.uxrms = uxrms
-        self.lum = lum
+        self.divfrho = divfrho
         self.ig = ig
+        self.tavg = tavg
 
-    def plot_uxrms(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
-        """Plot TurbulentMass flux in the model"""
+    def plot_divfrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot div TurbulentMass flux in the model"""
 
         if (LAXIS != 2):
-            print("ERROR(TurbulentRadialVelocityResolutionStudy.py): Only LAXIS=2 is supported.")
+            print("ERROR(DivFrhoResolutionStudy.py): Only LAXIS=2 is supported.")
             sys.exit()
 
         # load x GRID
         grd = self.xzn0
 
         # load DATA to plot		
-        plt1 = self.uxrms
+        plt1 = self.divfrho
         nx = self.nx
         ny = self.ny
         nz = self.nz
@@ -101,40 +98,43 @@ class TurbulentRadialVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Radial Velocity RMS')
+        plt.title(r"-Div $\overline{\rho' u'_x}$ ")
 
         for i in range(len(grd)):
-            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+            plt.plot(grd[i], -1.*plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i])+ ' '+'(tavg = ' + str(np.int(self.tavg[i])) +' s)')
 
-        print("[WARNING] (TurbulentRadialVelocityResolutionStudy.py): convective boundary markers taken from 256c run, tavg = 1500 secs")
-        # taken from 256cubed, tavg 1500 sec
-        bconv = 4.e8
-        tconv = 9.09e8
-        # convective boundary markers
-        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+        bbndry = grd[0][289]
+        tbndry = grd[0][316]
+
+        plt.text(tbndry,0.8e2,r"$\sim$0.23 Hp")
+
+        # convective boundary
+        plt.axvline(bbndry, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tbndry, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
-            setylabel = r"u$^x_{rms}$ (cm/s)"
+            setylabel = r"$-\nabla_x \overline{\rho' u'_x}}$"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r"r (cm)"
-            setylabel = r"u$^x_{rms}$ (cm/s)"
+            setylabel = r"$-\nabla_r \overline{\rho' u'_r}}$"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
 
+        plt.axhline(y=0., linestyle='--',color='k')
+
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 18})
+        plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentRadialVelocity.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TurbulentRadialVelocity.eps')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_divfrho.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_divfrho.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

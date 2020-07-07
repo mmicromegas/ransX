@@ -27,6 +27,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
         nx = self.getRAdata(eht, 'nx')
+        nnuc = self.getRAdata(eht, 'nnuc')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf
@@ -101,7 +102,6 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         #    print("ERROR(XtransportEquation.py): core mass not defined!")
         #    sys.exit()
 
-
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -120,6 +120,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.t_fht_xi = t_fht_xi
         self.t_ddxi = t_ddxi
         self.ddxidot = ddxidot
+        self.nnuc = nnuc
 
         if self.ig == 1:
             self.t_fht_xi = t_fht_xi
@@ -165,7 +166,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title('rhoX for ' + element)
+        plt.title('rhoX for ' + element + " (netw: " + str(self.nnuc) + " ele)")
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{X}$')
 
         # convective boundary markers
@@ -313,7 +314,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             ax1.set_ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
-            setylabel = r"$\widetilde{X}$"
+            setylabel = r"$\widetilde{X}$" + " (netw: " + str(self.nnuc) + " ele)"
             ax1.set_xlabel(setxlabel)
             ax1.set_ylabel(setylabel)
 
@@ -566,7 +567,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title('rhoX transport for ' + element)
+        plt.title(r"rhoX transport for " + str(element) + " (netw: " + str(self.nnuc) + " ele)")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1, lhs1, color='cyan', label=r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')

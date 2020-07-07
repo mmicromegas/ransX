@@ -35,6 +35,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
         dd = self.getRAdata(eht, 'dd')[intc]
+        pp = self.getRAdata(eht, 'pp')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
         ddux = self.getRAdata(eht, 'ddux')[intc]
 
@@ -105,6 +106,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         self.ig = ig
         self.fext = fext
         self.t_timec = t_timec
+        self.pp = pp
 
     def plot_rho(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
@@ -223,6 +225,17 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         #print(self.nx)
 
         plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+
+        # calculate overshooting in Hp
+        ibot = ind1[0]
+        itop = ind1[-1]
+        pbot = self.pp[ibot]
+        bndry_vs_hp = np.log(pbot / self.pp[ibot:itop])
+        bndry_in_hp = bndry_vs_hp[itop - ibot - 1]
+        bndry_in_nx = itop - ibot - 1
+        print("Overshooting (in Hp): ", bndry_in_hp)
+        print("Number of Grid zone In Boundary: ", bndry_in_nx)
+        print(itop,ibot)
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
