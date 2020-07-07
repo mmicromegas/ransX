@@ -33,6 +33,22 @@ class BruntVaisalla(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obje
         gg = self.getRAdata(eht, 'gg')[intc]
         gamma1 = self.getRAdata(eht, 'gamma1')[intc]
 
+        ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
+
+        uxx = self.getRAdata(eht, 'uxx')[intc]
+        uxy = self.getRAdata(eht, 'uxy')[intc]
+        uxz = self.getRAdata(eht, 'uxz')[intc]
+
+        uyx = self.getRAdata(eht, 'uyx')[intc]
+        uyy = self.getRAdata(eht, 'uyy')[intc]
+        uyz = self.getRAdata(eht, 'uyz')[intc]
+
+        uzx = self.getRAdata(eht, 'uzx')[intc]
+        uzy = self.getRAdata(eht, 'uzy')[intc]
+        uzz = self.getRAdata(eht, 'uzz')[intc]
+
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if ieos == 1:
             cp = self.getRAdata(eht, 'cp')[intc]
@@ -91,12 +107,25 @@ class BruntVaisalla(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obje
             print("ERROR(BruntVaisalla.py): " + self.errorEos(ieos))
             sys.exit()
 
+        #sij = 0.5*(uxx*uxx + uxy*uxy + uxz*uxz +
+        #      uyx*uyz + uyy*uyy + uyz*uyz +
+        #      uzx*uzx + uzy*uzy + uzz*uzz)
+
+        sij = 0.5*(self.Grad(ux,xzn0)+self.Grad(uy,xzn0)+self.Grad(uz,xzn0))
+
+        sigma = (2.*sij*sij)**(0.5)
+        sigmasq = sigma**2.
+
+        ri = nsq/sigmasq
+        #print((sij*sij)**(0.5))
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.nsq = nsq
         self.ig = ig
         self.nx = nx
+        self.ri = ri
 
     def plot_bruntvaisalla(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot BruntVaisalla parameter in the model"""
@@ -157,3 +186,67 @@ class BruntVaisalla(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obje
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_BruntVaisalla.png')
+
+
+    def plot_ri(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+        """Plot BruntVaisalla parameter in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(BruntVaisalla.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        plt1 = self.ri
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        ybu = 2.e3
+        ybd = -0.5e3
+
+        # set plot boundaries
+        to_plot = [plt1]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        # plot DATA
+        plt.title('Richardson Number')
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='r', label=r'$Ri$')
+            plt.plot(grd1, np.zeros(self.nx), linestyle='--', color='k')
+            # plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
+        elif self.ig == 2:
+            plt.plot(grd1, plt1, color='r', label=r'$Ri$')
+            plt.plot(grd1, np.zeros(self.nx), linestyle='--', color='k')
+            # plt.plot(grd1,plt2,color='b',linestyle='--',label = r'N$^2$ version 2')
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+        if self.ig == 1:
+            setxlabel = r"x (cm)"
+            setylabel = r"$Ri$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r"r (cm)"
+            setylabel = r"Ri$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ri.png')
+
