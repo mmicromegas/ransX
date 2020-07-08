@@ -100,6 +100,18 @@ class ConvectionBoundariesPositionEvolutionResolutionStudy(uCalc.Calculus, uEal.
         to_plot = [plt1_foraxislimit]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        # calculate indices for calculating mean for the plot label
+        lmeanbndry = 200.
+        umeanbndry = 490.
+
+        il, ib = [],[]
+        for i in range(len(self.t_timec)):
+            tll = np.abs(np.asarray(self.t_timec[i]) - np.float(lmeanbndry))
+            il.append(int(np.where(tll == tll.min())[0][0]))
+
+            tlb = np.abs(np.asarray(self.t_timec[i]) - np.float(umeanbndry))
+            ib.append(int(np.where(tlb == tlb.min())[0][0]))
+
         # plot DATA 
         plt.title('cnvz bndry evolution')
 
@@ -109,9 +121,19 @@ class ConvectionBoundariesPositionEvolutionResolutionStudy(uCalc.Calculus, uEal.
         #                                    + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
 
         for i in range(len(grd)):
+            plotdata = plt2[i]
+            tc = grd[i]
+            ue = str(np.format_float_scientific((plotdata[ib[i]] - plotdata[il[i]])/(tc[ib[i]]-tc[il[i]]), unique=False, precision=1))
             plt.plot(grd[i], plt2[i], label=str(nx[i]) + ' x ' + str(ny[i]) + ' x ' + str(nz[i]) + ' '
                                             + '(tavg = ' + str(np.round(tavg[i],1)) + ' s = '
-                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs)')
+                                            + str(np.round(tavg[i]/np.mean(t_tc[i]),1)) + ' TOs, $u_e$ = '
+                                            + ue + ' cm/s)')
+
+            print(i,tc[ib[i]],tc[il[i]],plotdata[ib[i]],plotdata[il[i]])
+
+        # markers for time window for averages in label
+        plt.axvline(lmeanbndry, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(umeanbndry, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         setxlabel = r"t (s)"
@@ -120,13 +142,14 @@ class ConvectionBoundariesPositionEvolutionResolutionStudy(uCalc.Calculus, uEal.
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 11})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'cnvzpos_evol_res.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'cnvzpos_evol_res.eps')
 
     # find data with maximum resolution
     def maxresdata(self, data):
