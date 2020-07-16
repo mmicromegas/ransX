@@ -1,0 +1,446 @@
+%\documentclass[     12pt,                   %fontsize
+%                    paper=a4,               %papersize
+%                    pagesize,               %area
+%                    DIV=calc,               %relation colls and rows see koma manual
+%                    liststotocnumbered]     %numbered toc (best solution report sucks over here
+%                    headsepline,            %header with line
+%                    footsepline]            %foot with line
+%                    {scrreprt}              %equals to report
+
+\documentclass[10pt,paper=a4]{report}
+
+%pagemargins
+\usepackage[left=2.cm,right=2.cm,top=2.cm,bottom=3.cm,landscape]{geometry}
+
+%\usepackage[a4paper,landscape]{geometry}
+
+%\usepackage[a4paper]{}
+
+%Chapter caption is somewhere in the center of the page, so move the shit ;)
+%\renewcommand*\chapterheadstartvskip{\vspace*{-1cm}}
+
+%If you have a new chapter, the pagestyle will be plain (only pagenumber) according to koma
+%To use ur setting redefine the chaperstyle
+%\renewcommand*{\chapterpagestyle}{scrheadings} 
+
+%Settings for head and foot
+
+%\usepackage[myheadings]{fullpage}
+%\pagestyle{myheadings}
+
+\usepackage{fancyhdr}
+%\fancyhead{}
+%\fancyhead[CO,CE]{---Draft---}
+\pagestyle{fancy}
+\rhead{}
+
+
+%\usepackage{scrpage2} 
+%\clearscrheadfoot
+%\pagestyle{scrheadings}
+
+%\ihead{top left}
+%\chead{top center}
+%\ohead{top right}       
+
+%\ifoot{bottom left} 
+%\cfoot{bottom center}
+%\ofoot{bottom right}
+
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{cancel}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{chngcntr}
+%\usepackage{natbib}
+
+\usepackage{hyperref}
+\hypersetup{
+        colorlinks = true,
+        linkcolor = blue,
+        anchorcolor = red,
+        citecolor = blue,
+        filecolor = red,
+        urlcolor = red
+} 
+
+
+\newcommand{\Msun}{\mbox{M$_\odot$\,}}         % M_sun 
+
+\newcommand{\eht}{\overline}    
+\newcommand{\fht}{\widetilde}    
+\newcommand{\dr}{\frac{\partial}{\partial r}}
+\newcommand{\dt}{\frac{\partial}{\partial t}}
+\newcommand{\dth}{\frac{\partial}{\partial \theta}}
+\newcommand{\dph}{\frac{\partial}{\partial \phi}}
+
+\newcommand{\fav}{\widetilde}    
+\newcommand{\av}{\overline}  
+
+\def\ef#1{#1'}
+\def\ff#1{#1''}
+\def\fhtc#1{\left\{#1\right\}}
+\def\erho{\eht{\rho}}
+
+\newcommand{\dgr}{\mbox{$^\circ$}}           % degrees 
+
+\counterwithout{section}{chapter}
+
+
+\begin{document}
+%\bibliographystyle{plainnat}
+%\begin{landscape}
+%\maketitle
+
+%\tableofcontents
+
+\newpage
+
+\section{Hydrodynamic stellar structure equations (non-local and time-dependent)}
+
+Below is a set of hydrodynamic stellar structure equations derived from RANS (viscosity explicitly neglected), where red terms are the ones used in classical approach:
+
+\begin{align}
+ {\color{red} \partial_r \eht{m}} = & \ {\color{red} 4\pi r^2 \eht{\rho}} + (4 \pi r^3 / 3 \fht{u}_r) \left[-\nabla_r f_\rho + (f_\rho / \eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d} - \partial_t \eht{\rho}   \right]  \\
+ {\color{red} \partial_r \eht{P}} = & {\color{red}\ \eht{\rho}\fht{g} - \eht{\rho}\partial_t \fht{u}_r} - \nabla_r \fht{R}_{rr} - \eht{G}_r^M - \eht{\rho}\fht{u}_r \partial_r \fht{u}_r   \\
+{\color{red}\partial_r \fht{L}} = & \ {\color{red} 4\pi r^2 \eht{\rho} \fht{\epsilon}_{nuc}}  + 4\pi r^2 \left[-\nabla_r (f_i + f_{th}+f_K + f_p) - \eht{P}\eht{d} - \fht{R}_{ir}\partial_r \fht{u}_i + W_b + \eht{\rho}\fht{D}_t \fht{u}_i \fht{u}_i /2 - \eht{\rho} \partial_t \fht{\epsilon}_t \right] + \fht{\epsilon}_t \partial_r 4 \pi r^2 \eht{\rho}\fht{u}_r  \\
+{\color{red} \partial_r \eht{T}} = & \ (1/\eht{u}_r) \left[ -\nabla_r f_T + (1-\Gamma_3)\eht{T} \ \eht{d} + (2-\Gamma_3)\eht{T'd'} + \epsilon_{nuc} / c_v + \nabla \cdot f_{th} / (\rho c_v) - \partial_t T \right]  \\
+{\color{red}\partial_t \fht{X}_i} = & \ {\color{red}\fht{\dot{X}}_i^{nuc}} - (1/\eht{\rho})\nabla_r f_i - \fht{u}_r \partial_r \fht{X}_i 
+\end{align}
+
+\subsection{Continuity Equation}
+
+\subsubsection{Derivation}
+
+Using full 3D hydrodynamic continuity equation, we derive its mean field counterpart in the following way: \\
+
+\begin{align}
+\partial_t \rho + \nabla \rho {\bf u} = & \ 0  \nonumber \\
+\partial_t \eht{\rho} + \eht{u}_r \partial_r \eht{\rho} = & -\nabla_r \eht{\rho'u'_r} - \eht{\rho} \eht{d}  \nonumber  \\
+\partial_t \eht{\rho} + \eht{u''}_r \partial_r \eht{\rho} + \fht{u}_r \partial_r \eht{\rho} = & - \nabla_r \eht{\rho' u'_r} - \eht{\rho}\eht{d}  \nonumber  \\
+\partial_t \eht{\rho} + \fht{u}_r \partial_r \eht{\rho} = & - \nabla_r \eht{\rho' u'_r} + (\eht{\rho' u'_r}/\eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d} \nonumber  \\
+\partial_t \eht{\rho} + \fht{u}_r \partial_r \eht{\rho} = & - \nabla_r f_\rho + (f_\rho / \eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d}  \nonumber \\
+\fht{D}_t \eht{\rho} = & - \nabla_r f_\rho + (f_\rho / \eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d} \nonumber 
+\end{align}
+
+\noindent
+For the derivation, we used the following identities: $\eht{\rho u_r} = \ \eht{\rho' u'_r} + \eht{\rho} \eht{u_r}$ and $\eht{u''}_r =  \ \eht{u}_r - \fht{u}_r $ and $\eht{\rho} \eht{u''}_r =  -f_\rho $ and $f_\rho = \ \eht{\rho' u'_r}$ (turbulent mass flux) \\
+
+\noindent
+From there, let us now express gradient of mean density $\partial_r \eht{\rho}$. We get:
+
+\begin{equation}
+  \partial_r \eht{\rho} = -(1/\fht{u}_r) \left( \nabla_r f_\rho + (f_\rho / \eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d} - \partial_t \eht{\rho} \right)
+\label{eq:gradrho}
+\end{equation}
+
+\noindent
+We want to derive hydrodynamic continuity equation into the form familiar from its classical form. Therefore, let us now find relation between $\partial_r \eht{\rho}$ and $\partial_r \eht{m}$ using total differentials of $\rho$ and $m$. We know, that $\rho = \rho(r,t)$ and $m = m(r,t)$ and:
+
+\begin{align}
+d \rho = & \partial_r \rho \ d r + \partial_t \rho \ dt \nonumber \\
+d m    = & \partial_r m \ d r + \partial_t m \ dt \nonumber
+\label{eq:totaldiff}
+\end{align}
+
+
+\noindent
+Let us now transform the $d \rho$ equation to $d m$ equation by multiplying it by volume $V = 4 \pi r^3/3$ and few algebraic modifications: \\
+
+\begin{align}
+V d\rho = & \ V \partial_r \rho \ d r + V \partial_t \rho \ dt \nonumber \\
+d m - \rho d V = & \ V \partial_r \rho \ d r + V \partial_t \rho \ dt \nonumber \\
+d m - 4 \pi r^2 \rho d r = & \ V \partial_r \rho \ d r + V \partial_t \rho \ dt \nonumber \\
+d m  = & \ 4 \pi r^2 \rho d r + V \partial_r \rho \ d r + V \partial_t \rho \ dt \nonumber \\
+d m  = & \ (4 \pi r^2 \rho + V \partial_r \rho) d r + V \partial_t \rho \ dt \nonumber
+\end{align}
+
+\noindent
+By comparing this result to $d m = \partial_r m \ d r + \partial_t m \ dt$ we get:
+
+\begin{align}
+(4 \pi r^2 \rho + V \partial_r \rho) d r + V \partial_t \rho \ dt = & \partial_r m \ d r + \partial_t m \ dt \nonumber
+\end{align}
+
+\noindent
+and
+
+\begin{align}
+\partial_r m = V \partial_r \rho + 4 \pi r^2 \rho
+\end{align}
+
+\noindent
+By space-time averaging and using equation $\ref{eq:gradrho}$ we get the desired form of the continuity equation for stellar evolution.
+
+\begin{equation}
+\partial_r \eht{m} = \ 4\pi r^2 \eht{\rho} + (4 \pi r^3 / 3 \fht{u}_r) \left(-\nabla_r f_\rho + (f_\rho / \eht{\rho})\partial_r \eht{\rho} - \eht{\rho}\eht{d} - \partial_t \eht{\rho}   \right)
+\end{equation}
+
+\noindent
+Term description:
+
+\begin{align}
+\partial_r \eht{m} = \ \underbrace{4\pi r^2 \eht{\rho}}_\text{density distribution} + (4 \pi r^3 / 3 \fht{u}_r) (\underbrace{-\nabla_r f_\rho}_\text{transport of turbulent density field} + \underbrace{(f_\rho / \eht{\rho})\partial_r \eht{\rho}}_\text{down-gradient density source/sink term} - \underbrace{\eht{\rho}\eht{d}}_\text{compressibility effects} - \underbrace{\partial_t \eht{\rho}}_\text{time-dependence} )
+\end{align}
+
+
+\begin{figure}[!h]
+\centerline{
+  \includegraphics[width=12.cm]{oblrez_hsse_continuity_eq.eps}}
+\caption{Hydrodynamic stellar structure continuity equation.}
+\end{figure}
+
+\newpage
+
+\subsection{Momentum Equation}
+
+\subsubsection{Derivation}
+
+We start from the RANS equation for X momentum and modify it into form familiar from classical stellar evolution theory.
+
+\begin{align}
+\eht{\rho} \fht{D}_t \fht{u}_r = & -\nabla_r \fht{R}_{rr} - \eht{G_r^M} - \partial_r \eht{P} + \eht{\rho}\fht{g}_r \\
+\eht{\rho} \partial_t \fht{u}_r + \eht{\rho} \fht{u}_r \partial_r \fht{u}_r  = & -\nabla_r \fht{R}_{rr} - \eht{G_r^M} - \partial_r \eht{P} + \eht{\rho}\fht{g}_r \\
+\partial_r \eht{P} = & \ \eht{\rho}\fht{g}_r - \eht{\rho} \partial_t \fht{u}_r - \nabla_r \fht{R}_{rr} - \eht{G_r^M} - \eht{\rho} \fht{u}_r \partial_r \fht{u}_r
+\end{align}  
+
+\newpage
+
+\noindent
+Term description:
+
+\begin{align}
+\partial_r \eht{P} = & \ \underbrace{\eht{\rho}\fht{g}_r}_\text{gravity} - \underbrace{\eht{\rho} \partial_t \fht{u}_r}_\text{acceleration due to expansion} - \underbrace{\nabla_r \fht{R}_{rr}}_\text{transport of turbulent velocity field} - \underbrace{\eht{G_r^M}}_\text{centrifugal forces} - \underbrace{\eht{\rho} \fht{u}_r \partial_r \fht{u}_r}_\text{advection due to expansion}
+\end{align}  
+
+\begin{figure}[!h]
+\centerline{
+  \includegraphics[width=12.cm]{oblrez_hsse_momentum_x_eq.eps}}
+\caption{Hydrodynamic stellar structure momentum equation.}
+\end{figure}
+
+\subsection{Luminosity Equation}
+
+\begin{align}
+  \eht{\rho} \fht{D}_t \fht{\epsilon}_t = & -\nabla_r (f_i + f_{th} + f_K + f_p) - \eht{P} \ \eht{d} - \fht{R}_{ir} \partial_r \fht{u}_r + W_b + \eht{\rho}\fht{\epsilon}_{nuc} + \eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 \\
+  \eht{\rho} \partial_t \fht{\epsilon}_t + \eht{\rho} \fht{u}_r \partial_r \fht{\epsilon}_t = & -\nabla_r (f_i + f_{th} + f_K + f_p) - \eht{P} \ \eht{d} - \fht{R}_{ir} \partial_r \fht{u}_r + W_b + \eht{\rho}\fht{\epsilon}_{nuc} + \eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 \\
+ 4 \pi r^2 \eht{\rho} \partial_t \fht{\epsilon}_t +  4 \pi r^2 \eht{\rho} \fht{u}_r \partial_r \fht{\epsilon}_t = & \ 4 \pi r^2 \left[ -\nabla_r (f_i + f_{th} + f_K + f_p) - \eht{P} \ \eht{d} - \fht{R}_{ir} \partial_r \fht{u}_r + W_b + \eht{\rho}\fht{\epsilon}_{nuc} + \eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 \right] \\
+ 4 \pi r^2 \eht{\rho} \partial_t \fht{\epsilon}_t + \underbrace{\partial_r 4 \pi r^2 \eht{\rho} \fht{u}_r \fht{\epsilon}_t}_\text{$\partial_r \fht{L}$} - \fht{\epsilon}_t \partial_r 4 \pi r^2 \eht{\rho} \fht{u}_r  = & \ 4 \pi r^2 \left[ -\nabla_r (f_i + f_{th} + f_K + f_p) - \eht{P} \ \eht{d} - \fht{R}_{ir} \partial_r \fht{u}_r + W_b + \eht{\rho}\fht{\epsilon}_{nuc} + \eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 \right] \\
+ \partial_r \fht{L} = & \ 4 \pi r^2 \left[ -\nabla_r (f_i + f_{th} + f_K + f_p) - \eht{P} \ \eht{d} - \fht{R}_{ir} \partial_r \fht{u}_r + W_b + \eht{\rho}\fht{\epsilon}_{nuc} + \eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 - \eht{\rho} \partial_t \fht{\epsilon}_t \right] + \fht{\epsilon}_t \partial_r 4 \pi r^2 \eht{\rho}\fht{u}_r
+\end{align}
+
+Or
+
+\begin{align}
+\partial_r \fht{L} = & 4 \pi r^2 \eht{\rho}\fht{\epsilon}_{nuc}  + 4 \pi r^2 \left[ -\nabla_r (f_i + f_{th} + f_K + f_p) - \eht{P} \ \eht{d} - \fht{R}_{ir} \partial_r \fht{u}_r + W_b + \eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 - \eht{\rho} \partial_t \fht{\epsilon}_t \right] + \fht{\epsilon}_t \partial_r 4 \pi r^2 \eht{\rho}\fht{u}_r
+\end{align}
+
+Some term description:
+
+\begin{align}
+  \partial_r \fht{L} = & \underbrace{4 \pi r^2 \eht{\rho}\fht{\epsilon}_{nuc}}_\text{nuclear}  + 4 \pi r^2 [ \underbrace{-\nabla_r (f_i + f_K + f_p + f_{th})}_\text{transport of internal energy, kinetic energy, pressure and heat due to conduction and radiation} - \nonumber \\ \
+    & \underbrace{\eht{P} \ \eht{d}}_\text{compressibility} - \underbrace{\fht{R}_{ir} \partial_r \fht{u}_r}_\text{down-gradient source/sink term} + \underbrace{W_b}_\text{buoyancy work} + \underbrace{\eht{\rho} \fht{D}_t \fht{u}_i \fht{u}_i /2 - \eht{\rho} \partial_t \fht{\epsilon}_t}_\text{time-dependence} ] + \fht{\epsilon}_t \partial_r 4 \pi r^2 \eht{\rho}\fht{u}_r
+\end{align}
+
+
+\newpage
+
+\begin{figure}[!h]
+\centerline{
+  \includegraphics[width=12.cm]{oblrez_hsse_luminosity_eq.eps}}
+\caption{Hydrodynamic stellar structure luminosity equation.}
+\end{figure}
+
+
+\subsection{Temperature Equation}
+
+\subsubsection{Derivation}
+
+We start from the RANS equation for temperature evolution. At the end, there will be no resemblance to the temperature equation of the  classical stellar evolution theory.
+
+\begin{align}
+  \av{D}_t \av{T} = & -\nabla_r f_T + (1-\Gamma_3)\eht{T}\ \eht{d} + (2-\Gamma_3)\eht{T'd'} + \eht{(\nabla \cdot f_{th}) / \rho c_v} + \eht{\epsilon_{\rm nuc} / c_v} \nonumber \\
+  \partial_t \eht{T} + \eht{u}_r \partial_r \eht{T} = & -\nabla_r f_T + (1-\Gamma_3)\eht{T}\ \eht{d} + (2-\Gamma_3)\eht{T'd'} + \eht{(\nabla \cdot f_{th}) / \rho c_v} + \eht{\epsilon_{\rm nuc} / c_v}  \nonumber \\
+ \eht{u}_r \partial_r \eht{T} = & -\nabla_r f_T + (1-\Gamma_3)\eht{T}\ \eht{d} + (2-\Gamma_3)\eht{T'd'} + \eht{(\nabla \cdot f_{th}) / \rho c_v} + \eht{\epsilon_{\rm nuc} / c_v} - \partial_t \eht{T} \nonumber 
+\end{align}
+
+\begin{align}
+ \partial_r \eht{T} = & -(1/\eht{u}_r)\left(\nabla_r f_T + (1-\Gamma_3)\eht{T}\ \eht{d} + (2-\Gamma_3)\eht{T'd'} + \eht{(\nabla \cdot f_{th}) / \rho c_v} + \eht{\epsilon_{\rm nuc} / c_v} - \partial_t \eht{T} \right) \nonumber
+\end{align}  
+
+\noindent
+Term description:
+
+\begin{align}
+ \partial_r \eht{T} = & -(1/\eht{u}_r)(\underbrace{\nabla_r f_T}_\text{transport of turbulent temperature field} + \underbrace{(1-\Gamma_3)\eht{T}\ \eht{d} + (2-\Gamma_3)\eht{T'd'}}_\text{compressibility effects} + \underbrace{\eht{(\nabla \cdot f_{th}) / \rho c_v}}_\text{source/sink term due to thermal transport} + \underbrace{\eht{\epsilon_{\rm nuc} / c_v}}_\text{source/sink due to nuclear burning} - \underbrace{\partial_t \eht{T}}_\text{time-dependence}) 
+\end{align}
+
+\begin{figure}[!h]
+\centerline{
+  \includegraphics[width=12.cm]{oblrez_hsse_temperature_eq.eps}}
+\caption{Hydrodynamic stellar structure temperature equation.}
+\end{figure}
+
+\newpage
+
+\subsection{Composition Equation}
+
+\subsubsection{Derivation}
+
+We start from the RANS equation for compostion and modify it into form familiar from classical stellar evolution theory.
+
+\begin{align}
+\eht{\rho} \fht{D}_t \fht{X}_\alpha = & -\nabla_r f_\alpha + \eht{\rho}\fht{\dot{X}_\alpha^{nuc}} \nonumber \\
+\eht{\rho} \partial_t \fht{X}_\alpha + \eht{\rho}\fht{u}_r \partial_r \fht{X}_\alpha = & -\nabla_r f_\alpha + \eht{\rho}\fht{\dot{X}_\alpha^{nuc}}  \nonumber \\
+\eht{\rho} \partial_t \fht{X}_\alpha = & -\nabla_r f_\alpha + \eht{\rho}\fht{\dot{X}_\alpha^{nuc}} - \eht{\rho}\fht{u}_r \partial_r \fht{X}_\alpha  \nonumber \\
+\partial_t \fht{X}_\alpha = & \ \fht{\dot{X}}_\alpha^{nuc} -(1/\eht{\rho}) \nabla_r f_\alpha - \fht{u}_r \partial_r \fht{X}_\alpha \nonumber
+\end{align}
+
+\noindent
+Term description:
+
+\begin{align}
+\partial_t \fht{X}_\alpha = & \ \underbrace{\fht{\dot{X}}_\alpha^{nuc}}_\text{nuclear burning} - \underbrace{(1/\eht{\rho}) \nabla_r f_\alpha}_\text{transport of turbulent composition field} -\underbrace{\fht{u}_r \partial_r \fht{X}_\alpha}_\text{advection due to expansion} 
+\end{align}
+
+\begin{figure}[!h]
+\centerline{
+  \includegraphics[width=12.cm]{oblrez_hsse_mean_Xtransport_o16.eps}}
+\caption{Hydrodynamic stellar structure composition transport equation.}
+\end{figure}
+
+\begin{figure}[!h]
+\centerline{
+  \includegraphics[width=12.cm]{oblrez_hsse_mean_Xtransport_ne20.eps}}
+\caption{Hydrodynamic stellar structure composition transport equation.}
+\end{figure}
+
+
+\newpage
+
+
+\begin{table*}
+\label{tab:rans-cont}
+\caption{Definitions:}
+\begin{align}                                                      
+  & \rho \ \ \mbox{density}                                           & & g_r  \ \ \mbox{radial gravitational acceleration} \nonumber \\
+  & m = \rho V = \rho \frac{4}{3} \pi r^3\ \ \mbox{mass}                      & & M = \int \rho(r) dV = \int \rho(r) 4 \pi r^2 dr  \ \ \mbox{integrated mass} \nonumber \\  
+& T \ \ \mbox{temperature}                                          & & {\mathcal S} = \rho \epsilon_\mathrm{nuc} (q) \ \ \mbox{nuclear energy production (cooling function)} \nonumber \\
+& P \ \ \mbox{pressure}                                             & & \tau_{ij} = 2\mu S_{ij} \ \ \mbox{viscous stress tensor}  \ \ (\mu \ \ \mbox{kinematic viscosity}) \nonumber \\ 
+& u_r, u_\theta, u_\phi \ \ \mbox{velocity components}                 & & S_{ij} = (1/2)(\partial_i u_j + \partial_j u_i) \ \ \mbox{strain rate} \nonumber \\
+& {\bf u} = u (u_r, u_\theta, u_\phi) \ \ \mbox{velocity}               & & \fht{R}_{ij} = \eht{\rho}\fht{u''_i u''_j} \ \ \mbox{Reynolds stress tensor} \nonumber \\              
+& j_z = r \sin{\theta} \ u_\phi \ \ \mbox{specific angular momentum} & & F_T = \chi \partial_r T \ \ \mbox{heat flux}   \nonumber \\
+& d = \nabla \cdot {\bf u} \ \ \mbox{dilatation}                     & & \Gamma_1 = (d \ ln \ P/ d \ ln \ \rho)|_s   \nonumber \\ 
+& \epsilon_I \ \ \mbox{specific internal energy}                     & & \Gamma_2 / (\Gamma_2 -1) =  (d \ ln \ P/ d \ ln \ T)|_s \nonumber \\
+& h \ \ \mbox{specific enthalpy}                                    & &  \Gamma_3 -1 =  (d \ ln \ T/ d \ ln \ \rho)|_s \nonumber    \\  
+& k = (1/2) \fht{u''_iu''_i} \ \ \mbox{turbulent kinetic energy}    & & \fht{k}^r = (1/2) \fht{u''_ru''_r} = (1/2) \fht{R}_{rr}/\eht{\rho} \ \ \mbox{radial turbulent kinetic energy}  \nonumber \\  
+& \epsilon_k \ \ \mbox{specific kinetic energy}                      & & \fht{k}^\theta = (1/2)\fht{u''_\theta u''_\theta} = (1/2)\fht{R}_{\theta \theta}/\eht{\rho} \ \ \mbox{angular turbulent kinetic energy}  \nonumber \\
+& \epsilon_t \ \ \mbox{specific total energy}                        & & \fht{k}^\phi = (1/2)\fht{u''_\phi u''_\phi} = (1/2) \fht{R}_{\phi \phi}/\eht{\rho} \ \ \mbox{angular turbulent kinetic energy} \nonumber \\ 
+& s \ \ \mbox{specific entropy}                                      & & \fht{k}^h = \fht{k}^\theta + \fht{k}^\phi \ \ \mbox{horizontal turbulent kinetic energy}                                    \nonumber \\
+& v = 1/\rho \ \ \mbox{specific volume}                               & & f_k = (1/2)\eht{\rho} \fht{u''_i u''_i u''_r} \ \ \mbox{turbulent kinetic energy flux}                                    \nonumber \\    
+& X_\alpha \ \ \mbox{mass fraction of isotope $\alpha$}               & & f_k^r = (1/2)\eht{\rho} \fht{u''_r u''_r u''_r} \ \ \mbox{radial turbulent kinetic energy flux}                          \nonumber \\
+& \dot{X}_\alpha^{\mathrm nuc} \ \ \mbox{rate of change of $X_\alpha$}     & & f_k^\theta = (1/2)\eht{\rho} \fht{u''_\theta u''_\theta u''_r} \ \ \mbox{angular turbulent kinetic energy flux}              \nonumber \\    
+& A_\alpha \ \ \mbox{number of nucleons in isotope $\alpha$}           & & f_k^\phi = (1/2)\eht{\rho} \fht{u''_\phi u''_\phi u''_r} \ \ \mbox{angular turbulent kinetic energy flux}                   \nonumber \\ 
+& Z_\alpha \ \ \mbox{charge of isotope $\alpha$}                     & & f_k^h = f_k^\theta + f_k^\phi \ \ \mbox{horizontal turbulent kinetic energy flux}                                           \nonumber \\   
+& A \ \ \mbox{mean number of nucleons per isotope}          & & W_p = \eht{P'd''} \ \ \mbox{turbulent pressure dilatation}      \nonumber \\                                            
+& Z \ \ \mbox{mean charge per isotope}                     & &   W_b = \eht{\rho} \eht{u''_r} \fht{g}_r \ \ \mbox{buoyancy}          \nonumber  \\
+& f_P = \eht{P' u'_r} \ \ \mbox{acoustic flux}                                    & &  f_T = -\eht{\chi \partial_r T} \ \ \mbox{heat flux ($\chi$ thermal conductivity})             \nonumber 
+\end{align} 
+\end{table*}
+
+\newpage
+
+\begin{table*}
+\label{tab:rans-cont}
+\caption{Definitions (continued):}
+\begin{align}
+& f_I = \eht{\rho} \fht{\epsilon''_I u''_r} \ \ \mbox{internal energy flux}        & & f_\alpha = \eht{\rho} \fht{X''_\alpha u''_r} \ \ \mbox{$X_\alpha$ flux}                   \nonumber \\        
+& f_s = \eht{\rho} \fht{s'' u''_r} \ \ \mbox{entropy flux}                & & f_{jz} = \eht{\rho}\fht{j''_z u''_r} \ \ \mbox{angular momentum flux}    \nonumber \\ 
+& f_T = \eht{u'_r T'} \ \ \mbox{turbulent heat flux}                      & & f_A = \eht{\rho}\fht{A''u''_r} \ \ \mbox{A (mean number of nucleons per isotope) flux}  \nonumber \\
+& f_h = \eht{\rho}\fht{h''u''_r} \ \ \mbox{enthalpy flux}        & &  f_Z = \eht{\rho}\fht{Z''u''_r} \ \ \mbox{Z (mean charge per isotope) flux}  \nonumber \\         
+& b = \overline{v'\rho'} \ \ \mbox{density-specific volume covariance}                & & \mathcal N_\rho, \mathcal N_{ur}, \mathcal N_{u\theta}, \mathcal N_{u\phi}, \mathcal N_{jz}, \mathcal N_{\alpha}, \mathcal N_{A}, \mathcal N_{Z} \ \ \mbox{numerical effect} \nonumber \\              
+& f_\tau = f_\tau^r + f_\tau^\theta + f_\tau^\phi \ \ \mbox{viscous flux}                    & &  \mathcal N_{\epsilon I} = -\nabla_r f_\tau +\varepsilon_k \ \ \mbox{numerical effect} \nonumber \\ 
+& f_\tau^r = -\eht{\tau'_{rr}u'_r}  \ \ \mbox{viscous flux}                               & &  \mathcal N_{\epsilon k} = -\varepsilon_k \ \ \mbox{numerical effect} \nonumber \\              
+& f_\tau^\theta = -\eht{\tau'_{\theta r} u'_\theta }  \ \ \mbox{viscous flux}                 & &  \mathcal N_{\epsilon t} = -\nabla_r f_\tau \ \ \mbox{numerical effect} \nonumber \\  
+& f_\tau^\phi = -\eht{\tau'_{\phi r} u'_\phi}  \ \ \mbox{viscous flux}                       & &   \mathcal N_{s} = \eht{-\varepsilon_k/T} \ \ \mbox{numerical effect} \nonumber \\          
+& f_\tau^h = f_\tau^\theta + f_\tau^\phi   \ \ \mbox{viscous flux}                           & & \mathcal N_{h} = -\nabla_r f_\tau + (\Gamma_3 -1)\varepsilon_k \ \ \mbox{numerical effect} \nonumber \\              
+& f_I^r = \eht{\rho}\fht{\epsilon''_I u''_r u''_r} \ \ \mbox{radial flux of $f_I$}      & &  \mathcal N_{P} = +(\Gamma_3 -1)\varepsilon_k \ \ \mbox{numerical effect} \nonumber \\
+& f_s^r = \eht{\rho}\fht{s'' u''_r u''_r} \ \ \mbox{radial flux of $f_s$}               & &  \mathcal N_{T} = +\eht{(\tau_{ij} \partial_j u_i)/(c_v \rho)}  \ \ \mbox{numerical effect} \nonumber \\ 
+& f_h^r = \eht{\rho}\fht{h'' u''_r u''_r} \ \ \mbox{radial flux of $f_h$}               & & \mathcal N_{Rrr} = -2\nabla_r f_\tau^r - 2\varepsilon_k^r \ \ \mbox{numerical effect} \nonumber \\
+& f_T^r = \eht{T' u'_r u'_r} \ \ \mbox{radial flux of $f_T$}                            & &  \mathcal N_{R\theta \theta} = -2\nabla_r f_\tau^\theta - 2\varepsilon_k^\theta  \ \ \mbox{numerical effect} \nonumber \\
+& f_{jz}^r = \eht{\rho}\fht{j''_z u''_r u''_r} \ \ \mbox{radial flux of $f_{jz}$}                           & &  \mathcal N_{R\phi \phi} = -2\nabla_r f_\tau^\phi - 2\varepsilon_k^\phi \ \ \mbox{numerical effect} \nonumber \\
+& f_\alpha^r =  \eht{\rho}\fht{X''_\alpha u''_r u''_r} \ \ \mbox{radial flux of $f_\alpha$} & &  \mathcal N_{k \ } = -\nabla_r f_\tau - \varepsilon_k  \ \ \mbox{numerical effect} \nonumber \\                          
+& f_A^r = \eht{\rho}\fht{A'' u''_r u''_r} \ \ \mbox{radial flux of $f_A$}               & &  \mathcal N_{kr} = -\nabla_r f_\tau^r - \varepsilon_k^r \ \ \mbox{numerical effect} \nonumber \\                                 
+& f_Z^r = \eht{\rho}\fht{Z'' u''_r u''_r} \ \ \mbox{radial flux of $f_Z$}               & &  \mathcal N_{kh} = -\nabla_r f_\tau^h - \varepsilon_k^h \ \ \mbox{numerical effect} \nonumber \\                                        
+& \mathcal G_k^r = -(1/2)\eht{G_{rr}^R} - \eht{u''_rG_r^M}                 & &  \mathcal N_a = -\varepsilon_a \ \ \mbox{numerical effect} \nonumber                          
+\end{align}
+\end{table*} 
+
+
+
+\newpage
+
+\begin{table*}
+\label{tab:rans-cont}
+\caption{Definitions (continued):}
+\begin{align} 
+& \mathcal G_k^\theta = -(1/2)\eht{G_{\theta \theta}^R} - \eht{u''_\theta G_\theta^M}  & &  \mathcal N_b \ \ \mbox{numerical effect} \nonumber \\               
+& \mathcal G_k^\phi  = -(1/2)\eht{G_{\phi \phi}^R} - \eht{u''_\phi G_\phi^M}   & &  \mathcal N_{fI} = -\nabla_r (\eht{\epsilon''_I \tau'_{rr}}) + \eht{u''_r \tau_{ij} \partial_i u_j} -\varepsilon_I  \ \ \mbox{numerical effect} \nonumber \\               
+& \mathcal G_k^h = +\mathcal G_k^\theta + \mathcal G_k^\phi                  & &  \mathcal N_{fh} = -\nabla_r (\eht{h'' \tau'_{rr}}) + \eht{u''_r (\Gamma_3 - 1) \tau_{ij} \partial_i u_j} - \eht{ u''_r \nabla_i u_i \tau_{ji}} - \varepsilon_h   \ \ \mbox{numerical effect} \nonumber \\                                   
+& \mathcal G_a = +\eht{\rho' v G_r^M}                                     & &  \mathcal N_{fs} = -\nabla_r (\eht{s''\tau'_{rr}}) + \eht{u''_r \tau_{ij} \partial_i u_j/T} -\varepsilon_s  \ \ \mbox{numerical effect} \nonumber \\     
+& \mathcal G_I = -\eht{G_{r}^I} - \eht{\epsilon''_I G_r^M}  & &  \mathcal N_{fA} = -\nabla_r (\eht{A''\tau'_{rr}}) - \varepsilon_A \ \ \mbox{numerical effect} \nonumber \\                                       
+& \mathcal G_\alpha =  -\eht{G_{r}^\alpha} - \eht{X''_\alpha G_r^M} & &  \mathcal N_{fZ} = -\nabla_r (\eht{Z''\tau'_{rr}}) - \varepsilon_Z \ \ \mbox{numerical effect} \nonumber \\                             
+& \mathcal G_A =  -\eht{G_{r}^A} - \eht{A'' G_r^M}  & & \mathcal N_{f\alpha} = -\nabla_r (\eht{\alpha''\tau'_{rr}}) - \varepsilon_\alpha  \ \ \mbox{numerical effect} \nonumber \\
+& \mathcal G_Z =  -\eht{G_{r}^Z} - \eht{Z'' G_r^M}  & & \mathcal N_{fjz} =  -\nabla_r (\eht{j''_z \tau'_{rr}}) - \varepsilon_{jz}  \ \ \mbox{numerical effect} \nonumber \\ 
+& \mathcal G_h =  -\eht{G_{r}^h} - \eht{h'' G_r^M}  & & \mathcal N_{fT} =  + \eht{T'\partial_i \tau_{ri} / \rho} + \eht{u'_r \tau_{ij} \partial_i u_j / \rho c_v} \ \ \mbox{numerical effect} \nonumber \\ 
+& \mathcal G_T =  -\eht{G_{r}^T} - \eht{T' G_r^M}  & & \nonumber  \\
+& \mathcal G_{s} = -\eht{G_{r}^s} - \eht{s'' G_r^M} & & \nonumber \\
+& \mathcal G_{jz} = -\eht{G_{r}^{jz}} - \eht{j''_z G_r^M}  & &  \nonumber \\
+& \sigma_\rho = \eht{\rho'\rho'} & & \mathcal N_{\sigma_\rho} \ \ \mbox{numerical effect} \nonumber \\
+& \sigma_P = \eht{P'P'} & & \mathcal N_{\sigma_P} = +2 (\Gamma_3 -1)\eht{P'\tau_{ij}\partial_i u_j} \ \ \mbox{numerical effect} \nonumber \\
+& \sigma_T = \eht{T'T'} & & \mathcal N_{\sigma_T} = +\eht{2 T' \tau_{ij} \partial_i u_j / \rho c_v} \ \ \mbox{numerical effect} \nonumber \\
+& \sigma_{ur} = \fht{u''_r u''_r} & & \mathcal N_{\sigma_{ur}} = +2\nabla_r f_{\tau}^r - 2\varepsilon_{k}^r \ \ \mbox{numerical effect} \nonumber \\
+& \sigma_{s} =  \fht{s''s''} & & \mathcal N_{\sigma_s} = +  2 \eht{s'' \tau_{ij} \partial_j u_i / T} \ \ \mbox{numerical effect} \nonumber \\
+& \sigma_\alpha = \fht{X''_\alpha X''_\alpha} & & \mathcal N_{\sigma_\alpha} \ \ \mbox{numerical effect} \ \ \mbox{numerical effect} \nonumber \\
+& \sigma_{\epsilon I} = \fht{\epsilon''_I \epsilon''_I} & &  N_{\sigma \epsilon_I} =  + 2\eht{\epsilon''_I \tau_{ij} \partial_j u_i} \ \ \mbox{numerical effect} \nonumber
+\end{align}
+\end{table*}
+
+\newpage
+
+\begin{table*}
+\label{tab:rans-cont}
+\caption{Definitions (continued):}
+\begin{align} 
+& \varepsilon_k^r = \eht{\tau'_{rr}\partial_r u''_r} + \eht{\tau'_{r\theta}(1/r)\partial_\theta u''_r} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi u''_r} & & \eht{G^{M}_r}     = -\eht{\rho u_\theta u_\theta/r} - \eht{\rho u_\phi u_\phi/r} \nonumber \\
+& \varepsilon_k^\theta = \eht{\tau'_{\theta r}\partial_r u''_\theta} + \eht{\tau'_{\theta \theta}(1/r)\partial_\theta u''_\theta} + \eht{\tau'_{\theta \phi}(1/r\sin{\theta})\partial_\phi u''_\theta} & & \eht{G_\theta^M} = +\eht{\rho u_\theta u_r/r} - \eht{\rho u_\phi u_\phi/(r\tan{\theta})} \nonumber \\                                       
+&  \varepsilon_k^\phi = \eht{\tau'_{\phi r}\partial_r u''_\phi} + \eht{\tau'_{\phi \theta}(1/r)\partial_\theta u''_\phi} + \eht{\tau'_{\phi \phi}(1/r\sin{\theta})\partial_\phi u''_\phi} & & \eht{G_\phi^M} = +\eht{\rho u_\phi u_r/r} + \eht{\rho u_{\phi} u_{\theta}/(r \tan{\theta})}  \nonumber \\
+& \varepsilon_k = \varepsilon_k^r + \varepsilon_k^\theta + \varepsilon_k^\phi  & & \eht{G^{R}_{rr}}  = -\eht{\rho u''_\theta u''_\theta u''_r/r} - \eht{\rho u''_\theta u''_r u''_\theta/r} - \eht{\rho u''_\phi u''_\phi u''_r/r} - \eht{\rho u''_\phi u''_r u''_\phi /r}  \nonumber \\
+& \varepsilon_k^h = \varepsilon_k^\theta + \varepsilon_k^\phi & & \eht{G^{R}_{\theta \theta}} = +\eht{\rho u''_\theta u''_r u''_\theta/r} + \eht{\rho u''_\theta u''_\theta u''_r/r} - \eht{\rho u''_\phi u''_\phi u''_\theta/(r\tan{\theta})} - \eht{u''_\phi u''_\theta u''_\phi/(r\tan{\theta})}  \nonumber \\
+& \varepsilon_a = \eht{\rho' v \nabla_r  \tau'_{rr}} & & \eht{G^{R}_{\phi \phi}} = +\eht{\rho u''_\phi u''_r r_\phi /r} + \eht{\rho u''_\phi u''_\theta u''_\phi /(r\tan{\theta})} + \eht{\rho u''_\phi u''_\phi u''_r/r} + \eht{\rho u''_\phi u''_\phi u''_\theta / (r\tan{\theta})} \nonumber \\
+& \varepsilon_I = \eht{\tau'_{rr}\partial_r \epsilon''_I} + \eht{\tau'_{r\theta}(1/r)\partial_\theta \epsilon''_I} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi \epsilon''_I} & & \eht{G^{I}_r} = -\eht{\rho \epsilon''_I u''_\theta u''_\theta/r} - \eht{\rho \epsilon''_I u''_\phi u''_\phi/r} \nonumber \\
+& \varepsilon_s = \eht{\tau'_{rr}\partial_r s''} + \eht{\tau'_{r\theta}(1/r)\partial_\theta s''} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi s''} & & \eht{G^{s}_r} = -\eht{\rho s'' u''_\theta u''_\theta/r} - \eht{\rho s'' u''_\phi u''_\phi/r} \nonumber \\
+& \varepsilon_\alpha = \eht{\tau'_{rr}\partial_r X''_\alpha} + \eht{\tau'_{r\theta}(1/r)\partial_\theta X''_\alpha} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi X''_\alpha} & & \eht{G^{\alpha}_r} =  -\eht{\rho X''_\alpha u''_\theta u''_\theta/r} - \eht{\rho X''_\alpha u''_\phi u''_\phi/r} \nonumber \\  
+& \varepsilon_A = \eht{\tau'_{rr}\partial_r A''} + \eht{\tau'_{r\theta}(1/r)\partial_\theta A''} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi A''} & & \eht{G^A_r} =  -\eht{\rho A'' u''_\theta u''_\theta/r} - \eht{\rho A'' u''_\phi u''_\phi/r} \nonumber \\
+& \varepsilon_Z = \eht{\tau'_{rr}\partial_r Z''} + \eht{\tau'_{r\theta}(1/r)\partial_\theta Z''} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi Z''}& & \eht{G^Z_r} =  -\eht{\rho Z'' u''_\theta u''_\theta/r} - \eht{\rho Z'' u''_\phi u''_\phi/r} \nonumber \\
+& \varepsilon_{h} = \eht{\tau'_{rr}\partial_r h''} + \eht{\tau'_{r\theta}(1/r)\partial_\theta h''} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi h''} & & \eht{G^h_r} = -\eht{\rho h'' u''_\theta u''_\theta/r} - \eht{\rho h'' u''_\phi u''_\phi/r} \nonumber \\
+& \varepsilon_{jz} = \eht{\tau'_{rr}\partial_r j''_z} + \eht{\tau'_{r\theta}(1/r)\partial_\theta j''_z} + \eht{\tau'_{r\phi}(1/r\sin{\theta})\partial_\phi j''_z} & & \eht{G^T_r} = -\eht{\rho T' u'_\theta u'_\theta/r} - \eht{\rho T' u'_\phi u'_\phi/r} \nonumber \\
+& & & \eht{G^{jz}_r} = -\eht{\rho j''_z u''_\theta u''_\theta/r} - \eht{\rho j''_z u''_\phi u''_\phi/r} \nonumber 
+\end{align}
+%\centerline{Differential operators}
+\begin{align}
+\nabla (.) = \nabla_r (.) + \nabla_\theta (.) + \nabla_\phi (.) = \frac{1}{r^2} \partial_r (r^2 . ) + \frac{1}{r\sin{\theta}} \partial_\theta (\sin{\theta} . ) + \frac{1}{r\sin{\theta}} \partial_\phi (.) \nonumber
+\end{align}
+%\tablecomments{Notes: $f$ is flux, $\varepsilon$ is viscous dissipation, $\mathcal G$ are geometric term, $\mathcal N$ is numerical effect}
+\end{table*}
+
+
+
+
+
+%\bibliography{referenc}
+
+\end{document}
+
+
