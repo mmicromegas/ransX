@@ -1,0 +1,96 @@
+13 ELEMENT NETWORK:::::::::::
+                              
+    n    p            bet-    
+
+  o16  he4  c12       ca85nv  
+
+  o16  he4  c12       ca85rv  
+
+ ne20  he4  o16       cf88nv  
+
+ ne20  he4  o16       cf88rv  
+
+ mg24    p na23       cf88nv  
+
+ mg24    p na23       cf88rv  
+
+ mg24  he4 ne20       cf88nv  
+
+ mg24  he4 ne20       cf88rv  
+
+ si28  he4 mg24       cf88rv  
+
+ si28  he4 mg24       cf88rv  
+
+  s32  he4 si28       fkthrv  
+
+ cl35    p  s34       fkthrv  
+
+ ar36    p cl35       fkthrv  
+
+ ar36  he4  s32       fkthrv  
+
+  c12  he4  he4  he4  cf88n   
+
+  c12  he4  he4  he4  cf88r   
+
+  he4  c12  o16       ca85n   
+
+  he4  c12  o16       ca85r   
+
+  he4  o16 ne20       cf88n   
+
+  he4  o16 ne20       cf88r   
+
+  he4 ne20 mg24       cf88n   
+
+  he4 ne20 mg24       cf88r   
+
+    p na23 mg24       cf88n   
+
+    p na23 mg24       cf88r   
+
+  he4 mg24 si28       cf88r   
+
+  he4 mg24 si28       cf88r   
+
+  he4 si28  s32       fkthr   
+
+  he4  s32 ar36       fkthr   
+
+    p  s34 cl35       fkthr   
+
+    p cl35 ar36       fkthr   
+
+  c12  c12    p na23  cf88r   
+
+  c12  c12  he4 ne20  cf88r   
+
+  c12  o16  he4 mg24  cf88r   
+
+  o16  o16  he4 si28  cf88r   
+
+  he4 ne20    p na23  cf88n   
+
+  he4 ne20    p na23  cf88r   
+
+  he4 ne20    p na23  cf88r   
+
+  c12 ne20  he4 si28  rolfr   
+
+    p na23  he4 ne20  cf88n   
+
+    p na23  he4 ne20  cf88r   
+
+    p na23  he4 ne20  cf88r   
+
+  he4 si28  c12 ne20  rolfrv  
+
+  he4  s32    p cl35  fkthrv  
+
+    p cl35  he4  s32  fkthr   
+
+  he4  he4  he4  c12  cf88r   
+
+  he4  he4  he4  c12  cf88n   
+
