@@ -428,6 +428,7 @@ class Flash(Analysis):
         super(Flash,self).__init__(**kwargs)
 
 
+#  run analysis.py
 #  an = PROMPI('D:\\ransX\\DATA_D\\BINDATA\\ccp_two_layers\\cosma\\ccptwo.r128x128x128.cosma.00797.bindata')
 #  an.write_Rprof(1,'test.rprof')
 
@@ -459,9 +460,13 @@ class PROMPI(Analysis):
         velx = np.swapaxes(block.datadict['vely'],0,1)
         vely = np.swapaxes(block.datadict['velx'],0,1)
         velz = np.swapaxes(block.datadict['velz'],0,1)
+        etot = np.swapaxes(block.datadict['energy'],0,1)
+
+        ekin = 0.5*(velx**2.+vely**2.+velz**2.)
+        eint = etot - ekin
 
         self.vel = np.array([velx,vely,velz]) / velfac
-        self.eps = np.array(np.swapaxes(block.datadict['energy'],0,1)) / efac
+        self.eps = np.array(eint) / efac
         self.xnuc = np.array([np.swapaxes(block.datadict['0001'],0,1), np.swapaxes(block.datadict['0002'],0,1)])
 
         nx = np.array(block.datadict['qqx'])
