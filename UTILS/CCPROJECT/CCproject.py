@@ -1,6 +1,7 @@
 import UTILS.PROMPI.PROMPI_data as prd
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 # https://docs.sympy.org/dev/modules/physics/vector/api/fieldfunctions.html#curl
 # from sympy.physics.vector import ReferenceFrame
 # from sympy.physics.vector import curl
@@ -77,6 +78,8 @@ class CCproject:
 
         # vorticitymag = self.calcVorticityMagnitude(block)
 
+        fillf = self.filling_factor_downflow(block, 'velx')
+
         self.time = time
         self.eh_rho = eh_rho
         self.eh_press = eh_press
@@ -125,6 +128,8 @@ class CCproject:
         # self.fh_enuc1 = fh_enuc1
 
         self.xzn0 = xzn0
+        self.fillf = fillf
+
 
     def getData(self):
         return {'x': self.xzn0, 'time': self.time, 'density': self.eh_rho, 'pressure': self.eh_press,
@@ -136,7 +141,8 @@ class CCproject:
                 'minq_temp': self.minq_temp, 'maxq_temp': self.maxq_temp, 'stdevq_temp': self.stdevq_temp,
                 'minq_Avalue': self.minq_Avalue, 'maxq_Avalue': self.maxq_Avalue, 'stdevq_Avalue': self.stdevq_Avalue,
                 'minq_Vmag': self.minq_Vmag, 'maxq_Vmag': self.maxq_Vmag, 'stdevq_Vmag': self.stdevq_Vmag,
-                'velxmag' : self.velxmag, 'velhormag': self.velhormag, 'Hflux': self.Hflux, 'KEflux': self.KEflux}
+                'velxmag' : self.velxmag, 'velhormag': self.velhormag, 'Hflux': self.Hflux, 'KEflux': self.KEflux,
+                'fillf': self.fillf}
 
     def write_output(self, p, t, columns, filename, outputnames=[], n=1, units=[]):
         """
@@ -783,6 +789,45 @@ class CCproject:
         # get flux
         flux = eh_rhoQvelx - eh_rhoQ*eh_rhovelx/eh_rho
 
-
-
         return flux
+
+#    def filling_factor_downflow(self, block, field):
+#        data = block.datadict[field]
+#        vel = data
+#        ffd = np.mean(vel < 0.)
+#        return ffd
+
+    def get_haxes(self,ndim):
+        haxes = list(range(ndim))
+        haxes.remove(1)
+        return tuple(haxes)
+
+    def filling_factor_downflow(self, block, field):
+        data = block.datadict[field]
+        vel = data
+        nx = block.datadict['qqx']
+        ny = block.datadict['qqy']
+        nz = block.datadict['qqz']
+
+        #haxes = self.get_haxes(len(vel.shape))
+        #print(haxes)
+        #sys.exit()
+        ffd = []
+        for i in range(nx):
+            hdata = vel[i,:,:]
+            ffd.append(np.mean(hdata < 0.)) # this is from Robert s script
+            #ffd.append(np.sum(np.where((hdata < 0.), 1., 0.))/(ny*nz))
+
+        #print(np.where((hdata < 0.), 1., 0.))
+
+        #print(ffd)
+        #print("************")
+        #print(ffd_r)
+        #plt.figure(figsize=(7, 6))
+        #plt.plot(ffd)
+        #plt.plot(ffd_r,linestyle='--')
+        #plt.show(block=False)
+
+        #sys.exit()
+
+        return ffd

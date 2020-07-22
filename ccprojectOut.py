@@ -46,7 +46,7 @@ for fff in bindata:
                                 'minq_Vmag', 'maxq_Vmag', 'stdevq_Vmag',
                                 'vely','velx','velz', # vely and velx are switched, according to specs, Y is vertical/gravity direction
                                 'velxmag','velhormag',
-                                'Hflux','KEflux'],
+                                'Hflux','KEflux','fillf'],
                    filename[0:chp], ['Y','RHO','P','TEMP','A','X1','V',
                                      'MIN_RHO','MAX_RHO','STDEV_RHO',
                                      'MIN_P', 'MAX_P', 'STDEV_P',
@@ -54,7 +54,7 @@ for fff in bindata:
                                      'MIN_A','MAX_A','STDEV_A',
                                      'MIN_X1','MAX_X1','STDEV_X1',
                                      'MIN_V', 'MAX_V', 'STDEV_V',
-                                     'VX','VY','VZ','|VY|','VXZ','FH','FK'], icnt,
+                                     'VX','VY','VZ','|VY|','VXZ','FH','FK','FFD'], icnt,
                    [onelu,onerho,onepr,onete,onea,onex,oneve,
                     onerho,onerho,onerho,
                     onepr, onepr, onepr,
@@ -62,4 +62,4 @@ for fff in bindata:
                     onea, onea, onea,
                     onex, onex, onex,
                     oneve, oneve, oneve, oneve, oneve,
-                    oneve, oneve, oneve, oneflx, oneflx])
+                    oneve, oneve, oneve, oneflx, oneflx,one])

@@ -453,7 +453,8 @@ class PROMPI(Analysis):
 
         # PROMPI data vertical direction is X #
         # hence swap X for Y axis everywhere  #
-        self.rho = np.swapaxes(block.datadict['density'],0,1) / rhofac
+        dens = np.swapaxes(block.datadict['density'],0,1)
+        self.rho = dens / rhofac
         self.pres = np.swapaxes(block.datadict['press'],0,1) / pfac
         self.temp = np.swapaxes(block.datadict['temp'],0,1) / tempfac
 
@@ -466,7 +467,7 @@ class PROMPI(Analysis):
         eint = etot - ekin
 
         self.vel = np.array([velx,vely,velz]) / velfac
-        self.eps = np.array(eint) / efac
+        self.eps = np.array(dens*eint) / (efac/(rfac**3.))
         self.xnuc = np.array([np.swapaxes(block.datadict['0001'],0,1), np.swapaxes(block.datadict['0002'],0,1)])
 
         nx = np.array(block.datadict['qqx'])
@@ -814,3 +815,27 @@ def read_mmap(f, shape, **kwargs):
     res = np.ndarray(shape, buffer=f, **kwargs)
     f.seek(len(res.data), os.SEEK_CUR)
     return res
+
+def main():
+    # dataloc = '/cosma6/data/dp040/dc-moca1/PROMPI_for_ccptwo_128x128x128/setups/ccp_two_layers/'
+    dataloc = 'D:\\ransX\\DATA_D\\BINDATA\\ccp_two_layers\\cosma\\'
+    bindata = [filee for filee in sorted(os.listdir(dataloc)) if "bindata" in filee]
+#
+    icnt = 0
+    for fff in bindata:
+        filename = os.path.join(dataloc, fff)
+        print(filename)
+        icnt += 1
+        an = PROMPI(filename)
+
+        fdir = os.path.join('DATA', 'CCP')
+        ffdir = os.path.join(fdir, os.path.basename(filename))
+        fn = ffdir + '-{:04d}.rprof'.format(icnt)
+
+        an.write_Rprof(icnt, fn)
+
+# EXECUTE MAIN
+if __name__ == "__main__":
+    main()
+
+# END

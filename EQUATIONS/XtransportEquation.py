@@ -102,6 +102,15 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         #    print("ERROR(XtransportEquation.py): core mass not defined!")
         #    sys.exit()
 
+        self.fhtxiprot = self.getRAdata(eht, 'ddx0002')[intc]/dd
+        self.fhtxihe4 = self.getRAdata(eht, 'ddx0003')[intc]/dd
+        self.fhtxic12 = self.getRAdata(eht, 'ddx0004')[intc]/dd
+        self.fhtxio16 = self.getRAdata(eht, 'ddx0005')[intc]/dd
+        self.fhtxine20 = self.getRAdata(eht, 'ddx0006')[intc]/dd
+        self.fhtximg24 = self.getRAdata(eht, 'ddx0008')[intc]/dd
+        self.fhtxisi28 = self.getRAdata(eht, 'ddx0009')[intc]/dd
+        self.fhtxip31 = self.getRAdata(eht, 'ddx0010')[intc]/dd
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -343,6 +352,82 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_withMM' + element + '.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_withMM' + element + '.eps')
+
+    def plot_Xm_with_MM(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot X stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load DATA to plot
+
+        plt1 = self.fhtxiprot
+        plt2 = self.fhtxihe4
+        plt3 = self.fhtxic12
+        plt4 = self.fhtxio16
+        plt5 = self.fhtxine20
+        plt6 = self.fhtximg24
+        plt7 = self.fhtxisi28
+        plt8 = self.fhtxip31
+
+        fig, ax1 = plt.subplots(figsize=(7, 6))
+
+        to_plot = [plt1,plt2,plt3,plt4,plt5,plt6,plt7,plt8]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        # plot DATA
+        ax1.semilogy(grd1, plt1, label=r"$^{1}$H")
+        ax1.semilogy(grd1, plt2, label=r"$^{4}$He")
+        ax1.semilogy(grd1, plt3, label=r"$^{12}$C")
+        ax1.semilogy(grd1, plt4, label=r"$^{16}$O")
+        ax1.semilogy(grd1, plt5, label=r"$^{20}$Ne")
+        ax1.semilogy(grd1, plt6, label=r"$^{24}$Mg")
+        ax1.semilogy(grd1, plt5, label=r"$^{28}$Si")
+        ax1.semilogy(grd1, plt6, label=r"$^{31}$P")
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\widetilde{X}$"
+            ax1.set_xlabel(setxlabel)
+            ax1.set_ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\widetilde{X}$"
+            ax1.set_xlabel(setxlabel)
+            ax1.set_ylabel(setylabel)
+
+        # show LEGEND
+        ax1.legend(loc=3, prop={'size': 13}, ncol =2)
+
+        # convective boundary markers
+        ax1.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        ax1.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        ax2 = ax1.twiny()
+        ax2.set_xlim(ax1.get_xlim())
+
+        newMMlabel_xpos = [3.8e8, 4.7e8, 5.5e8, 6.4e8, 7.3e8, 8.5e8, 9.5e8]
+        newMMlabel = self.mlabels(newMMlabel_xpos)
+        ax2.set_xticks(newMMlabel_xpos)
+
+        ax2.set_xticklabels(newMMlabel)
+        ax2.set_xlabel('enclosed mass (msol)')
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM.eps')
+
+
 
     def plot_X_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""

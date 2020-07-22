@@ -29,6 +29,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
 
         dd = self.getRAdata(eht, 'dd')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
         ux = self.getRAdata(eht, 'ux')[intc]
         uy = self.getRAdata(eht, 'uy')[intc]
         uz = self.getRAdata(eht, 'uz')[intc]
@@ -42,6 +43,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
 
         uxux = self.getRAdata(eht, 'uxux')[intc]
         ddux = self.getRAdata(eht, 'ddux')[intc]
+        ttux = self.getRAdata(eht, 'ttux')[intc]
         divu = self.getRAdata(eht, 'divu')[intc]
         uxdivu = self.getRAdata(eht, 'uxdivu')[intc]
 
@@ -78,6 +80,9 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
 
         # a is turbulent mass flux
         eht_a = ux - ddux / dd
+
+        # temperature flux
+        eht_ftt = ttux - tt*ux
 
         ##############################
         # TURBULENT MASS FLUX EQUATION
@@ -164,6 +169,9 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         self.coeff = 3.5e-4
         self.eht_a_grad_model = +self.coeff*uturb*lc*self.Grad(dd,xzn0)
 
+        # mass flux and temperature flux relation for incompressible/Businessq case
+        self.eht_a_tempflx = - (dd/tt)*eht_ftt
+
         # print(self.eht_a_grad_model)
 
         # assign global data to be shared across whole class
@@ -194,6 +202,7 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         plt7 = self.eht_a_model4
         plt8 = self.fht_ux_model
         plt9 = self.eht_a_grad_model
+        plt10 = self.eht_a_tempflx
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -202,11 +211,12 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2, plt3, plt4, plt5, plt6, plt7, plt8, plt9]
+        to_plot = [plt1, plt2, plt3, plt4, plt5, plt6, plt7, plt8, plt9, plt10]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title(r'turbulent mass flux'+ ' c = ' + str(self.coeff))
+        # plt.title(r'turbulent mass flux'+ ' c = ' + str(self.coeff))
+        plt.title(r'turbulent mass flux')
         if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r"$+\overline{\rho' u'_x}$")
             # plt.plot(grd1,plt2,color='r',label='model1')
@@ -216,7 +226,8 @@ class TurbulentMassFluxEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.
             # plt.plot(grd1,plt6,color='b',label=r'model3')
             # plt.plot(grd1, plt7, color='b', label=r'model4')
             # plt.plot(grd1, plt8, color='r', linestyle='--', label=r'model for fht ux')
-            plt.plot(grd1, plt9, color='r', linestyle='--', label=r"$+c*u_{rms}*l_c * \partial_r \overline{\rho}$")
+            # plt.plot(grd1, plt9, color='r', linestyle='--', label=r"$+c*u_{rms}*l_c * \partial_r \overline{\rho}$")
+            plt.plot(grd1, plt10, color='g', linestyle='--', label=r"$- \overline{\rho} \ \alpha_T \ \overline{T'u'_r}$")
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r"$a$")
             # plt.plot(grd1,plt2,color='r',label='model1')

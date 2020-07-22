@@ -154,6 +154,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         fht_uy = dduy / dd
         fht_uz = dduz / dd
 
+        eht_uxff = ux - fht_ux
+
         ###########################################
         # FULL TURBULENCE VELOCITY FIELD HYPOTHESIS
         ###########################################
@@ -256,6 +258,7 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         #print('************')
 
         self.fht_divu = dddivu/dd
+        self.eht_divuff = self.Div(eht_uxff,xzn0)
 
         eht_ux = ux
         fht_ux = ddux/dd
@@ -318,6 +321,7 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt3 = self.favrian_d
         plt4 = self.reynolds_d
         plt5 = self.fht_divu
+        plt6 = self.eht_divuff
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -326,17 +330,18 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2]
+        to_plot = [plt1, plt2, plt6]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
         if self.ig == 1:
             plt.title('divu (cartesian)')
             #plt.plot(grd1, plt2, color='g', label=r"$divu2$")
-            plt.plot(grd1, plt3, color='g', label=r"+$\nabla_x \widetilde{u}_x$")
+            plt.plot(grd1, plt1, marker='o', color='r',markersize=6,markevery=20, label=r"+$\overline{\nabla \cdot {\bf u}}$")
             plt.plot(grd1, plt4, color='b', label=r"+$\nabla_x \overline{u}_x$")
-            plt.plot(grd1, plt1, color='r', linestyle='dotted',label=r"+$\overline{\nabla \cdot {\bf u}}$")
-            plt.plot(grd1, plt5, color='m', linestyle='dotted',label=r"+$\overline{\rho \nabla \cdot {\bf u}}/\overline{\rho}$")
+            plt.plot(grd1, plt3, color='g', label=r"+$\nabla_x \widetilde{u}_x$")
+            # plt.plot(grd1, plt5, color='m', linestyle='dotted',label=r"+$\overline{\rho \nabla \cdot {\bf u}}/\overline{\rho}$")
+            plt.plot(grd1, plt6, color='c', label=r"+$\nabla_x \overline{u''}_x$")
         elif self.ig == 2:
             plt.title('divu (spherical)')
             plt.plot(grd1, plt1, color='r', label=r"$divu1$")

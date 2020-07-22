@@ -538,6 +538,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         dd = self.data['dd']
 
         # for 25 element network
+        xhe4 = self.data['x0003']
         xc12 = self.data['x0004']
         xo16 = self.data['x0005']
         xne20 = self.data['x0006']
@@ -677,11 +678,20 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         #plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
         #plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
 
+
+        # Clayton, Principles of Stellar Evolution and Nucleosynthesis, page 414, eq.5-105
+        f = 1. # screening factor
+        tt8 = tt/1.e8
+        #epsilon3alpha = 4.4e-8*(dd**2.)*(xhe4**3.)*((tt/1.e8)**40.)*f  # this is around 1e8 K
+        epsilon3alpha = 3.9e11*((dd**2.)*(xhe4**3.)/(tt8**3.))*np.exp(-42.94/tt8)
+        #print(epsilon3alpha)
+
         plt.plot(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
         plt.plot(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
         plt.plot(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
         plt.plot(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
         plt.plot(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
+        plt.plot(rc, epsilon3alpha, label=r"$\dot{\epsilon}_{\rm nuc}$ (He$^{4}$)")
 
         #print("en_ne20")
         #print(en_ne20)
@@ -702,7 +712,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
         plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
 
-        print(enuc1)
+        #print(enuc1)
 
         # convective boundary markers
         plt.axvline(4.46e8, linestyle='--', linewidth=0.7, color='k')
@@ -717,7 +727,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
-        savefig('RESULTS/oburn25_nuclear_energy_gen.png')
+        savefig('RESULTS/oburn13_nuclear_energy_gen.png')
 
     def plot_check_heq1(self):
         xzn0 = np.asarray(self.data['xzn0'])
@@ -987,7 +997,9 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         # Clayton, Principles of Stellar Evolution and Nucleosynthesis, page 414, eq.5-105
         f = 1. # screening factor
-        epsilon3alpha = 4.4e-8*(dd**2.)*(xhe4**3.)*((tt/1.e8)**40.)*f
+        tt8 = tt/1.e8
+        #epsilon3alpha = 4.4e-8*(dd**2.)*(xhe4**3.)*((tt/1.e8)**40.)*f  # this is around 1e8 K
+        epsilon3alpha = 3.9e11*((dd**2.)*(xhe4**3.)/(tt8**3.))*np.exp(-42.94/tt8)
         print(epsilon3alpha)
 
         plt.figure(figsize=(7, 6))

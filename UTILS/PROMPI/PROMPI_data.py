@@ -228,7 +228,7 @@ class PROMPI_bindata:
             self.varl.append(line)
             #print(line)
 
-        self.interior_mass = float(fhead.readline())
+        #self.interior_mass = float(fhead.readline())
 
         xznl = []
         xzn0 = []

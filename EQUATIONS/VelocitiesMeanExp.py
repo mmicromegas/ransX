@@ -82,9 +82,15 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             xzn0_exp = np.interp(t_mm[intc+1],t_mm[intc],xzn0)
             dx = xzn0_exp - xzn0
             dt = t_timec[intc+1] - t_timec[intc]
-            vexp2 = -dx/dt
+            vexp3 = -dx/dt
         elif self.ig == 2:
             vexp2 = minus_dt_mm / (4. * np.pi * (xzn0 ** 2.) * dd)
+
+            xzn0_exp = np.interp(t_dd[intc+1]*Vol,t_dd[intc]*Vol,xzn0)
+            xzn0_exp = np.interp(t_mm[intc+1],t_mm[intc],xzn0)
+            dx = xzn0_exp - xzn0
+            dt = t_timec[intc+1] - t_timec[intc]
+            vexp3 = -dx/dt
 
         vturb = ((dduxux - ddux * ddux / dd) / dd) ** 0.5
 
@@ -95,6 +101,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.ig = ig
         self.vexp1 = vexp1
         self.vexp2 = vexp2
+        self.vexp3 = vexp3
         self.vturb = vturb
         self.fext = fext
 
@@ -113,7 +120,8 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt1 = self.ux
         plt2 = self.vexp1
         plt3 = self.vexp2
-        plt4 = self.vturb
+        plt4 = self.vexp3
+        plt5 = self.vturb
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -137,6 +145,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_r$')
             plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_r$')
             plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
+            plt.plot(grd1, plt4, color='c', linestyle='--',label=r'$v_{exp}$')
             plt.plot(grd1, plt2-plt1, color='m', label=r"$-\overline{\rho' u'_r}/\overline{\rho}$")
             # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
 
