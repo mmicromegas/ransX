@@ -269,6 +269,20 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         cD = 1.e-16
         intFi = cD*integrate.cumtrapz(intFii,xzn0,initial=0)
 
+        self.fhtflxineut =  self.getRAdata(eht, 'ddx0001ux')[intc] - self.getRAdata(eht, 'ddx0001')[intc] * ddux / dd
+        self.fhtflxiprot =  self.getRAdata(eht, 'ddx0002ux')[intc] - self.getRAdata(eht, 'ddx0002')[intc] * ddux / dd
+        self.fhtflxihe4 =  self.getRAdata(eht, 'ddx0003ux')[intc] - self.getRAdata(eht, 'ddx0003')[intc] * ddux / dd
+        self.fhtflxic12 =  self.getRAdata(eht, 'ddx0004ux')[intc] - self.getRAdata(eht, 'ddx0004')[intc] * ddux / dd
+        self.fhtflxio16 =  self.getRAdata(eht, 'ddx0005ux')[intc] - self.getRAdata(eht, 'ddx0005')[intc] * ddux / dd
+        self.fhtflxine20 =  self.getRAdata(eht, 'ddx0006ux')[intc] - self.getRAdata(eht, 'ddx0006')[intc] * ddux / dd
+        self.fhtflxina23 =  self.getRAdata(eht, 'ddx0007ux')[intc] - self.getRAdata(eht, 'ddx0007')[intc] * ddux / dd
+        self.fhtflximg24 =  self.getRAdata(eht, 'ddx0008ux')[intc] - self.getRAdata(eht, 'ddx0008')[intc] * ddux / dd
+        self.fhtflxisi28 =  self.getRAdata(eht, 'ddx0009ux')[intc] - self.getRAdata(eht, 'ddx0009')[intc] * ddux / dd
+        self.fhtflxip31 =  self.getRAdata(eht, 'ddx0010ux')[intc] - self.getRAdata(eht, 'ddx0010')[intc] * ddux / dd
+        self.fhtflxis32 =  self.getRAdata(eht, 'ddx0011ux')[intc] - self.getRAdata(eht, 'ddx0011')[intc] * ddux / dd
+        self.fhtflxis34 =  self.getRAdata(eht, 'ddx0012ux')[intc] - self.getRAdata(eht, 'ddx0012')[intc] * ddux / dd
+        self.fhtflxicl35 =  self.getRAdata(eht, 'ddx0013ux')[intc] - self.getRAdata(eht, 'ddx0013')[intc] * ddux / dd
+        self.fhtflxiar36 =  self.getRAdata(eht, 'ddx0014ux')[intc] - self.getRAdata(eht, 'ddx0014')[intc] * ddux / dd
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -341,6 +355,106 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxX_' + element + '.png')
+
+    def plot_XfluxX2(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot Xflux stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XfluxXEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # convert nuc ID to string
+        xnucid = str(self.inuc)
+        element = self.element
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        xzn0 = np.asarray(grd1)
+        xlm = np.abs(xzn0 - self.bconv)
+        xrm = np.abs(xzn0 - self.tconv)
+        il = int(np.where(xlm == xlm.min())[0][0])
+        ib = int(np.where(xrm == xrm.min())[0][0])
+
+        plt0 = self.fhtflxineut/np.max(np.abs(self.fhtflxineut[il:ib]))
+        plt1 = self.fhtflxiprot/np.max(np.abs(self.fhtflxiprot[il:ib]))
+        plt2 = self.fhtflxihe4/np.max(np.abs(self.fhtflxihe4[il:ib]))
+        plt3 = self.fhtflxic12/np.max(np.abs(self.fhtflxic12[il:ib]))
+        plt4 = self.fhtflxio16/np.max(np.abs(self.fhtflxio16[il:ib]))
+        plt5 = self.fhtflxine20/np.max(np.abs(self.fhtflxine20[il:ib]))
+        plt6 = self.fhtflxina23/np.max(np.abs(self.fhtflxina23[il:ib]))
+        plt7 = self.fhtflximg24/np.max(np.abs(self.fhtflximg24[il:ib]))
+        plt8 = self.fhtflxisi28/np.max(np.abs(self.fhtflxisi28[il:ib]))
+        plt9 = self.fhtflxip31/np.max(np.abs(self.fhtflxip31[il:ib]))
+        plt10 = self.fhtflxis32/np.max(np.abs(self.fhtflxis32[il:ib]))
+        plt11 = self.fhtflxis34/np.max(np.abs(self.fhtflxis34[il:ib]))
+        plt12 = self.fhtflxicl35/np.max(np.abs(self.fhtflxicl35[il:ib]))
+        plt13 = self.fhtflxiar36/np.max(np.abs(self.fhtflxiar36[il:ib]))
+
+        #plt0 = self.fhtflxineut
+        #plt1 = self.fhtflxiprot
+        #plt2 = self.fhtflxihe4
+        #plt3 = self.fhtflxic12
+        #plt4 = self.fhtflxio16
+        #plt5 = self.fhtflxine20
+        #plt6 = self.fhtflxina23
+        #plt7 = self.fhtflximg24
+        #plt8 = self.fhtflxisi28
+        #plt9 = self.fhtflxip31
+        #plt10 = self.fhtflxis32
+        #plt11 = self.fhtflxis34
+        #plt12 = self.fhtflxicl35
+        #plt13 = self.fhtflxiar36
+
+        fig, ax1 = plt.subplots(figsize=(7, 6))
+
+        to_plot = [plt0,plt1,plt2,plt3,plt4,plt5,plt6,plt7,plt8,plt9,plt10,plt11,plt12,plt13]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        # plot DATA
+        plt.title('scaled Xflux X')
+        plt.plot(grd1, plt0, label=r"neut")
+        plt.plot(grd1, plt1, label=r"$^{1}$H")
+        plt.plot(grd1, plt2, label=r"$^{4}$He")
+        plt.plot(grd1, plt3, label=r"$^{12}$C")
+        plt.plot(grd1, plt4, label=r"$^{16}$O")
+        plt.plot(grd1, plt5, label=r"$^{20}$Ne")
+        plt.plot(grd1, plt6, label=r"$^{23}$Na")
+
+        #plt.plot(grd1, plt7, label=r"$^{24}$Mg")
+        #plt.plot(grd1, plt8, label=r"$^{28}$Si")
+        #plt.plot(grd1, plt9, label=r"$^{31}$P")
+        #plt.plot(grd1, plt10, label=r"$^{32}$S")
+        #plt.plot(grd1, plt11, label=r"$^{34}$S")
+        #plt.plot(grd1, plt12, label=r"$^{35}$Cl")
+        #plt.plot(grd1, plt13, label=r"$^{36}$Ar")
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\overline{\rho} \widetilde{X''_i u''_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\frac{f_X}{max(|f_X|)}$"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=1, prop={'size': 14},ncol=2)
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxX2_1' + element + '.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxX2_1' + element + '.eps')
+
 
     def plot_XfluxxX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""

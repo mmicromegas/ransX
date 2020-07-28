@@ -563,7 +563,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         plt.figure(figsize=(7, 6))
 
-        lb = -1.e2
+        lb = -1.e6
         ub = 1.e15
 
         plt.yscale('symlog')
@@ -718,7 +718,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.axvline(4.46e8, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(8.5e8, linestyle='--', linewidth=0.7, color='k')
 
-        plt.legend(loc=5, prop={'size': 12}, ncol=2)
+        plt.legend(loc=4, prop={'size': 12}, ncol=3)
 
         plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
         plt.xlabel('r ($10^8$ cm)')
@@ -727,7 +727,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
-        savefig('RESULTS/oburn13_nuclear_energy_gen.png')
+        savefig('RESULTS/oburn14_nuclear_energy_gen.eps')
 
     def plot_check_heq1(self):
         xzn0 = np.asarray(self.data['xzn0'])

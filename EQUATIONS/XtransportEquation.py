@@ -102,14 +102,20 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         #    print("ERROR(XtransportEquation.py): core mass not defined!")
         #    sys.exit()
 
+        self.fhtxineut = self.getRAdata(eht, 'ddx0001')[intc]/dd
         self.fhtxiprot = self.getRAdata(eht, 'ddx0002')[intc]/dd
         self.fhtxihe4 = self.getRAdata(eht, 'ddx0003')[intc]/dd
         self.fhtxic12 = self.getRAdata(eht, 'ddx0004')[intc]/dd
         self.fhtxio16 = self.getRAdata(eht, 'ddx0005')[intc]/dd
         self.fhtxine20 = self.getRAdata(eht, 'ddx0006')[intc]/dd
+        self.fhtxina23 = self.getRAdata(eht, 'ddx0007')[intc]/dd
         self.fhtximg24 = self.getRAdata(eht, 'ddx0008')[intc]/dd
         self.fhtxisi28 = self.getRAdata(eht, 'ddx0009')[intc]/dd
         self.fhtxip31 = self.getRAdata(eht, 'ddx0010')[intc]/dd
+        self.fhtxis32 = self.getRAdata(eht, 'ddx0011')[intc]/dd
+        self.fhtxis34 = self.getRAdata(eht, 'ddx0012')[intc]/dd
+        self.fhtxicl35 = self.getRAdata(eht, 'ddx0013')[intc]/dd
+        self.fhtxiar36 = self.getRAdata(eht, 'ddx0014')[intc]/dd
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -353,6 +359,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_X_withMM' + element + '.eps')
 
+
     def plot_Xm_with_MM(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""
 
@@ -365,29 +372,49 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         # load DATA to plot
 
+        plt0 = self.fhtxineut
         plt1 = self.fhtxiprot
         plt2 = self.fhtxihe4
         plt3 = self.fhtxic12
         plt4 = self.fhtxio16
         plt5 = self.fhtxine20
-        plt6 = self.fhtximg24
-        plt7 = self.fhtxisi28
-        plt8 = self.fhtxip31
+        plt6 = self.fhtxina23
+        plt7 = self.fhtximg24
+        plt8 = self.fhtxisi28
+        plt9 = self.fhtxip31
+        plt10 = self.fhtxis32
+        plt11 = self.fhtxis34
+        plt12 = self.fhtxicl35
+        plt13 = self.fhtxiar36
 
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
-        to_plot = [plt1,plt2,plt3,plt4,plt5,plt6,plt7,plt8]
+        to_plot = [plt0,plt1,plt2,plt3,plt4,plt5,plt6,plt7,plt8,plt9,plt10,plt11,plt12,plt13]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        #num_plots = 14
+
+        # Have a look at the colormaps here and decide which one you'd like:
+        # http://matplotlib.org/1.2.1/examples/pylab_examples/show_colormaps.html
+        # colormap = plt.cm.gist_ncar
+        #plt.gca().set_prop_cycle(plt.cycler('color', plt.cm.gist_ncar(np.linspace(0, 1, num_plots))))
+
         # plot DATA
-        ax1.semilogy(grd1, plt1, label=r"$^{1}$H")
-        ax1.semilogy(grd1, plt2, label=r"$^{4}$He")
-        ax1.semilogy(grd1, plt3, label=r"$^{12}$C")
-        ax1.semilogy(grd1, plt4, label=r"$^{16}$O")
-        ax1.semilogy(grd1, plt5, label=r"$^{20}$Ne")
-        ax1.semilogy(grd1, plt6, label=r"$^{24}$Mg")
-        ax1.semilogy(grd1, plt5, label=r"$^{28}$Si")
-        ax1.semilogy(grd1, plt6, label=r"$^{31}$P")
+        #ax1.semilogy(grd1, plt0, label=r"neut")
+        #ax1.semilogy(grd1, plt1, label=r"$^{1}$H")
+        #ax1.semilogy(grd1, plt2, label=r"$^{4}$He")
+        #ax1.semilogy(grd1, plt3, label=r"$^{12}$C")
+        #ax1.semilogy(grd1, plt4, label=r"$^{16}$O")
+        #ax1.semilogy(grd1, plt5, label=r"$^{20}$Ne")
+        #ax1.semilogy(grd1, plt6, label=r"$^{23}$Na")
+
+        ax1.semilogy(grd1, plt7, label=r"$^{24}$Mg")
+        ax1.semilogy(grd1, plt8, label=r"$^{28}$Si")
+        ax1.semilogy(grd1, plt9, label=r"$^{31}$P")
+        ax1.semilogy(grd1, plt10, label=r"$^{32}$S")
+        ax1.semilogy(grd1, plt11, label=r"$^{34}$S")
+        ax1.semilogy(grd1, plt12, label=r"$^{35}$Cl")
+        ax1.semilogy(grd1, plt13, label=r"$^{36}$Ar")
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -402,7 +429,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             ax1.set_ylabel(setylabel)
 
         # show LEGEND
-        ax1.legend(loc=3, prop={'size': 13}, ncol =2)
+        ax1.legend(loc=3, prop={'size': 14}, ncol =3)
 
         # convective boundary markers
         ax1.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -425,9 +452,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         if self.fext == "png":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM.eps')
-
-
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM2.eps')
 
     def plot_X_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""
