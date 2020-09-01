@@ -27,13 +27,14 @@ class EvolReadParams:
         plabel = match[2].split(",")[2]
         prefix = match[3].split(",")[2]
         ig = int(match[4].split(",")[2])
-        ieos = int(match[5].split(",")[2])
-        laxis = int(match[6].split(",")[2])
-        xbl = float(match[7].split(",")[2])
-        xbr = float(match[8].split(",")[2])
+        nsdim = int(match[5].split(",")[2])
+        ieos = int(match[6].split(",")[2])
+        laxis = int(match[7].split(",")[2])
+        xbl = float(match[8].split(",")[2])
+        xbr = float(match[9].split(",")[2])
 
-        return {'eht_data': eht_data, 'dataout': dataout, 'plabel': plabel, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'laxis': laxis,
-                'xbl': xbl, 'xbr': xbr}
+        return {'eht_data': eht_data, 'dataout': dataout, 'plabel': plabel, 'prefix': prefix,
+                'ig': ig, 'nsdim': nsdim, 'ieos': ieos, 'laxis': laxis,'xbl': xbl, 'xbr': xbr}
 
     def getForEvol(self, param):
 

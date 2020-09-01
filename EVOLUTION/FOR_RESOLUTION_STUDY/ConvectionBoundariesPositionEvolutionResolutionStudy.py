@@ -101,8 +101,8 @@ class ConvectionBoundariesPositionEvolutionResolutionStudy(uCalc.Calculus, uEal.
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 200.
-        umeanbndry = 470.
+        lmeanbndry = 6000.
+        umeanbndry = 8000.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):

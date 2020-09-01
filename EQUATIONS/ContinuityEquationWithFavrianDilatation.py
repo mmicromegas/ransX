@@ -115,8 +115,8 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho}$')
 
         # convective boundary markers
-        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -189,20 +189,20 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
         # shade boundaries
-        ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
-        rinc = grd1[ind1[0]]
-        routc = grd1[ind1[-1]]
+        #ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
+        #rinc = grd1[ind1[0]]
+        #routc = grd1[ind1[-1]]
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
-        ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
-        rinc = grd1[ind2[0]]
-        routc = grd1[ind2[-1]]
+        #ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
+        #rinc = grd1[ind2[0]]
+        #routc = grd1[ind2[-1]]
 
         #print(rinc,routc,ind2[0],ind2[-1],ind2,(self.nx/2),self.nx)
         #print(self.nx)
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')

@@ -40,6 +40,21 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         dduzuz = self.getRAdata(eht, 'dduzuz')[intc]
         ddekux = self.getRAdata(eht, 'ddekux')[intc]
 
+        ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
+
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
+
+        uyux = self.getRAdata(eht, 'uxuy')[intc]
+        uzux = self.getRAdata(eht, 'uxuz')[intc]
+
+        uxuxux = self.getRAdata(eht, 'uxuxux')[intc]
+        uyuyux = self.getRAdata(eht, 'uyuyux')[intc]
+        uzuzux = self.getRAdata(eht, 'uzuzux')[intc]
+
         mm = self.getRAdata(eht, 'mm')[intc]
 
         # store time series for time derivatives
@@ -56,6 +71,15 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         fekx = ddekux - dd * fht_ek * fht_ux
 
+        #fekx2 = dd*self.thirdOrder(eht,intc,"ux","ux","ux") + \
+        #        dd*self.thirdOrder(eht,intc,"uy","uy","ux") + \
+        #        dd*self.thirdOrder(eht,intc,"uz","uz","ux")
+
+        fekx2 = dd*(uxuxux - ux*uxux - ux*uxux - ux*uxux + ux*ux*ux) + \
+                dd*(uyuyux - uy*uyux - uy*uyux - ux*uyuy + uy*uy*ux) + \
+                dd*(uzuzux - uz*uzux - uz*uzux - ux*uzuz + uz*uz*ux)
+
+
         #########################
         # END KINETIC ENERGY FLUX
         #########################
@@ -66,6 +90,7 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.dd = dd
         self.fht_ek = fht_ek
         self.fekx = fekx
+        self.fekx2 = fekx2
         self.fext = fext
 
     def plot_keflx(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
@@ -81,6 +106,7 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         # load DATA to plot
         plt1 = self.fekx
+        plt2 = self.fekx2
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -89,12 +115,13 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1]
+        to_plot = [plt1, plt2]
         self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('turbulent kinetic energy flux')
         plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho e''_k u''_x}$")
+        plt.plot(grd1, plt2, color='red', linestyle='--',label=r"$\overline{\rho} \ \overline{u'_i u'_i u'_x}$")
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')

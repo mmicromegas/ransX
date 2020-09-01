@@ -25,6 +25,7 @@ def main():
     filename = params.getForProp('prop')['eht_data']
     plabel = params.getForProp('prop')['plabel']
     ig = params.getForProp('prop')['ig']
+    nsdim = params.getForProp('prop')['nsdim']
     ieos = params.getForProp('prop')['ieos']
     intc = params.getForProp('prop')['intc']
     laxis = params.getForProp('prop')['laxis']
@@ -32,7 +33,7 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # calculate properties
-    ransP = pRop.Properties(filename, plabel, ig, ieos, intc, laxis, xbl, xbr)
+    ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     # instantiate master plot
@@ -388,26 +389,27 @@ def main():
     for elem in network[1:]:  # skip network identifier in the list
         inuc = params.getInuc(network, elem)
 
+        hack = 0.0e9
         # COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('x_' + elem)['plotMee']):
             plt.execX(inuc, elem, 'x_' + elem,
-                      prp['xzn0inc'],
+                      prp['xzn0inc']+hack,
                       prp['xzn0outc'])
 
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execXrho(inuc, elem, 'xrho_' + elem,
-                         prp['xzn0inc'],
+                         prp['xzn0inc']+hack,
                          prp['xzn0outc'])
 
         if str2bool(params.getForEqs('xtrseq_' + elem)['plotMee']):
             plt.execXtrsEq(inuc, elem, 'xtrseq_' + elem,
-                           prp['xzn0inc'],
+                           prp['xzn0inc']+hack,
                            prp['xzn0outc'])
 
         if str2bool(params.getForEqsBar('xtrseq_' + elem + 'Bar')['plotMee']):
             plt.execXtrsEqBar(inuc, elem,
                               'xtrseq_' + elem + 'Bar',
-                              prp['xzn0inc'],
+                              prp['xzn0inc']+hack,
                               prp['xzn0outc'])
 
         # COMPOSITION FLUX IN X

@@ -100,7 +100,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.ux = ux
         self.ig = ig
         self.vexp1 = vexp1
-        self.vexp2 = vexp2
+        #self.vexp2 = vexp2
         self.vexp3 = vexp3
         self.vturb = vturb
         self.fext = fext
@@ -119,7 +119,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # load DATA to plot
         plt1 = self.ux
         plt2 = self.vexp1
-        plt3 = self.vexp2
+        #plt3 = self.vexp2
         plt4 = self.vexp3
         plt5 = self.vturb
 
@@ -130,7 +130,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2, plt3]
+        to_plot = [plt1, plt2]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
@@ -138,7 +138,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_x$')
             plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_x$')
-            plt.plot(grd1, plt3, color='green', linestyle='--',label=r'$v_{exp}$')
+            #plt.plot(grd1, plt3, color='green', linestyle='--',label=r'$v_{exp}$')
             plt.plot(grd1, plt2 - plt1, color='m', label=r"$-\overline{\rho' u'_x}/\overline{\rho}$")
             # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')
         elif self.ig == 2:

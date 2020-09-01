@@ -76,6 +76,19 @@ def main():
     if str2bool(params.getForEqs('keflx')['plotMee']):
         plt.execKeflx(prp['xzn0inc'], prp['xzn0outc'])
 
+    # TURBULENT MASS FLUX EQUATION a.k.a A EQUATION
+    if str2bool(params.getForEqs('tmsflx')['plotMee']):
+        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'],prp['lc'])
+
+    # LUMINOSITY EQUATION
+    if str2bool(params.getForEqs('lueq')['plotMee']):
+        plt.execLumiEq(prp['tke_diss'],
+                          prp['xzn0inc'],
+                          prp['xzn0outc'])
+
+    if str2bool(params.getForEqs('tkeq')['plotMee']):
+        plt.execTKEeq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
+
 # True/False strings to proper boolean
 def str2bool(param):
     return ast.literal_eval(param)

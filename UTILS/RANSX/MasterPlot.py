@@ -481,12 +481,12 @@ class MasterPlot():
         #                   params.getForEqs(x)['ybd'],
         #                   params.getForEqs(x)['ilg'])
 
-        ransXtra.plot_Xm_with_MM(params.getForProp('prop')['laxis'],
-                            params.getForEqs(x)['xbl'],
-                            params.getForEqs(x)['xbr'],
-                            params.getForEqs(x)['ybu'],
-                            params.getForEqs(x)['ybd'],
-                            params.getForEqs(x)['ilg'])
+        #ransXtra.plot_Xm_with_MM(params.getForProp('prop')['laxis'],
+        #                    params.getForEqs(x)['xbl'],
+        #                    params.getForEqs(x)['xbr'],
+        #                    params.getForEqs(x)['ybu'],
+        #                    params.getForEqs(x)['ybd'],
+        #                    params.getForEqs(x)['ilg'])
 
     def execXtrsEq(self, inuc, element, x, bconv, tconv):
         params = self.params
@@ -565,12 +565,12 @@ class MasterPlot():
         #                              params.getForEqs(x)['ybd'],
         #                              params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_XfluxX2(params.getForProp('prop')['laxis'],
-                              params.getForEqs(x)['xbl'],
-                              params.getForEqs(x)['xbr'],
-                              params.getForEqs(x)['ybu'],
-                              params.getForEqs(x)['ybd'],
-                              params.getForEqs(x)['ilg'])
+        #ransXflxx.plot_XfluxX2(params.getForProp('prop')['laxis'],
+        #                      params.getForEqs(x)['xbl'],
+        #                      params.getForEqs(x)['xbr'],
+        #                      params.getForEqs(x)['ybu'],
+        #                      params.getForEqs(x)['ybd'],
+        #                      params.getForEqs(x)['ilg'])
 
     def execXflxXeq(self, inuc, element, x, bconv, tconv, tke_diss, tauL, cnvz_in_hp):
         params = self.params
@@ -742,6 +742,7 @@ class MasterPlot():
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
                                                      kolmdissrate, bconv, tconv,
                                                      params.getForProp('prop')['prefix'])
 
@@ -774,6 +775,7 @@ class MasterPlot():
         ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
                                                      kolmdissrate, bconv, tconv,
                                                      params.getForProp('prop')['prefix'])
 

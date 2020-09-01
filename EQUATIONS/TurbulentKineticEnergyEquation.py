@@ -15,7 +15,7 @@ import matplotlib.cm as cm
 
 class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, kolmdissrate, bconv, tconv, data_prefix):
+    def __init__(self, filename, ig, intc, nsdim, kolmdissrate, bconv, tconv, data_prefix):
         super(TurbulentKineticEnergyEquation, self).__init__()
 
         # instantiate turbulent kinetic energy object
@@ -75,6 +75,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         self.nx = tkefields['nx']
         self.t_timec = tkefields['t_timec']
         self.t_tke = tkefields['t_tke']
+
+        self.nsdim = nsdim
 
     def plot_tke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy stratification in the model"""
@@ -166,8 +168,11 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # model constant for tke dissipation
         Cm = 0.5
 
-        # plot DATA 
-        plt.title(r'TKE equation C$_m$ = ' + str(Cm))
+        # plot DATA
+        if self.nsdim != 2:
+            plt.title(r"TKE equation C$_m$ = " + str(Cm))
+        else:
+            plt.title(r"TKE equation " + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
@@ -176,7 +181,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")
-            plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
+            if self.nsdim !=2:
+                plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
@@ -236,7 +242,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         #pltMin = np.min(plt1[indRES])
 
         pltMax = np.max(plt1)
-        pltMax = 8.e11 # for the thpulse
+        #pltMax = 8.e11 # for the thpulse
+        pltMax = 4.e12
         #pltMax = 2.e12 # for neshell nucb10x
         #pltMax = 1.e14
         pltMin = np.min(plt1)

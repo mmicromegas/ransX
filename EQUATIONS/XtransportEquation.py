@@ -102,20 +102,20 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         #    print("ERROR(XtransportEquation.py): core mass not defined!")
         #    sys.exit()
 
-        self.fhtxineut = self.getRAdata(eht, 'ddx0001')[intc]/dd
-        self.fhtxiprot = self.getRAdata(eht, 'ddx0002')[intc]/dd
-        self.fhtxihe4 = self.getRAdata(eht, 'ddx0003')[intc]/dd
-        self.fhtxic12 = self.getRAdata(eht, 'ddx0004')[intc]/dd
-        self.fhtxio16 = self.getRAdata(eht, 'ddx0005')[intc]/dd
-        self.fhtxine20 = self.getRAdata(eht, 'ddx0006')[intc]/dd
-        self.fhtxina23 = self.getRAdata(eht, 'ddx0007')[intc]/dd
-        self.fhtximg24 = self.getRAdata(eht, 'ddx0008')[intc]/dd
-        self.fhtxisi28 = self.getRAdata(eht, 'ddx0009')[intc]/dd
-        self.fhtxip31 = self.getRAdata(eht, 'ddx0010')[intc]/dd
-        self.fhtxis32 = self.getRAdata(eht, 'ddx0011')[intc]/dd
-        self.fhtxis34 = self.getRAdata(eht, 'ddx0012')[intc]/dd
-        self.fhtxicl35 = self.getRAdata(eht, 'ddx0013')[intc]/dd
-        self.fhtxiar36 = self.getRAdata(eht, 'ddx0014')[intc]/dd
+        #self.fhtxineut = self.getRAdata(eht, 'ddx0001')[intc]/dd
+        #self.fhtxiprot = self.getRAdata(eht, 'ddx0002')[intc]/dd
+        #self.fhtxihe4 = self.getRAdata(eht, 'ddx0003')[intc]/dd
+        #self.fhtxic12 = self.getRAdata(eht, 'ddx0004')[intc]/dd
+        #self.fhtxio16 = self.getRAdata(eht, 'ddx0005')[intc]/dd
+        #self.fhtxine20 = self.getRAdata(eht, 'ddx0006')[intc]/dd
+        #self.fhtxina23 = self.getRAdata(eht, 'ddx0007')[intc]/dd
+        #self.fhtximg24 = self.getRAdata(eht, 'ddx0008')[intc]/dd
+        #self.fhtxisi28 = self.getRAdata(eht, 'ddx0009')[intc]/dd
+        #self.fhtxip31 = self.getRAdata(eht, 'ddx0010')[intc]/dd
+        #self.fhtxis32 = self.getRAdata(eht, 'ddx0011')[intc]/dd
+        #self.fhtxis34 = self.getRAdata(eht, 'ddx0012')[intc]/dd
+        #self.fhtxicl35 = self.getRAdata(eht, 'ddx0013')[intc]/dd
+        #self.fhtxiar36 = self.getRAdata(eht, 'ddx0014')[intc]/dd
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -429,7 +429,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             ax1.set_ylabel(setylabel)
 
         # show LEGEND
-        ax1.legend(loc=3, prop={'size': 14}, ncol =3)
+        ax1.legend(loc=3, prop={'size': 14}, ncol =2)
+
+        self.bconv = 0.44e9
+        self.tconv = 0.71e9
 
         # convective boundary markers
         ax1.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -450,9 +453,9 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM_ini.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM2.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM2_ini.eps')
 
     def plot_X_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""

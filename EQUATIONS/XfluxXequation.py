@@ -269,20 +269,20 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         cD = 1.e-16
         intFi = cD*integrate.cumtrapz(intFii,xzn0,initial=0)
 
-        self.fhtflxineut =  self.getRAdata(eht, 'ddx0001ux')[intc] - self.getRAdata(eht, 'ddx0001')[intc] * ddux / dd
-        self.fhtflxiprot =  self.getRAdata(eht, 'ddx0002ux')[intc] - self.getRAdata(eht, 'ddx0002')[intc] * ddux / dd
-        self.fhtflxihe4 =  self.getRAdata(eht, 'ddx0003ux')[intc] - self.getRAdata(eht, 'ddx0003')[intc] * ddux / dd
-        self.fhtflxic12 =  self.getRAdata(eht, 'ddx0004ux')[intc] - self.getRAdata(eht, 'ddx0004')[intc] * ddux / dd
-        self.fhtflxio16 =  self.getRAdata(eht, 'ddx0005ux')[intc] - self.getRAdata(eht, 'ddx0005')[intc] * ddux / dd
-        self.fhtflxine20 =  self.getRAdata(eht, 'ddx0006ux')[intc] - self.getRAdata(eht, 'ddx0006')[intc] * ddux / dd
-        self.fhtflxina23 =  self.getRAdata(eht, 'ddx0007ux')[intc] - self.getRAdata(eht, 'ddx0007')[intc] * ddux / dd
-        self.fhtflximg24 =  self.getRAdata(eht, 'ddx0008ux')[intc] - self.getRAdata(eht, 'ddx0008')[intc] * ddux / dd
-        self.fhtflxisi28 =  self.getRAdata(eht, 'ddx0009ux')[intc] - self.getRAdata(eht, 'ddx0009')[intc] * ddux / dd
-        self.fhtflxip31 =  self.getRAdata(eht, 'ddx0010ux')[intc] - self.getRAdata(eht, 'ddx0010')[intc] * ddux / dd
-        self.fhtflxis32 =  self.getRAdata(eht, 'ddx0011ux')[intc] - self.getRAdata(eht, 'ddx0011')[intc] * ddux / dd
-        self.fhtflxis34 =  self.getRAdata(eht, 'ddx0012ux')[intc] - self.getRAdata(eht, 'ddx0012')[intc] * ddux / dd
-        self.fhtflxicl35 =  self.getRAdata(eht, 'ddx0013ux')[intc] - self.getRAdata(eht, 'ddx0013')[intc] * ddux / dd
-        self.fhtflxiar36 =  self.getRAdata(eht, 'ddx0014ux')[intc] - self.getRAdata(eht, 'ddx0014')[intc] * ddux / dd
+        #self.fhtflxineut =  self.getRAdata(eht, 'ddx0001ux')[intc] - self.getRAdata(eht, 'ddx0001')[intc] * ddux / dd
+        #self.fhtflxiprot =  self.getRAdata(eht, 'ddx0002ux')[intc] - self.getRAdata(eht, 'ddx0002')[intc] * ddux / dd
+        #self.fhtflxihe4 =  self.getRAdata(eht, 'ddx0003ux')[intc] - self.getRAdata(eht, 'ddx0003')[intc] * ddux / dd
+        #self.fhtflxic12 =  self.getRAdata(eht, 'ddx0004ux')[intc] - self.getRAdata(eht, 'ddx0004')[intc] * ddux / dd
+        #self.fhtflxio16 =  self.getRAdata(eht, 'ddx0005ux')[intc] - self.getRAdata(eht, 'ddx0005')[intc] * ddux / dd
+        #self.fhtflxine20 =  self.getRAdata(eht, 'ddx0006ux')[intc] - self.getRAdata(eht, 'ddx0006')[intc] * ddux / dd
+        #self.fhtflxina23 =  self.getRAdata(eht, 'ddx0007ux')[intc] - self.getRAdata(eht, 'ddx0007')[intc] * ddux / dd
+        #self.fhtflximg24 =  self.getRAdata(eht, 'ddx0008ux')[intc] - self.getRAdata(eht, 'ddx0008')[intc] * ddux / dd
+        #self.fhtflxisi28 =  self.getRAdata(eht, 'ddx0009ux')[intc] - self.getRAdata(eht, 'ddx0009')[intc] * ddux / dd
+        #self.fhtflxip31 =  self.getRAdata(eht, 'ddx0010ux')[intc] - self.getRAdata(eht, 'ddx0010')[intc] * ddux / dd
+        #self.fhtflxis32 =  self.getRAdata(eht, 'ddx0011ux')[intc] - self.getRAdata(eht, 'ddx0011')[intc] * ddux / dd
+        #self.fhtflxis34 =  self.getRAdata(eht, 'ddx0012ux')[intc] - self.getRAdata(eht, 'ddx0012')[intc] * ddux / dd
+        #self.fhtflxicl35 =  self.getRAdata(eht, 'ddx0013ux')[intc] - self.getRAdata(eht, 'ddx0013')[intc] * ddux / dd
+        #self.fhtflxiar36 =  self.getRAdata(eht, 'ddx0014ux')[intc] - self.getRAdata(eht, 'ddx0014')[intc] * ddux / dd
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix

@@ -3,6 +3,9 @@ import CANUTO1997.MomentumEquationX as momx
 import CANUTO1997.MomentumEquationY as momy
 import CANUTO1997.MomentumEquationZ as momz
 import CANUTO1997.KineticEnergyFlux as keflx
+import CANUTO1997.TurbulentMassFlux as a
+import CANUTO1997.LuminosityEquation as lumi
+import CANUTO1997.TurbulentKineticEnergyEquation as tke
 
 import matplotlib.pyplot as plt
 
@@ -201,6 +204,66 @@ class MasterPlot():
                           params.getForEqs('keflx')['ilg'])
 
 
+    def execTMSflx(self, bconv, tconv, lc):
+        params = self.params
+
+        # instantiate
+        ransTMSflx = a.TurbulentMassFlux(params.getForProp('prop')['eht_data'],
+                                                 params.getForProp('prop')['ig'],
+                                                 params.getForProp('prop')['intc'],
+                                                 params.getForProp('prop')['prefix'],
+                                                 lc)
+
+        ransTMSflx.plot_a(params.getForProp('prop')['laxis'],
+                          bconv, tconv,
+                          params.getForEqs('tmsflx')['xbl'],
+                          params.getForEqs('tmsflx')['xbr'],
+                          params.getForEqs('tmsflx')['ybu'],
+                          params.getForEqs('tmsflx')['ybd'],
+                          params.getForEqs('tmsflx')['ilg'])
+
+
+    def execLumiEq(self, tke_diss, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ranslumi = lumi.LuminosityEquation(params.getForProp('prop')['eht_data'],
+                                                       params.getForProp('prop')['ig'],
+                                                       params.getForProp('prop')['ieos'],
+                                                       params.getForProp('prop')['fext'],
+                                                       params.getForProp('prop')['intc'],
+                                                       tke_diss, bconv, tconv,
+                                                       params.getForProp('prop')['prefix'])
+
+        # plot luminosity equation exact
+        ranslumi.plot_luminosity_equation_exact(params.getForProp('prop')['laxis'],
+                                                    params.getForEqs('lueq')['xbl'],
+                                                    params.getForEqs('lueq')['xbr'],
+                                                    params.getForEqs('lueq')['ybu'],
+                                                    params.getForEqs('lueq')['ybd'],
+                                                    params.getForEqs('lueq')['ilg'])
+
+
+    def execTKEeq(self, kolmrate, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
+                                          params.getForProp('prop')['ig'],
+                                          params.getForProp('prop')['fext'],
+                                          params.getForProp('prop')['intc'],
+                                          -kolmrate,
+                                          params.getForProp('prop')['prefix'])
+
+        # plot kinetic energy equation
+        ransTke.plot_tke_equation(params.getForProp('prop')['laxis'],
+                                bconv, tconv,
+                                params.getForEqs('tkeq')['xbl'],
+                                params.getForEqs('tkeq')['xbr'],
+                                params.getForEqs('tkeq')['ybu'],
+                                params.getForEqs('tkeq')['ybd'],
+                                params.getForEqs('tkeq')['ilg'])
+
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """
         """ to obtain publication-quality figures """
@@ -217,3 +280,5 @@ class MasterPlot():
         plt.rcParams['figure.subplot.left'] = 0.17
         plt.rcParams['figure.subplot.right'] = 0.85
         plt.rcParams.update({'figure.max_open_warning': 0})
+
+

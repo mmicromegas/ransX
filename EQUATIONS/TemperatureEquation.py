@@ -140,8 +140,8 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{T}$')
 
         # convective boundary markers
-        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         # define x/y LABELS
         if self.ig == 1:

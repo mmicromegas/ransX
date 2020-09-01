@@ -28,6 +28,7 @@ def main():
     plabel = params.getForProp('prop')['plabel']
     dataout = params.getForProp('prop')['dataout']
     ig = params.getForProp('prop')['ig']
+    nsdim = params.getForProp('prop')['nsdim']
     ieos = params.getForProp('prop')['ieos']
     laxis = params.getForProp('prop')['laxis']
 
@@ -60,7 +61,7 @@ def main():
 
     intc = 0
     for intc in range(0, t_timec.size):
-        ransP = pRop.Properties(filename, plabel, ig, ieos, intc, laxis, xbl, xbr)
+        ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
         prp = ransP.properties()
         t_xzn0inc.append(prp['xzn0inc'])
         t_xzn0outc.append(prp['xzn0outc'])
@@ -136,7 +137,7 @@ def main():
 
     # get and store grid via redundant call to properties
     # otherwise you get "prp may be as assigned before reference"
-    ransP = pRop.Properties(filename, plabel, ig, ieos, intc, laxis, xbl, xbr)
+    ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     tavg = {'tavg': prp['tavg']}

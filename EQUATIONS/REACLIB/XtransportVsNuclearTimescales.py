@@ -118,6 +118,12 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         tau_ddxi =  np.abs(dd*fht_xi/self.minus_dt_dd_fht_xi)
         tau_xi =  np.abs(fht_xi/self.minus_dt_fht_xi)
 
+        #tau_trans = (dd*fht_xi/self.Div(fxi,xzn0))
+        #tau_nuc   = (dd*fht_xi/(ddxidot))
+        #tau_ddxi =  (dd*fht_xi/self.minus_dt_dd_fht_xi)
+        #tau_xi =  (fht_xi/self.minus_dt_fht_xi)
+
+
         #tau_trans = np.abs(fht_xi/self.Div(fxi/dd,xzn0))
         #tau_nuc   = np.abs(fht_xi/(ddxidot/dd))
         #tau_ddxi =  np.abs(dd*fht_xi/self.minus_dt_dd_fht_xi)
@@ -230,10 +236,10 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt.show(block=False)
 
         # save PLOT
-        # if self.fext == "png":
-        #    plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
-        # if self.fext == "eps":
-        #    plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.eps')
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.png')
+        if self.fext == "eps":
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xtransport_' + element + '.eps')
 
     def plot_Xtimescales(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Damkohler number
@@ -251,6 +257,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         eht = self.eht
         intc = self.intc
         dd = self.dd
+        network = self.network
 
         # yi = self.fht_xi
         # yj =
@@ -296,7 +303,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt.plot(grd1[xlimitrange], plt0[xlimitrange], label=r"$|\tau_{trans}^i|$", color='r')
         plt.plot(grd1[xlimitrange], plt1[xlimitrange], label=r"$|\tau_{nuc}^i|$", color='b')
         plt.plot(grd1[xlimitrange], plt2[xlimitrange], label=r"$|\tau_{\rho X}^i|$", color='m')
-        plt.plot(grd1[xlimitrange], plt3[xlimitrange], label=r"$|\tau_{X}^i|$", color='brown')
+        #plt.plot(grd1[xlimitrange], plt3[xlimitrange], label=r"$|\tau_{X}^i|$", color='brown')
 
         xlimitbottom = np.where(grd1 < self.bconv)
         plt.plot(grd1[xlimitbottom], plt0[xlimitbottom], '.', color='r', markersize=0.5)
@@ -325,7 +332,8 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
 
         if self.tnuc == 1:
 
-            network = self.network
+            print("i m here  .................",element)
+            print(rlabel)
 
             ddxidict = {}
             fht_yi_list = []
@@ -333,9 +341,9 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
                 if element in rl:
                     rc = rcoeffdict[rl]
                     if rl[0:2] == '1-':
-                        plt.semilogy(grd1, self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]), label=rl,
+                        plt.plot(grd1, self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]), label=rl,
                                  linestyle='--')
-                        # print(rl,self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]))
+                        #print(rl,self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]))
                     if rl[0:2] == '2-':
                         rlsplit = rl.split('-')
                         #print(rlsplit)
@@ -349,25 +357,25 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
                                 # ddxidict.update(ddxi)
                         if rlsplit[3] == element:
                             print(rlsplit)
-                            plt.semilogy(grd1,
+                            plt.plot(grd1,
                                      self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[2],
                                                            fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
                             #print(rl,self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[2],
                             #                               fht_yi_list[0], fht_yi_list[1]))
                         if rlsplit[4] == element:
                             print(rlsplit)
-                            plt.semilogy(grd1,
+                            plt.plot(grd1,
                                      self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
                                                            fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
                             #print(rl, self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
                             #                               fht_yi_list[0], fht_yi_list[1]))
                         if rlsplit[1] == element:
                             print(rlsplit)
-                            plt.semilogy(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[2],
+                            plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[2],
                                                                     fht_yi_list[0],fht_yi_list[1]),label=rl,linestyle=':')
                         if rlsplit[2] == element:
                             print(rlsplit)
-                            plt.semilogy(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[2],
+                            plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[2],
                                                                     fht_yi_list[0],fht_yi_list[1]),label=rl,linestyle=':')
 
                     if rl[0:2] == '3-':
@@ -380,7 +388,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
                                 # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc]/dd))
                                 fht_yi_list.append(((self.getRAdata(eht, 'ddx' + inuc)[intc] / dd) / float(inuc)))
                         if rlsplit[4] == element:
-                            plt.semilogy(grd1,
+                            plt.plot(grd1,
                                      self.GET3NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
                                                            fht_yi_list[4]), label=rl, linestyle=':')
                             # print(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6])

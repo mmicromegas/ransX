@@ -211,31 +211,31 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
 
         # shade boundaries
-        ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
-        rinc = grd1[ind1[0]]
-        routc = grd1[ind1[-1]]
+        #ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
+        #rinc = grd1[ind1[0]]
+        #routc = grd1[ind1[-1]]
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
-        ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
-        rinc = grd1[ind2[0]]
-        routc = grd1[ind2[-1]]
+        #ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
+        #rinc = grd1[ind2[0]]
+        #routc = grd1[ind2[-1]]
 
         #print(rinc,routc,ind2[0],ind2[-1],ind2,(self.nx/2),self.nx)
         #print(self.nx)
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         # calculate overshooting in Hp
-        ibot = ind1[0]
-        itop = ind1[-1]
-        pbot = self.pp[ibot]
-        bndry_vs_hp = np.log(pbot / self.pp[ibot:itop])
-        bndry_in_hp = bndry_vs_hp[itop - ibot - 1]
-        bndry_in_nx = itop - ibot - 1
-        print("Overshooting (in Hp): ", bndry_in_hp)
-        print("Number of Grid zone In Boundary: ", bndry_in_nx)
-        print(itop,ibot)
+        #ibot = ind1[0]
+        #itop = ind1[-1]
+        #pbot = self.pp[ibot]
+        #bndry_vs_hp = np.log(pbot / self.pp[ibot:itop])
+        #bndry_in_hp = bndry_vs_hp[itop - ibot - 1]
+        #bndry_in_nx = itop - ibot - 1
+        #print("Overshooting (in Hp): ", bndry_in_hp)
+        #print("Number of Grid zone In Boundary: ", bndry_in_nx)
+        #print(itop,ibot)
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')

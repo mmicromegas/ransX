@@ -8,7 +8,7 @@ import os
 
 # dataloc = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA\\BINDATA\\ccp_two_layers\\'
 # filename_blck = dataloc+'ccptwo.res128cubed.fixedmu.opto3.01014.bindata'
-dataloc = 'D:\\simonX\\galileo\\'
+dataloc = 'D:\\ransX\\DATA_D\\BINDATA\\ccptwo_dev\\3D\\'
 
 bindata = [filee for filee in sorted(os.listdir(dataloc)) if "bindata" in filee]
 

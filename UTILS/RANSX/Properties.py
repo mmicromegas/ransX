@@ -17,7 +17,7 @@ import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
 
 class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, plabel, ig, ieos, intc, laxis, xbl, xbr):
+    def __init__(self, filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr):
         super(Properties, self).__init__(ig)
 
         # load data to structured array
@@ -144,6 +144,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         self.timec = timec
         self.trange = trange
         self.ig = ig
+        self.nsdim = nsdim
         self.laxis = laxis
 
         self.x0002 = x0002
@@ -217,7 +218,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         if self.plabel == "ccptwo":
             fxi_max = self.fxi.max()
-            ind = np.where((np.abs(self.fxi) > 0.001 * fxi_max))[0]
+            ind = np.where((np.abs(self.fxi) > 0.02 * fxi_max))[0]
 
             xzn0inc = xzn0[ind[0]]
             xzn0outc = xzn0[ind[-1]]
@@ -239,8 +240,11 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         Vol = np.zeros(nx)
         # handle volume for different geometries
-        if self.ig == 1:
+        if self.ig == 1 and self.nsdim == 3:
             surface = (yzn0[-1] - yzn0[0]) * (zzn0[-1] - zzn0[0])
+            Vol = surface * (xznr - xznl)
+        elif self.ig == 1 and self.nsdim == 2:
+            surface = (yzn0[-1] - yzn0[0])*(yzn0[-1] - yzn0[0]) # mock for 2D
             Vol = surface * (xznr - xznl)
         elif self.ig == 2:
             Vol = 4. / 3. * np.pi * (xznr ** 3 - xznl ** 3)

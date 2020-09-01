@@ -43,9 +43,9 @@ def main():
 
     # ransdat.plot_check_heq1()
     # ransdat.plot_check_heq2(xbl,xbr)
-    #ransdat.plot_check_heq3()
+    ransdat.plot_check_heq3()
     # ransdat.plot_check_ux(xbl,xbr)
-    #ransdat.plot_nablas(xbl,xbr)
+    ransdat.plot_nablas(xbl,xbr)
     # ransdat.plot_dx(xbl,xbr)
     # ransdat.plot_mm(xbl,xbr)
     ransdat.PlotNucEnergyGen(xbl,xbr)

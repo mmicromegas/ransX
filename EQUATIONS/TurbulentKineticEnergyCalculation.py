@@ -47,6 +47,12 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
         dduxux = self.getRAdata(eht, 'dduxux')[intc]
         dduxuy = self.getRAdata(eht, 'dduxuy')[intc]
         dduxuz = self.getRAdata(eht, 'dduxuz')[intc]
+        dduyux = dduxuy
+        dduzux = dduxuz
+
+        dduxuxux = self.getRAdata(eht, 'dduxuxux')[intc]
+        dduxuyuy = self.getRAdata(eht, 'dduxuyuy')[intc]
+        dduxuzuz = self.getRAdata(eht, 'dduxuzuz')[intc]
 
         ddekux = self.getRAdata(eht, 'ddekux')[intc]
         ddek = self.getRAdata(eht, 'ddek')[intc]
@@ -81,6 +87,9 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
 
         # construct equation-specific mean fields
         fht_ux = ddux / dd
+        fht_uy = dduy / dd
+        fht_uz = dduz / dd
+
         fht_ek = ddek / dd
 
         uxffuxff = (dduxux / dd - ddux * ddux / (dd * dd))
@@ -89,7 +98,14 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
 
         tke = 0.5 * (uxffuxff + uyffuyff + uzffuzff)
 
-        fekx = ddekux - fht_ek * fht_ux
+        #fekx = ddekux - fht_ek * fht_ux
+
+        dduxffuxffuxff = dduxuxux - 2.*dduxux*fht_ux - dduxux*fht_ux - dd*fht_ux*fht_ux*fht_ux - dd*fht_ux*fht_ux*fht_ux
+        dduyffuyffuxff = dduxuyuy - 2.*dduyux*fht_uy - dduyuy*fht_ux - dd*fht_uy*fht_uy*fht_ux - dd*fht_uy*fht_uy*fht_ux
+        dduzffuzffuxff = dduxuzuz - 2.*dduzux*fht_uz - dduzuz*fht_ux - dd*fht_uz*fht_uz*fht_ux - dd*fht_uz*fht_uz*fht_ux
+
+        fekx = 0.5*(dduxffuxffuxff + dduyffuyffuxff + dduzffuzffuxff)
+
         fpx = ppux - pp * ux
 
         # LHS -dq/dt
@@ -127,6 +143,7 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
         self.minus_resTkeEquation = - (self.minus_dt_dd_tke + self.minus_div_eht_dd_fht_ux_tke +
                                        self.plus_wb + self.plus_wp + self.minus_div_fekx +
                                        self.minus_div_fpx + self.minus_r_grad_u)
+
 
         #######################################
         # END TURBULENT KINETIC ENERGY EQUATION

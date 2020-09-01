@@ -563,7 +563,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         plt.figure(figsize=(7, 6))
 
-        lb = -1.e6
+        lb = -1.e1
         ub = 1.e15
 
         plt.yscale('symlog')
@@ -690,8 +690,8 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.plot(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
         plt.plot(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
         plt.plot(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
-        plt.plot(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
-        plt.plot(rc, epsilon3alpha, label=r"$\dot{\epsilon}_{\rm nuc}$ (He$^{4}$)")
+        #plt.plot(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
+        #plt.plot(rc, epsilon3alpha, label=r"$\dot{\epsilon}_{\rm nuc}$ (He$^{4}$)")
 
         #print("en_ne20")
         #print(en_ne20)
@@ -710,7 +710,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
         # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
-        plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
+        #plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
 
         #print(enuc1)
 
@@ -718,7 +718,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.axvline(4.46e8, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(8.5e8, linestyle='--', linewidth=0.7, color='k')
 
-        plt.legend(loc=4, prop={'size': 12}, ncol=3)
+        plt.legend(loc=1, prop={'size': 14}, ncol=1)
 
         plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
         plt.xlabel('r ($10^8$ cm)')
