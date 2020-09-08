@@ -18,7 +18,7 @@ import UTILS.Errors as eR
 
 class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, nsdim, data_prefix):
         super(ContinuityEquationWithFavrianDilatation, self).__init__(ig)
 
         # load data to structured array
@@ -85,6 +85,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         self.vol = vol
         self.mm = mm
         self.mm_ver2 = mm_ver2
+        self.nsdim = nsdim
 
     def plot_rho(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
@@ -174,8 +175,8 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         to_plot = [lhs0, lhs1, rhs0, res]
         self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
-        plt.title('continuity equation with Favrian dilatation')
+        # plot DATA
+        plt.title(r"continuity equation with Favrian dilatation " + str(self.nsdim) + "D")
 
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')

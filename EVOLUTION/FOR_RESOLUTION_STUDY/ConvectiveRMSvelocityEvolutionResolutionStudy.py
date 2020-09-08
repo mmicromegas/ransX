@@ -97,8 +97,8 @@ class ConvectiveRMSvelocityEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITe
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 6000.
-        umeanbndry = 8000.
+        lmeanbndry = 300.
+        umeanbndry = 500.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):

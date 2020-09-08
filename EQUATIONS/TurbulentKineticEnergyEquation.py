@@ -170,7 +170,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # plot DATA
         if self.nsdim != 2:
-            plt.title(r"TKE equation C$_m$ = " + str(Cm))
+            plt.title(r"TKE equation C$_m$ = " + str(Cm) + str(self.nsdim) + "D")
         else:
             plt.title(r"TKE equation " + str(self.nsdim) + "D")
         if self.ig == 1:
@@ -243,7 +243,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         pltMax = np.max(plt1)
         #pltMax = 8.e11 # for the thpulse
-        pltMax = 4.e12
+        pltMax = 1.e14
         #pltMax = 2.e12 # for neshell nucb10x
         #pltMax = 1.e14
         pltMin = np.min(plt1)
@@ -256,7 +256,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         fig, ax = plt.subplots(figsize=(14, 7))
         # fig.suptitle("rhoX (" + self.setNucNoUp(str(element)) + ") (g cm-3)")
-        fig.suptitle("TKE")
+        fig.suptitle("TKE 2D")
         im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.autumn,
                        origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
                        vmax=pltMax, vmin=pltMin)

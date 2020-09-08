@@ -106,6 +106,7 @@ class MasterPlot():
                                                                     params.getForProp('prop')['ig'],
                                                                     params.getForProp('prop')['fext'],
                                                                     params.getForProp('prop')['intc'],
+                                                                    params.getForProp('prop')['nsdim'],
                                                                     params.getForProp('prop')['prefix'])
 
         # plot density
@@ -132,6 +133,7 @@ class MasterPlot():
                                                                     params.getForProp('prop')['ig'],
                                                                     params.getForProp('prop')['fext'],
                                                                     params.getForProp('prop')['intc'],
+                                                                    params.getForProp('prop')['nsdim'],
                                                                     params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
@@ -151,6 +153,7 @@ class MasterPlot():
                                                                     params.getForProp('prop')['ig'],
                                                                     params.getForProp('prop')['fext'],
                                                                     params.getForProp('prop')['intc'],
+                                                                    params.getForProp('prop')['nsdim'],
                                                                     params.getForProp('prop')['prefix'])
 
         # plot continuity equation integral budget					       
@@ -168,6 +171,7 @@ class MasterPlot():
                                                              params.getForProp('prop')['ig'],
                                                              params.getForProp('prop')['fext'],
                                                              params.getForProp('prop')['intc'],
+                                                             params.getForProp('prop')['nsdim'],
                                                              params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
@@ -179,13 +183,13 @@ class MasterPlot():
                                              params.getForEqs('conteqfdd')['ybd'],
                                              params.getForEqs('conteqfdd')['ilg'])
 
-        #ransCONTfdd.plot_Frho_space_time(params.getForProp('prop')['laxis'],
-        #                                     bconv, tconv,
-        #                                     params.getForEqs('conteqfdd')['xbl'],
-        #                                     params.getForEqs('conteqfdd')['xbr'],
-        #                                     params.getForEqs('conteqfdd')['ybu'],
-        #                                     params.getForEqs('conteqfdd')['ybd'],
-        #                                     params.getForEqs('conteqfdd')['ilg'])
+        ransCONTfdd.plot_Frho_space_time(params.getForProp('prop')['laxis'],
+                                             bconv, tconv,
+                                             params.getForEqs('conteqfdd')['xbl'],
+                                             params.getForEqs('conteqfdd')['xbr'],
+                                             params.getForEqs('conteqfdd')['ybu'],
+                                             params.getForEqs('conteqfdd')['ybd'],
+                                             params.getForEqs('conteqfdd')['ilg'])
 
     def execContFddEqBar(self):
         params = self.params
@@ -195,6 +199,7 @@ class MasterPlot():
                                                              params.getForProp('prop')['ig'],
                                                              params.getForProp('prop')['fext'],
                                                              params.getForProp('prop')['intc'],
+                                                             params.getForProp('prop')['nsdim'],
                                                              params.getForProp('prop')['prefix'])
 
         # plot continuity equation integral budget					       
@@ -415,6 +420,7 @@ class MasterPlot():
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
+                                           params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
 
         ransXtra.plot_Xrho(params.getForProp('prop')['laxis'],
@@ -448,6 +454,7 @@ class MasterPlot():
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
+                                           params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
 
         if params.getForProp('prop')['plabel'] == "oburn":
@@ -467,12 +474,12 @@ class MasterPlot():
                             params.getForEqs(x)['ybd'],
                             params.getForEqs(x)['ilg'])
 
-        #ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
-        #                   params.getForEqs(x)['xbl'],
-        #                   params.getForEqs(x)['xbr'],
-        #                   params.getForEqs(x)['ybu'],
-        #                   params.getForEqs(x)['ybd'],
-        #                  params.getForEqs(x)['ilg'])
+        ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
+                           params.getForEqs(x)['ilg'])
 
         #ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
         #                   params.getForEqs(x)['xbl'],
@@ -498,6 +505,7 @@ class MasterPlot():
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
+                                           params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
 
         ransXtra.plot_Xtransport_equation(params.getForProp('prop')['laxis'],
@@ -517,6 +525,7 @@ class MasterPlot():
                                            params.getForProp('prop')['fext'],
                                            inuc, element, bconv, tconv,
                                            params.getForProp('prop')['intc'],
+                                           params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
 
         # plot X transport equation integral budget					       
@@ -535,6 +544,7 @@ class MasterPlot():
                                          params.getForProp('prop')['fext'],
                                          inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
+                                         params.getForProp('prop')['nsdim'],
                                          params.getForProp('prop')['prefix'])
 
         # ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
@@ -581,6 +591,7 @@ class MasterPlot():
                                          params.getForProp('prop')['fext'],
                                          inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
+                                         params.getForProp('prop')['nsdim'],
                                          params.getForProp('prop')['prefix'])
 
         ransXflxx.plot_XfluxX_equation(params.getForProp('prop')['laxis'],
@@ -674,6 +685,7 @@ class MasterPlot():
                                           params.getForProp('prop')['ig'],
                                           inuc, element, tauL, bconv, tconv,
                                           params.getForProp('prop')['intc'],
+                                          params.getForProp('prop')['nsdim'],
                                           params.getForProp('prop')['prefix'])
 
         ransXvar.plot_Xvariance(params.getForProp('prop')['laxis'],
@@ -691,6 +703,7 @@ class MasterPlot():
                                           params.getForProp('prop')['ig'],
                                           inuc, element, tauL, bconv, tconv,
                                           params.getForProp('prop')['intc'],
+                                          params.getForProp('prop')['nsdim'],
                                           params.getForProp('prop')['prefix'])
 
         ransXvar.plot_Xvariance_equation(params.getForProp('prop')['laxis'],
@@ -795,6 +808,7 @@ class MasterPlot():
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
+                                          params.getForProp('prop')['nsdim'],
                                           params.getForProp('prop')['prefix'])
 
         ransMomx.plot_momentum_x(params.getForProp('prop')['laxis'],
@@ -813,6 +827,7 @@ class MasterPlot():
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
+                                          params.getForProp('prop')['nsdim'],
                                           params.getForProp('prop')['prefix'])
 
         ransMomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'],
@@ -1107,6 +1122,7 @@ class MasterPlot():
                                     params.getForProp('prop')['ig'],
                                     params.getForProp('prop')['fext'],
                                     params.getForProp('prop')['intc'],
+                                    params.getForProp('prop')['nsdim'],
                                     tke_diss,
                                     params.getForProp('prop')['prefix'])
 
@@ -1126,6 +1142,7 @@ class MasterPlot():
                                     params.getForProp('prop')['ig'],
                                     params.getForProp('prop')['fext'],
                                     params.getForProp('prop')['intc'],
+                                    params.getForProp('prop')['nsdim'],
                                     tke_diss,
                                     params.getForProp('prop')['prefix'])
 
@@ -1191,6 +1208,7 @@ class MasterPlot():
         ransSSvar = sigmass.EntropyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
+                                                    params.getForProp('prop')['nsdim'],
                                                     tke_diss, tauL,
                                                     params.getForProp('prop')['prefix'])
 
@@ -1209,6 +1227,7 @@ class MasterPlot():
         ransSSvar = sigmass.EntropyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
+                                                    params.getForProp('prop')['nsdim'],
                                                     tke_diss, tauL,
                                                     params.getForProp('prop')['prefix'])
 
@@ -1445,6 +1464,7 @@ class MasterPlot():
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['intc'],
+                                                      params.getForProp('prop')['nsdim'],
                                                       params.getForProp('prop')['prefix'])
 
         ransVelmeanExp.plot_velocities(params.getForProp('prop')['laxis'],
@@ -1464,6 +1484,7 @@ class MasterPlot():
                                                       params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['ieos'],
                                                       params.getForProp('prop')['intc'],
+                                                      params.getForProp('prop')['nsdim'],
                                                       params.getForProp('prop')['prefix'])
 
         ransVelMLTturb.plot_velocities(params.getForProp('prop')['laxis'],
@@ -1492,13 +1513,13 @@ class MasterPlot():
                                       params.getForEqs('nsq')['ybd'],
                                       params.getForEqs('nsq')['ilg'])
 
-        ransBruntV.plot_ri(params.getForProp('prop')['laxis'],
-                                      bconv, tconv,
-                                      params.getForEqs('nsq')['xbl'],
-                                      params.getForEqs('nsq')['xbr'],
-                                      params.getForEqs('nsq')['ybu'],
-                                      params.getForEqs('nsq')['ybd'],
-                                      params.getForEqs('nsq')['ilg'])
+        #ransBruntV.plot_ri(params.getForProp('prop')['laxis'],
+        #                              bconv, tconv,
+        #                              params.getForEqs('nsq')['xbl'],
+        #                              params.getForEqs('nsq')['xbr'],
+        #                              params.getForEqs('nsq')['ybu'],
+        #                              params.getForEqs('nsq')['ybd'],
+        #                              params.getForEqs('nsq')['ilg'])
 
     def execBuoyancy(self, bconv, tconv):
         params = self.params
@@ -1526,6 +1547,7 @@ class MasterPlot():
                                       params.getForProp('prop')['ig'],
                                       params.getForProp('prop')['ieos'],
                                       params.getForProp('prop')['intc'],
+                                      params.getForProp('prop')['nsdim'],
                                       params.getForProp('prop')['prefix'])
 
         ransRms.plot_relative_rms_flct(params.getForProp('prop')['laxis'],
@@ -1536,13 +1558,13 @@ class MasterPlot():
                                        params.getForEqs('relrmsflct')['ybd'],
                                        params.getForEqs('relrmsflct')['ilg'])
 
-        ransRms.plot_relative_rms_flct2(params.getForProp('prop')['laxis'],
-                                       bconv, tconv,
-                                       params.getForEqs('relrmsflct')['xbl'],
-                                       params.getForEqs('relrmsflct')['xbr'],
-                                       params.getForEqs('relrmsflct')['ybu'],
-                                       params.getForEqs('relrmsflct')['ybd'],
-                                       params.getForEqs('relrmsflct')['ilg'])
+        #ransRms.plot_relative_rms_flct2(params.getForProp('prop')['laxis'],
+        #                               bconv, tconv,
+        #                               params.getForEqs('relrmsflct')['xbl'],
+        #                               params.getForEqs('relrmsflct')['xbr'],
+        #                               params.getForEqs('relrmsflct')['ybu'],
+        #                               params.getForEqs('relrmsflct')['ybd'],
+        #                               params.getForEqs('relrmsflct')['ilg'])
 
     def execAbarZbar(self, bconv, tconv):
         params = self.params
@@ -1611,6 +1633,7 @@ class MasterPlot():
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['nsdim'],
                                         -kolmrate,
                                         params.getForProp('prop')['prefix'])
 
@@ -1631,6 +1654,7 @@ class MasterPlot():
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['nsdim'],
                                         -kolmrate,
                                         params.getForProp('prop')['prefix'])
 
@@ -1769,6 +1793,7 @@ class MasterPlot():
         ransAbar = abar.AbarTransportEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
+                                              params.getForProp('prop')['nsdim'],
                                               params.getForProp('prop')['prefix'])
 
         # plot abar
@@ -1787,6 +1812,7 @@ class MasterPlot():
         ransAbar = abar.AbarTransportEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
+                                              params.getForProp('prop')['nsdim'],
                                               params.getForProp('prop')['prefix'])
 
         # plot abar equation						       
@@ -1805,6 +1831,7 @@ class MasterPlot():
         ransFabarx = fabarx.AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
+                                                      params.getForProp('prop')['nsdim'],
                                                       params.getForProp('prop')['prefix'])
 
         # plot fabarx
@@ -1823,6 +1850,7 @@ class MasterPlot():
         ransFabarx = fabarx.AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
+                                                      params.getForProp('prop')['nsdim'],
                                                       params.getForProp('prop')['prefix'])
 
         # plot fabarx equation						       
@@ -1916,6 +1944,7 @@ class MasterPlot():
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['nsdim'],
                                      tke_diss,
                                      params.getForProp('prop')['prefix'])
 
@@ -1943,6 +1972,7 @@ class MasterPlot():
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['nsdim'],
                                      tke_diss,
                                      params.getForProp('prop')['prefix'])
 
@@ -2121,6 +2151,7 @@ class MasterPlot():
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
                                         params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['nsdim'],
                                         tke_diss,
                                         params.getForProp('prop')['prefix'])
 
@@ -2141,6 +2172,7 @@ class MasterPlot():
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
                                         params.getForProp('prop')['intc'],
+                                        params.getForProp('prop')['nsdim'],
                                         tke_diss,
                                         params.getForProp('prop')['prefix'])
 
@@ -2245,6 +2277,7 @@ class MasterPlot():
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['nsdim'],
                                      tke_diss,
                                      params.getForProp('prop')['prefix'])
 
@@ -2265,6 +2298,7 @@ class MasterPlot():
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
                                      params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['nsdim'],
                                      tke_diss,
                                      params.getForProp('prop')['prefix'])
 

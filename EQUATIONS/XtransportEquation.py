@@ -18,7 +18,7 @@ import UTILS.Errors as eR
 
 class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, plabel, ig, fext, inuc, element, bconv, tconv, intc, data_prefix):
+    def __init__(self, filename, plabel, ig, fext, inuc, element, bconv, tconv, intc, nsdim, data_prefix):
         super(XtransportEquation, self).__init__(ig)
 
         # load data to structured array
@@ -136,6 +136,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.t_ddxi = t_ddxi
         self.ddxidot = ddxidot
         self.nnuc = nnuc
+        self.nsdim = nsdim
 
         if self.ig == 1:
             self.t_fht_xi = t_fht_xi
@@ -150,7 +151,6 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
             t_fht_xi_forspacetimediagram = np.asarray(t_fht_xi2)
             self.t_fht_xi = t_fht_xi_forspacetimediagram # for the space-time diagrams
-
 
 
     def plot_Xrho(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
@@ -271,7 +271,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # this is another inset axes over the main axes
         plt.rc('font', size=12.)
         a = plt.axes([0.26, 0.55, .3, .2])
-        plt.plot(grd1[0:105], plt1[0:105], color='r')
+        plt.plot(grd1[0:64], plt1[0:64], color='r')
         # plt.xticks([])
         # plt.yticks([])
 
@@ -483,7 +483,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         pltMax = np.max(plt1[indRES])
         pltMin = np.min(plt1[indRES])
 
-        pltMax = -1.
+        pltMax = -0.2
         pltMin = -6.
 
         # create FIGURE
@@ -493,7 +493,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         fig, ax = plt.subplots(figsize=(14, 7))
         # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
-        fig.suptitle("X (256x256x256) (" + element + ")")
+        fig.suptitle("X (512x512x1) (" + element + ")")
 
         im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
                        origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
@@ -680,7 +680,8 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title(r"rhoX transport for " + str(element) + " (netw: " + str(self.nnuc) + " ele)")
+        plt.title(r"rhoX transport for " + str(element) + " (netw: " + str(self.nnuc) + " ele) " + str(self.nsdim) + "D")
+
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
             plt.plot(grd1, lhs1, color='cyan', label=r'$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$')

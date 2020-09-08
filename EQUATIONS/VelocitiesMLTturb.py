@@ -16,7 +16,7 @@ import sys
 
 class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, intc, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, nsdim, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)
 
         # load data to structured array
@@ -127,6 +127,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.rr = rr
         self.vmlt_3 = vmlt_3
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_velocities(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
@@ -165,7 +166,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('velocities')
+        plt.title('velocities ' + str(self.nsdim) + "D")
         # plt.plot(grd1,plt1,color='brown',label = r'$\overline{u}_r$')
         # plt.plot(grd1,plt2,color='red',label = r'$\widetilde{u}_r$')
         # plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')

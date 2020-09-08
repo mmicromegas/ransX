@@ -404,8 +404,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         #pltMax = np.max(plt1[indRES])
         #pltMin = np.min(plt1[indRES])
 
-        pltMax = 5.e-5
-        pltMin = -5.e-5
+        pltMax = 3.e-4
+        pltMin = -3.e-4
 
         # create FIGURE
         # plt.figure(figsize=(7, 6))

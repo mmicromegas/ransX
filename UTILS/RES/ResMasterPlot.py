@@ -1,4 +1,14 @@
 import EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureResolutionStudy as tt
+import EQUATIONS.FOR_RESOLUTION_STUDY.DensityResolutionStudy as dd
+import EQUATIONS.FOR_RESOLUTION_STUDY.MomentumXResolutionStudy as momex
+import EQUATIONS.FOR_RESOLUTION_STUDY.TotalEnergyResolutionStudy as et
+import EQUATIONS.FOR_RESOLUTION_STUDY.EntropyResolutionStudy as ss
+import EQUATIONS.FOR_RESOLUTION_STUDY.EntropyVarianceResolutionStudy as ssvar
+import EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyResolutionStudy as hh
+import EQUATIONS.FOR_RESOLUTION_STUDY.PressureResolutionStudy as pp
+import EQUATIONS.FOR_RESOLUTION_STUDY.AbarResolutionStudy as abar
+import EQUATIONS.FOR_RESOLUTION_STUDY.AbarFluxResolutionStudy as abarflux
+import EQUATIONS.FOR_RESOLUTION_STUDY.DensitySpecificVolumeCovarianceResolutionStudy as dsvc
 import EQUATIONS.FOR_RESOLUTION_STUDY.BruntVaisallaResolutionStudy as bruntv
 import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentKineticEnergyResolutionStudy as tke
 import EQUATIONS.FOR_RESOLUTION_STUDY.InternalEnergyFluxResolutionStudy as feix
@@ -16,6 +26,7 @@ import EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy as buoy
 import EQUATIONS.FOR_RESOLUTION_STUDY.XResolutionStudy as xx
 import EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy as xrho
 import EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy as xflxx
+import EQUATIONS.FOR_RESOLUTION_STUDY.XvarianceResolutionStudy as xvar
 import EQUATIONS.FOR_RESOLUTION_STUDY.DivuResolutionStudy as divu
 import EQUATIONS.FOR_RESOLUTION_STUDY.DivFrhoResolutionStudy as divfrho
 
@@ -61,6 +72,7 @@ class ResMasterPlot():
                            params.getForEqs(x)['ybd'],
                            params.getForEqs(x)['ilg'])
 
+
     def execXflxx(self, inuc, element, x):
         params = self.params
 
@@ -72,6 +84,23 @@ class ResMasterPlot():
                                                params.getForProp('prop')['prefix'])
 
         ransXflxx.plot_fxi(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
+                           params.getForEqs(x)['ilg'])
+
+    def execXvar(self, inuc, element, x):
+        params = self.params
+
+        # instantiate
+        ransXvar = xvar.XvarianceResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               inuc, element,
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransXvar.plot_Xvariance(params.getForProp('prop')['laxis'],
                            params.getForEqs(x)['xbl'],
                            params.getForEqs(x)['xbr'],
                            params.getForEqs(x)['ybu'],
@@ -110,6 +139,167 @@ class ResMasterPlot():
                        params.getForEqs('temp')['ybu'],
                        params.getForEqs('temp')['ybd'],
                        params.getForEqs('temp')['ilg'])
+
+
+    def execRho(self):
+        params = self.params
+
+        # instantiate
+        ransDD = dd.DensityResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransDD.plot_dd(params.getForProp('prop')['laxis'],
+                       params.getForEqs('rho')['xbl'],
+                       params.getForEqs('rho')['xbr'],
+                       params.getForEqs('rho')['ybu'],
+                       params.getForEqs('rho')['ybd'],
+                       params.getForEqs('rho')['ilg'])
+
+    def execMomex(self):
+        params = self.params
+
+        # instantiate
+        ransMomx = momex.MomentumXResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransMomx.plot_momex(params.getForProp('prop')['laxis'],
+                       params.getForEqs('momex')['xbl'],
+                       params.getForEqs('momex')['xbr'],
+                       params.getForEqs('momex')['ybu'],
+                       params.getForEqs('momex')['ybd'],
+                       params.getForEqs('momex')['ilg'])
+
+    def execEt(self):
+        params = self.params
+
+        # instantiate
+        ransEt = et.TotalEnergyResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransEt.plot_et(params.getForProp('prop')['laxis'],
+                       params.getForEqs('toe')['xbl'],
+                       params.getForEqs('toe')['xbr'],
+                       params.getForEqs('toe')['ybu'],
+                       params.getForEqs('toe')['ybd'],
+                       params.getForEqs('toe')['ilg'])
+
+    def execSS(self):
+        params = self.params
+
+        # instantiate
+        ransSS = ss.EntropyResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransSS.plot_ss(params.getForProp('prop')['laxis'],
+                       params.getForEqs('entr')['xbl'],
+                       params.getForEqs('entr')['xbr'],
+                       params.getForEqs('entr')['ybu'],
+                       params.getForEqs('entr')['ybd'],
+                       params.getForEqs('entr')['ilg'])
+
+    def execSSvar(self):
+        params = self.params
+
+        # instantiate
+        ransSSvar = ssvar.EntropyVarianceResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransSSvar.plot_ssvar(params.getForProp('prop')['laxis'],
+                       params.getForEqs('entrvar')['xbl'],
+                       params.getForEqs('entrvar')['xbr'],
+                       params.getForEqs('entrvar')['ybu'],
+                       params.getForEqs('entrvar')['ybd'],
+                       params.getForEqs('entrvar')['ilg'])
+
+    def execHH(self):
+        params = self.params
+
+        # instantiate
+        ransHH = hh.EnthalpyResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransHH.plot_hh(params.getForProp('prop')['laxis'],
+                       params.getForEqs('enth')['xbl'],
+                       params.getForEqs('enth')['xbr'],
+                       params.getForEqs('enth')['ybu'],
+                       params.getForEqs('enth')['ybd'],
+                       params.getForEqs('enth')['ilg'])
+
+    def execPP(self):
+        params = self.params
+
+        # instantiate
+        ransPP = pp.PressureResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransPP.plot_pp(params.getForProp('prop')['laxis'],
+                       params.getForEqs('press')['xbl'],
+                       params.getForEqs('press')['xbr'],
+                       params.getForEqs('press')['ybu'],
+                       params.getForEqs('press')['ybd'],
+                       params.getForEqs('press')['ilg'])
+
+    def execDSVC(self):
+        params = self.params
+
+        # instantiate
+        ransDSVC = dsvc.DensitySpecificVolumeCovarianceResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransDSVC.plot_dsvc(params.getForProp('prop')['laxis'],
+                       params.getForEqs('dsvc')['xbl'],
+                       params.getForEqs('dsvc')['xbr'],
+                       params.getForEqs('dsvc')['ybu'],
+                       params.getForEqs('dsvc')['ybd'],
+                       params.getForEqs('dsvc')['ilg'])
+
+    def execAbar(self):
+        params = self.params
+
+        # instantiate
+        ransAbar = abar.AbarResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransAbar.plot_abar(params.getForProp('prop')['laxis'],
+                       params.getForEqs('abar')['xbl'],
+                       params.getForEqs('abar')['xbr'],
+                       params.getForEqs('abar')['ybu'],
+                       params.getForEqs('abar')['ybd'],
+                       params.getForEqs('abar')['ilg'])
+
+    def execAbarFlux(self):
+        params = self.params
+
+        # instantiate
+        ransAbar = abarflux.AbarFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+                                               params.getForProp('prop')['ig'],
+                                               params.getForProp('prop')['intc'],
+                                               params.getForProp('prop')['prefix'])
+
+        ransAbar.plot_abarflux(params.getForProp('prop')['laxis'],
+                       params.getForEqs('abflx')['xbl'],
+                       params.getForEqs('abflx')['xbr'],
+                       params.getForEqs('abflx')['ybu'],
+                       params.getForEqs('abflx')['ybd'],
+                       params.getForEqs('abflx')['ilg'])
 
     def execTke(self):
         params = self.params

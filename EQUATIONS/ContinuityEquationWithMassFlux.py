@@ -17,7 +17,7 @@ import matplotlib.cm as cm
 
 class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, nsdim, data_prefix):
         super(ContinuityEquationWithMassFlux, self).__init__(ig)
 
         # load data to structured array
@@ -107,6 +107,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         self.fext = fext
         self.t_timec = t_timec
         self.pp = pp
+        self.nsdim = nsdim
 
     def plot_rho(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot rho stratification in the model"""
@@ -193,8 +194,10 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
-        plt.title('continuity equation with mass flux')
+
+        # plot DATA
+        plt.title(r"continuity equation with mass flux " + str(self.nsdim) + "D")
+
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
             plt.plot(grd1, lhs1, color='r', label=r'$-\widetilde{u}_x \partial_x (\overline{\rho})$')

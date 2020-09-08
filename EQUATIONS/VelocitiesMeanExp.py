@@ -15,7 +15,7 @@ from scipy import integrate
 
 class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, nsdim, data_prefix):
         super(VelocitiesMeanExp, self).__init__(ig)
 
         # load data to structured array
@@ -104,6 +104,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.vexp3 = vexp3
         self.vturb = vturb
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_velocities(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
@@ -134,7 +135,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title('velocities')
+        plt.title('velocities ' + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_x$')
             plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_x$')

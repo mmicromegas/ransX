@@ -15,7 +15,7 @@ import sys
 
 class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, nsdim, tke_diss, data_prefix):
         super(EnthalpyEquation, self).__init__(ig)
 
         # load data to structured array
@@ -106,6 +106,7 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.xzn0 = xzn0
         self.fht_hh = fht_hh
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_hh(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian enthalpy stratification in the model"""
@@ -198,7 +199,7 @@ class EnthalpyEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('enthalpy equation')
+        plt.title('enthalpy equation ' + str(self.nsdim) + " D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \widetilde{h})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \widetilde{h}$)")

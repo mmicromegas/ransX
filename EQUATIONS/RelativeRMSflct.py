@@ -15,7 +15,7 @@ import sys
 
 class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, ieos, intc, data_prefix):
+    def __init__(self, filename, ig, ieos, intc, nsdim, data_prefix):
         super(RelativeRMSflct, self).__init__(ig)
 
         # load data to structured array
@@ -62,6 +62,7 @@ class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.ig = ig
+        self.nsdim = nsdim
 
     def plot_relative_rms_flct(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot relative rms fluctuations in the model"""
@@ -97,7 +98,7 @@ class RelativeRMSflct(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, ob
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('relative rms fluctuations')
+        plt.title('relative rms fluctuations ' + str(self.nsdim) + "D")
         plt.semilogy(grd1, plt1, color='brown', label=r"$\rho$")
         plt.semilogy(grd1, plt2, color='r', label=r"$T$")
         plt.semilogy(grd1, plt3, color='g', label=r"$P$")

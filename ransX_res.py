@@ -45,6 +45,46 @@ def main():
     if str2bool(params.getForEqs('temp')['plotMee']):
         plt.execTemp()
 
+    # DENSITY
+    if str2bool(params.getForEqs('rho')['plotMee']):
+        plt.execRho()
+
+    # MOMENTUM X
+    if str2bool(params.getForEqs('momex')['plotMee']):
+        plt.execMomex()
+
+    # TOTAL ENERGY
+    if str2bool(params.getForEqs('toe')['plotMee']):
+        plt.execEt()
+
+    # ENTROPY
+    if str2bool(params.getForEqs('entr')['plotMee']):
+        plt.execSS()
+
+    # ENTROPY VARIANCE
+    if str2bool(params.getForEqs('entrvar')['plotMee']):
+        plt.execSSvar()
+
+    # DENSITY SPECIFIC VOLUME COVARIANCE
+    if str2bool(params.getForEqs('dsvc')['plotMee']):
+        plt.execDSVC()
+
+    # ENTHALPY
+    if str2bool(params.getForEqs('enth')['plotMee']):
+        plt.execHH()
+
+    # PRESSURE
+    if str2bool(params.getForEqs('press')['plotMee']):
+        plt.execPP()
+
+    # MEAN MOLECULAR WEIGHT
+    if str2bool(params.getForEqs('abar')['plotMee']):
+        plt.execAbar()
+
+    # MEAN MOLECULAR WEIGHT
+    if str2bool(params.getForEqs('abflx')['plotMee']):
+        plt.execAbarFlux()
+
     # BRUNT-VAISALLA FREQUENCY
     if str2bool(params.getForEqs('nsq')['plotMee']):
         plt.execBruntV()
@@ -113,11 +153,12 @@ def main():
         inuc = params.getInuc(network, elem)
         if str2bool(params.getForEqs('x_' + elem)['plotMee']):
             plt.execX(inuc, elem, 'x_' + elem)
-        if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
-            plt.execXrho(inuc, elem, 'xrho_' + elem)
+        # if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
+        #    plt.execXrho(inuc, elem, 'xrho_' + elem)
         if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']):
             plt.execXflxx(inuc, elem, 'xflxx_' + elem)
-
+        if str2bool(params.getForEqs('xvar_' + elem)['plotMee']):
+            plt.execXvar(inuc, elem, 'xvar_' + elem)
 
 # define useful functions
 def str2bool(param):

@@ -102,19 +102,22 @@ class XResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        # plt.title('X for ' + self.element)
+        plt.title('X for ' + self.element)
 
-        ax1.semilogy(grd[0], plt1[0], linestyle='--',label='initial')
 
-        for i in range(1,len(grd)):
+        #ax1.semilogy(grd[0], plt1[0], linestyle='--',label='initial')
+
+        for i in range(len(grd)):
             #plt.semilogy(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]) +
             #                                ' t: ' + str(round(self.timec[i])) + ' s')
-            ax1.semilogy(grd[i], plt1[i], label= str(np.around(self.timec[i]).astype(int)) + ' s')
+            #ax1.semilogy(grd[i], plt1[i], label= str(np.around(self.timec[i]).astype(int)) + ' s')
+            plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]))
+
 
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r"x (cm)"
-            setylabel = r"$X_i$"
+            setylabel = r"$\widetilde{X}$"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
@@ -126,15 +129,15 @@ class XResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         # show LEGEND
         plt.legend(loc=ilg, prop={'size': 14})
 
-        ax2 = ax1.twiny()
-        ax2.set_xlim(ax1.get_xlim())
+        #ax2 = ax1.twiny()
+        #ax2.set_xlim(ax1.get_xlim())
 
-        newMMlabel_xpos = [3.8e8, 4.7e8, 5.5e8, 6.4e8, 7.3e8, 8.5e8, 9.5e8]
-        newMMlabel = self.mlabels(newMMlabel_xpos)
-        ax2.set_xticks(newMMlabel_xpos)
+        #newMMlabel_xpos = [3.8e8, 4.7e8, 5.5e8, 6.4e8, 7.3e8, 8.5e8, 9.5e8]
+        #newMMlabel = self.mlabels(newMMlabel_xpos)
+        #ax2.set_xticks(newMMlabel_xpos)
 
-        ax2.set_xticklabels(newMMlabel)
-        ax2.set_xlabel('enclosed mass (msol)')
+        #ax2.set_xticklabels(newMMlabel)
+        #ax2.set_xlabel('enclosed mass (msol)')
 
 
         # display PLOT

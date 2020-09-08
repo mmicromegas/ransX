@@ -65,17 +65,17 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # for ccp project
         if plabel == 'ccptwo':
             x0002 = self.getRAdata(eht, 'x0002')[intc]
-        if plabel == 'oburn':
+        elif plabel == 'oburn':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track prot
-        if plabel == 'neshell':
+        elif plabel == 'neshell':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
-        if plabel == 'heflash':
+        elif plabel == 'heflash':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
-        if plabel == 'thpulse':
+        elif plabel == 'thpulse':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
-        if plabel == 'cflash':
+        elif plabel == 'cflash':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
-        if plabel == 'heflash':
+        elif plabel == 'heflash':
             x0002 = self.getRAdata(eht, 'x0002')[intc]  # track
         else:
             x0002 = np.zeros(nx)

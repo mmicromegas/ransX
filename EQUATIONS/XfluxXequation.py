@@ -17,7 +17,7 @@ from scipy import integrate
 
 class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, data_prefix):
+    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, nsdim, data_prefix):
         super(XfluxXequation, self).__init__(ig)
 
         # load data to structured array
@@ -299,6 +299,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.intFii = intFii
         self.fxxi = fxxi
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_XfluxX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
@@ -485,7 +486,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title('flux of Xflux X for ' + self.element)
+        plt.title('flux of Xflux X for ' + self.element + " " + str(self.nsdim) + "D")
         plt.plot(grd1, plt1, color='k', label=r'f')
         plt.plot(grd1, plt_model_int, color='r', label=r'int model')
 
@@ -701,8 +702,8 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, rhs3, rhs4, rhs5, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        # plot DATA 
-        plt.title('Xflux X equation for ' + self.element)
+        # plot DATA
+        plt.title('Xflux X equation for ' + self.element + " " + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#8B3626', label=r'$-\partial_t f_i$')
             plt.plot(grd1, lhs1, color='#FF7256', label=r'$-\nabla_x (\widetilde{u}_x f)$')
@@ -752,7 +753,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         a = plt.axes([0.24, 0.25, .3, .2])
 
         ilft = 0
-        irgt = 125
+        irgt = 64
         plt.plot(grd1[ilft:irgt], lhs0[ilft:irgt], color='#8B3626')
         plt.plot(grd1[ilft:irgt], lhs1[ilft:irgt], color='#FF7256')
         plt.plot(grd1[ilft:irgt], rhs0[ilft:irgt], color='b')

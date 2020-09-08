@@ -17,7 +17,7 @@ for filename in bindata:
 
     dat = ['temp', 'velx', 'density', '0002']
 
-    lhc = 4.e8
+    lhc = 9.e8
 
     block = prd.PROMPI_bindata(dataloc + filename, dat)
 
@@ -48,6 +48,8 @@ for filename in bindata:
 
     xlm = np.abs(np.asarray(xzn0) - np.float(lhc))
     ilhc = int(np.where(xlm == xlm.min())[0][0])
+
+    print(ilhc)
 
     temp = np.asarray(temp[:,:,ilhc])
     vtmaxv = 1.3e9

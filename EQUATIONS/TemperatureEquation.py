@@ -15,7 +15,7 @@ import sys
 
 class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, nsdim, tke_diss, data_prefix):
         super(TemperatureEquation, self).__init__(ig)
 
         # load data to structured array
@@ -107,6 +107,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.tt = tt
         self.ig = ig
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_tt(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean temperature stratification in the model"""
@@ -200,7 +201,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('temperature equation')
+        plt.title('temperature equation ' + str(self.nsdim) + " D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{T})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\overline{u}_x \partial_x \overline{T}$")
@@ -242,7 +243,7 @@ class TemperatureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 11}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
         plt.show(block=False)

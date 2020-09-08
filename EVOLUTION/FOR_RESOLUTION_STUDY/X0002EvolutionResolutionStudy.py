@@ -38,6 +38,7 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
 
             tavg.append(self.getRAdata(eht[i], 'tavg'))
             t_tc.append(self.getRAdata(eht[i], 't_tc'))
+            print(self.getRAdata(eht[i], 't_x0002mean_cnvz'))
 
         # share data across the whole class
         self.t_timec = t_timec
@@ -93,8 +94,8 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
                 plt1_foraxislimit = plt1i
 
         # calculate indices for calculating mean for the plot label
-        lmeanbndry = 1000.
-        umeanbndry = 1200.
+        lmeanbndry = 300.
+        umeanbndry = 500.
 
         il, ib = [],[]
         for i in range(len(self.t_timec)):

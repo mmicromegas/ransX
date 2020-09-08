@@ -15,7 +15,7 @@ import UTILS.Errors as eR
 
 class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, intc, data_prefix):
+    def __init__(self, filename, ig, fext, intc, nsdim, data_prefix):
         super(MomentumEquationX, self).__init__(ig)
 
         # load data to structured array
@@ -90,6 +90,7 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.ux = ux
         self.ig = ig
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_momentum_x(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot ddux stratification in the model"""
@@ -187,7 +188,7 @@ class MomentumEquationX(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('x momentum equation')
+        plt.title('x momentum equation ' + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
             plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_x ) $")

@@ -15,7 +15,7 @@ import UTILS.Errors as eR
 
 class XvarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, inuc, element, tauL, bconv, tconv, intc, data_prefix):
+    def __init__(self, filename, ig, inuc, element, tauL, bconv, tconv, intc, nsdim, data_prefix):
         super(XvarianceEquation, self).__init__(ig)
 
         # load data to structured array
@@ -112,6 +112,7 @@ class XvarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.bconv = bconv
         self.tconv = tconv
         self.ig = ig
+        self.nsdim = nsdim
 
     def plot_Xvariance(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xvariance stratification in the model"""
@@ -141,7 +142,7 @@ class XvarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('Xvariance for ' + self.element)
+        plt.title('Xvariance for ' + self.element + str(self.nsdim) + "D")
         plt.semilogy(grd1, plt1, color='b', label=r"$\sigma_i$")
 
         # convective boundary markers
@@ -211,14 +212,15 @@ class XvarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         Cm = 0.1
 
         # plot DATA 
-        plt.title(r'Xvariance equation for ' + self.element + ' C$_m$ = ' + str(Cm))
+        # plt.title(r'Xvariance equation for ' + self.element + ' C$_m$ = ' + str(Cm))
+        plt.title(r'Xvariance equation for ' + self.element + " " + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='cyan', label=r'$-\partial_t (\overline{\rho} \sigma)$')
             plt.plot(grd1, lhs1, color='purple', label=r'$-\nabla_x (\overline{\rho} \widetilde{u}_x \sigma)$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\nabla_x f^\sigma$')
             plt.plot(grd1, rhs1, color='g', label=r'$-2 f_i \partial_x \widetilde{X}$')
             plt.plot(grd1, rhs2, color='r', label=r'$+2 \overline{\rho X'' \dot{X}}$')
-            plt.plot(grd1, Cm * rhs3, color='k', linewidth=0.8, label=r'$- C_m \ \overline{\rho} \sigma / \tau_L$')
+            # plt.plot(grd1, Cm * rhs3, color='k', linewidth=0.8, label=r'$- C_m \ \overline{\rho} \sigma / \tau_L$')
             plt.plot(grd1, res, color='k', linestyle='--', label='res')
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='cyan', label=r'$-\partial_t (\overline{\rho} \sigma)$')

@@ -15,7 +15,7 @@ import sys
 
 class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, data_prefix):
+    def __init__(self, filename, ig, intc, nsdim, data_prefix):
         super(AbarTransportEquation, self).__init__(ig)
 
         # load data to structured array
@@ -76,6 +76,7 @@ class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.abar = abar
+        self.nsdim = nsdim
 
     def plot_abar(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot abar stratification in the model"""
@@ -156,7 +157,7 @@ class AbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('abar equation')
+        plt.title('abar equation ' + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho} \widetilde{A})$')
             plt.plot(grd1, lhs1, color='r', label=r'$-\nabla_x (\rho \widetilde{u}_x \widetilde{A})$')

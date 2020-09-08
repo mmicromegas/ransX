@@ -15,7 +15,7 @@ import sys
 
 class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, intc, tke_diss, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, intc, nsdim, tke_diss, data_prefix):
         super(PressureEquation, self).__init__(ig)
 
         # load data to structured array
@@ -109,6 +109,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.pp = pp
         self.dAdt = dAdt
         self.fext = fext
+        self.nsdim = nsdim
 
     def plot_pp(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean pressure stratification in the model"""
@@ -200,7 +201,7 @@ class PressureEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, o
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('pressure equation')
+        plt.title('pressure equation ' + str(self.nsdim) + " D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{P})$")
             plt.plot(grd1, lhs1, color='k', label=r"$-\overline{u}_x \partial_x \overline{P}$")

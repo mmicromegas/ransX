@@ -15,7 +15,7 @@ import sys
 
 class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, tke_diss, tauL, data_prefix):
+    def __init__(self, filename, ig, intc, nsdim, tke_diss, tauL, data_prefix):
         super(EntropyVarianceEquation, self).__init__(ig)
 
         # load data to structured array
@@ -110,6 +110,7 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
         self.sigma_ss = sigma_ss
+        self.nsdim = nsdim
 
     def plot_sigma_ss(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot mean Favrian entropy variance stratification in the model"""
@@ -200,7 +201,8 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         Cm = 0.1
 
         # plot DATA 
-        plt.title(r"entropy variance equation C$_m$ = " + str(Cm))
+        # plt.title(r"entropy variance equation C$_m$ = " + str(Cm))
+        plt.title(r"entropy variance equation " + str(self.nsdim) + "D")
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r"$-\partial_t (\overline{\rho} \sigma_s)$")
             plt.plot(grd1, lhs1, color='g', label=r"$-\nabla_x (\overline{\rho}\widetilde{u}_x \sigma_s $)")
@@ -210,7 +212,7 @@ class EntropyVarianceEquation(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
             plt.plot(grd1, rhs2, color='c', label=r"$-\overline{\nabla_x f_T /T}$ (not incl.)")
             plt.plot(grd1, rhs3, color='b', label=r"$+\overline{2 \rho s'' \epsilon_{nuc}/T}$")
             plt.plot(grd1, rhs4, color='m', label=r"$+2\overline{\rho s'' \varepsilon_{k}/T}$ approx.")
-            plt.plot(grd1, Cm*rhs5, color='k', linewidth=0.8, label=r"$-C_m \overline{\rho} \sigma_s / \tau_L$")
+            # plt.plot(grd1, Cm*rhs5, color='k', linewidth=0.8, label=r"$-C_m \overline{\rho} \sigma_s / \tau_L$")
 
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{\sigma_s}$")
         elif self.ig == 2:
