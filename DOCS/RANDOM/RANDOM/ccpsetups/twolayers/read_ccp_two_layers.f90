@@ -31,14 +31,14 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
   
   integer stat(MPI_STATUS_SIZE)
   real*8 yyy, rtop, rbot, ccpy, width, deltay, y1, y3, ynlines
-  real*8 gzero,deltar,dppdr,py1,g0,five_fourth
+  real*8 gzero,deltar,dppdr,dri,py1,five_fourth
       
   character*50 fn_name
   logical fkeyerr
 !     
   pi = 4.d0*datan(1.d0)
  
-  fn_name = "data/setup_two_layers.in"
+  fn_name = "data/setup-two-layers.in"
 
   call open_check(fn_name,ntlocal,fkeyerr)
   
@@ -68,20 +68,20 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
      read(ntlocal,*) yi(i), ggi(i), fv(i), ddi(i), ppi(i), tti(i)
   enddo
   
-  ! according to code comparison project specs > moved to constants.inc
-  
-  !onelu = 4.e8             ! length unit 4 Mm 
-  !onepu = 4.607893d23      ! pressure unit dyne
-  !onedu = 1.82094d6        ! density unit g/cm3
-  !onetu = 0.7951638        ! time unit in seconds
+  ! according to code comparison project specs (updated 7/March/2020)
+
+  !onelu = 4.d8             ! length unit 4 Mm
+  !onepu = 4.644481d23      ! pressure unit dyne
+  !onedu = 1.820940d6       ! density unit g/cm3
+  !onetu = 0.7920256        ! time unit in seconds
   !onemu = 1.165402d32      ! mass unit in grams
-  !onettu = 3.401423e9      ! temperature unit in Kelvins
-  !onegu = onelu/(onetu**2) ! gravitational acceleration unit   
+  !onettu = 3.401423d9    ! temperature unit in Kelvins
+  !onegu = onelu/(onetu**2) ! gravitational acceleration unit
   !mu0 = 1.848              ! mean molecular weight of fluid_1
   !mu1 = 1.802              ! mean molecular weight of fluid_2
-  !oneluu =  3.708735d49    ! luminosity unit erg/s
-  !oneeu  = 2.949052d49     ! energy unit erg
-
+  !oneluu = 3.752995d49    ! luminosity unit erg/s
+  !oneeu  = 2.972468d49     ! energy unit erg
+  
   ! convert to physical units
   do i=1,nlines
      rri(i) = onelu*yi(i)
@@ -90,6 +90,31 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
      ppi(i) = onepu*ppi(i)
      tti(i) = onettu*tti(i)
   enddo
+
+  ! get HSE pressure for smooth gravity profile
+  if(igrav.eq.6) then
+     five_fourth = 5.d0/4.d0
+     do i=1,nlines
+        ggic(i) = g0/(yi(i)**five_fourth)
+     enddo
+!     
+     ppic(1) = 0.6d0*onepu
+     do i=2,nlines
+        deltar  = rri(i)-rri(i-1)
+        dppdr   = ddi(i)*ggic(i)
+        ppic(i) = ppic(i-1) + deltar*dppdr
+     enddo
+!
+     do i=1,nlines
+        ppi(i) = ppic(i)
+     enddo
+  endif
+
+  !do i=1,nlines
+  !   print*,i,ppi(i),ppic(i),ggic(i),g0
+  !enddo    
+
+  !stop
   
   ! calculate composition profiles for fluid_1 and fluid_2
   do i=1,nlines
@@ -101,8 +126,10 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
      endif
      ! get transition layer
      if ((yi(i).ge.(1.9375d0)).and.(yi(i).le.(2.0625d0))) then
-        xyzi(i,1) = 1.d0-fv(i)
-        xyzi(i,2) = fv(i)
+        !xyzi(i,1) = 1.d0-fv(i)
+        !xyzi(i,2) = fv(i)
+        xyzi(i,2) = fv(i)/((1.d0-fv(i))*(mu0/mu1)+fv(i))
+        xyzi(i,1) = 1.d0-xyzi(i,2)
         mui(i) = 1.d0/((xyzi(i,1)/mu0)+(xyzi(i,2)/mu1))
      endif
      ! get top layer
@@ -118,20 +145,47 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
 !     rrl: left interface of zone i
 !     rrr: right interface of zone i
 !     rr : center of zone i
-      do i=1,nlines-1
-         rrl(i) = rri(i)
-         rrr(i) = rri(i+1)     
-         rr(i)  = (rrr(i)+rrl(i))/2.d0     
-         ppi(i) = ppi(i+1)
-         ddi(i) = ddi(i+1)
-         tti(i) = tti(i+1)        
-         mui(i) = mui(i+1)
-         do ii=1,qn
-            xyzi(i,ii) = xyzi(i+1,ii)
-         enddo
-      enddo
+      !do i=1,nlines-1
+      !   rrl(i) = rri(i)
+      !   rrr(i) = rri(i+1)     
+      !   rr(i)  = (rrr(i)+rrl(i))/2.d0     
+      !   ppi(i) = ppi(i+1)
+      !   ddi(i) = ddi(i+1)
+      !   tti(i) = tti(i+1)        
+      !   mui(i) = mui(i+1)
+      !   do ii=1,qn
+      !      xyzi(i,ii) = xyzi(i+1,ii)
+      !   enddo
+      !enddo
       
+
+      do i=1,nlines-1
+         dri = (rri(i+1)-rri(i))/2.d0
+         rrl(i) = rri(i)-dri
+         rrr(i) = rri(i)+dri     
+         rr(i)  = rri(i)     
+         ppi(i) = ppi(i)
+         ddi(i) = ddi(i)
+         tti(i) = tti(i)        
+         mui(i) = mui(i)
+      enddo
+
+
+
 !     COPY LAST ZONE (nzones-nlines) TIMES TO FILL ARRAY
+      !do i=nlines,nzones
+      !   rrl(i) = rrl(i-1)
+      !   rr(i)  = rr(i-1)
+      !   rrr(i) = rrr(i-1)
+      !   ppi(i) = ppi(i-1)
+      !   ddi(i) = ddi(i-1)
+      !   tti(i) = tti(i-1)
+      !   mui(i) = mui(i-1)
+      !   do ii=1,qn
+      !      xyzi(i,ii) = xyzi(i-1,ii)
+      !   enddo
+      !enddo
+
       do i=nlines,nzones
          rrl(i) = rrl(i-1)
          rr(i)  = rr(i-1)
@@ -144,6 +198,7 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
             xyzi(i,ii) = xyzi(i-1,ii)
          enddo
       enddo
+
 
   
   !do i=1,nlines

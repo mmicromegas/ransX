@@ -22,7 +22,7 @@ subroutine gravty (j, k)
   !include 'basestate.inc'
   
   integer*4 i,j,k, ii
-  real*8 :: g0,y,fgy,five_fourth
+  real*8 :: y,fgy,five_fourth
   
   pi = 4.d0*datan(1.d0)
   
@@ -30,8 +30,7 @@ subroutine gravty (j, k)
   do ii=1,nzn8 
      grav(ii) = 0.d0
   enddo
-  
-  g0 = -1.426104d0*onegu  
+ 
   five_fourth = 5.d0/4.d0
   
   if(xyzswp.eq.xyzgrav) then

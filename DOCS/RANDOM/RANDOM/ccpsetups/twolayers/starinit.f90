@@ -40,7 +40,7 @@
       real*8 mmm,bbb,delr,hf0,hf1,xa,xb
       real*8 delx,abar,zbar
       integer*8 nglobal, indx, iseed
-      real*8 deltar,dppdr,g0,y,fgy
+      real*8 deltar,dppdr,y,fgy
       real*8 pphse(nx)
       real*8 five_fourth
 
@@ -95,6 +95,41 @@
        
       if(myid.eq.0) print*,'MSG(starinit): done interpolating model.'
       
+      !if (igrav.eq.6) then
+      !   minus_five_fourth = 5.d0/4.d0
+      !   pphse(1) = 0.6d0*onepu
+      !   do i=2,nx
+      !      y = xzn(i)/onelu
+      !      deltar   =  xznr(i)-xznl(i)
+      !      dppdr    =  ddglobal(i)*(g0/(y**minus_five_fourth))
+      !      pphse(i) =  pphse(i-1) + deltar*dppdr
+      !   enddo
+      !endif
+
+      !if (igrav.eq.7) then
+      !   minus_five_fourth = 5.d0/4.d0
+      !   pphse(1) = 0.6d0*onepu
+      !   do i=2,nx
+      !      y = xzn(i)/onelu
+      !      if ((y.ge.1.0625d0).and.(y.le.2.9375d0)) &
+      !           fgy = 1.d0
+      !      if ((y.ge.1.d0).and.(y.lt.1.0625d0)) &
+      !           fgy = 0.5d0*(1.d0+sin(16.d0*pi*(y-1.03125d0)))
+      !      if ((y.gt.2.9375d0).and.(y.le.3.0d0)) &
+      !           fgy = 0.5d0*(1.d0-sin(16.d0*pi*(y-2.96875d0)))
+      !      deltar   =  xznr(i)-xznl(i)
+      !      dppdr    =  ddglobal(i)*(fgy*g0/(y**five_fourth))
+      !      pphse(i) =  pphse(i-1) + deltar*dppdr
+      !   enddo
+      !endif
+         
+      !do i=1,nx
+      !   indx=i+coords(1)*qx
+      !   print*,i,muglobal(indx)
+      !enddo
+     
+      !stop
+
 !     -----------------------------------------
 !      MAP MODEL TO LOCAL ARRAYS
 !     -----------------------------------------
@@ -122,7 +157,7 @@
          enddo
       enddo
       
-      call eos3d(3)        
+      call eos3d(2)        
       
 !     improve HSE
 

@@ -2,11 +2,6 @@
 !     
       subroutine volheat(imode)
 !-------------------------------------------------------
-!     SIMPLE NE-BURNING NETWORK
-!     ------------------------------
-!     This is a simple fuel+ash implementation of the 
-!     nuclear energy generation for Ne burning.
-!     
 !-------------------------------------------------------
       implicit none
       include 'dimen.inc'
@@ -25,6 +20,7 @@
       real*8 dtb
       real*8 fheat(qx)
       real*8 y
+      real*8 lum
       
       pi = 4.d0*datan(1.d0)
       
@@ -41,7 +37,11 @@
             fheat(i) = 0.d0
          endif
       enddo
-   
+
+
+!     CCP LUMINOSITY update 7/March/2020
+      lum = 1.2082151d-4  
+      
 !     BEGIN LOOP OVER ZONES
 !     ---------------------
       do k=1,qz
@@ -55,7 +55,8 @@
      &              velx(i,j,k)**2.d0
                ei = energy(i,j,k)-ek
 !
-               enuc(i,j,k,1) = (1.d0/onetu)*(oneeu/onemu)*(0.0001556706d0*(fheat(i)/(dd/onedu)))
+               !enuc(i,j,k,1) = (1.d0/onetu)*(oneeu/onemu)*(0.0001556706d0*(fheat(i)/(dd/onedu)))
+               enuc(i,j,k,1) = (1.d0/onetu)*(oneeu/onemu)*(lum*pi*(fheat(i)/(dd/onedu)))
                enuc(i,j,k,2) = 0.d0 !neutrino emission term
 !
                !     update energy and composition: put back into main arrays
