@@ -170,7 +170,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # plot DATA
         if self.nsdim != 2:
-            plt.title(r"TKE equation C$_m$ = " + str(Cm) + str(self.nsdim) + "D")
+            plt.title(r"TKE equation C$_m$ = " + str(Cm) + " " + str(self.nsdim) + "D")
         else:
             plt.title(r"TKE equation " + str(self.nsdim) + "D")
         if self.ig == 1:
@@ -219,6 +219,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.eps')
 
     def plot_TKE_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 

@@ -139,6 +139,7 @@ class TurbulentKineticEnergyEquationEvolutionResolutionStudy(uCalc.Calculus, uEa
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol_res.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_evol_res.eps')
 
     # find data with maximum resolution
     def maxresdata(self, data):

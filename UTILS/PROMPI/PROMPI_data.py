@@ -288,6 +288,7 @@ class PROMPI_bindata:
             ivar = self.varl.index(dat)
             irecl = self.qqx * self.qqy * self.qqz
             nbyte = irecl * 4
+            # nbyte = irecl * 4 * 4
             dstart = int(ivar * nbyte)
 
             # print(ivar,irecl,nbyte,dstart,self.qqx,self.qqy,self.qqz)

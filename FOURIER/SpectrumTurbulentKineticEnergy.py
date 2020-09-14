@@ -12,7 +12,9 @@ class SpectrumTurbulentKineticEnergy():
         xzn0 = block.datadict['xzn0']
         velx = block.datadict['velx']
         vely = block.datadict['vely']
-        velz = block.datadict['velz']
+        # velz = block.datadict['velz']
+        velz = vely
+        velz[:,:,:] = 0.
 
         xlm = np.abs(np.asarray(xzn0) - np.float(lhc))
         ilhc = int(np.where(xlm == xlm.min())[0][0])

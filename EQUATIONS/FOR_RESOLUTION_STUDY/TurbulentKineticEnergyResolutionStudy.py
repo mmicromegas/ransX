@@ -133,6 +133,7 @@ class TurbulentKineticEnergyResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.T
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_turbkineticenergy.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_turbkineticenergy.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

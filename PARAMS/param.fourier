@@ -1,6 +1,6 @@
 # ----- Parameter file for 2D Fourier spectra of PROMPI data ------- #
 []
-## Input-Data File ........................... ## [fourier,datafile,C:\Users\mmocak\Desktop\GITDEV\ransX\DATA\BINDATA\ccp_two_layers\ccptwo.res64cubed.fixedmu.opto3.01991.bindata]
+## Input-Data File ........................... ## [fourier,datafile,D:\Desktop\GITDEV\ransX\DATA_D\BINDATA\ccp_two_layers\2Dand3D\ccptwo.2D.r512.dev.00501.bindata]
 ## Filename Prefix For Plots ................. ## [fourier,prefix,ccpone_fourier_lres]
 ## Input Data Endianness ..................... ## [fourier,endian,little_endian]
 ## Input Data Floating Point Precision ....... ## [fourier,precision,double]

@@ -149,6 +149,7 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'x0002_evol_res.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'x0002_evol_res.eps')
 
     # find data with maximum resolution
     def maxresdata(self, data):

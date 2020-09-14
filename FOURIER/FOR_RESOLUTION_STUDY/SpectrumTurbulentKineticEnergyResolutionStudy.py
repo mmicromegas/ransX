@@ -21,6 +21,7 @@ class SpectrumTurbulentKineticEnergyResolutionStudy(calc.Calculus, al.SetAxisLim
         for file in filename:
             print(datadir + file)
             block.append(pd.PROMPI_bindata(datadir + file, ['velx', 'vely', 'velz']))
+            # block.append(pd.PROMPI_bindata(datadir + file, ['velx', 'vely']))
 
         # declare data lists
         xzn0, velx, vely, velz, xlm, ilhc = [], [], [], [], [], []
