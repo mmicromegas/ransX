@@ -53,7 +53,11 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             ddxiux = self.getRAdata(eht, 'ddx0001ux')[intc]
             fxi = ddxiux - ddxi * ddux / dd
         else:
-            fxi = np.zeros(nx)
+            ddux = self.getRAdata(eht, 'ddux')[intc]
+            ddxi = self.getRAdata(eht, 'ddx0005')[intc]
+            ddxiux = self.getRAdata(eht, 'ddx0005ux')[intc]
+            fxi = ddxiux - ddxi * ddux / dd
+            # fxi = np.zeros(nx)
 
         # override gamma for ideal gas eos (need to be fixed in PROMPI later)
         if ieos == 1:
@@ -61,6 +65,28 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             cv = self.getRAdata(eht, 'cv')[intc]
             gamma1 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
             # gamma3 = gamma1
+
+        pp = self.getRAdata(eht, 'pp')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        mu = self.getRAdata(eht, 'abar')[intc]
+        chim = self.getRAdata(eht, 'chim')[intc]
+        chit = self.getRAdata(eht, 'chit')[intc]
+        gamma2 = self.getRAdata(eht, 'gamma2')[intc]
+        # print(chim,chit,gamma2)
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
+            gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+
+        lntt = np.log(tt)
+        lnpp = np.log(pp)
+        lnmu = np.log(mu)
+
+        # calculate temperature gradients
+        self.nabla = self.deriv(lntt, lnpp)
+        self.nabla_ad = (gamma2 - 1.) / gamma2
 
         # for ccp project
         if plabel == 'ccptwo':
@@ -216,6 +242,15 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # Get rid of the numerical mess at outer boundary 
         diss[idxr:self.nx] = 0.
 
+        self.nabla[0:idxl] = 0.
+        self.nabla[idxr:self.nx] = 0.
+
+        self.nabla_ad[0:idxl] = 0.
+        self.nabla_ad[idxr:self.nx] = 0.
+
+        self.fxi[0:idxl] = 0.
+        self.fxi[idxr:self.nx] = 0.
+
         if self.plabel == "ccptwo":
             fxi_max = self.fxi.max()
             ind = np.where((np.abs(self.fxi) > 0.02 * fxi_max))[0]
@@ -223,14 +258,21 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             xzn0inc = xzn0[ind[0]]
             xzn0outc = xzn0[ind[-1]]
         else:
-            diss_max = diss.max()
-            ind = np.where((diss > 0.02 * diss_max))[0]
+            #diss_max = diss.max()
+            #ind = np.where((diss > 0.02 * diss_max))[0]
+
+            #ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
+
+            fxi_max = self.fxi.max()
+            ind = np.where((np.abs(self.fxi) > 0.1 * fxi_max))[0]
 
             xzn0inc = xzn0[ind[0]]
             xzn0outc = xzn0[ind[-1]]
 
         ibot = ind[0]
         itop = ind[-1]
+
+        print(ibot,itop)
 
         lc = xzn0outc - xzn0inc
 

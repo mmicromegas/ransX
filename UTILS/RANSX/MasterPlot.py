@@ -541,18 +541,19 @@ class MasterPlot():
         # instantiate 		
         ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
+                                         params.getForProp('prop')['ieos'],
                                          params.getForProp('prop')['fext'],
                                          inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
                                          params.getForProp('prop')['nsdim'],
                                          params.getForProp('prop')['prefix'])
 
-        # ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
-        #                      params.getForEqs(x)['xbl'],
-        #                      params.getForEqs(x)['xbr'],
-        #                      params.getForEqs(x)['ybu'],
-        #                      params.getForEqs(x)['ybd'],
-        #                      params.getForEqs(x)['ilg'])
+        ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
+                              params.getForEqs(x)['xbl'],
+                              params.getForEqs(x)['xbr'],
+                              params.getForEqs(x)['ybu'],
+                              params.getForEqs(x)['ybd'],
+                              params.getForEqs(x)['ilg'])
 
         # ransXflxx.plot_XfluxxX(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
@@ -561,12 +562,12 @@ class MasterPlot():
         #                      params.getForEqs(x)['ybd'],
         #                      params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
-                                        params.getForEqs(x)['xbl'],
-                                        params.getForEqs(x)['xbr'],
-                                        params.getForEqs(x)['ybu'],
-                                        params.getForEqs(x)['ybd'],
-                                        params.getForEqs(x)['ilg'])
+        #ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
+        #                                params.getForEqs(x)['xbl'],
+        #                                params.getForEqs(x)['xbr'],
+        #                                params.getForEqs(x)['ybu'],
+        #                                params.getForEqs(x)['ybd'],
+        #                                params.getForEqs(x)['ilg'])
 
         # ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
         #                              params.getForEqs(x)['xbl'],
@@ -588,6 +589,7 @@ class MasterPlot():
         # instantiate 
         ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
+                                         params.getForProp('prop')['ieos'],
                                          params.getForProp('prop')['fext'],
                                          inuc, element, bconv, tconv, tke_diss, tauL, cnvz_in_hp,
                                          params.getForProp('prop')['intc'],
@@ -720,11 +722,19 @@ class MasterPlot():
         ransXdiff = xdiff.Xdiffusivity(params.getForProp('prop')['eht_data'],
                                        params.getForProp('prop')['ig'],
                                        params.getForProp('prop')['fext'],
+                                       params.getForProp('prop')['ieos'],
                                        inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL,
                                        params.getForProp('prop')['intc'],
                                        params.getForProp('prop')['prefix'])
 
-        ransXdiff.plot_X_Ediffusivity(params.getForProp('prop')['laxis'],
+        #ransXdiff.plot_X_Ediffusivity(params.getForProp('prop')['laxis'],
+        #                              params.getForEqs(x)['xbl'],
+        #                              params.getForEqs(x)['xbr'],
+        #                              params.getForEqs(x)['ybu'],
+        #                              params.getForEqs(x)['ybd'],
+        #                              params.getForEqs(x)['ilg'])
+
+        ransXdiff.plot_X_Ediffusivity2(params.getForProp('prop')['laxis'],
                                       params.getForEqs(x)['xbl'],
                                       params.getForEqs(x)['xbr'],
                                       params.getForEqs(x)['ybu'],
@@ -799,6 +809,24 @@ class MasterPlot():
                                   params.getForEqs('tkeeq')['ybu'],
                                   params.getForEqs('tkeeq')['ybd'],
                                   params.getForEqs('tkeeq')['ilg'])
+
+    def execTkeEqBar(self, kolmdissrate, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy equation
+        ransTke.plot_tke_equation_integral_budget(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeeqBar')['xbl'],
+                                  params.getForEqs('tkeeqBar')['xbr'],
+                                  params.getForEqs('tkeeqBar')['ybu'],
+                                  params.getForEqs('tkeeqBar')['ybd'])
 
     def execMomx(self, bconv, tconv):
         params = self.params

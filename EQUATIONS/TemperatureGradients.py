@@ -58,6 +58,7 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
+        self.nx = nx
         self.nabla = nabla
         self.nabla_ad = nabla_ad
         self.nabla_mu = nabla_mu
@@ -108,6 +109,24 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+
+        idxl, idxr = self.idx_bndry(bconv, tconv)
+
+        self.nabla[0:idxl] = 0.
+        self.nabla[idxr:self.nx] = 0.
+
+        self.nabla_ad[0:idxl] = 0.
+        self.nabla_ad[idxr:self.nx] = 0.
+
+        ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
+
+        xzn0inc = self.xzn0[ind[0]]
+        xzn0outc = self.xzn0[ind[-1]]
+
+        # convective boundary markers - only superadiatic regions
+        plt.axvline(xzn0inc, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(xzn0outc, linestyle=':', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

@@ -17,7 +17,7 @@ from scipy import integrate
 
 class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, nsdim, data_prefix):
+    def __init__(self, filename, ig, ieos, fext, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, nsdim, data_prefix):
         super(XfluxXequation, self).__init__(ig)
 
         # load data to structured array
@@ -25,6 +25,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
+        nx = self.getRAdata(eht, 'nx')
 
         # pick equation-specific Reynolds-averaged mean fields according to:
         # https://github.com/mmicromegas/ransX/blob/master/DOCS/ransXimplementationGuide.pdf	
@@ -284,9 +285,34 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         #self.fhtflxicl35 =  self.getRAdata(eht, 'ddx0013ux')[intc] - self.getRAdata(eht, 'ddx0013')[intc] * ddux / dd
         #self.fhtflxiar36 =  self.getRAdata(eht, 'ddx0014ux')[intc] - self.getRAdata(eht, 'ddx0014')[intc] * ddux / dd
 
+        #
+
+        pp = self.getRAdata(eht, 'pp')[intc]
+        tt = self.getRAdata(eht, 'tt')[intc]
+        mu = self.getRAdata(eht, 'abar')[intc]
+        chim = self.getRAdata(eht, 'chim')[intc]
+        chit = self.getRAdata(eht, 'chit')[intc]
+        gamma2 = self.getRAdata(eht, 'gamma2')[intc]
+        # print(chim,chit,gamma2)
+
+        # override gamma for ideal gas eos (need to be fixed in PROMPI later)
+        if ieos == 1:
+            cp = self.getRAdata(eht, 'cp')[intc]
+            cv = self.getRAdata(eht, 'cv')[intc]
+            gamma2 = cp / cv  # gamma1,gamma2,gamma3 = gamma = cp/cv Cox & Giuli 2nd Ed. page 230, Eq.9.110
+
+        lntt = np.log(tt)
+        lnpp = np.log(pp)
+        lnmu = np.log(mu)
+
+        # calculate temperature gradients
+        self.nabla = self.deriv(lntt, lnpp)
+        self.nabla_ad = (gamma2 - 1.) / gamma2
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
+        self.nx = nx
         self.inuc = inuc
         self.element = element
         self.fxi = fxi
@@ -335,6 +361,23 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        idxl, idxr = self.idx_bndry(self.bconv, self.tconv)
+
+        self.nabla[0:idxl] = 0.
+        self.nabla[idxr:self.nx] = 0.
+
+        self.nabla_ad[0:idxl] = 0.
+        self.nabla_ad[idxr:self.nx] = 0.
+
+        ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
+
+        xzn0inc = self.xzn0[ind[0]]
+        xzn0outc = self.xzn0[ind[-1]]
+
+        # convective boundary markers - only superadiatic regions
+        plt.axvline(xzn0inc, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(xzn0outc, linestyle=':', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

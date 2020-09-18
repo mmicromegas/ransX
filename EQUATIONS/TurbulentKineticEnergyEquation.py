@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from scipy import integrate
 import UTILS.SetAxisLimit as uSal
 import UTILS.Errors as eR
 import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
@@ -25,6 +26,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         tkefields = tkeF.getTKEfield()
 
         self.xzn0 = tkefields['xzn0']
+        self.yzn0 = tkefields['yzn0']
+        self.zzn0 = tkefields['zzn0']
 
         # LHS -dq/dt
         self.minus_dt_dd_tke = tkefields['minus_dt_dd_tke']
@@ -285,6 +288,135 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_TKE_space_time.png')
+
+
+    def plot_tke_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
+        """Plot integral budgets of tke equation in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(TurbulentKineticEnergyEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        term1 = self.minus_dt_dd_tke
+        term2 = self.minus_div_eht_dd_fht_ux_tke
+        term3 = self.plus_wb
+        term4 = self.plus_wp
+        term5 = self.minus_div_fekx
+        term6 = self.minus_div_fpx
+        term7 = self.minus_r_grad_u
+        term8 = self.minus_resTkeEquation
+
+        # hack for the ccp setup getting rid of bndry noise
+        # fct1 = 0.5e-1
+        # fct2 = 1.e-1
+        # xbl = xbl + fct1*xbl
+        # xbr = xbr - fct2*xbl
+        # print(xbl,xbr)
+
+        # calculate INDICES for grid boundaries
+        if laxis == 1 or laxis == 2:
+            idxl, idxr = self.idx_bndry(xbl, xbr)
+        else:
+            idxl = 0
+            idxr = self.nx - 1
+
+        term1_sel = term1[idxl:idxr]
+        term2_sel = term2[idxl:idxr]
+        term3_sel = term3[idxl:idxr]
+        term4_sel = term4[idxl:idxr]
+        term5_sel = term5[idxl:idxr]
+        term6_sel = term6[idxl:idxr]
+        term7_sel = term7[idxl:idxr]
+        term8_sel = term8[idxl:idxr]
+
+        rc = self.xzn0[idxl:idxr]
+
+        # handle geometry
+        Sr = 0.
+        if self.ig == 1 and self.nsdim == 3:
+            Sr = (self.yzn0[-1] - self.yzn0[0]) * (self.zzn0[-1] - self.zzn0[0])
+        elif self.ig == 1 and self.nsdim == 2:
+            Sr = (self.yzn0[-1] - self.yzn0[0]) * (self.yzn0[-1] - self.yzn0[0])
+        elif self.ig == 2:
+            Sr = 4. * np.pi * rc ** 2
+
+        int_term1 = integrate.simps(term1_sel * Sr, rc)
+        int_term2 = integrate.simps(term2_sel * Sr, rc)
+        int_term3 = integrate.simps(term3_sel * Sr, rc)
+        int_term4 = integrate.simps(term4_sel * Sr, rc)
+        int_term5 = integrate.simps(term5_sel * Sr, rc)
+        int_term6 = integrate.simps(term6_sel * Sr, rc)
+        int_term7 = integrate.simps(term7_sel * Sr, rc)
+        int_term8 = integrate.simps(term8_sel * Sr, rc)
+
+        fig = plt.figure(figsize=(7, 6))
+
+        ax = fig.add_subplot(1, 1, 1)
+        ax.yaxis.grid(color='gray', linestyle='dashed')
+        ax.xaxis.grid(color='gray', linestyle='dashed')
+
+        if laxis == 2:
+            plt.ylim([ybd, ybu])
+
+        fc = 1.
+
+        # note the change: I'm only supplying y data.
+        y = [int_term1 / fc, int_term2 / fc, int_term3 / fc, int_term4 / fc,
+             int_term5 / fc, int_term6 / fc, int_term7 / fc, int_term8 / fc]
+
+        # calculate how many bars there will be
+        N = len(y)
+
+        # Generate a list of numbers, from 0 to N
+        # This will serve as the (arbitrary) x-axis, which
+        # we will then re-label manually.
+        ind = range(N)
+
+        # See note below on the breakdown of this command
+        ax.bar(ind, y, facecolor='#0000FF',
+               align='center', ecolor='black')
+
+        # Create a y label
+        ax.set_ylabel(r'g s$^{-1}$')
+
+        if self.nsdim != 2:
+            ax.set_title(r"TKE equation integral budget " + str(self.nsdim) + "D")
+        else:
+            ax.set_title(r"TKE equation integral budget " + str(self.nsdim) + "D")
+
+        # This sets the ticks on the x axis to be exactly where we put
+        # the center of the bars.
+        ax.set_xticks(ind)
+
+        # Labels for the ticks on the x axis.  It needs to be the same length
+        # as y (one label for each bar)
+        if self.ig == 1:
+            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k})$',
+                            r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$",
+                            r'$+W_b$',r'$+W_p$',r"$-\nabla_x f_k$",r"$-\nabla_x f_P$",
+                            r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$",'res']
+
+            # Set the x tick labels to the group_labels defined above.
+            ax.set_xticklabels(group_labels, fontsize=16)
+        elif self.ig == 2:
+            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k})$',
+                            r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$",
+                            r'$+W_b$',r'$+W_p$',r"$-\nabla_r f_k$",r"$-\nabla_r f_P$",
+                            r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$",'res']
+
+            # Set the x tick labels to the group_labels defined above.
+            ax.set_xticklabels(group_labels, fontsize=16)
+
+        # auto-rotate the x axis labels
+        fig.autofmt_xdate()
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq_bar.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq_bar.eps')
 
     def tke_dissipation(self):
         return self.minus_resTkeEquation

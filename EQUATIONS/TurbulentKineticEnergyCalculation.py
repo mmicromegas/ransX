@@ -183,7 +183,8 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
 
     def getTKEfield(self):
         # return fields
-        field = {'dd': self.dd, 'tke': self.tke, 'xzn0': self.xzn0, 'minus_dt_dd_tke': self.minus_dt_dd_tke,
+        field = {'dd': self.dd, 'tke': self.tke, 'xzn0': self.xzn0, 'yzn0': self.yzn0, 'zzn0': self.zzn0,
+                 'minus_dt_dd_tke': self.minus_dt_dd_tke,
                  'minus_div_eht_dd_fht_ux_tke': self.minus_div_eht_dd_fht_ux_tke,
                  'minus_div_fekx': self.minus_div_fekx,
                  'minus_div_fpx': self.minus_div_fpx,
@@ -194,7 +195,7 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
                  'minus_resTkeEquation': self.minus_resTkeEquation,
                  'nx': self.nx, 't_timec': self.t_timec,'t_tke': self.t_tke}
 
-        return {'dd': field['dd'], 'tke': field['tke'], 'xzn0': field['xzn0'],
+        return {'dd': field['dd'], 'tke': field['tke'], 'xzn0': field['xzn0'], 'yzn0': field['yzn0'], 'zzn0': field['zzn0'],
                 'minus_dt_dd_tke': field['minus_dt_dd_tke'],
                 'minus_div_eht_dd_fht_ux_tke': field['minus_div_eht_dd_fht_ux_tke'],
                 'minus_div_fekx': field['minus_div_fekx'],

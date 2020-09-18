@@ -155,12 +155,17 @@ def main():
     if str2bool(params.getForEqs('kieq')['plotMee']):
         plt.execKeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
 
+    # TURBULENT KINETIC ENERGY EQUATION
     if str2bool(params.getForEqs('tkie')['plotMee']):
         plt.execTke(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
                     prp['xzn0outc'])
 
     if str2bool(params.getForEqs('tkeeq')['plotMee']):
         plt.execTkeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                      prp['xzn0outc'])
+
+    if str2bool(params.getForEqsBar('tkeeqBar')['plotMee']):
+        plt.execTkeEqBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
                       prp['xzn0outc'])
 
     # TOTAL ENERGY EQUATION

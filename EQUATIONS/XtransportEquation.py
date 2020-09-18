@@ -875,6 +875,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'xtransport_' + element + '_eq_bar.eps')
 
+
     def mlabels(self, grid):
         # calculate MM labels
         xzn0 = np.asarray(self.xzn0)
