@@ -18,7 +18,7 @@ import UTILS.Errors as eR
 
 class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, plabel, ig, fext, inuc, element, bconv, tconv, intc, nsdim, data_prefix):
+    def __init__(self, filename, plabel, ig, fext, inuc, element, bconv, tconv, super_ad_i, super_ad_o, intc, nsdim, data_prefix):
         super(XtransportEquation, self).__init__(ig)
 
         # load data to structured array
@@ -128,6 +128,9 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         self.bconv = bconv
         self.tconv = tconv
+        self.super_ad_i = super_ad_i
+        self.super_ad_o = super_ad_o
+
         self.ig = ig
         self.fext = fext
         self.mm = mm
@@ -188,6 +191,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
+
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
@@ -246,6 +253,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # this is an inset axes over the main axes
         # a = plt.axes([.27, .4, .44, 0.23])
@@ -339,6 +350,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # convective boundary markers
         ax1.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         ax1.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         ax2 = ax1.twiny()
         ax2.set_xlim(ax1.get_xlim())
@@ -698,6 +713,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # shade area one
         #ind = np.where((grd1 < 5.17e8) & (grd1 > 4.53e8))[0]

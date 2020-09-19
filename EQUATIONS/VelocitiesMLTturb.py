@@ -16,7 +16,7 @@ import sys
 
 class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, intc, nsdim, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, bconv, tconv, super_ad_i, super_ad_o, intc, nsdim, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)
 
         # load data to structured array
@@ -129,8 +129,18 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.fext = fext
         self.nsdim = nsdim
 
-    def plot_velocities(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+        self.bconv = bconv
+        self.tconv = tconv
+        self.super_ad_i = super_ad_i
+        self.super_ad_o = super_ad_o
+
+    def plot_velocities(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot velocities in the model"""
+
+        bconv = self.bconv
+        tconv = self.tconv
+        super_ad_i = self.super_ad_i
+        super_ad_o = self.super_ad_o
 
         # check supported geometries
         if self.ig != 1 and self.ig != 2:
@@ -179,6 +189,10 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

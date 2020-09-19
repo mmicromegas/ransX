@@ -272,8 +272,6 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ibot = ind[0]
         itop = ind[-1]
 
-        print(ibot,itop)
-
         lc = xzn0outc - xzn0inc
 
         # Reynolds number
@@ -328,6 +326,33 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         lcz_vs_hp = np.log(pbot / pp[ibot:itop])
         cnvz_in_hp = lcz_vs_hp[itop - ibot - 1]
 
+        # remove boundary noise
+        self.nabla[0:ibot] = 0.
+        self.nabla[itop:self.nx] = 0.
+
+        self.nabla_ad[0:ibot] = 0.
+        self.nabla_ad[itop:self.nx] = 0.
+
+        ind = np.where((self.nabla > self.nabla_ad))[0] # super-adiabatic region
+
+        ibot_super_ad = ind[0]
+        itop_super_ad = ind[-1]
+
+        # convective boundary markers - only super-adiabatic regions
+        super_ad_i = self.xzn0[ibot_super_ad]
+        super_ad_o = self.xzn0[itop_super_ad]
+
+        # calculate width of overshooting regions in Hp
+        # hp = -pp / self.Grad(pp, xzn0)
+        pbot = pp[ibot]
+        tmp = np.log(pbot / pp[ibot:ibot_super_ad])
+        ov_in_hp = tmp[ibot_super_ad - ibot - 1]
+
+        pbot = pp[itop_super_ad]
+        tmp = np.log(pbot / pp[itop_super_ad:itop])
+        ov_out_hp = tmp[itop - itop_super_ad - 1]
+
+
         print('#----------------------------------------------------#')
         print('Datafile with space-time averages: ', self.filename)
         print('Central time (in s): ', round(self.timec, 1))
@@ -340,6 +365,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print 'Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc)
         if laxis != 0:
             print 'Extent of convection zone (in Hp): %f' % cnvz_in_hp
+        print 'Overshooting at inner/outer convection boundary (in Hp): ', round(ov_in_hp,2), round(ov_out_hp,2)
         print 'Averaging time window (in s): %f' % tavg
         print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
         print 'Convective turnover timescale (in s)  %.2e' % tc
@@ -488,7 +514,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
              'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
              'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
-             'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr}
+             'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
+             'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o}
 
         return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'], 'tavg': p['tavg'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
@@ -498,4 +525,5 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
                 'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'], 'cnvz_in_hp': p['cnvz_in_hp'],
                 'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'], 'resContMean': p['resContMean'],
                 'resContMax': p['resContMax'], 'resTeeMax': p['resTeeMax'], 'resTeeMean': p['resTeeMean'],
-                'xznl': p['xznl'], 'xznr': p['xznr'], 'urms': p['urms']}
+                'xznl': p['xznl'], 'xznr': p['xznr'], 'urms': p['urms'], 'super_ad_i': p['super_ad_i'],
+                'super_ad_o': p['super_ad_o'],}

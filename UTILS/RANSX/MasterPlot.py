@@ -410,7 +410,7 @@ class MasterPlot():
                                               params.getForEqs(x)['ybd'],
                                               params.getForEqs(x)['ilg'])
 
-    def execXrho(self, inuc, element, x, bconv, tconv):
+    def execXrho(self, inuc, element, x, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 		
@@ -418,7 +418,7 @@ class MasterPlot():
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
-                                           inuc, element, bconv, tconv,
+                                           inuc, element, bconv, tconv, super_ad_i, super_ad_o,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
@@ -444,7 +444,7 @@ class MasterPlot():
         #                   params.getForEqs(x)['ybd'],\
         #                   params.getForEqs(x)['ilg'])
 
-    def execX(self, inuc, element, x, bconv, tconv):
+    def execX(self, inuc, element, x, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate
@@ -452,7 +452,7 @@ class MasterPlot():
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
-                                           inuc, element, bconv, tconv,
+                                           inuc, element, bconv, tconv, super_ad_i, super_ad_o,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
@@ -474,12 +474,12 @@ class MasterPlot():
                             params.getForEqs(x)['ybd'],
                             params.getForEqs(x)['ilg'])
 
-        ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
-                           params.getForEqs(x)['xbl'],
-                           params.getForEqs(x)['xbr'],
-                           params.getForEqs(x)['ybu'],
-                           params.getForEqs(x)['ybd'],
-                           params.getForEqs(x)['ilg'])
+        #ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
+        #                   params.getForEqs(x)['xbl'],
+        #                   params.getForEqs(x)['xbr'],
+        #                   params.getForEqs(x)['ybu'],
+        #                   params.getForEqs(x)['ybd'],
+        #                   params.getForEqs(x)['ilg'])
 
         #ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
         #                   params.getForEqs(x)['xbl'],
@@ -495,7 +495,7 @@ class MasterPlot():
         #                    params.getForEqs(x)['ybd'],
         #                    params.getForEqs(x)['ilg'])
 
-    def execXtrsEq(self, inuc, element, x, bconv, tconv):
+    def execXtrsEq(self, inuc, element, x, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 
@@ -503,7 +503,7 @@ class MasterPlot():
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
-                                           inuc, element, bconv, tconv,
+                                           inuc, element, bconv, tconv, super_ad_i, super_ad_o,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])
@@ -715,7 +715,7 @@ class MasterPlot():
                                          params.getForEqs(x)['ybd'],
                                          params.getForEqs(x)['ilg'])
 
-    def execDiff(self, inuc, element, x, lc, uconv, bconv, tconv, tke_diss, tauL):
+    def execDiff(self, inuc, element, x, lc, uconv, bconv, tconv, tke_diss, tauL, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 
@@ -723,7 +723,8 @@ class MasterPlot():
                                        params.getForProp('prop')['ig'],
                                        params.getForProp('prop')['fext'],
                                        params.getForProp('prop')['ieos'],
-                                       inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL,
+                                       inuc, element, lc, uconv, bconv, tconv,
+                                       tke_diss, tauL, super_ad_i, super_ad_o,
                                        params.getForProp('prop')['intc'],
                                        params.getForProp('prop')['prefix'])
 
@@ -791,7 +792,7 @@ class MasterPlot():
         # plot evolution of convection boundaries	   
         # ransTke.plot_conv_bndry_location()
 
-    def execTkeEq(self, kolmdissrate, bconv, tconv):
+    def execTkeEq(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 		
@@ -800,6 +801,7 @@ class MasterPlot():
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['nsdim'],
                                                      kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
                                                      params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation			     
@@ -1449,7 +1451,7 @@ class MasterPlot():
                            params.getForEqs('grav')['ybd'],
                            params.getForEqs('grav')['ilg'])
 
-    def execNablas(self, bconv, tconv):
+    def execNablas(self, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 		
@@ -1461,7 +1463,7 @@ class MasterPlot():
                                                  params.getForProp('prop')['prefix'])
 
         ransNablas.plot_nablas(params.getForProp('prop')['laxis'],
-                               bconv, tconv,
+                               bconv, tconv, super_ad_i, super_ad_o,
                                params.getForEqs('nablas')['xbl'],
                                params.getForEqs('nablas')['xbr'],
                                params.getForEqs('nablas')['ybu'],
@@ -1503,7 +1505,7 @@ class MasterPlot():
                                        params.getForEqs('velbgr')['ybd'],
                                        params.getForEqs('velbgr')['ilg'])
 
-    def execVelocitiesMLTturb(self, bconv, tconv):
+    def execVelocitiesMLTturb(self, bconv, tconv, super_ad_i, super_ad_o,):
         params = self.params
 
         # instantiate 		
@@ -1511,12 +1513,12 @@ class MasterPlot():
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['ieos'],
+                                                      bconv, tconv, super_ad_i, super_ad_o,
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['nsdim'],
                                                       params.getForProp('prop')['prefix'])
 
         ransVelMLTturb.plot_velocities(params.getForProp('prop')['laxis'],
-                                       bconv, tconv,
                                        params.getForEqs('velmlt')['xbl'],
                                        params.getForEqs('velmlt')['xbr'],
                                        params.getForEqs('velmlt')['ybu'],

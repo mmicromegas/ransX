@@ -66,7 +66,7 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         self.ieos = ieos
         self.fext = fext
 
-    def plot_nablas(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_nablas(self, LAXIS, bconv, tconv, super_ad_i, super_ad_o, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature gradients in the model"""
 
         # check supported geometries
@@ -110,23 +110,9 @@ class TemperatureGradients(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Error
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
-
-        idxl, idxr = self.idx_bndry(bconv, tconv)
-
-        self.nabla[0:idxl] = 0.
-        self.nabla[idxr:self.nx] = 0.
-
-        self.nabla_ad[0:idxl] = 0.
-        self.nabla_ad[idxr:self.nx] = 0.
-
-        ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
-
-        xzn0inc = self.xzn0[ind[0]]
-        xzn0outc = self.xzn0[ind[-1]]
-
-        # convective boundary markers - only superadiatic regions
-        plt.axvline(xzn0inc, linestyle=':', linewidth=0.7, color='k')
-        plt.axvline(xzn0outc, linestyle=':', linewidth=0.7, color='k')
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         if self.ig == 1:
             setxlabel = r"x (cm)"

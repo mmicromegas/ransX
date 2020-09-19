@@ -18,7 +18,8 @@ import sys
 
 class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, inuc, element, lc, uconv, bconv, tconv, tke_diss, tauL, intc, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, inuc, element, lc, uconv, bconv, tconv,
+                 tke_diss, tauL, super_ad_i, super_ad_o, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
 
         # load data to structured array
@@ -178,6 +179,26 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         # self.model_2_rogers1989 = -Drr2 * self.Grad(xi, xzn0)
         self.Drr2 = +(tauL / cd1) * uxfuxf + uxz * tauL * (tauL / cd1 ** 2) * (-uxfuyf)
 
+        # https://stackoverflow.com/questions/19206332/gaussian-fit-for-python
+
+        def gauss(x, a, x0, sigma):
+            return a * np.exp(-(x - x0) ** 2 / (2 * (sigma ** 2)))
+
+        # p0 = [1.e15, 6.e8, 5.e7]
+        # coeff, var_matrix = curve_fit(gauss, self.xzn0, Deff, p0=[1.e15, 6.e8, 5.e7]
+        # Get the fitted curve
+        # Deff_fit = gauss(self.xzn0, *coeff)
+
+        # plt.plot(grd1,Deff_fit,label=r"$gauss fit$",linewidth=0.7)
+
+        ampl = max(self.Dumlt)
+        # xx0 = (self.bconv+0.46e8+self.tconv)/2.
+        xx0 = (bconv + tconv) / 2.
+        width = 5.e7
+
+        self.Dgauss = gauss(xzn0,ampl,xx0,width)
+
+
         fht_rxx = dduxux - ddux * ddux / dd
         fdil = (uxdivu - ux * divu)
 
@@ -253,6 +274,9 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         self.fext = fext
         self.nx = nx
 
+        self.super_ad_i = super_ad_i
+        self.super_ad_o = super_ad_o
+
     def plot_X_Ediffusivity(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         # Eulerian diffusivity
 
@@ -295,24 +319,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
-        # https://stackoverflow.com/questions/19206332/gaussian-fit-for-python		
 
-        def gauss(x, a, x0, sigma):
-            return a * np.exp(-(x - x0) ** 2 / (2 * (sigma ** 2)))
-
-        # p0 = [1.e15, 6.e8, 5.e7]
-        # coeff, var_matrix = curve_fit(gauss, self.xzn0, Deff, p0=[1.e15, 6.e8, 5.e7]
-        # Get the fitted curve
-        # Deff_fit = gauss(self.xzn0, *coeff)
-
-        # plt.plot(grd1,Deff_fit,label=r"$gauss fit$",linewidth=0.7)
-
-        ampl = max(term5)
-        # xx0 = (self.bconv+0.46e8+self.tconv)/2.
-        xx0 = (self.bconv + self.tconv) / 2.
-        width = 5.e7
-
-        Dgauss = gauss(self.xzn0,ampl,xx0,width)
         #plt.plot(grd1,Dgauss,color='b',label=r"$D_{gauss}$")
 
         #plt.plot(grd1,self.Drr1,color='m',label=r"$D_{rogers1981}$")
@@ -371,17 +378,6 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         # term4 = self.Dumlt3[idxl:idxr]
         term5 = self.Dumlt[idxl:idxr]  # u_mlt = fhh / (alphae * dd * fht_cp * tt_rms)
 
-        self.nabla[0:idxl] = 0.
-        self.nabla[idxr:self.nx] = 0.
-
-        self.nabla_ad[0:idxl] = 0.
-        self.nabla_ad[idxr:self.nx] = 0.
-
-        ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
-
-        xzn0inc = xzn0[ind[0]]
-        xzn0outc = xzn0[ind[-1]]
-
         #idxl = 0
         #idxr = self.nx
 
@@ -399,6 +395,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
 
         term6 = Deff2
         term7 = Deff3
+        term8 = self.Dgauss[idxl:idxr]
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -406,7 +403,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         #plt.yscale('symlog')
 
         # set plot boundaries
-        to_plot = [term0,term1,term5,term6,term7]
+        to_plot = [term0,term1,term5,term6,term7,term8]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
@@ -418,14 +415,15 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         plt.semilogy(xx, term5, label=r"$D_{rms}$")
         plt.semilogy(xx, term6, label=r"$D_{fullx}$")
         plt.semilogy(xx, term7, label=r"$D_{diff}$")
+        plt.semilogy(xx, term8, label=r"$D_{gauss}$",linestyle='--')
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
-        # convective boundary markers - only superadiatic regions
-        plt.axvline(xzn0inc, linestyle=':', linewidth=0.7, color='k')
-        plt.axvline(xzn0outc, linestyle=':', linewidth=0.7, color='k')
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

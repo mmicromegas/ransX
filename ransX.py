@@ -60,7 +60,7 @@ def main():
 
     # TEMPERATURE GRADIENTS
     if str2bool(params.getForEqs('nablas')['plotMee']):
-        plt.execNablas(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execNablas(prp['xzn0inc'], prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
     # DEGENERACY PARAMETER
     if str2bool(params.getForEqs('psi')['plotMee']):
@@ -72,7 +72,7 @@ def main():
 
     # MLT AND TURBULENT VELOCITY
     if str2bool(params.getForEqs('velmlt')['plotMee']):
-        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
     # BRUNT-VAISALLA FREQUENCY
     if str2bool(params.getForEqs('nsq')['plotMee']):
@@ -162,7 +162,7 @@ def main():
 
     if str2bool(params.getForEqs('tkeeq')['plotMee']):
         plt.execTkeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'])
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
     if str2bool(params.getForEqsBar('tkeeqBar')['plotMee']):
         plt.execTkeEqBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
@@ -399,17 +399,17 @@ def main():
         if str2bool(params.getForEqs('x_' + elem)['plotMee']):
             plt.execX(inuc, elem, 'x_' + elem,
                       prp['xzn0inc']+hack,
-                      prp['xzn0outc'])
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execXrho(inuc, elem, 'xrho_' + elem,
                          prp['xzn0inc']+hack,
-                         prp['xzn0outc'])
+                         prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
         if str2bool(params.getForEqs('xtrseq_' + elem)['plotMee']):
             plt.execXtrsEq(inuc, elem, 'xtrseq_' + elem,
                            prp['xzn0inc']+hack,
-                           prp['xzn0outc'])
+                           prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
         if str2bool(params.getForEqsBar('xtrseq_' + elem + 'Bar')['plotMee']):
             plt.execXtrsEqBar(inuc, elem,
@@ -485,7 +485,7 @@ def main():
             plt.execDiff(inuc, elem, 'xdiff_' + elem,
                          prp['lc'], prp['uconv'],
                          prp['xzn0inc'],
-                         prp['xzn0outc'], prp['tke_diss'], prp['tauL'])
+                         prp['xzn0outc'], prp['tke_diss'], prp['tauL'],prp['super_ad_i'],prp['super_ad_o'])
 
         # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('coeqhsse_' + elem)['plotMee']):

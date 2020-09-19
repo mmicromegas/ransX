@@ -16,7 +16,7 @@ import matplotlib.cm as cm
 
 class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
-    def __init__(self, filename, ig, intc, nsdim, kolmdissrate, bconv, tconv, data_prefix):
+    def __init__(self, filename, ig, intc, nsdim, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o, data_prefix):
         super(TurbulentKineticEnergyEquation, self).__init__()
 
         # instantiate turbulent kinetic energy object
@@ -80,6 +80,9 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         self.t_tke = tkefields['t_tke']
 
         self.nsdim = nsdim
+
+        self.super_ad_i = super_ad_i
+        self.super_ad_o = super_ad_o
 
     def plot_tke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy stratification in the model"""
@@ -201,6 +204,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # convective boundary markers - only super-adiatic regions
+        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
