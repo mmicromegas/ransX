@@ -72,7 +72,7 @@ def main():
 
     # MLT AND TURBULENT VELOCITY
     if str2bool(params.getForEqs('velmlt')['plotMee']):
-        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'],prp['uconv'],prp['super_ad_i'],prp['super_ad_o'])
 
     # BRUNT-VAISALLA FREQUENCY
     if str2bool(params.getForEqs('nsq')['plotMee']):
@@ -158,7 +158,7 @@ def main():
     # TURBULENT KINETIC ENERGY EQUATION
     if str2bool(params.getForEqs('tkie')['plotMee']):
         plt.execTke(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                    prp['xzn0outc'])
+                    prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
     if str2bool(params.getForEqs('tkeeq')['plotMee']):
         plt.execTkeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
@@ -166,7 +166,34 @@ def main():
 
     if str2bool(params.getForEqsBar('tkeeqBar')['plotMee']):
         plt.execTkeEqBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'])
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+
+    # RADIAL TURBULENT KINETIC ENERGY EQUATION
+    if str2bool(params.getForEqs('tkieR')['plotMee']):
+        plt.execTkeRadial(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                    prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+
+    if str2bool(params.getForEqs('tkeReq')['plotMee']):
+        plt.execTkeEqRadial(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+
+    if str2bool(params.getForEqsBar('tkeReqBar')['plotMee']):
+        plt.execTkeEqRadialBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+
+
+    # HORIZONTAL TURBULENT KINETIC ENERGY EQUATION
+    if str2bool(params.getForEqs('tkieH')['plotMee']):
+        plt.execTkeHorizontal(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                    prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+
+    if str2bool(params.getForEqs('tkeHeq')['plotMee']):
+        plt.execTkeEqHorizontal(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+
+    if str2bool(params.getForEqsBar('tkeHeqBar')['plotMee']):
+        plt.execTkeEqHorizontalBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
     # TOTAL ENERGY EQUATION
     if str2bool(params.getForEqs('toe')['plotMee']):
@@ -485,7 +512,9 @@ def main():
             plt.execDiff(inuc, elem, 'xdiff_' + elem,
                          prp['lc'], prp['uconv'],
                          prp['xzn0inc'],
-                         prp['xzn0outc'], prp['tke_diss'], prp['tauL'],prp['super_ad_i'],prp['super_ad_o'])
+                         prp['xzn0outc'], prp['tke_diss'], prp['tauL'],
+                         prp['super_ad_i'],prp['super_ad_o'],
+                         prp['cnvz_in_hp'])
 
         # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('coeqhsse_' + elem)['plotMee']):

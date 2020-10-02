@@ -47,20 +47,19 @@ dataloc2D = "D:\\ransX\\DATA_D\\BINDATA\\ccptwo_dev\\test\\2D\\"
 #bindata2D = [filee for filee in sorted(os.listdir(dataloc2D)) if "bindata" in filee]
 #bindata3D = [filee for filee in sorted(os.listdir(dataloc3D)) if "bindata" in filee]
 
-dat = ['velx', '0002']
+dat2D = ['velx', 'vely']
+dat3D = ['velx', 'vely', 'velz']
 
-vvmaxv = 2.e7
-vvminv = -2.e7
 
-x0002maxv = 0.9
-x0002minv = 0.0001
+tkemaxv = 15.
+tkeminv = 12.5
 
-for ii in range(13,14):
+for ii in range(363,364):
 
-    filename2D = "ccptwo.2D.r128.dev."+ getFileID(ii)+".bindata"
-    filename3D = "ccptwo.3D.r128.dev."+ getFileID(ii)+".bindata"
+    filename2D = "ccptwo.2D.r512.dev."+ getFileID(ii)+".bindata"
+    filename3D = "ccptwo.r512x512x512.cosma."+ getFileID(ii)+".bindata"
 
-    block2D = prd.PROMPI_bindata(dataloc2D + filename2D, dat)
+    block2D = prd.PROMPI_bindata(dataloc2D + filename2D, dat2D)
 
     nx_2D = block2D.datadict['qqx']
     ny_2D = block2D.datadict['qqy']
@@ -73,27 +72,16 @@ for ii in range(13,14):
     time_2D = block2D.datadict['time']
 
     velx_2D = block2D.datadict['velx']
-    x0002_2D = block2D.datadict['0002']
+    vely_2D = block2D.datadict['vely']
 
     ilhc = 0
-
     velx2D = np.asarray(velx_2D[:,:,ilhc])
-    #print(velx2D[:,0])
+    vely2D = np.asarray(vely_2D[:,:,ilhc])
 
-    velx2D[velx2D > vvmaxv] = vvmaxv
-    velx2D[velx2D < vvminv] = vvminv
+    tke2D = 0.5*(velx2D**2. + vely2D**2.)
+    tke2D = np.log10(tke2D)
 
-    x00022D = np.asarray(x0002_2D[:,:,ilhc])
-    x00022D[x00022D > x0002maxv] = x0002maxv
-    x00022D[x00022D < x0002minv] = x0002minv
-
-
-    block3D = prd.PROMPI_bindata(dataloc3D + filename3D, dat)
-
-    #print(ii)
-    #print(dataloc3D)
-    #print(dataloc3D + filename3D)
-    #print(dataloc2D + filename2D)
+    block3D = prd.PROMPI_bindata(dataloc3D + filename3D, dat3D)
 
     nx_3D = block3D.datadict['qqx']
     ny_3D = block3D.datadict['qqy']
@@ -106,22 +94,19 @@ for ii in range(13,14):
     time_3D = block3D.datadict['time']
 
     velx_3D = block3D.datadict['velx']
-    x0002_3D = block3D.datadict['0002']
+    vely_3D = block3D.datadict['vely']
+    velz_3D = block3D.datadict['velz']
 
     lhc = 8.e8
     xlm = np.abs(np.asarray(xzn0_3D) - np.float(lhc))
     ilhc = int(np.where(xlm == xlm.min())[0][0])
 
     velx3D = np.asarray(velx_3D[:,:,ilhc])
-    #print("********")
-    #print(velx3D[:,0])
+    vely3D = np.asarray(vely_3D[:,:,ilhc])
+    velz3D = np.asarray(velz_3D[:,:,ilhc])
 
-    velx3D[velx3D > vvmaxv] = vvmaxv
-    velx3D[velx3D < vvminv] = vvminv
-
-    x00023D = np.asarray(x0002_3D[:,:,ilhc])
-    x00023D[x00023D > x0002maxv] = x0002maxv
-    x00023D[x00023D < x0002minv] = x0002minv
+    tke3D = 0.5*(velx3D**2. + vely3D**2. + velz3D**2.)
+    tke3D = np.log10(tke3D)
 
     yb = 6.5e8
     xlm = np.abs(np.asarray(xzn0_2D) - np.float(yb))
@@ -130,6 +115,10 @@ for ii in range(13,14):
     yt = 9.5e8
     xlm = np.abs(np.asarray(xzn0_2D) - np.float(yt))
     it = int(np.where(xlm == xlm.min())[0][0])
+
+    # override
+    ib = 0
+    it = nx_2D-1
 
     print(ib,it)
 
@@ -141,7 +130,8 @@ for ii in range(13,14):
 
     # https://stackoverflow.com/questions/3584805/in-matplotlib-what-does-the-argument-mean-in-fig-add-subplot111
 
-    fig = plt.figure(figsize=(14, 14))
+    # fig = plt.figure(figsize=(14, 14))
+    fig = plt.figure(figsize=(7, 7))
 
     #spec = gridspec.GridSpec(ncols=2, nrows=2,
     #                         width_ratios=[2, 2])
@@ -170,33 +160,41 @@ for ii in range(13,14):
     #fig.colorbar(im2, cax=cax, orientation='vertical');
     #ax2.set_title("3D (velx)")
 
-    ax3 = fig.add_subplot(211)
+    #ax3 = fig.add_subplot(111)
 
-    im3 = ax3.imshow(x00022D[ib:it,:], interpolation='bilinear', cmap=cm.binary_r,
-                     origin='lower', extent=[yzn0_2D[0], yzn0_2D[ny_2D - 1], xzn0_2D[ib], xzn0_2D[it]],
-                     vmax=x0002maxv, vmin=x0002minv)
+    #im3 = ax3.imshow(tke2D[ib:it,:], interpolation='bilinear', cmap=cm.bwr,
+    #                 origin='lower', extent=[yzn0_2D[0], yzn0_2D[ny_2D - 1], xzn0_2D[ib], xzn0_2D[it]],
+    #                 vmax=tkemaxv, vmin=tkeminv)
 
-    divider = make_axes_locatable(ax3)
-    cax = divider.append_axes('right', size='5%', pad=0.05)
-    fig.colorbar(im3, cax=cax, orientation='vertical')
-    ax3.set_title("2D (x0002) (" + str(round(time_2D,1)) +" s)")
+    #divider = make_axes_locatable(ax3)
+    #cax = divider.append_axes('right', size='5%', pad=0.05)
+    #fig.colorbar(im3, cax=cax, orientation='vertical')
+    #ax3.set_title("2D (" + str(round(time_2D,1)) +" s)")
 
-    ax4 = fig.add_subplot(212)
+    #ax3.set_xlabel('y (cm)')
+    #ax3.set_ylabel('x (cm)')
+
+
+    # ax4 = fig.add_subplot(212)
+    ax4 = fig.add_subplot(111)
 
     # if you want to reverse colormap add _r at the end
-    im4 = ax4.imshow(x00023D[ib:it,:], interpolation='bilinear', cmap=cm.binary_r,
+    im4 = ax4.imshow(tke3D[ib:it,:], interpolation='bilinear', cmap=cm.bwr,
                      origin='lower', extent=[yzn0_3D[0], yzn0_3D[ny_3D - 1], xzn0_3D[ib], xzn0_3D[it]],
-                     vmax=x0002maxv, vmin=x0002minv)
+                     vmax=tkemaxv, vmin=tkeminv)
 
     divider = make_axes_locatable(ax4)
     cax = divider.append_axes('right', size='5%', pad=0.05)
     fig.colorbar(im4, cax=cax, orientation='vertical')
-    ax4.set_title("3D (x0002) (" + str(round(time_3D,1)) +" s)")
+    ax4.set_title("3D (" + str(round(time_3D,1)) +" s)")
+
+    ax4.set_xlabel('y (cm)')
+    ax4.set_ylabel('x (cm)')
 
     plt.show(block=False)
 
     # save PLOT
-    plt.savefig('RESULTS/' + filename2D + '_ccptwo_2Dvs3D.png')
+    plt.savefig('RESULTS/' + filename3D + '_ccptwo_3Dv_tke.eps')
 
     #plt.close('all')
 

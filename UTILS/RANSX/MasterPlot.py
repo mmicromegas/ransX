@@ -10,8 +10,8 @@ import EQUATIONS.ReynoldsStressYYequation as ryy
 import EQUATIONS.ReynoldsStressZZequation as rzz
 
 import EQUATIONS.TurbulentKineticEnergyEquation as tke
-# import EQUATIONS.RadialTurbulentKineticEnergyEquation as rtke N/A YET
-# import EQUATIONS.HorizontalTurbulentKineticEnergyEquation as htke N/A YET
+import EQUATIONS.TurbulentKineticEnergyEquationRadial as rtke
+import EQUATIONS.TurbulentKineticEnergyEquationHorizontal as htke
 
 import EQUATIONS.InternalEnergyEquation as ei
 import EQUATIONS.InternalEnergyFluxEquation as feix
@@ -715,7 +715,7 @@ class MasterPlot():
                                          params.getForEqs(x)['ybd'],
                                          params.getForEqs(x)['ilg'])
 
-    def execDiff(self, inuc, element, x, lc, uconv, bconv, tconv, tke_diss, tauL, super_ad_i, super_ad_o):
+    def execDiff(self, inuc, element, x, lc, uconv, bconv, tconv, tke_diss, tauL, super_ad_i, super_ad_o, cnvz_in_hp):
         params = self.params
 
         # instantiate 
@@ -723,7 +723,7 @@ class MasterPlot():
                                        params.getForProp('prop')['ig'],
                                        params.getForProp('prop')['fext'],
                                        params.getForProp('prop')['ieos'],
-                                       inuc, element, lc, uconv, bconv, tconv,
+                                       inuc, element, lc, uconv, bconv, tconv, cnvz_in_hp,
                                        tke_diss, tauL, super_ad_i, super_ad_o,
                                        params.getForProp('prop')['intc'],
                                        params.getForProp('prop')['prefix'])
@@ -759,7 +759,7 @@ class MasterPlot():
                          params.getForEqs(x)['ybd'],
                          params.getForEqs(x)['ilg'])
 
-    def execTke(self, kolmdissrate, bconv, tconv):
+    def execTke(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 		
@@ -768,6 +768,7 @@ class MasterPlot():
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['nsdim'],
                                                      kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
                                                      params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy			   
@@ -812,7 +813,7 @@ class MasterPlot():
                                   params.getForEqs('tkeeq')['ybd'],
                                   params.getForEqs('tkeeq')['ilg'])
 
-    def execTkeEqBar(self, kolmdissrate, bconv, tconv):
+    def execTkeEqBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate
@@ -821,6 +822,7 @@ class MasterPlot():
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['nsdim'],
                                                      kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
                                                      params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation
@@ -829,6 +831,154 @@ class MasterPlot():
                                   params.getForEqs('tkeeqBar')['xbr'],
                                   params.getForEqs('tkeeqBar')['ybu'],
                                   params.getForEqs('tkeeqBar')['ybd'])
+
+    def execTkeRadial(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+        params = self.params
+
+        # instantiate
+        ransTkeR = rtke.TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy
+        ransTkeR.plot_tkeRadial(params.getForProp('prop')['laxis'],
+                         bconv, tconv,
+                         params.getForEqs('tkieR')['xbl'],
+                         params.getForEqs('tkieR')['xbr'],
+                         params.getForEqs('tkieR')['ybu'],
+                         params.getForEqs('tkieR')['ybd'],
+                         params.getForEqs('tkieR')['ilg'])
+
+        ransTkeR.plot_TKEradial_space_time(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeReq')['xbl'],
+                                  params.getForEqs('tkeReq')['xbr'],
+                                  params.getForEqs('tkeReq')['ybu'],
+                                  params.getForEqs('tkeReq')['ybd'],
+                                  params.getForEqs('tkeReq')['ilg'])
+
+        # plot turbulent kinetic energy evolution
+        # ransTke.plot_tke_evolution()
+
+        # plot evolution of convection boundaries
+        # ransTke.plot_conv_bndry_location()
+
+    def execTkeEqRadial(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+        params = self.params
+
+        # instantiate
+        ransTkeR = rtke.TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy equation
+        ransTkeR.plot_tkeRadial_equation(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeReq')['xbl'],
+                                  params.getForEqs('tkeReq')['xbr'],
+                                  params.getForEqs('tkeReq')['ybu'],
+                                  params.getForEqs('tkeReq')['ybd'],
+                                  params.getForEqs('tkeReq')['ilg'])
+
+    def execTkeEqRadialBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+        params = self.params
+
+        # instantiate
+        ransTkeR = rtke.TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy equation
+        ransTkeR.plot_tkeRadial_equation_integral_budget(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeReqBar')['xbl'],
+                                  params.getForEqs('tkeReqBar')['xbr'],
+                                  params.getForEqs('tkeReqBar')['ybu'],
+                                  params.getForEqs('tkeReqBar')['ybd'])
+
+
+    def execTkeHorizontal(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+        params = self.params
+
+        # instantiate
+        ransTkeH = htke.TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy
+        ransTkeH.plot_tkeHorizontal(params.getForProp('prop')['laxis'],
+                         bconv, tconv,
+                         params.getForEqs('tkieH')['xbl'],
+                         params.getForEqs('tkieH')['xbr'],
+                         params.getForEqs('tkieH')['ybu'],
+                         params.getForEqs('tkieH')['ybd'],
+                         params.getForEqs('tkieH')['ilg'])
+
+        ransTkeH.plot_TKEhorizontal_space_time(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeHeq')['xbl'],
+                                  params.getForEqs('tkeHeq')['xbr'],
+                                  params.getForEqs('tkeHeq')['ybu'],
+                                  params.getForEqs('tkeHeq')['ybd'],
+                                  params.getForEqs('tkeHeq')['ilg'])
+
+        # plot turbulent kinetic energy evolution
+        # ransTke.plot_tke_evolution()
+
+        # plot evolution of convection boundaries
+        # ransTke.plot_conv_bndry_location()
+
+    def execTkeEqHorizontal(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+        params = self.params
+
+        # instantiate
+        ransTkeH = htke.TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy equation
+        ransTkeH.plot_tkeHorizontal_equation(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeHeq')['xbl'],
+                                  params.getForEqs('tkeHeq')['xbr'],
+                                  params.getForEqs('tkeHeq')['ybu'],
+                                  params.getForEqs('tkeHeq')['ybd'],
+                                  params.getForEqs('tkeHeq')['ilg'])
+
+    def execTkeEqHorizontalBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+        params = self.params
+
+        # instantiate
+        ransTkeH = htke.TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
+                                                     params.getForProp('prop')['ig'],
+                                                     params.getForProp('prop')['intc'],
+                                                     params.getForProp('prop')['nsdim'],
+                                                     kolmdissrate, bconv, tconv,
+                                                     super_ad_i, super_ad_o,
+                                                     params.getForProp('prop')['prefix'])
+
+        # plot turbulent kinetic energy equation
+        ransTkeH.plot_tkeHorizontal_equation_integral_budget(params.getForProp('prop')['laxis'],
+                                  params.getForEqs('tkeHeqBar')['xbl'],
+                                  params.getForEqs('tkeHeqBar')['xbr'],
+                                  params.getForEqs('tkeHeqBar')['ybu'],
+                                  params.getForEqs('tkeHeqBar')['ybd'])
+
 
     def execMomx(self, bconv, tconv):
         params = self.params
@@ -1505,7 +1655,7 @@ class MasterPlot():
                                        params.getForEqs('velbgr')['ybd'],
                                        params.getForEqs('velbgr')['ilg'])
 
-    def execVelocitiesMLTturb(self, bconv, tconv, super_ad_i, super_ad_o,):
+    def execVelocitiesMLTturb(self, bconv, tconv, uconv, super_ad_i, super_ad_o,):
         params = self.params
 
         # instantiate 		
@@ -1513,7 +1663,7 @@ class MasterPlot():
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['ieos'],
-                                                      bconv, tconv, super_ad_i, super_ad_o,
+                                                      bconv, tconv, uconv, super_ad_i, super_ad_o,
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['nsdim'],
                                                       params.getForProp('prop')['prefix'])

@@ -16,7 +16,7 @@ import sys
 
 class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, bconv, tconv, super_ad_i, super_ad_o, intc, nsdim, data_prefix):
+    def __init__(self, filename, ig, fext, ieos, bconv, tconv, uconv, super_ad_i, super_ad_o, intc, nsdim, data_prefix):
         super(VelocitiesMLTturb, self).__init__(ig)
 
         # load data to structured array
@@ -63,6 +63,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         vexp1 = ddux / dd
         vexp2 = minus_dt_mm / (4. * np.pi * (xzn0 ** 2.) * dd)
         vturb = ((dduxux - ddux * ddux / dd) / dd) ** 0.5
+        vrms = uconv
 
         fht_cp = ddcp / dd
 
@@ -78,7 +79,8 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # fhh = dd*(hhux - hh*ux)
 
         # mlt velocity		
-        alphae = 0.2  # Meakin,Arnett,2007
+        #alphae = 0.2  # Meakin,Arnett,2007
+        alphae= 0.1
         vmlt_1 = fhh / (alphae * dd * fht_cp * tt_rms)
 
         Hp = 2.e8  # this is for oburn
@@ -121,6 +123,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.vexp1 = vexp1
         self.vexp2 = vexp2
         self.vturb = vturb
+        self.vrms = vrms
         self.vmlt_1 = vmlt_1
         self.vmlt_2 = vmlt_2
 
@@ -158,6 +161,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt5 = self.vmlt_1 # vmlt_1 = fhh / (alphae * dd * fht_cp * tt_rms)  - REFERENCE NEEDED
         plt6 = self.vmlt_2 # vmlt_2 = gg * betaT * (nabla - nabla_ad) * ((lbd ** 2.) / (8. * Hp)) - REFERENCE NEEDED
         plt7 = self.vmlt_3 # THIS IS FROM TYCHO's initial model
+        plt8 = self.vrms
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -170,6 +174,7 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt5 = np.nan_to_num(plt5)
         plt6 = np.nan_to_num(plt6)
         plt7 = np.nan_to_num(plt7)
+        plt8 = np.nan_to_num(plt8)
 
         # set plot boundaries   
         to_plot = [plt4, plt5, plt6, plt7]
@@ -180,9 +185,10 @@ class VelocitiesMLTturb(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         # plt.plot(grd1,plt1,color='brown',label = r'$\overline{u}_r$')
         # plt.plot(grd1,plt2,color='red',label = r'$\widetilde{u}_r$')
         # plt.plot(grd1,plt3,color='green',linestyle='--',label = r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
-        plt.plot(grd1, plt4, color='blue', label=r'$u_{turb}$')
+        #plt.plot(grd1, plt4, color='blue', label=r"$u_{turb} = +\widetilde{u''_x u''_x}^{1/2}$")
+        plt.plot(grd1, plt8, color='blue', label=r"$u_{rms}$")
 
-        plt.plot(grd1,plt5,color='red',label = r'$u_{MLT} 1$')
+        plt.plot(grd1,plt5,color='red',label = r'$u_{mlt}$')
         # plt.plot(grd1,plt6,color='g',label = r'$u_{MLT} 2$')
         # plt.plot(self.rr,plt7,color='brown',label = r'$u_{MLT} 3 inimod$')
 

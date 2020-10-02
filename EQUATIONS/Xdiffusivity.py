@@ -18,7 +18,7 @@ import sys
 
 class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename, ig, fext, ieos, inuc, element, lc, uconv, bconv, tconv,
+    def __init__(self, filename, ig, fext, ieos, inuc, element, lc, uconv, bconv, tconv, cnvz_in_hp,
                  tke_diss, tauL, super_ad_i, super_ad_o, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
 
@@ -104,6 +104,13 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         # composition flux
         fxi = ddxiux - ddxi * ddux / dd
 
+        # effective diffusivity
+        self.Deff = -fxi / (dd * self.Grad(fht_xi, xzn0))
+
+        # urms diffusivity
+        urms = uconv
+        self.Durms = (1. / 3.) * urms * lc
+
         # enthalpy flux
         fhh = ddhhux - ddhh * ddux / dd
 
@@ -113,21 +120,11 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         # T_rms fluctuations
         tt_rms = sigmatt ** 0.5
 
-        # effective diffusivity
-        self.Deff = -fxi / (dd * self.Grad(fht_xi, xzn0))
-
-        # urms diffusivity
-        self.Durms = (1. / 3.) * uconv * lc
-
-        # pressure scale heigth
-        hp = - pp / self.Grad(pp, xzn0)
-        # print(hp)
-
-        hp = 2.5e8
-
         # mlt velocity
         alphae = 0.1
         u_mlt = fhh / (alphae * dd * fht_cp * tt_rms)
+        alpha_mlt = 1.5
+
         self.Dumlt = (1. / 3.) * u_mlt * lc
 
         # this should be OS independent
@@ -139,6 +136,8 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         rr = data[1:nxmax, 2]
         vmlt_3 = data[1:nxmax, 8]
         u_mltini = vmlt_3
+
+        hp = 2.5e8
 
         self.Dumlt1 = (1. / 3.) * u_mltini * lc
 
@@ -179,6 +178,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         # self.model_2_rogers1989 = -Drr2 * self.Grad(xi, xzn0)
         self.Drr2 = +(tauL / cd1) * uxfuxf + uxz * tauL * (tauL / cd1 ** 2) * (-uxfuyf)
 
+        # Gaussian diffusivity
         # https://stackoverflow.com/questions/19206332/gaussian-fit-for-python
 
         def gauss(x, a, x0, sigma):
@@ -194,7 +194,7 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         ampl = max(self.Dumlt)
         # xx0 = (self.bconv+0.46e8+self.tconv)/2.
         xx0 = (bconv + tconv) / 2.
-        width = 5.e7
+        width = 6.e7
 
         self.Dgauss = gauss(xzn0,ampl,xx0,width)
 
@@ -307,13 +307,13 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 		
-        plt.title(r'Eulerian Diff for ' + self.element)
+        plt.title(r'Eulerian diffusivity for ' + self.element)
         plt.plot(grd1, term0, linestyle = '-', color='k', label=r"$D_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
         plt.plot(grd1,term1,label=r"$D_{urms} = (1/3) \ u_{rms} \ l_c $")
         # plt.plot(rr,term2,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ l_c $")
         # plt.plot(rr,term3, label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.5)")
         # plt.plot(rr,term4,label=r"$D_{mlt} = + (1/3) \ u_{mlt} \ \alpha_{mlt} \ H_P \ (\alpha_{mlt}$ = 1.6)")
-        plt.plot(grd1,term5,label=r"$D_{mlt} = (1/3) \ u_{MLT} \ l_c $")
+        plt.plot(grd1,term5,label=r"$D_{mlt} = (1/3) \ u_{mlt} \ l_c $")
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -407,14 +407,14 @@ class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, objec
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title(r'Eulerian Diff for ' + self.element)
+        plt.title(r'radial diffusivity profile for ' + self.element)
         #plt.plot(grd1, term0, linestyle = '-', color='k', label=r"$D_{eff} = - f_i/(\overline{\rho} \ \partial_r \widetilde{X}_i)$")
 
-        plt.semilogy(xx, term0, label=r"$D_{eff}$")
-        plt.semilogy(xx, term1, label=r"$D_{mlt}$")
-        plt.semilogy(xx, term5, label=r"$D_{rms}$")
-        plt.semilogy(xx, term6, label=r"$D_{fullx}$")
-        plt.semilogy(xx, term7, label=r"$D_{diff}$")
+        plt.semilogy(xx, term0, label=r"$D_{eff}$",color='g')
+        plt.semilogy(xx, term1, label=r"$D_{rms}$",color='orange')
+        plt.semilogy(xx, term5, label=r"$D_{mlt}$",color='m')
+        plt.semilogy(xx, term6, label=r"$D_{fullx}$",color='r')
+        plt.semilogy(xx, term7, label=r"$D_{diff}$",color='b')
         plt.semilogy(xx, term8, label=r"$D_{gauss}$",linestyle='--')
 
         # convective boundary markers

@@ -87,10 +87,11 @@ class TemperatureDensity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         ax2.legend(loc=1, prop={'size': 18})
 
         # convective boundary markers
-        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
 
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_ttdd.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_ttdd.eps')

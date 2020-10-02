@@ -344,13 +344,16 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         # calculate width of overshooting regions in Hp
         # hp = -pp / self.Grad(pp, xzn0)
-        pbot = pp[ibot]
-        tmp = np.log(pbot / pp[ibot:ibot_super_ad])
-        ov_in_hp = tmp[ibot_super_ad - ibot - 1]
+        #pbot = pp[ibot]
+        #tmp = np.log(pbot / pp[ibot:ibot_super_ad])
+        #ov_in_hp = tmp[ibot_super_ad - ibot - 1]
 
-        pbot = pp[itop_super_ad]
-        tmp = np.log(pbot / pp[itop_super_ad:itop])
-        ov_out_hp = tmp[itop - itop_super_ad - 1]
+        #pbot = pp[itop_super_ad]
+        #tmp = np.log(pbot / pp[itop_super_ad:itop])
+        #ov_out_hp = tmp[itop - itop_super_ad - 1]
+
+        ov_in_hp = 0.
+        ov_out_hp = 0.
 
 
         print('#----------------------------------------------------#')
@@ -365,6 +368,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print 'Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc)
         if laxis != 0:
             print 'Extent of convection zone (in Hp): %f' % cnvz_in_hp
+        else:
+            cnvz_in_hp = 0.
         print 'Overshooting at inner/outer convection boundary (in Hp): ', round(ov_in_hp,2), round(ov_out_hp,2)
         print 'Averaging time window (in s): %f' % tavg
         print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
@@ -515,7 +520,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
              'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
              'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
-             'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o}
+             'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o, 'cnvz_in_hp': cnvz_in_hp}
 
         return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'], 'tavg': p['tavg'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
@@ -526,4 +531,4 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
                 'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'], 'resContMean': p['resContMean'],
                 'resContMax': p['resContMax'], 'resTeeMax': p['resTeeMax'], 'resTeeMean': p['resTeeMean'],
                 'xznl': p['xznl'], 'xznr': p['xznr'], 'urms': p['urms'], 'super_ad_i': p['super_ad_i'],
-                'super_ad_o': p['super_ad_o'],}
+                'super_ad_o': p['super_ad_o'],'cnvz_in_hp': cnvz_in_hp}

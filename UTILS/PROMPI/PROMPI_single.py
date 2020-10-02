@@ -533,7 +533,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
     def PlotNucEnergyGen(self, xbl, xbr):
         """Plot nuclear reaction timescales"""
 
-        rc = np.asarray(self.data['xzn0'])
+        rc = np.asarray(self.data['xzn0'])/1.e8
         tt = self.data['tt']
         dd = self.data['dd']
 
@@ -563,8 +563,8 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         plt.figure(figsize=(7, 6))
 
-        lb = -1.e1
-        ub = 1.e15
+        lb = -1.e16
+        ub = 1.e16
 
         plt.yscale('symlog')
 
@@ -718,12 +718,12 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.axvline(4.46e8, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(8.5e8, linestyle='--', linewidth=0.7, color='k')
 
-        plt.legend(loc=1, prop={'size': 14}, ncol=1)
+        plt.legend(loc=4, prop={'size': 14}, ncol=1)
 
         plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
         plt.xlabel('r ($10^8$ cm)')
 
-        axvline(x=5.65, color='k', linewidth=1)
+        #axvline(x=5.65, color='k', linewidth=1)
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
@@ -834,7 +834,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         plt.show(block=False)
 
     def plot_nablas(self, xbl, xbr):
-        xzn0 = np.asarray(self.data['xzn0'])
+        xzn0 = np.asarray(self.data['xzn0'])/1.e8
         nx = np.asarray(self.data['nx'])
 
         pp = np.asarray(self.data['pp'])
@@ -862,7 +862,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         ax1.plot(xzn0, nabla_ad, color='g', label=r"$\nabla_{ad}$")
         ax1.plot(xzn0, nabla_mu, color='b', label=r"$\nabla_{\mu}$")
 
-        ax1.set_xlabel("r")
+        ax1.set_xlabel('r ($10^8$ cm)')
         ax1.set_ylabel("nabla")
         ax1.legend(loc=1, prop={'size': 18})
 

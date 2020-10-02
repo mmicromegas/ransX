@@ -8,16 +8,17 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 import matplotlib.cm as cm
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
+class TurbulentKineticEnergyEquationRadial(uSal.SetAxisLimit, eR.Errors, object):
 
     def __init__(self, filename, ig, intc, nsdim, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o, data_prefix):
-        super(TurbulentKineticEnergyEquation, self).__init__()
+        super(TurbulentKineticEnergyEquationRadial, self).__init__()
 
         # instantiate turbulent kinetic energy object
         tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
@@ -32,14 +33,23 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # LHS -dq/dt
         self.minus_dt_dd_tke = tkefields['minus_dt_dd_tke']
 
-        # LHS -dq/dt
-        self.minus_dt_dd_tke = tkefields['minus_dt_dd_tke']
+        self.minus_dt_dd_tkex = tkefields['minus_dt_dd_tkex']
+        self.minus_dt_dd_tkey = tkefields['minus_dt_dd_tkey']
+        self.minus_dt_dd_tkez = tkefields['minus_dt_dd_tkez']
 
         # LHS -div dd ux tke
         self.minus_div_eht_dd_fht_ux_tke = tkefields['minus_div_eht_dd_fht_ux_tke']
 
+        self.minus_div_eht_dd_fht_ux_tkex = tkefields['minus_div_eht_dd_fht_ux_tkex']
+        self.minus_div_eht_dd_fht_ux_tkey = tkefields['minus_div_eht_dd_fht_ux_tkey']
+        self.minus_div_eht_dd_fht_ux_tkez = tkefields['minus_div_eht_dd_fht_ux_tkez']
+
         # -div kinetic energy flux
         self.minus_div_fekx = tkefields['minus_div_fekx']
+
+        self.minus_div_fekxx = tkefields['minus_div_fekxx']
+        self.minus_div_fekxy = tkefields['minus_div_fekxy']
+        self.minus_div_fekxz = tkefields['minus_div_fekxz']
 
         # -div acoustic flux		
         self.minus_div_fpx = tkefields['minus_div_fpx']
@@ -53,10 +63,23 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # +pressure dilatation
         self.plus_wp = tkefields['plus_wp']
 
+        self.plus_wpx = tkefields['plus_wpx']
+        self.plus_wpy = tkefields['plus_wpy']
+        self.plus_wpz = tkefields['plus_wpz']
+
         # -R grad u
         self.minus_r_grad_u = tkefields['minus_r_grad_u']
-        # -res		
+
+        self.minus_rxx_grad_ux = tkefields['minus_rxx_grad_ux']
+        self.minus_rxy_grad_uy = tkefields['minus_rxy_grad_uy']
+        self.minus_rxz_grad_uz = tkefields['minus_rxz_grad_uz']
+
+        # -res
         self.minus_resTkeEquation = tkefields['minus_resTkeEquation']
+
+        self.minus_resTkeEquationX = tkefields['minus_resTkeEquationX']
+        self.minus_resTkeEquationY = tkefields['minus_resTkeEquationY']
+        self.minus_resTkeEquationZ = tkefields['minus_resTkeEquationZ']
 
         #######################################
         # END TURBULENT KINETIC ENERGY EQUATION 
@@ -74,29 +97,34 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         self.ig = ig
         self.dd = tkefields['dd']
         self.tke = tkefields['tke']
+        self.tkex = tkefields['tkex']
+        self.tkey = tkefields['tkey']
+        self.tkez = tkefields['tkez']
 
         self.nx = tkefields['nx']
         self.t_timec = tkefields['t_timec']
         self.t_tke = tkefields['t_tke']
+        self.t_tkex = tkefields['t_tkex']
+        self.t_tkey = tkefields['t_tkey']
+        self.t_tkez = tkefields['t_tkez']
 
         self.nsdim = nsdim
 
         self.super_ad_i = super_ad_i
         self.super_ad_o = super_ad_o
 
-    def plot_tke(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_tkeRadial(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy stratification in the model"""
 
         if self.ig != 1 and self.ig != 2:
-            print("ERROR(TurbulentKineticEnergyEquation.py):" + self.errorGeometry(self.ig))
+            print("ERROR(TurbulentKineticEnergyEquationRadial.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
 
         # load DATA to plot 		
-        plt1 = self.tke
-        # plt2 = self.eht_tke
+        plt1 = self.tkex
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -109,8 +137,13 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('turbulent kinetic energy')
-        plt.plot(grd1, plt1, color='brown', label=r"$\frac{1}{2} \widetilde{u''_i u''_i}$")
+        plt.title('radial turbulent kinetic energy')
+        if self.ig == 1:
+            plt.plot(grd1, plt1, color='brown', label=r"$\frac{1}{2} \widetilde{u''_x u''_x}$")
+
+        if self.ig == 2:
+            plt.plot(grd1, plt1, color='brown', label=r"$\frac{1}{2} \widetilde{u''_r u''_r}$")
+
         # plt.plot(grd1, plt2, color='r', linestyle='--', label=r"$\frac{1}{2} \overline{u'_i u'_i}$")
 
         # convective boundary markers
@@ -120,12 +153,12 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
-            setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
+            setylabel = r"$\widetilde{k}^r$ (erg g$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
         elif self.ig == 2:
             setxlabel = r'r (cm)'
-            setylabel = r"$\widetilde{k}$ (erg g$^{-1}$)"
+            setylabel = r"$\widetilde{k}^r$ (erg g$^{-1}$)"
             plt.xlabel(setxlabel)
             plt.ylabel(setylabel)
 
@@ -136,28 +169,28 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_tke.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_tkeRadial.png')
 
-    def plot_tke_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
-        """Plot turbulent kinetic energy equation in the model"""
+    def plot_tkeRadial_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot radial component of turbulent kinetic energy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
-            print("ERROR(TurbulentKineticEnergyEquation.py):" + self.errorGeometry(self.ig))
+            print("ERROR(TurbulentKineticEnergyEquationRadial.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
         # load x GRID
         grd1 = self.xzn0
 
-        lhs0 = self.minus_dt_dd_tke
-        lhs1 = self.minus_div_eht_dd_fht_ux_tke
+        lhs0 = self.minus_dt_dd_tkex
+        lhs1 = self.minus_div_eht_dd_fht_ux_tkex
 
         rhs0 = self.plus_wb
-        rhs1 = self.plus_wp
-        rhs2 = self.minus_div_fekx
+        rhs1 = self.plus_wpx
+        rhs2 = self.minus_div_fekxx
         rhs3 = self.minus_div_fpx
-        rhs4 = self.minus_r_grad_u
+        rhs4 = self.minus_rxx_grad_ux
 
-        res = self.minus_resTkeEquation
+        res = self.minus_resTkeEquationX
 
         rhs5 = self.minus_kolmrate * self.dd
 
@@ -176,38 +209,39 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # plot DATA
         if self.nsdim != 2:
-            plt.title(r"TKE equation C$_m$ = " + str(Cm) + " " + str(self.nsdim) + "D")
+            # plt.title(r"TKE radial equation C$_m$ = " + str(Cm) + " " + str(self.nsdim) + "D")
+            plt.title(r"TKE radial equation " + str(self.nsdim) + "D")
         else:
-            plt.title(r"TKE equation " + str(self.nsdim) + "D")
+            plt.title(r"TKE radial equation " + str(self.nsdim) + "D")
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^r)$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
-            plt.plot(grd1, rhs1, color='c', label=r'$+W_p$')
-            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k$")
+            plt.plot(grd1, rhs1, color='c', label=r'$+W_p^r$')
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k^r$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
-            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")
-            if self.nsdim !=2:
-                plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
-            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
+            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xx}\partial_x \widetilde{u_x}$")
+            #if self.nsdim != 2:
+                # plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k^r$")
         elif self.ig == 2:
-            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
-            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k}^r)$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
             plt.plot(grd1, rhs1, color='c', label=r'$+W_p$')
-            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_r f_k$")
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_r f_k^r$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_r f_P$")
-            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$")
-            plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
-            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
+            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{rr}\partial_r \widetilde{u_r}$")
+            # plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k^r$")
 
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # convective boundary markers - only super-adiatic regions
-        #plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
-        #plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
+        # plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        # plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -228,10 +262,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.eps')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_radial_eq.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_radial_eq.eps')
 
-    def plot_TKE_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_TKEradial_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 
         if self.ig != 1 and self.ig != 2:
             print("ERROR(XtransportEquation.py):" + self.errorGeometry(self.ig))
@@ -244,24 +278,28 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         grd1 = self.xzn0
 
         # load DATA to plot
-        #plt1 = np.log10(self.t_tke.T)
-        plt1 = self.t_tke.T
+        # plt1 = np.log10(self.t_tke.T)
+        plt1 = self.t_tkex.T
 
-        #indRES = np.where((grd1 < 1.2e9) & (grd1 > 2.e8))[0]
+        # indRES = np.where((grd1 < 1.2e9) & (grd1 > 2.e8))[0]
 
-        #pltMax = np.max(plt1[indRES])
-        #pltMin = np.min(plt1[indRES])
+        # pltMax = np.max(plt1[indRES])
+        # pltMin = np.min(plt1[indRES])
 
         pltMax = np.max(plt1)
-        #pltMax = 8.e11 # for the thpulse
-        #pltMax = 1.e14
-        pltMax = 4.e12
-        #pltMax = 2.e12 # for neshell nucb10x
-        #pltMax = 1.e14
+        # pltMax = 8.e11 # for the thpulse
+        # pltMax = 1.e14
+        # pltMax = 4.e12
+        # pltMax = 2.e12 # for neshell nucb10x
+        # pltMax = 1.e14
+        pltMax = 6.e14
         pltMin = np.min(plt1)
 
-        #pltMin = 7.
-        #pltMax = 14.
+
+        plt1 = np.log10(plt1)
+
+        pltMin = 11.5
+        pltMax = 13.
 
         # create FIGURE
         # plt.figure(figsize=(7, 6))
@@ -270,10 +308,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # fig.suptitle("rhoX (" + self.setNucNoUp(str(element)) + ") (g cm-3)")
         # fig.suptitle("TKE 2D")
         im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.autumn,
-                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       origin='lower', extent=[t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
                        vmax=pltMax, vmin=pltMin)
 
-        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+        # extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
 
         divider = make_axes_locatable(ax)
         cax = divider.append_axes('right', size='5%', pad=0.05)
@@ -282,7 +320,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'time (s)'
-            setylabel = r"r ($10^8$ cm)"
+            setylabel = r"x ($10^8$ cm)"
             ax.set_xlabel(setxlabel)
             ax.set_ylabel(setylabel)
         elif self.ig == 2:
@@ -296,25 +334,24 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TKE_space_time.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_TKEradial_space_time.png')
 
-
-    def plot_tke_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
+    def plot_tkeRadial_equation_integral_budget(self, laxis, xbl, xbr, ybu, ybd):
         """Plot integral budgets of tke equation in the model"""
 
         # check supported geometries
         if self.ig != 1 and self.ig != 2:
-            print("ERROR(TurbulentKineticEnergyEquation.py):" + self.errorGeometry(self.ig))
+            print("ERROR(TurbulentKineticEnergyEquationRadial.py):" + self.errorGeometry(self.ig))
             sys.exit()
 
-        term1 = self.minus_dt_dd_tke
-        term2 = self.minus_div_eht_dd_fht_ux_tke
+        term1 = self.minus_dt_dd_tkex
+        term2 = self.minus_div_eht_dd_fht_ux_tkex
         term3 = self.plus_wb
-        term4 = self.plus_wp
-        term5 = self.minus_div_fekx
+        term4 = self.plus_wpx
+        term5 = self.minus_div_fekxx
         term6 = self.minus_div_fpx
-        term7 = self.minus_r_grad_u
-        term8 = self.minus_resTkeEquation
+        term7 = self.minus_rxx_grad_ux
+        term8 = self.minus_resTkeEquationX
 
         # hack for the ccp setup getting rid of bndry noise
         # fct1 = 0.5e-1
@@ -390,9 +427,9 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         ax.set_ylabel(r'ergs s$^{-1}$')
 
         if self.nsdim != 2:
-            ax.set_title(r"TKE equation integral budget " + str(self.nsdim) + "D")
+            ax.set_title(r"TKE rad equation integral budget " + str(self.nsdim) + "D")
         else:
-            ax.set_title(r"TKE equation integral budget " + str(self.nsdim) + "D")
+            ax.set_title(r"TKE rad equation integral budget " + str(self.nsdim) + "D")
 
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.
@@ -401,18 +438,18 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
         if self.ig == 1:
-            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k})$',
-                            r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k})$",
-                            r'$+W_b$',r'$+W_p$',r"$-\nabla_x f_k$",r"$-\nabla_x f_P$",
-                            r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$",'res']
+            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$',
+                            r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^r)$",
+                            r'$+W_b$', r'$+W_p^r$', r"$-\nabla_x f_k^r$", r"$-\nabla_x f_P$",
+                            r"$-\widetilde{R}_{xx}\partial_x \widetilde{u_x}$", 'res']
 
             # Set the x tick labels to the group_labels defined above.
             ax.set_xticklabels(group_labels, fontsize=16)
         elif self.ig == 2:
-            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k})$',
-                            r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k})$",
-                            r'$+W_b$',r'$+W_p$',r"$-\nabla_r f_k$",r"$-\nabla_r f_P$",
-                            r"$-\widetilde{R}_{ri}\partial_r \widetilde{u_i}$",'res']
+            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$',
+                            r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k}^r)$",
+                            r'$+W_b$', r'$+W_p$', r"$-\nabla_r f_k^r$", r"$-\nabla_r f_P$",
+                            r"$-\widetilde{R}_{rr}\partial_r \widetilde{u_r}$", 'res']
 
             # Set the x tick labels to the group_labels defined above.
             ax.set_xticklabels(group_labels, fontsize=16)
@@ -424,8 +461,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.show(block=False)
 
         # save PLOT
-        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq_bar.png')
-        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq_bar.eps')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eqRadial_bar.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'tke_eqRadial_bar.eps')
 
     def tke_dissipation(self):
         return self.minus_resTkeEquation
