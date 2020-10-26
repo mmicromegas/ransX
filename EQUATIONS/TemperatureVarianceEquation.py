@@ -20,7 +20,7 @@ class TemperatureVarianceEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, e
         super(TemperatureVarianceEquation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename)
+        eht = np.load(filename,allow_pickle=True)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')

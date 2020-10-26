@@ -88,6 +88,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         epshe = []
         prot,he4,he3 = [],[],[]
         dd = []
+        uconv = []
         for i in range(1996):
             rl = tdata.readline().split()
             rrm.append(rl[2])
@@ -98,6 +99,7 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
             prot.append(rl[11])
             he4.append(rl[12])
             he3.append(rl[13])
+            uconv.append(rl[18])
 
             # rrm.append(tdata.readline().split()[2])
             # epspp.append(tdata.readline().split()[7])
@@ -1022,6 +1024,96 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
         plt.show(block=False)
 
+    def plotMonstarIni(self):
+
+        fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
+        tdata = open(fmonstar, 'r')
+
+        header_line1 = tdata.readline().split()
+        header_line2 = tdata.readline().split()
+        header_line3 = tdata.readline().split()
+
+        t_line1 = tdata.readline().split()
+
+        rrm = []
+        epspp = []
+        epscno = []
+        epshe = []
+        prot,he4,he3 = [],[],[]
+        dd = []
+        uconv = []
+        for i in range(1996):
+            rl = tdata.readline().split()
+            rrm.append(rl[2])
+            dd.append(rl[6])
+            epspp.append(rl[7])
+            epscno.append(rl[8])
+            epshe.append(rl[9])
+            prot.append(rl[11])
+            he4.append(rl[12])
+            he3.append(rl[13])
+            uconv.append(rl[18])
+
+            # rrm.append(tdata.readline().split()[2])
+            # epspp.append(tdata.readline().split()[7])
+            # epscno.append(tdata.readline().split()[8])
+            # epshe.append(tdata.readline().split()[9])
+
+        tdata.close()
+
+        # print(epspp,epscno,epshe)
+
+        rrm = np.asarray(rrm[::-1], dtype=float)
+        dd = np.asarray(dd[::-1], dtype=float)
+        epspp = np.asarray(epspp[::-1], dtype=float)
+        epscno = np.asarray(epscno[::-1], dtype=float)
+        epshe = np.asarray(epshe[::-1], dtype=float)
+        prot = np.asarray(prot[::-1], dtype=float)
+        he4 = np.asarray(he4[::-1], dtype=float)
+        he3 = np.asarray(he3[::-1], dtype=float)
+
+        rrm = 10**rrm
+        dd = 10**dd
+        ldhe = 1.e9
+        enuc = epspp + epscno + epshe  # this should be integral over convection zone
+        ulim = (enuc*ldhe/dd)*(1./3.) # wrong
+
+        plt.figure(figsize=(7, 6))
+
+        # xbl = 5.e8
+        # xbr = 6.e9
+        xbl = 3.e9
+        xbr = 6.e9
+        lb = 1.e2
+        ub = 1.e14
+
+        rr = np.asarray(rrm)
+        xlm = np.abs(rr - xbl)
+        xrm = np.abs(rr - xbr)
+        ia = int(np.where(xlm == xlm.min())[0])
+        ib = int(np.where(xrm == xrm.min())[0])
+
+        #print(ulim[ia:ib],enuc[ia:ib],dd[ia:ib])
+        #print(epspp[ia:ib],epscno[ia:ib],epshe[ia:ib])
+        print(ia,ib)
+
+        plt.axis([xbl, xbr, lb, ub])
+
+        plt.title='he-burning shell'
+        plt.semilogy(rrm[ia:ib],ulim[ia:ib],color='m',linestyle='--',label='ulim')
+        plt.semilogy(rrm[ia:ib],uconv[ia:ib],color='r',label='uconv')
+        #plt.semilogy(epscno)
+
+        setxlabel = r'r (cm)'
+        # setylabel = r'log $\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
+        setylabel = r'$ulim$ (cm s$^{-1}$)'
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+
+        plt.legend(loc=3, prop={'size': 14})
+        plt.show(block=False)
+
+
     def idx_bndry(self, xbl, xbr):
         rr = np.asarray(self.data['xzn0'])
         xlm = np.abs(rr - xbl)
@@ -1029,3 +1121,4 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         idxl = int(np.where(xlm == xlm.min())[0])
         idxr = int(np.where(xrm == xrm.min())[0])
         return idxl, idxr
+

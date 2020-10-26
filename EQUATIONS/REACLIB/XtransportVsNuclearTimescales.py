@@ -15,12 +15,12 @@ import sys
 
 class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
 
-    def __init__(self, filename_rans, filename_reaclib, ig, inuc, element, bconv, tconv, tc, intc, data_prefix,
+    def __init__(self, filename, filename_reaclib, ig, inuc, element, bconv, tconv, tc, intc, data_prefix,
                  fext, tnuc, network):
         super(XtransportVsNuclearTimescales, self).__init__(ig)
 
         # load RANS data to structured array
-        eht = np.load(filename_rans)
+        eht = np.load(filename,allow_pickle=True)
 
         # load REACLIB data	
 

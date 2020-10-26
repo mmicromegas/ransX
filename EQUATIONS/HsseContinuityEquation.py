@@ -19,7 +19,7 @@ class HsseContinuityEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Err
         super(HsseContinuityEquation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename)
+        eht = np.load(filename,allow_pickle=True)
 
         # load grid
         nx = self.getRAdata(eht, 'nx')

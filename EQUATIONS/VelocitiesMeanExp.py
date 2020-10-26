@@ -19,7 +19,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         super(VelocitiesMeanExp, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename)
+        eht = np.load(filename,allow_pickle=True)
 
         # load grid
         nx = self.getRAdata(eht, 'nx')
@@ -145,7 +145,7 @@ class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r'$\overline{u}_r$')
             plt.plot(grd1, plt2, color='red', label=r'$\widetilde{u}_r$')
-            plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
+            # plt.plot(grd1, plt3, color='green', linestyle='--', label=r'$\overline{v}_{exp} = -\dot{M}/(4 \pi r^2 \rho)$')
             plt.plot(grd1, plt4, color='c', linestyle='--',label=r'$v_{exp}$')
             plt.plot(grd1, plt2-plt1, color='m', label=r"$-\overline{\rho' u'_r}/\overline{\rho}$")
             # plt.plot(grd1,plt4,color='blue',label = r'$u_{turb}$')

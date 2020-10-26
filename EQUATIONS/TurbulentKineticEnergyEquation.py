@@ -7,6 +7,7 @@ import sys
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 import matplotlib.cm as cm
+import mpld3
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -162,7 +163,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         rhs5 = self.minus_kolmrate * self.dd
 
         # create FIGURE
-        plt.figure(figsize=(7, 6))
+        fig = plt.figure(figsize=(7, 6))
 
         # set plot boundaries   
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, rhs3, rhs4, rhs5, res]
@@ -172,7 +173,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # model constant for tke dissipation
-        Cm = 0.5
+        Cm = 1.
 
         # plot DATA
         if self.nsdim != 2:
@@ -188,7 +189,8 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
             plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xi}\partial_x \widetilde{u_i}$")
             if self.nsdim !=2:
-                plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
+                # plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
+                plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_d$")
             plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k$")
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k})$')
@@ -230,6 +232,11 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.png')
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.eps')
+
+        html_str = mpld3.fig_to_html(fig)
+        Html_file = open("RESULTS/pythonPlot.html", "w")
+        Html_file.write(html_str)
+        Html_file.close()
 
     def plot_TKE_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 

@@ -205,7 +205,7 @@ class TurbulentKineticEnergyEquationHorizontal(uSal.SetAxisLimit, eR.Errors, obj
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # model constant for tke dissipation
-        Cm = 0.5
+        Cm = 2./3.
 
         # plot DATA
         if self.nsdim != 2:
@@ -220,10 +220,10 @@ class TurbulentKineticEnergyEquationHorizontal(uSal.SetAxisLimit, eR.Errors, obj
             plt.plot(grd1, rhs1, color='c', label=r'$+W_p^h$')
             plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k^h$")
             # plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
-            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xy}\partial_x \widetilde{u_y} -\widetilde{R}_{xz}\partial_x \widetilde{u_z}$")
-            # if self.nsdim != 2:
-                # plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
-            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k^x$")
+            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xy}\partial_x \widetilde{u}_y -\widetilde{R}_{xz}\partial_x \widetilde{u}_z$")
+            if self.nsdim != 2:
+                plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-2/3 \overline{\rho} u^{'3}_{rms}/l_d$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{kh}$")
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k}^h)$')
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k}^h)$")
@@ -440,7 +440,7 @@ class TurbulentKineticEnergyEquationHorizontal(uSal.SetAxisLimit, eR.Errors, obj
             group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k}^h)$',
                             r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^h)$",
                             r'$+W_p^h$', r"$-\nabla_x f_k^h$",
-                            r"$-\widetilde{R}_{xy}\partial_x \widetilde{u_y} -\widetilde{R}_{xz}\partial_x \widetilde{u_z}$", 'res']
+                            r"$-\widetilde{R}_{xy}\partial_x \widetilde{u}_y -\widetilde{R}_{xz}\partial_x \widetilde{u}_z$", 'res']
 
             # Set the x tick labels to the group_labels defined above.
             ax.set_xticklabels(group_labels, fontsize=16)

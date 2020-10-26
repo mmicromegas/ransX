@@ -19,7 +19,7 @@ class ZbarTransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Erro
         super(ZbarTransportEquation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename)
+        eht = np.load(filename,allow_pickle=True)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')

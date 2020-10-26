@@ -33,7 +33,7 @@ def main():
     laxis = params.getForProp('prop')['laxis']
 
     # load data to structured array
-    eht = np.load(filename)
+    eht = np.load(filename,allow_pickle=True)
 
     # instantiate tools
     tools = uT.Tools()

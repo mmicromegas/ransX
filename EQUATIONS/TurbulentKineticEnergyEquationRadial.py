@@ -205,25 +205,25 @@ class TurbulentKineticEnergyEquationRadial(uSal.SetAxisLimit, eR.Errors, object)
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # model constant for tke dissipation
-        Cm = 0.5
+        Cm = 1./3.
 
         # plot DATA
         if self.nsdim != 2:
             # plt.title(r"TKE radial equation C$_m$ = " + str(Cm) + " " + str(self.nsdim) + "D")
-            plt.title(r"TKE radial equation " + str(self.nsdim) + "D")
+            plt.title(r"TKE vertical equation " + str(self.nsdim) + "D")
         else:
-            plt.title(r"TKE radial equation " + str(self.nsdim) + "D")
+            plt.title(r"TKE vertical equation " + str(self.nsdim) + "D")
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$')
-            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^r)$")
+            plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k}^v)$')
+            plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^v)$")
             plt.plot(grd1, rhs0, color='r', label=r'$+W_b$')
-            plt.plot(grd1, rhs1, color='c', label=r'$+W_p^r$')
-            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k^r$")
+            plt.plot(grd1, rhs1, color='c', label=r'$+W_p^v$')
+            plt.plot(grd1, rhs2, color='#802A2A', label=r"$-\nabla_x f_k^v$")
             plt.plot(grd1, rhs3, color='m', label=r"$-\nabla_x f_P$")
-            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xx}\partial_x \widetilde{u_x}$")
-            #if self.nsdim != 2:
-                # plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-C_m \overline{\rho} u^{'3}_{rms}/l_c$")
-            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_k^r$")
+            plt.plot(grd1, rhs4, color='b', label=r"$-\widetilde{R}_{xx}\partial_x \widetilde{u}_x$")
+            if self.nsdim != 2:
+                plt.plot(grd1, Cm * rhs5, color='k', linewidth=0.7, label=r"$-1/3 \overline{\rho} u^{'3}_{rms}/l_d$")
+            plt.plot(grd1, res, color='k', linestyle='--', label=r"res $\sim N_{kv}$")
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='#FF6EB4', label=r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$')
             plt.plot(grd1, lhs1, color='k', label=r"$-\nabla_r (\overline{\rho} \widetilde{u}_r \widetilde{k}^r)$")
@@ -427,9 +427,9 @@ class TurbulentKineticEnergyEquationRadial(uSal.SetAxisLimit, eR.Errors, object)
         ax.set_ylabel(r'ergs s$^{-1}$')
 
         if self.nsdim != 2:
-            ax.set_title(r"TKE rad equation integral budget " + str(self.nsdim) + "D")
+            ax.set_title(r"TKE ver equation integral budget " + str(self.nsdim) + "D")
         else:
-            ax.set_title(r"TKE rad equation integral budget " + str(self.nsdim) + "D")
+            ax.set_title(r"TKE ver equation integral budget " + str(self.nsdim) + "D")
 
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.
@@ -438,10 +438,10 @@ class TurbulentKineticEnergyEquationRadial(uSal.SetAxisLimit, eR.Errors, object)
         # Labels for the ticks on the x axis.  It needs to be the same length
         # as y (one label for each bar)
         if self.ig == 1:
-            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k}^r)$',
-                            r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^r)$",
-                            r'$+W_b$', r'$+W_p^r$', r"$-\nabla_x f_k^r$", r"$-\nabla_x f_P$",
-                            r"$-\widetilde{R}_{xx}\partial_x \widetilde{u_x}$", 'res']
+            group_labels = [r'$-\partial_t (\overline{\rho} \widetilde{k}^v)$',
+                            r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{k}^v)$",
+                            r'$+W_b$', r'$+W_p^v$', r"$-\nabla_x f_k^v$", r"$-\nabla_x f_P$",
+                            r"$-\widetilde{R}_{xx}\partial_x \widetilde{u}_x$", 'res']
 
             # Set the x tick labels to the group_labels defined above.
             ax.set_xticklabels(group_labels, fontsize=16)

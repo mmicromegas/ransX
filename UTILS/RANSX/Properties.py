@@ -8,7 +8,6 @@ import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
 import EQUATIONS.ContinuityEquationWithMassFluxCalculation as contCalc
 import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
 
-
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
@@ -21,7 +20,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         super(Properties, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename)
+        eht = np.load(filename,allow_pickle=True)
 
         timec = self.getRAdata(eht, 'timec')[intc]
         tavg = self.getRAdata(eht, 'tavg')
@@ -44,7 +43,14 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         dd = self.getRAdata(eht, 'dd')[intc]
         pp = self.getRAdata(eht, 'pp')[intc]
+
+        ux = self.getRAdata(eht, 'ux')[intc]
+        uy = self.getRAdata(eht, 'uy')[intc]
+        uz = self.getRAdata(eht, 'uz')[intc]
+
         uxux = self.getRAdata(eht, 'uxux')[intc]
+        uyuy = self.getRAdata(eht, 'uyuy')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
         gamma1 = self.getRAdata(eht, 'gamma1')[intc]
 
         if plabel == 'ccptwo':
@@ -116,9 +122,15 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         # get turbulent kinetic energy
         self.tke = tkefields['tke']
+        self.tkex = tkefields['tkex']
+        self.tkey = tkefields['tkey']
+        self.tkez = tkefields['tkez']
 
         # get turbulent kinetic energy dissipation
         self.minus_resTkeEquation = tkefields['minus_resTkeEquation']
+        self.minus_resTkeEquationX = tkefields['minus_resTkeEquationX']
+        self.minus_resTkeEquationY = tkefields['minus_resTkeEquationY']
+        self.minus_resTkeEquationZ = tkefields['minus_resTkeEquationZ']
 
         ####################################################################
 
@@ -159,7 +171,12 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         self.nz = nz
         self.dd = dd
         self.pp = pp
+        self.ux = ux
+        self.uy = uy
+        self.uz = uz
         self.uxux = uxux
+        self.uyuy = uyuy
+        self.uzuz = uzuz
         self.enuc1 = enuc1
         self.enuc2 = enuc2
         self.gamma1 = gamma1
@@ -213,15 +230,24 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         # load density and pressure
         dd = self.dd
         pp = self.pp
+        ux = self.ux
+        uy = self.uy
+        uz = self.uz
 
         # load uxsq		
         uxux = self.uxux
+        uyuy = self.uyuy
+        uzuz = self.uzuz
 
         # load TKE
         tke = self.tke
+        tkever = self.tkex
+        tkehor = self.tkey + self.tkez
 
         # load TKE dissipation
         diss = abs(self.minus_resTkeEquation)
+        dissver = abs(self.minus_resTkeEquationX)
+        disshor = abs(self.minus_resTkeEquationY + self.minus_resTkeEquationZ)
 
         # load enuc
         enuc1 = self.enuc1
@@ -263,8 +289,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
             #ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
 
-            fxi_max = self.fxi.max()
-            ind = np.where((np.abs(self.fxi) > 0.1 * fxi_max))[0]
+            fxi_max = np.max(np.abs(self.fxi))
+            ind = np.where((np.abs(self.fxi) > 0.003 * fxi_max))[0]
 
             xzn0inc = xzn0[ind[0]]
             xzn0outc = xzn0[ind[-1]]
@@ -293,6 +319,14 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         TKEsum = (dd * tke * Vol)[ind].sum()
         epsD = abs((diss * Vol)[ind].sum())
         tD = TKEsum / epsD
+
+        TKEversum = (dd * tkever * Vol)[ind].sum()
+        epsDver = abs((dissver * Vol)[ind].sum())
+        tDver = TKEversum / epsDver
+
+        TKEhorsum = (dd * tkehor * Vol)[ind].sum()
+        epsDhor = abs((disshor * Vol)[ind].sum())
+        tDhor = TKEhorsum / epsDhor
 
         # RMS velocities
         M = (dd * Vol)[ind].sum()
@@ -343,17 +377,17 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         super_ad_o = self.xzn0[itop_super_ad]
 
         # calculate width of overshooting regions in Hp
-        # hp = -pp / self.Grad(pp, xzn0)
-        #pbot = pp[ibot]
-        #tmp = np.log(pbot / pp[ibot:ibot_super_ad])
-        #ov_in_hp = tmp[ibot_super_ad - ibot - 1]
+        hp = -pp / self.Grad(pp, xzn0)
+        pbot = pp[ibot]
+        tmp = np.log(pbot / pp[ibot:ibot_super_ad])
+        ov_in_hp = tmp[ibot_super_ad - ibot - 1]
 
-        #pbot = pp[itop_super_ad]
-        #tmp = np.log(pbot / pp[itop_super_ad:itop])
-        #ov_out_hp = tmp[itop - itop_super_ad - 1]
+        pbot = pp[itop_super_ad]
+        tmp = np.log(pbot / pp[itop_super_ad:itop])
+        ov_out_hp = tmp[itop - itop_super_ad - 1]
 
-        ov_in_hp = 0.
-        ov_out_hp = 0.
+        # ov_in_hp = 0.
+        # ov_out_hp = 0.
 
 
         print('#----------------------------------------------------#')
@@ -381,13 +415,22 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print 'Total nuclear luminosity (in erg/s): %.2e' % tenuc
         print 'Rate of TKE dissipation (in erg/s): %.2e' % epsD
         print 'Dissipation timescale for TKE (in s): %f' % tD
+        print 'Dissipation timescale for TKE vertical (in s): %f' % tDver
+        print 'Dissipation timescale for TKE horizontal (in s): %f' % tDhor
         print 'Reynolds number: %i' % Re
         # print 'Dissipation timescale for radial TKE (in s): %f' % tD_rad
         # print 'Dissipation timescale for horizontal TKE (in s): %f' % tD_hor
 
         uconv = (2. * tke) ** 0.5
+
+        uyrms = np.sqrt(uyuy-uy*uy)
+        uzrms = np.sqrt(uzuz-uz*uz)
+
+        uiso = np.sqrt((3./2.)*(uyrms**2+uzrms**2))
         if lc != 0.:
-            kolm_tke_diss_rate = (uconv ** 3) / lc
+            # kolm_tke_diss_rate = (uconv ** 3) / lc
+            # kolm_tke_diss_rate = (uiso ** 3) / ld
+            kolm_tke_diss_rate = (uconv ** 3) / ld
             tauL = tke / kolm_tke_diss_rate
         else:
             print('ERROR: Estimated size of convection zone is 0')

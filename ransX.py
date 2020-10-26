@@ -442,7 +442,7 @@ def main():
             plt.execXtrsEqBar(inuc, elem,
                               'xtrseq_' + elem + 'Bar',
                               prp['xzn0inc']+hack,
-                              prp['xzn0outc'])
+                              prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
 
         # COMPOSITION FLUX IN X
         if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']):

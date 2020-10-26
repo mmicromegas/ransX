@@ -515,7 +515,7 @@ class MasterPlot():
                                           params.getForEqs(x)['ybd'],
                                           params.getForEqs(x)['ilg'])
 
-    def execXtrsEqBar(self, inuc, element, x, bconv, tconv):
+    def execXtrsEqBar(self, inuc, element, x, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 
@@ -523,7 +523,7 @@ class MasterPlot():
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
-                                           inuc, element, bconv, tconv,
+                                           inuc, element, bconv, tconv, super_ad_i, super_ad_o,
                                            params.getForProp('prop')['intc'],
                                            params.getForProp('prop')['nsdim'],
                                            params.getForProp('prop')['prefix'])

@@ -27,15 +27,16 @@ class ReadParamsReaclib:
         ieos = match[4].split(",")[2]
         fext = match[5].split(",")[2]
         ig = int(match[6].split(",")[2])
-        intc = int(match[7].split(",")[2])
-        laxis = int(match[8].split(",")[2])
-        fext = match[9].split(",")[2]
-        tnuc = int(match[10].split(",")[2])
-        xbl = float(match[11].split(",")[2])
-        xbr = float(match[12].split(",")[2])
+        nsdim = int(match[7].split(",")[2])
+        intc = int(match[8].split(",")[2])
+        laxis = int(match[9].split(",")[2])
+        fext = match[10].split(",")[2]
+        tnuc = int(match[11].split(",")[2])
+        xbl = float(match[12].split(",")[2])
+        xbr = float(match[13].split(",")[2])
 
         return {'reaclib': reaclib, 'eht_data': eht_data, 'plabel': plabel, 'prefix': prefix, 'ig': ig, 'ieos': ieos, 'intc': intc,
-                'laxis': laxis, 'fext': fext, 'tnuc': tnuc, 'xbl': xbl, 'xbr': xbr}
+                'laxis': laxis, 'fext': fext, 'tnuc': tnuc, 'xbl': xbl, 'xbr': xbr, 'nsdim': nsdim}
 
     def getForEqs(self, param):
 
