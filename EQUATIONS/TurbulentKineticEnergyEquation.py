@@ -7,7 +7,7 @@ import sys
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 import matplotlib.cm as cm
-import mpld3
+# import mpld3
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -233,10 +233,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.png')
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.eps')
 
-        html_str = mpld3.fig_to_html(fig)
-        Html_file = open("RESULTS/pythonPlot.html", "w")
-        Html_file.write(html_str)
-        Html_file.close()
+        #html_str = mpld3.fig_to_html(fig)
+        #Html_file = open("RESULTS/pythonPlot.html", "w")
+        #Html_file.write(html_str)
+        #Html_file.close()
 
     def plot_TKE_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
 
