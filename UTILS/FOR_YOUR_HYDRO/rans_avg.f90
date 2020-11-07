@@ -8,6 +8,7 @@ subroutine rans_avg(imode)
   ! imode = 1 : update
   
   use mod_rans_data
+  !use mod_tdiff_data
   implicit none
   include 'dimen.inc'
   include 'constants.inc'
@@ -26,11 +27,14 @@ subroutine rans_avg(imode)
   !
   real*8 fsteradjk, coty, siny
   real*8 abar(qx), zbar(qx), gam1(qx), gam2(qx), gam3(qx)
+  real*8 gac(qx), gae(qx)
+  real*8 kdf(qx),frx(qx),fry(qx),frz(qx)
   real*8 ek(qx), ei(qx), et(qx), hh(qx), sv(qx)
   real*8 dd(qx), pp(qx), ss(qx), tt(qx), xn(qx,rans_nnuc)
   real*8 ux(qx), uy(qx), uz(qx), en1(qx), en2(qx)
   real*8 chd(qx),cht(qx),chm(qx),cs(qx),ps(qx)
-  real*8 dppy(qx), dppz(qx), gg(qx)
+  real*8 dppy(qx), dppz(qx), gg(qx), ggr(qx)
+  real*8 dddy(qx), dddz(qx),dtty(qx),dttz(qx)
   real*8 mfx(qx), cpd(qx), cvd(qx)
   real*8 ggravity(qx)  
   ! FOR SPATIAL DERIVATIVES
@@ -39,6 +43,8 @@ subroutine rans_avg(imode)
   real*8 uy_yp(qx), uy_ym(qx), uy_zp(qx), uy_zm(qx)
   real*8 uz_yp(qx), uz_ym(qx), uz_zp(qx), uz_zm(qx)
   real*8 pp_yp(qx), pp_ym(qx), pp_zp(qx), pp_zm(qx)
+  real*8 dd_yp(qx), dd_ym(qx), dd_zp(qx), dd_zm(qx)
+  real*8 tt_yp(qx), tt_ym(qx), tt_zp(qx), tt_zm(qx)
   real*8 dxx(qx), dxy(qx), dxz(qx)
   real*8 dyx(qx), dyy(qx), dyz(qx)
   real*8 dzx(qx), dzy(qx), dzz(qx)
@@ -49,7 +55,7 @@ subroutine rans_avg(imode)
   real*8 divu(qx), divux(qx), divuy(qx), divuz(qx)
   real*8 curlx(qx), curly(qx), curlz(qx)
   real*8 enst(qx)
-  real*8 gradxei(qx), gradxpp(qx)
+  real*8 gradxei(qx), gradxpp(qx),gradxdd(qx),gradxtt(qx)
   ! SHARED NEIGHBOR DATA
   real*8 ux_n1p(qy,qz), ux_n1m(qy,qz)
   real*8 ux_n2p(qx,qz), ux_n2m(qx,qz)
@@ -64,8 +70,12 @@ subroutine rans_avg(imode)
   real*8 pp_n1p(qy,qz), pp_n1m(qy,qz)
   real*8 pp_n2p(qy,qz), pp_n2m(qy,qz)
   real*8 pp_n3p(qy,qz), pp_n3m(qy,qz)
-
-  
+  real*8 dd_n1p(qy,qz), dd_n1m(qy,qz)
+  real*8 dd_n2p(qy,qz), dd_n2m(qy,qz)
+  real*8 dd_n3p(qy,qz), dd_n3m(qy,qz) 
+  real*8 tt_n1p(qy,qz), tt_n1m(qy,qz)
+  real*8 tt_n2p(qy,qz), tt_n2m(qy,qz)
+  real*8 tt_n3p(qy,qz), tt_n3m(qy,qz) 
   ! TEMP STORAGE
   real*8 ekin(qx,qy,qz), eint(qx,qy,qz)
   ! composition variable names
@@ -89,7 +99,9 @@ subroutine rans_avg(imode)
   
   integer*4 nsubcycle
   real*8    eps,snu,deltat,dtnew
-
+  real*8 five_fourth,fgy,y
+  
+  five_fourth = 5.d0/4.d0
   
   ! only implemented with inhomogeneous (gravity) in x-direction
   if(igrav.ne.0.and.xyzgrav.ne.1) then
@@ -149,8 +161,16 @@ subroutine rans_avg(imode)
   call shareplane_jfaces(press,pp_n2p,pp_n2m)
   call shareplane_kfaces(press,pp_n3p,pp_n3m)
   
+  call shareplane_ifaces(densty,dd_n1p,dd_n1m)
+  call shareplane_jfaces(densty,dd_n2p,dd_n2m)
+  call shareplane_kfaces(densty,dd_n3p,dd_n3m)
+
+  call shareplane_ifaces(temp,tt_n1p,tt_n1m)
+  call shareplane_jfaces(temp,tt_n2p,tt_n2m)
+  call shareplane_kfaces(temp,tt_n3p,tt_n3m)
+
+
   ! loop over all zones for averaging
-  
   do k=1,qz
      do j=1,qy
         ! mesh descriptors
@@ -184,12 +204,18 @@ subroutine rans_avg(imode)
            zbar(i) = azbar(i,j,k,2)     ! mean charge per isotope
            gam1(i) = gamma1(i,j,k)      ! gamma1 -(d ln P/d ln rho)_ad (Cox & Guili p.224) 
            gam2(i) = gamma2(i,j,k)      ! gamma2 (Cox & Guilli p.224) 
-           gam3(i) = gamma3(i,j,k)      ! gamma3 (Cox & Guilli p.224) 
+           gam3(i) = gamma3(i,j,k)      ! gamma3 (Cox & Guilli p.224)
+           gac(i)  = gammac(i,j,k)
+           gae(i)  = gammae(i,j,k)
            chd(i)  = chid(i,j,k)        ! chi_rho (d ln P/d ln rho)_T,mu (Cox & Guili p.224,369)
            cht(i)  = chit(i,j,k)        ! chi_T (d ln P/d ln T)_rho,mu (Cox & Guili p.224,369)
            chm(i)  = chim(i,j,k)        ! chi_mu (d ln P/d ln mu)_rho,T (Cox & Guili p.224,369)
            cs(i)   = snd(i,j,k)         ! speed of sound (cm s-1) 
            ps(i)   = psi(i,j,k)         ! degeneracy parameter (Cox & Guili)
+           !kdf(i)  = kdiff(i,j,k)       ! thermal conductivity
+           !frx(i)  = fradx(i,j,k) ! x flux due to thermal transport 
+           !fry(i)  = frady(i,j,k) ! y flux due to thermal transport 
+           !frz(i)  = fradz(i,j,k) ! z flux due to thermal transport 
         enddo
         
         do i=1,qx
@@ -263,6 +289,7 @@ subroutine rans_avg(imode)
         kk     = coords(3)*qz + k
         dy = (gyznr(jj) - gyznl(jj))
         dz = (gzznr(jj) - gzznl(jj))
+        if (nsdim.eq.2) dz = 1.d60 ! hack for 2D
         do i=1,qx
            dxy(i) = 0.5d0*(ux_yp(i) - ux_ym(i))/dy
            dyy(i) = 0.5d0*(uy_yp(i) - uy_ym(i))/dy
@@ -279,7 +306,9 @@ subroutine rans_avg(imode)
            dyx(i)     = 0.5d0*(uy(i+1) - uy(i-1))/dx
            dzx(i)     = 0.5d0*(uz(i+1) - uz(i-1))/dx
            gradxei(i) = 0.5d0*(ei(i+1) - ei(i-1))/dx
-           gradxpp(i) = 0.5d0*(pp(i+1) - pp(i-1))/dx           
+           gradxpp(i) = 0.5d0*(pp(i+1) - pp(i-1))/dx
+           gradxdd(i) = 0.5d0*(dd(i+1) - dd(i-1))/dx
+           gradxtt(i) = 0.5d0*(tt(i+1) - tt(i-1))/dx
         enddo
         i      = 1
         ii     = coords(1)*qx + i
@@ -290,12 +319,16 @@ subroutine rans_avg(imode)
            dzx(i)     = 0.5d0*(uz(i+1) - uz_n1m(j,k))/dx
            gradxei(i) = 0.5d0*(ei(i+1) - ei_n1m(j,k))/dx
            gradxpp(i) = 0.5d0*(pp(i+1) - pp_n1m(j,k))/dx           
+           gradxdd(i) = 0.5d0*(dd(i+1) - dd_n1m(j,k))/dx
+           gradxtt(i) = 0.5d0*(tt(i+1) - tt_n1m(j,k))/dx
         else
            dxx(i)     = 0.d0
            dyx(i)     = 0.d0
            dzx(i)     = 0.d0
            gradxei(i) = 0.d0
            gradxpp(i) = 0.d0
+           gradxdd(i) = 0.d0
+           gradxtt(i) = 0.d0
         endif
         i          = qx
         ii         = coords(1)*qx + i
@@ -306,12 +339,16 @@ subroutine rans_avg(imode)
            dzx(i)     = 0.5d0*(uz_n1p(j,k) - uz(i-1))/dx
            gradxei(i) = 0.5d0*(ei_n1p(j,k) - ei(i-1))/dx
            gradxpp(i) = 0.5d0*(pp_n1p(j,k) - pp(i-1))/dx           
+           gradxdd(i) = 0.5d0*(dd_n1p(j,k) - dd(i-1))/dx
+           gradxtt(i) = 0.5d0*(tt_n1p(j,k) - tt(i-1))/dx
         else
            dxx(i)     = 0.d0
            dyx(i)     = 0.d0
            dzx(i)     = 0.d0
            gradxei(i) = 0.d0
            gradxpp(i) = 0.d0
+           gradxdd(i) = 0.d0
+           gradxtt(i) = 0.d0
         endif
 
         if(j.eq.1) then
@@ -335,7 +372,6 @@ subroutine rans_avg(imode)
            dppy(i) = 0.5d0*(pp_yp(i) - pp_ym(i))/dy
         enddo
         
-
         if(k.eq.1) then
            do i=1,qx
               pp_zp(i) = press  (i,j,k+1)
@@ -356,7 +392,96 @@ subroutine rans_avg(imode)
         do i=1,qx
            dppz(i) = 0.5d0*(pp_zp(i) - pp_zm(i))/dz
         enddo
-        
+
+!       density gradient
+
+        if(j.eq.1) then
+           do i=1,qx
+              dd_yp(i) = densty   (i,j+1,k)
+              dd_ym(i) = dd_n2m (i,k    )
+           enddo
+        else if(j.eq.qy) then
+           do i=1,qx
+              dd_yp(i) = dd_n2p (i,k    )
+              dd_ym(i) = densty   (i,j-1,k)
+           enddo
+        else
+           do i=1,qx
+              dd_yp(i) = densty   (i,j+1,k)
+              dd_ym(i) = densty  (i,j-1,k)
+           enddo
+        endif
+
+        do i=1,qx
+           dddy(i) = 0.5d0*(dd_yp(i) - dd_ym(i))/dy
+        enddo
+
+        if(k.eq.1) then
+           do i=1,qx
+              dd_zp(i) = densty  (i,j,k+1)
+              dd_zm(i) = dd_n3m (i,j    )
+           enddo
+        else if(k.eq.qz) then
+           do i=1,qx
+              dd_zp(i) = dd_n3p (i,j    )
+              dd_zm(i) = densty  (i,j,k-1)
+           enddo
+        else
+           do i=1,qx
+              dd_zp(i) = densty (i,j,k+1)
+              dd_zm(i) = densty (i,j,k-1)
+           enddo
+        endif
+
+        do i=1,qx
+           dddz(i) = 0.5d0*(dd_zp(i) - dd_zm(i))/dz
+        enddo
+
+
+!       temperature gradient
+
+
+        if(j.eq.1) then
+           do i=1,qx
+              tt_yp(i) = temp   (i,j+1,k)
+              tt_ym(i) = tt_n2m (i,k    )
+           enddo
+        else if(j.eq.qy) then
+           do i=1,qx
+              tt_yp(i) = tt_n2p (i,k    )
+              tt_ym(i) = temp   (i,j-1,k)
+           enddo
+        else
+           do i=1,qx
+              tt_yp(i) = temp   (i,j+1,k)
+              tt_ym(i) = temp  (i,j-1,k)
+           enddo
+        endif
+
+        do i=1,qx
+           dtty(i) = 0.5d0*(tt_yp(i) - tt_ym(i))/dy
+        enddo
+
+        if(k.eq.1) then
+           do i=1,qx
+              tt_zp(i) = temp  (i,j,k+1)
+              tt_zm(i) = tt_n3m (i,j    )
+           enddo
+        else if(k.eq.qz) then
+           do i=1,qx
+              tt_zp(i) = tt_n3p (i,j    )
+              tt_zm(i) = temp  (i,j,k-1)
+           enddo
+        else
+           do i=1,qx
+              tt_zp(i) = temp (i,j,k+1)
+              tt_zm(i) = temp (i,j,k-1)
+           enddo
+        endif
+
+        do i=1,qx
+           dttz(i) = 0.5d0*(tt_zp(i) - tt_zm(i))/dz
+        enddo
         
         ! --- velocity gradient uij, stress, div, curl, enstrophy
         !
@@ -407,7 +532,7 @@ subroutine rans_avg(imode)
               sxy(i) = (uxy(i) + uyx(i))*0.5d0
               sxz(i) = (uxz(i) + uzx(i))*0.5d0
               syz(i) = (uyz(i) + uzy(i))*0.5d0
-              
+ 
               divu (i) = uxx(i) + uyy(i) + uzz(i)
               divux(i) = uxx(i)
               divuy(i) = uyy(i)
@@ -423,7 +548,6 @@ subroutine rans_avg(imode)
            stop 'ERR(rans_avg): igeomx.ne.{1||0} not implemented'
         endif
 
-        
         ! update current horizontally averaged fields in havg(2,:,:)
         
         ! dd  (1)
@@ -2429,11 +2553,32 @@ subroutine rans_avg(imode)
               ggravity(i) = 0.d0
            enddo
         endif
-                   
+
+        if(igrav.eq.6) then
+           do i=1,qx
+              y = xzn(i)/onelu 
+              ggravity(i) =  g0/(y**five_fourth) 
+           enddo
+        endif
+
+        if(igrav.eq.7) then
+           do i=1,qx
+              y = xzn(i)/onelu
+              if ((y.ge.1.0625d0).and.(y.le.2.9375d0)) &
+                   fgy = 1.d0
+              if ((y.ge.1.d0).and.(y.lt.1.0625d0)) &
+                   fgy = 0.5d0*(1.d0+sin(16.d0*pi*(y-1.03125d0)))
+              if ((y.gt.2.9375d0).and.(y.le.3.0d0)) &
+                   fgy = 0.5d0*(1.d0-sin(16.d0*pi*(y-2.96875d0)))
+              ggravity(i) = fgy*g0/(y**five_fourth)
+           enddo
+        endif
+        
+           
         ! gg (280)
         ifield = ifield + 1
         if(imode.eq.0) ransname(ifield) = 'gg'
-        if((igrav.eq.1).or.(igrav.eq.2)) then
+        if((igrav.eq.1).or.(igrav.eq.2).or.(igrav.eq.6).or.(igrav.eq.7)) then
            do i=1,qx
               havg(2,ifield,i) = havg(2,ifield,i) +  &
                    ggravity(i)*fsteradjk
@@ -2451,7 +2596,7 @@ subroutine rans_avg(imode)
               gg(i) = havg(2,ifield,i)
            enddo
         endif
-
+        
         ! ddgg (281)
         ifield = ifield+1
         if(imode.eq.0) ransname(ifield) = 'ddgg'
@@ -2725,7 +2870,156 @@ subroutine rans_avg(imode)
            havg(2,ifield,i) =  havg(2,ifield,i) + &
                 dd(i)*uzz(i)*fsteradjk
         enddo
+
+        ! gammac (320)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'gammac'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                gac(i)*fsteradjk
+        enddo
+
+        ! gammae (321)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'gammae'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                gae(i)*fsteradjk
+        enddo        
+
+        ! uxuxux (322)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uxuxux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                ux(i)*ux(i)*ux(i)*fsteradjk
+        enddo
+
+        ! uyuyux (323)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uyuyux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uy(i)*uy(i)*ux(i)*fsteradjk
+        enddo
+
+        ! uzuzux (324)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'uzuzux'
+        do i=1,qx
+           havg(2,ifield,i) =  havg(2,ifield,i) + &
+                uz(i)*uz(i)*ux(i)*fsteradjk
+        enddo
+
+        ! alphac (325)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'alphac'
+        if (igrav.eq.7) then ! identify ccptwo
+          do i=1,qx
+             havg(2,ifield,i) =  havg(2,ifield,i) + &
+                 (-(mu0*pp(i)/(gascon*tt(i)*xn(i,1)*xn(i,1))) - &
+                  (mu1*pp(i)/(gascon*tt(i)*xn(i,2)*xn(i,2))))*fsteradjk 
+          enddo
+        else 
+          do i=1,qx
+             havg(2,ifield,i) =  0.d0
+          enddo
+        endif
+      
+
+        ! ddttux (326)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'ddttux'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*tt(i)*ux(i)*fsteradjk
+        enddo
+
+
+        ! dduxttx (327)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduxttx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*ux(i)*gradxtt(i)*fsteradjk
+        enddo
+
+
+        ! dduytty (328)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduytty'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*uy(i)*dtty(i)*fsteradjk
+        enddo
+
+        ! dduzttz (329)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'dduzttz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                dd(i)*uz(i)*dttz(i)*fsteradjk
+        enddo
+
+
+        ! eiuxddx (330)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'eiuxddx'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                ei(i)*ux(i)*gradxdd(i)*fsteradjk
+        enddo
+
+
+        ! eiuyddy (331)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'eiuyddy'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+                ei(i)*uy(i)*dddy(i)*fsteradjk
+        enddo
+
+        ! eiuzddz (332)
+        ifield = ifield + 1
+        if(imode.eq.0) ransname(ifield) = 'eiuzddz'
+        do i=1,qx
+           havg(2,ifield,i) = havg(2,ifield,i) + &
+               ei(i)*uz(i)*dddz(i)*fsteradjk
+        enddo
+
+        ! kdiff (xxx)
+        !ifield = ifield + 1
+        !if(imode.eq.0) ransname(ifield) = 'kdiff'
+        !do i=1,qx
+        !   havg(2,ifield,i) = havg(2,ifield,i) + &
+        !        kdf(i)*fsteradjk
+        !enddo        
+
+        ! fradx (xxx)
+        !ifield = ifield + 1
+        !if(imode.eq.0) ransname(ifield) = 'fradx'
+        !do i=1,qx
+        !   havg(2,ifield,i) = havg(2,ifield,i) + &
+        !        frx(i)*fsteradjk
+        !enddo        
+
+        ! frady (xxx)
+        !ifield = ifield + 1
+        !if(imode.eq.0) ransname(ifield) = 'frady'
+        !do i=1,qx
+        !   havg(2,ifield,i) = havg(2,ifield,i) + &
+        !        fry(i)*fsteradjk
+        !enddo
+
+        ! fradz (xxx)
+        !ifield = ifield + 1
+        !if(imode.eq.0) ransname(ifield) = 'fradz'
+        !do i=1,qx
+        !   havg(2,ifield,i) = havg(2,ifield,i) + &
+        !        frz(i)*fsteradjk
+        !enddo   
         
+      
         ! NOTE: These are composition-field dependent (depends on ixnuc)
         ! These are variable length: # composition fields = rans_nnuc * 16
 
@@ -2757,7 +3051,8 @@ subroutine rans_avg(imode)
               xvarname(22) = 'x'  //xidchar//'gradypp'  ! X*gradypp
               xvarname(23) = 'x'  //xidchar//'gradzpp_o_siny'    ! X*gradzpp_o_siny
               xvarname(24) = 'ddx'//xidchar//'x'//xidchar//'dot' ! dd*X*Xdot
-              xvarname(25) = 'x'  //xidchar//'ddgg'  ! X*dd*gr
+              xvarname(25) = 'x'  //xidchar//'ddgg'     ! X*dd*gg
+              !xvarname(26)  = 'alphac'//xidchar          ! alphac
            endif
 
            ! xn
@@ -2937,7 +3232,19 @@ subroutine rans_avg(imode)
               havg(2,ifield,i) =  havg(2,ifield,i) + &    
                    xn(i,n)*dd(i)*ggravity(i)*fsteradjk                      
            enddo
-           
+           ! alphacx
+           !ifield = ifield+1
+           !if(imode.eq.0) ransname(ifield) = xvarname(26)
+
+           !if (igrav.eq.7) then ! identify ccptwo
+           ! do i=1,qx
+           !  if (n.eq.1) havg(2,ifield,i) = havg(2,ifield,i) - (mu0*pp(i)/(gascon*tt(i)*xn(i,n)*xn(i,n)))*fsteradjk
+           !  if (n.eq.2) havg(2,ifield,i) = havg(2,ifield,i) - (mu1*pp(i)/(gascon*tt(i)*xn(i,n)*xn(i,n)))*fsteradjk
+           ! enddo
+           !else
+           !    havg(2,ifield,i) =  0.d0
+           !endif
+
         enddo
        
         ! check on field count

@@ -17,12 +17,12 @@ module mod_rans_data
   contains 
     
     subroutine rans_data_init
-      
+     
       implicit none
       include 'dimen.inc' 
       
       rans_nnuc = qn ! rans_nnuc = qn
-      nrans     = 319 + 25*rans_nnuc
+      nrans     = 332 + 25*rans_nnuc
 
       allocate(havg(4,nrans,qqx))
       allocate(ransname(nrans))
