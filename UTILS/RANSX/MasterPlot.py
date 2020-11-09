@@ -474,19 +474,19 @@ class MasterPlot():
                             params.getForEqs(x)['ybd'],
                             params.getForEqs(x)['ilg'])
 
-        #ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
-        #                   params.getForEqs(x)['xbl'],
-        #                   params.getForEqs(x)['xbr'],
-        #                   params.getForEqs(x)['ybu'],
-        #                   params.getForEqs(x)['ybd'],
-        #                   params.getForEqs(x)['ilg'])
+        ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
+                           params.getForEqs(x)['ilg'])
 
-        #ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
-        #                   params.getForEqs(x)['xbl'],
-        #                   params.getForEqs(x)['xbr'],
-        #                   params.getForEqs(x)['ybu'],
-        #                   params.getForEqs(x)['ybd'],
-        #                   params.getForEqs(x)['ilg'])
+        ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
+                           params.getForEqs(x)['xbl'],
+                           params.getForEqs(x)['xbr'],
+                           params.getForEqs(x)['ybu'],
+                           params.getForEqs(x)['ybd'],
+                           params.getForEqs(x)['ilg'])
 
         #ransXtra.plot_Xm_with_MM(params.getForProp('prop')['laxis'],
         #                    params.getForEqs(x)['xbl'],
@@ -1569,7 +1569,15 @@ class MasterPlot():
                                                 params.getForProp('prop')['intc'],
                                                 params.getForProp('prop')['prefix'])
 
-        ransEnuc.plot_enuc(params.getForProp('prop')['laxis'],
+        #ransEnuc.plot_enuc(params.getForProp('prop')['laxis'],
+        #                   bconv, tconv,
+        #                   params.getForEqs('enuc')['xbl'],
+        #                   params.getForEqs('enuc')['xbr'],
+        #                   params.getForEqs('enuc')['ybu'],
+        #                   params.getForEqs('enuc')['ybd'],
+        #                   params.getForEqs('enuc')['ilg'])
+
+        ransEnuc.plot_enuc2(params.getForProp('prop')['laxis'],
                            bconv, tconv,
                            params.getForEqs('enuc')['xbl'],
                            params.getForEqs('enuc')['xbr'],
@@ -1613,6 +1621,14 @@ class MasterPlot():
                                                  params.getForProp('prop')['prefix'])
 
         ransNablas.plot_nablas(params.getForProp('prop')['laxis'],
+                               bconv, tconv, super_ad_i, super_ad_o,
+                               params.getForEqs('nablas')['xbl'],
+                               params.getForEqs('nablas')['xbr'],
+                               params.getForEqs('nablas')['ybu'],
+                               params.getForEqs('nablas')['ybd'],
+                               params.getForEqs('nablas')['ilg'])
+
+        ransNablas.plot_nablas2(params.getForProp('prop')['laxis'],
                                bconv, tconv, super_ad_i, super_ad_o,
                                params.getForEqs('nablas')['xbl'],
                                params.getForEqs('nablas')['xbr'],

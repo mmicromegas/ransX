@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 from scipy import integrate
+import matplotlib
 import matplotlib.pyplot as plt
 import UTILS.Calculus as uCalc
 import UTILS.SetAxisLimit as uSal
@@ -196,29 +197,31 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
 
 
         # plot DATA
-        plt.title(r"continuity equation with mass flux " + str(self.nsdim) + "D")
+        # plt.title(r"continuity equation with mass flux " + str(self.nsdim) + "D")
+        plt.title(r"Equation 13")
 
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
-            plt.plot(grd1, lhs1, color='r', label=r'$-\widetilde{u}_x \partial_x (\overline{\rho})$')
+            plt.plot(grd1, lhs0, color='g', linewidth=4, label=r'$-\partial_t \overline{\rho}$')
+            plt.plot(grd1, lhs1, color='r', label=r'$-\widetilde{u}_x \partial_x \overline{\rho}$')
             plt.plot(grd1, rhs0, color='c', label=r"$-\nabla_x f_\rho$")
-            plt.plot(grd1, rhs1, color='m', label=r"$+f_\rho / \overline{\rho} \partial_x \overline{\rho}$")
-            plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \nabla_x (\overline{u}_x)$')
-            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+            plt.plot(grd1, rhs1, color='m', label=r"$+(f_\rho / \overline{\rho}) \partial_x \overline{\rho}$")
+            # plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \nabla_x (\overline{u}_x)$')
+            plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \overline{d}$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='+res')
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='g', label=r'$-\partial_t (\overline{\rho})$')
             plt.plot(grd1, lhs1, color='r', label=r'$-\widetilde{u}_r \partial_r (\overline{\rho})$')
             plt.plot(grd1, rhs0, color='c', label=r"$-\nabla_r f_\rho$")
             plt.plot(grd1, rhs1, color='m', label=r"$+f_\rho / \overline{\rho} \partial_r \overline{\rho}$")
             plt.plot(grd1, rhs2, color='b', label=r'$-\overline{\rho} \nabla_r (\overline{u}_r)$')
-            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+            plt.plot(grd1, res, color='k', linestyle='--', label='+res')
 
         # shade boundaries
-        #ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
-        #rinc = grd1[ind1[0]]
-        #routc = grd1[ind1[-1]]
+        ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
+        rinc = grd1[ind1[0]]
+        routc = grd1[ind1[-1]]
 
-        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         #ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
         #rinc = grd1[ind2[0]]
@@ -256,7 +259,7 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 13}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 14}, ncol=2)
 
         # display PLOT
         plt.show(block=False)
@@ -413,6 +416,10 @@ class ContinuityEquationWithMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools
         # plt.figure(figsize=(7, 6))
 
         #print(t_timec[0], t_timec[-1], grd1[0], grd1[-1])
+
+        #matplotlib.rc('xtick', labelsize=30.)
+        #matplotlib.rc('ytick', labelsize=30.)
+        #matplotlib.rc('font', size=30.)
 
         fig, ax = plt.subplots(figsize=(14, 7))
         # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")

@@ -22,7 +22,7 @@ class BruntVaisallaResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.
         # load data to list of structured arrays
         eht = []
         for file in filename:
-            eht.append(np.load(file))
+            eht.append(np.load(file,allow_pickle=True))
 
         # declare data lists
         dd, pp, gg, gamma1, dlnrhodr, dlnpdr, dlnrhodrs, nsq, chim, chit, chid, mu, tt, gamma2, \

@@ -272,6 +272,9 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         plt2 = self.tau_ddxi
         plt3 = self.tau_xi
 
+        #print(plt1)
+
+
         onebody_interaction = []
         twobody_interaction = []
 

@@ -22,7 +22,7 @@ class TurbulentUyVelocityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tool
         # load data to list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile))
+            eht.append(np.load(ffile,allow_pickle=True))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []

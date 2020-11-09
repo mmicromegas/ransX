@@ -21,7 +21,7 @@ class XResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, obje
         # load data to list of structured arrays
         eht = []
         for file in filename:
-            eht.append(np.load(file))
+            eht.append(np.load(file,allow_pickle=True))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []

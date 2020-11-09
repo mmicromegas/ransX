@@ -31,6 +31,11 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         enuc = self.getRAdata(eht, 'enuc1')[intc] + self.getRAdata(eht, 'enuc2')[intc]
         # enuc = self.getRAdata(eht, 'enuc1')[intc]
 
+        uxux = self.getRAdata(eht, 'uxux')[intc]
+        uyuy = self.getRAdata(eht, 'uzuz')[intc]
+        uzuz = self.getRAdata(eht, 'uzuz')[intc]
+
+        urms = (uxux + uyuy + uzuz)**0.5
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -38,6 +43,7 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
         self.enuc = enuc
         self.dd = dd
         self.ig = ig
+        self.urms = urms
 
     def plot_enuc(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot nuclear energy production stratification in the model"""
@@ -150,3 +156,71 @@ class NuclearEnergyProduction(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Er
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_enuc_pervolume.png')
+
+    def plot_enuc2(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+        """Plot nuclear energy production stratification in the model"""
+
+        # check supported geometries
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(NuclearEnergyProduction.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load DATA to plot
+        to_plt1 = self.enuc
+        to_plt3 = self.urms
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        if self.ig == 1:
+            xlabel_1 = r'x (cm)'
+        elif self.ig == 2:
+            xlabel_1 = r'r (cm)'
+
+        ylabel_1 = r'$\overline{\varepsilon_{enuc}}$ (erg g$^{-1}$ s$^{-1}$)'
+        ylabel_3 = r"$u_{rms}$ (cm s$^{-1})$"
+
+        plabel_1 = r'$\overline{\varepsilon_{enuc}}$'
+        plabel_3 = r'$u_{rms}$'
+
+        # calculate indices of grid boundaries
+        xzn0 = np.asarray(self.xzn0)
+        xlm = np.abs(xzn0 - xbl)
+        xrm = np.abs(xzn0 - xbr)
+        idxl = int(np.where(xlm == xlm.min())[0][0])
+        idxr = int(np.where(xrm == xrm.min())[0][0])
+
+        # create FIGURE
+        fig, ax1 = plt.subplots(figsize=(7, 6))
+
+        ax1.axis([xbl, xbr, ybd, ybu])
+        ax1.plot(xzn0, to_plt1, color='r', label=plabel_1)
+
+        ax1.set_xlabel(xlabel_1)
+        ax1.set_ylabel(ylabel_1)
+        ax1.legend(loc=7, prop={'size': 18})
+
+        ax2 = ax1.twinx()
+        ax2.axis([xbl, xbr, -0.5e6, 2.e7])
+        ax2.plot(xzn0, to_plt3, color='m', label=plabel_3)
+        ax2.set_ylabel(ylabel_3)
+        ax2.tick_params('y')
+        ax2.legend(loc=1, prop={'size': 18})
+
+        # convective boundary markers
+        plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_enuc2.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_enuc2.eps')
+

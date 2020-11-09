@@ -404,8 +404,8 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         #pltMax = np.max(plt1[indRES])
         #pltMin = np.min(plt1[indRES])
 
-        pltMax = 3.e-4
-        pltMin = -3.e-4
+        pltMax = 5.e-5
+        pltMin = -5.e-5
 
         # create FIGURE
         # plt.figure(figsize=(7, 6))
@@ -416,7 +416,7 @@ class DivuDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
         fig.suptitle(r"$\nabla \cdot {\bf u}$ " + str(self.nx) + ' x ' + str(self.ny) + ' x ' + str(self.nz))
 
-        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
+        im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet.reversed(),
                        origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
                        vmax=pltMax, vmin=pltMin)
 

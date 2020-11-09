@@ -124,6 +124,9 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.inuc = inuc
         self.element = element
         self.ddxi = ddxi
+        self.ddxi2 = self.getRAdata(eht, 'ddx0002')[intc]
+        self.fht_xi2 = self.getRAdata(eht, 'ddx0002')[intc]/self.getRAdata(eht, 'dd')[intc]
+
         self.fht_xi = fht_xi
 
         self.bconv = bconv
@@ -172,6 +175,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         # load DATA to plot
         plt1 = self.ddxi
+        plt2 = self.ddxi2
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -184,16 +188,19 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title('rhoX for ' + element + " (netw: " + str(self.nnuc) + " ele)")
-        plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{X}$')
+        #plt.title('rhoX for ' + element + " (netw: " + str(self.nnuc) + " ele)")
+        plt.title('rhoX initial')
+        plt.plot(grd1, plt1, color='brown', label=r'$\overline{\rho} \widetilde{X}_1$')
+        plt.plot(grd1, plt2, color='black', label=r'$\overline{\rho} \widetilde{X}_2$')
+
 
         # convective boundary markers
-        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # convective boundary markers - only super-adiatic regions
-        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
-        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
+        #plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        #plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -235,6 +242,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         # load DATA to plot
         plt1 = self.fht_xi
+        plt2 = self.fht_xi2
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -247,16 +255,21 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        plt.title('X for ' + element)
-        plt.semilogy(grd1, plt1, color='brown', label=r'$\widetilde{X}$')
+        #plt.title('X for ' + element)
+        plt.title('X initial')
+        #plt.semilogy(grd1, plt1, color='brown', label=r'$\widetilde{X}_1$')
+        #plt.semilogy(grd1, plt2, color='black', label=r'$\widetilde{X}_2$')
+
+        plt.plot(grd1, plt1, color='brown', label=r'$\widetilde{X}_1$')
+        plt.plot(grd1, plt2, color='black', label=r'$\widetilde{X}_2$')
 
         # convective boundary markers
-        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # convective boundary markers - only super-adiatic regions
-        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
-        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
+        #plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        #plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # this is an inset axes over the main axes
         # a = plt.axes([.27, .4, .44, 0.23])
@@ -280,9 +293,9 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.legend(loc=ilg, prop={'size': 18})
 
         # this is another inset axes over the main axes
-        plt.rc('font', size=12.)
-        a = plt.axes([0.26, 0.55, .3, .2])
-        plt.plot(grd1[0:64], plt1[0:64], color='r')
+        #plt.rc('font', size=12.)
+        #a = plt.axes([0.26, 0.55, .3, .2])
+        #plt.plot(grd1[0:64], plt1[0:64], color='r')
         # plt.xticks([])
         # plt.yticks([])
 
@@ -404,6 +417,10 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
 
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
+        ybu = 2.
+        # ybd = 1.e-30
+        ybd = 1.e-9
+
         to_plot = [plt0,plt1,plt2,plt3,plt4,plt5,plt6,plt7,plt8,plt9,plt10,plt11,plt12,plt13]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
@@ -446,8 +463,9 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         # show LEGEND
         ax1.legend(loc=3, prop={'size': 14}, ncol =2)
 
-        self.bconv = 0.44e9
-        self.tconv = 0.71e9
+        # for oburn ini
+        # self.bconv = 0.44e9
+        # self.tconv = 0.71e9
 
         # convective boundary markers
         ax1.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
@@ -470,7 +488,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         if self.fext == "png":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM_ini.png')
         if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM2_ini.eps')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM2.eps')
 
     def plot_X_space_time(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot X stratification in the model"""
@@ -490,16 +508,19 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         grd1 = self.xzn0
 
         # load DATA to plot
-        plt1 = np.log10(self.t_fht_xi).T
-        #plt1 = self.t_fht_xi.T
+        #plt1 = np.log10(self.t_fht_xi).T
+        plt1 = self.t_fht_xi.T
 
         indRES = np.where((grd1 < 9.e8) & (grd1 > 4.e8))[0]
 
         pltMax = np.max(plt1[indRES])
         pltMin = np.min(plt1[indRES])
 
-        pltMax = -0.2
-        pltMin = -6.
+        #pltMax = -0.2
+        #pltMin = -6.
+
+        pltMax = 0.2
+        pltMin = 0.
 
         # create FIGURE
         # plt.figure(figsize=(7, 6))
@@ -715,8 +736,8 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
         # convective boundary markers - only super-adiatic regions
-        plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
-        plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
+        # plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
+        # plt.axvline(self.super_ad_o, linestyle=':', linewidth=0.7, color='k')
 
         # shade area one
         #ind = np.where((grd1 < 5.17e8) & (grd1 > 4.53e8))[0]
@@ -782,7 +803,7 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 13},ncol=2)
+        plt.legend(loc=ilg, prop={'size': 13},ncol=1)
 
         # display PLOT
         plt.show(block=False)
@@ -865,7 +886,9 @@ class XtransportEquation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors,
         ax.set_ylabel(r'g s$^{-1}$')
 
         # Create a title, in italics
-        ax.set_title('rhoX transport budget for ' + element)
+
+        ax.set_title(r"rhoX transport budget for " + str(element) + " (netw: " + str(self.nnuc) + " ele) " + str(self.nsdim) + "D")
+        #ax.set_title('rhoX transport budget for ' + element)
 
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.

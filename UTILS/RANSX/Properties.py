@@ -348,14 +348,20 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         pturb_o_pgas = (gamma1 * ur2 / cs2)[ind].mean()
 
         # Mach number
-        mach2 = uxux / cs2
-        mach = mach2 ** 0.5
+        mach_1 = uxux / cs2
+        mach_1 = mach_1 ** 0.5
 
-        machMax = mach[ind].max()
-        machMean = mach[ind].mean()
+        machMax_1 = mach_1[ind].max()
+        machMean_1 = mach_1[ind].mean()
+
+        mach_2 = (uxux + uyuy + uzuz) / cs2
+        mach_2 = mach_2 ** 0.5
+
+        machMax_2 = mach_2[ind].max()
+        machMean_2 = mach_2[ind].mean()
 
         # Calculate size of convection zone in pressure scale heights
-        # hp = -pp / self.Grad(pp, xzn0)
+        hp = -pp / self.Grad(pp, xzn0)
         pbot = pp[ibot]
         lcz_vs_hp = np.log(pbot / pp[ibot:itop])
         cnvz_in_hp = lcz_vs_hp[itop - ibot - 1]
@@ -377,17 +383,17 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         super_ad_o = self.xzn0[itop_super_ad]
 
         # calculate width of overshooting regions in Hp
-        hp = -pp / self.Grad(pp, xzn0)
-        pbot = pp[ibot]
-        tmp = np.log(pbot / pp[ibot:ibot_super_ad])
-        ov_in_hp = tmp[ibot_super_ad - ibot - 1]
+        #hp = -pp / self.Grad(pp, xzn0)
+        #pbot = pp[ibot]
+        #tmp = np.log(pbot / pp[ibot:ibot_super_ad])
+        #ov_in_hp = tmp[ibot_super_ad - ibot - 1]
 
-        pbot = pp[itop_super_ad]
-        tmp = np.log(pbot / pp[itop_super_ad:itop])
-        ov_out_hp = tmp[itop - itop_super_ad - 1]
+        #pbot = pp[itop_super_ad]
+        #tmp = np.log(pbot / pp[itop_super_ad:itop])
+        #ov_out_hp = tmp[itop - itop_super_ad - 1]
 
-        # ov_in_hp = 0.
-        # ov_out_hp = 0.
+        ov_in_hp = 0.
+        ov_out_hp = 0.
 
 
         print('#----------------------------------------------------#')
@@ -409,8 +415,10 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
         print 'Convective turnover timescale (in s)  %.2e' % tc
         print 'P_turb o P_gas %.2e' % pturb_o_pgas
-        print 'Mach number Max %.2e' % machMax
-        print 'Mach number Mean %.2e' % machMean
+        print 'Mach number Max (using uxux) %.2e' % machMax_1
+        print 'Mach number Mean (using uxux) %.2e' % machMean_1
+        print 'Mach number Max (using uu) %.2e' % machMax_2
+        print 'Mach number Mean (using uu) %.2e' % machMean_2
         print 'Dissipation length scale (in cm): %.2e' % ld
         print 'Total nuclear luminosity (in erg/s): %.2e' % tenuc
         print 'Rate of TKE dissipation (in erg/s): %.2e' % epsD
@@ -559,7 +567,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
              'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc, 'cnvz_in_hp': cnvz_in_hp,
-             'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax': machMax, 'machMean': machMean, 'xzn0': xzn0,
+             'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax_1': machMax_1, 'machMean_1': machMean_1, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
              'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
              'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
@@ -568,8 +576,8 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'], 'tavg': p['tavg'],
                 'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
                 'uconv': p['uconv'], 'xzn0inc': p['xzn0inc'], 'xzn0outc': p['xzn0outc'],
-                'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax': p['machMax'],
-                'machMean': p['machMean'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
+                'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax_1': p['machMax_1'],
+                'machMean_1': p['machMean_1'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
                 'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'], 'cnvz_in_hp': p['cnvz_in_hp'],
                 'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'], 'resContMean': p['resContMean'],
                 'resContMax': p['resContMax'], 'resTeeMax': p['resTeeMax'], 'resTeeMean': p['resTeeMean'],

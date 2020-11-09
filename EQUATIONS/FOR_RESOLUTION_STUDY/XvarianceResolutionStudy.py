@@ -21,7 +21,7 @@ class XvarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         # load data to list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile))
+            eht.append(np.load(ffile,allow_pickle=True))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
@@ -118,13 +118,14 @@ class XvarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
             plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 14})
+        plt.legend(loc=ilg, prop={'size': 13})
 
         # display PLOT
         plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xvariance_' + self.element + '.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xvariance_' + self.element + '.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

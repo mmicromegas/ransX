@@ -21,7 +21,7 @@ class XfluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
         # load data to list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile))
+            eht.append(np.load(ffile,allow_pickle=True))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
@@ -122,6 +122,7 @@ class XfluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, 
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxX_' + self.element + '.png')
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_XfluxX_' + self.element + '.eps')
 
     # find data with maximum resolution	
     def maxresdata(self, data):

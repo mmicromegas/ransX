@@ -171,16 +171,18 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('continuity equation with Favrian dilatation')
+        # plt.title('continuity equation with Favrian dilatation')
+        plt.title('Equation 15')
 
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='g', label=r'$-D_t \overline{\rho}$')
-            plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \ \nabla_x \widetilde{u}_x$')
-            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+            plt.plot(grd1, lhs0, color='g', linewidth=4., label=r'$-D_t \overline{\rho}$')
+            plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \widetilde{d}$')
+            # plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \ \nabla_x \widetilde{u}_x$')
+            plt.plot(grd1, res, color='k', linestyle='--', label='+res')
         elif self.ig == 2:
             plt.plot(grd1, lhs0, color='g', label=r'$-D_t \overline{\rho}$')
             plt.plot(grd1, rhs0, color='b', label=r'$-\overline{\rho} \ \nabla_r \widetilde{u}_r$')
-            plt.plot(grd1, res, color='k', linestyle='--', label='res')
+            plt.plot(grd1, res, color='k', linestyle='--', label='+res')
 
         # shade boundaries
         ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
@@ -196,7 +198,7 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         #print(rinc,routc,ind2[0],ind2[-1],ind2,(self.nx/2),self.nx)
         #print(self.nx)
 
-        plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        # plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
@@ -214,7 +216,10 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 12})
+        plt.legend(loc=ilg, prop={'size': 14})
+
+        # text
+        # plt.text(0.5e9,-1.4e2,'Equation 11',fontsize=14)
 
         # display PLOT
         plt.show(block=False)

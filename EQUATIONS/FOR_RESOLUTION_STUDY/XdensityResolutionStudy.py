@@ -21,7 +21,7 @@ class XdensityResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Error
         # load data to list of structured arrays
         eht = []
         for file in filename:
-            eht.append(np.load(file))
+            eht.append(np.load(file,allow_pickle=True))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
