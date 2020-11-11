@@ -58,6 +58,7 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
         ddxi = self.getRAdata(eht, 'ddx' + inuc)[intc]
         xiux = self.getRAdata(eht, 'x' + inuc + 'ux')[intc]
+        xisq = self.getRAdata(eht, 'x' + inuc + 'sq')[intc]
         ddxiux = self.getRAdata(eht, 'ddx' + inuc + 'ux')[intc]
         ddxidot = self.getRAdata(eht, 'ddx' + inuc + 'dot')[intc]
 
@@ -308,6 +309,12 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
         # calculate temperature gradients
         self.nabla = self.deriv(lntt, lnpp)
         self.nabla_ad = (gamma2 - 1.) / gamma2
+
+
+        # data for alphaX
+        self.rfxi =  xiux - xi*ux
+        self.ux_rms = (uxux - ux*ux)**0.5
+        self.xi_rms = (xisq - xi*xi)**0.5
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -921,3 +928,79 @@ class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, obj
 
     def gauss(self, x, a, x0, sigma):
         return a * np.exp(-(x - x0) ** 2 / (2 * (sigma ** 2)))
+
+
+    def plot_alphaX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot alphaX stratification in the model"""
+
+        if self.ig != 1 and self.ig != 2:
+            print("ERROR(XfluxXEquation.py):" + self.errorGeometry(self.ig))
+            sys.exit()
+
+        # convert nuc ID to string
+        xnucid = str(self.inuc)
+        element = self.element
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        # load and calculate DATA to plot
+        plt1 = self.rfxi
+        plt2 = self.ux_rms*self.xi_rms
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        # set plot boundaries
+        to_plot = [plt1,plt2]
+        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+
+        # plot DATA
+        plt.title('Xflux X for ' + self.element)
+        plt.plot(grd1, plt1, color='k', label=r"$+\overline{X'_i u'_x}$")
+        plt.plot(grd1, plt2, color='r', label=r"$+X'_{rms} u'_{rms}$")
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+        idxl, idxr = self.idx_bndry(self.bconv, self.tconv)
+
+        self.nabla[0:idxl] = 0.
+        self.nabla[idxr:self.nx] = 0.
+
+        self.nabla_ad[0:idxl] = 0.
+        self.nabla_ad[idxr:self.nx] = 0.
+
+        ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
+
+        xzn0inc = self.xzn0[ind[0]]
+        xzn0outc = self.xzn0[ind[-1]]
+
+        # convective boundary markers - only superadiatic regions
+        plt.axvline(xzn0inc, linestyle=':', linewidth=0.7, color='k')
+        plt.axvline(xzn0outc, linestyle=':', linewidth=0.7, color='k')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"$\overline{X'_i u'_x}$ (g cm$^{-2}$ s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"$\overline{X'_i u'_r}$ (cm s$^{-1}$)"
+            plt.xlabel(setxlabel)
+            plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 18})
+
+        # display PLOT
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'mean_alphaX_' + element + '.png')

@@ -20,7 +20,7 @@ class ContResMeanEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.To
         # load data to a list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile))
+            eht.append(np.load(ffile,allow_pickle=True))
 
         # declare data lists
         t_timec, t_resContMean, t_tc = [], [], []

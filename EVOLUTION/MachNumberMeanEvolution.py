@@ -18,7 +18,7 @@ class MachNumberMeanEvolution(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, eR.Erro
         super(MachNumberMeanEvolution, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(dataout)
+        eht = np.load(dataout,allow_pickle=True)
 
         # load temporal evolution
         t_timec = self.getRAdata(eht, 't_timec')

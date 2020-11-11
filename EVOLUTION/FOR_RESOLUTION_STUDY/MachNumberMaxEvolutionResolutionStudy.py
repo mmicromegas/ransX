@@ -20,7 +20,7 @@ class MachNumberMaxEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.
         # load data to a list of structured arrays
         eht = []
         for file in filename:
-            eht.append(np.load(file))
+            eht.append(np.load(file,allow_pickle=True))
 
         # declare data lists
         t_timec, t_machmx = [], []

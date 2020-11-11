@@ -548,7 +548,14 @@ class MasterPlot():
                                          params.getForProp('prop')['nsdim'],
                                          params.getForProp('prop')['prefix'])
 
-        ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
+        #ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
+        #                      params.getForEqs(x)['xbl'],
+        #                      params.getForEqs(x)['xbr'],
+        #                      params.getForEqs(x)['ybu'],
+        #                      params.getForEqs(x)['ybd'],
+        #                      params.getForEqs(x)['ilg'])
+
+        ransXflxx.plot_alphaX(params.getForProp('prop')['laxis'],
                               params.getForEqs(x)['xbl'],
                               params.getForEqs(x)['xbr'],
                               params.getForEqs(x)['ybu'],

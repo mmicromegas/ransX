@@ -20,7 +20,7 @@ class X0002EvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, uT.Tools, o
         # load data to a list of structured arrays
         eht = []
         for file in filename:
-            eht.append(np.load(file))
+            eht.append(np.load(file,allow_pickle=True))
 
         # declare data lists
         t_timec, t_x0002mean_cnvz = [], []

@@ -20,7 +20,7 @@ class EnergySourceTermEvolutionResolutionStudy(uCalc.Calculus, uEal.ALIMITevol, 
         # load data to a list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile))
+            eht.append(np.load(ffile,allow_pickle=True))
 
         # declare data lists
         t_timec, t_tenuc = [], []
