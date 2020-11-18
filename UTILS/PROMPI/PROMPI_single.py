@@ -73,7 +73,8 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
         #ax1.axis([xbl,xbr,np.min(to_plt1[idxl:idxr]),np.max(to_plt1[idxl:idxr])])
         ax1.semilogy(rr, to_plt1, color='b', label=plabel_1)
 
-        fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
+        # fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
+        fmonstar = 'DATA_D\\INIMODEL\\imodel.monstar'
         tdata = open(fmonstar, 'r')
 
         header_line1 = tdata.readline().split()
@@ -1026,7 +1027,8 @@ class PROMPI_single(prd.PROMPI_ransdat, uCalc.Calculus, object):
 
     def plotMonstarIni(self):
 
-        fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
+        # fmonstar = 'C:\\Users\\mmocak\\Desktop\\GITDEV\\ransX\\DATA_D\\INIMODEL\\imodel.monstar'
+        fmonstar = 'DATA_D\\INIMODEL\\imodel.monstar'
         tdata = open(fmonstar, 'r')
 
         header_line1 = tdata.readline().split()
