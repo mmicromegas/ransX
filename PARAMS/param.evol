@@ -1,4 +1,4 @@
-# ----- Parameter file for rans(eXtreme) and OBURN ---------- #
+# ----- Parameter file for rans(eXtreme) and OBURN ---------- # 
 []
 ## Input Data .............................................. ## [prop,eht_data,C:\Users\mmocak\Desktop\D_GITDEV\ransX\DATA_D\TSERIES\tseries_ccptwo128dev2D_cosma_600secs.npy]
 ## Dataout File ............................................ ## [prop,dataout,D:\ransX\DATA_D\TEVOL\tseries_ccptwo128dev2D_cosma_20secs_evol.npy]
