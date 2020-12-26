@@ -116,18 +116,14 @@ def main():
         eht.update(field)
 
     # store grid
-
     nx = {'nx': ts.rans()['nx']}
     eht.update(nx)
 
-    ny = {'nx': ts.rans()['ny']}
+    ny = {'ny': ts.rans()['ny']}
     eht.update(ny)
 
-    nz = {'nx': ts.rans()['nz']}
+    nz = {'nz': ts.rans()['nz']}
     eht.update(nz)
-
-    nnuc = {'nnuc': ts.rans()['nnuc']}
-    eht.update(nnuc)
 
     xzn0 = {'xzn0': ts.rans()['xzn0']}
     eht.update(xzn0)
@@ -156,6 +152,9 @@ def main():
     zznr = {'zznr': ts.rans()['zznr']}
     eht.update(zznr)
 
+    nnuc = {'nnuc': ts.rans()['nnuc']}
+    eht.update(nnuc)
+
     ntc = {'ntc': ntc}
     eht.update(ntc)
 
@@ -170,18 +169,7 @@ def main():
     trange = {'trange': trange}
     eht.update(trange)
 
-    # store number of grid points in simulation
-    nx = {'nx': ts.rans()['nx']}
-    eht.update(nx)
-
-    ny = {'ny': ts.rans()['ny']}
-    eht.update(ny)
-
-    nz = {'nz': ts.rans()['nz']}
-    eht.update(nz)
-
     # STORE TIME-AVERAGED DATA i.e the EHT dictionary
-
     np.save(dataout + '.npy', eht)
 
 

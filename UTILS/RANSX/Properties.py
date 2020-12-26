@@ -402,32 +402,32 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print('Averaging windows (in s): ', tavg.item(0))
         print('Time range (in s from-to): ', round(self.trange[0], 1), round(self.trange[1], 1))
 
-        print '---------------'
-        print 'Resolution: %i' % self.nx, self.ny, self.nz
-        print 'Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out)
-        print 'Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc)
+        print ('---------------')
+        print ('Resolution: %i' % self.nx, self.ny, self.nz)
+        print ('Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out))
+        print ('Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc))
         if laxis != 0:
-            print 'Extent of convection zone (in Hp): %f' % cnvz_in_hp
+            print ('Extent of convection zone (in Hp): %f' % cnvz_in_hp)
         else:
             cnvz_in_hp = 0.
-        print 'Overshooting at inner/outer convection boundary (in Hp): ', round(ov_in_hp,2), round(ov_out_hp,2)
-        print 'Averaging time window (in s): %f' % tavg
-        print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
-        print 'Convective turnover timescale (in s)  %.2e' % tc
-        print 'P_turb o P_gas %.2e' % pturb_o_pgas
-        print 'Mach number Max (using uxux) %.2e' % machMax_1
-        print 'Mach number Mean (using uxux) %.2e' % machMean_1
-        print 'Mach number Max (using uu) %.2e' % machMax_2
-        print 'Mach number Mean (using uu) %.2e' % machMean_2
-        print 'Dissipation length scale (in cm): %.2e' % ld
-        print 'Total nuclear luminosity (in erg/s): %.2e' % tenuc
-        print 'Rate of TKE dissipation (in erg/s): %.2e' % epsD
-        print 'Dissipation timescale for TKE (in s): %f' % tD
-        print 'Dissipation timescale for TKE vertical (in s): %f' % tDver
-        print 'Dissipation timescale for TKE horizontal (in s): %f' % tDhor
-        print 'Reynolds number: %i' % Re
-        # print 'Dissipation timescale for radial TKE (in s): %f' % tD_rad
-        # print 'Dissipation timescale for horizontal TKE (in s): %f' % tD_hor
+        print ('Overshooting at inner/outer convection boundary (in Hp): ', round(ov_in_hp,2), round(ov_out_hp,2))
+        print ('Averaging time window (in s): %f' % tavg)
+        print ('RMS velocities in convection zone (in cm/s):  %.2e' % urms)
+        print ('Convective turnover timescale (in s)  %.2e' % tc)
+        print ('P_turb o P_gas %.2e' % pturb_o_pgas)
+        print ('Mach number Max (using uxux) %.2e' % machMax_1)
+        print ('Mach number Mean (using uxux) %.2e' % machMean_1)
+        print ('Mach number Max (using uu) %.2e' % machMax_2)
+        print ('Mach number Mean (using uu) %.2e' % machMean_2)
+        print ('Dissipation length scale (in cm): %.2e' % ld)
+        print ('Total nuclear luminosity (in erg/s): %.2e' % tenuc)
+        print ('Rate of TKE dissipation (in erg/s): %.2e' % epsD)
+        print ('Dissipation timescale for TKE (in s): %f' % tD)
+        print ('Dissipation timescale for TKE vertical (in s): %f' % tDver)
+        print ('Dissipation timescale for TKE horizontal (in s): %f' % tDhor)
+        print ('Reynolds number: %i' % Re)
+        # print ('Dissipation timescale for radial TKE (in s): %f' % tD_rad)
+        # print ('Dissipation timescale for horizontal TKE (in s): %f' % tD_hor)
 
         uconv = (2. * tke) ** 0.5
 
@@ -565,21 +565,10 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
 
         ig = self.ig
 
-        p = {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
+        return {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
              'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc, 'cnvz_in_hp': cnvz_in_hp,
              'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax_1': machMax_1, 'machMean_1': machMean_1, 'xzn0': xzn0,
              'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
              'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
              'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
-             'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o, 'cnvz_in_hp': cnvz_in_hp}
-
-        return {'tauL': p['tauL'], 'kolm_tke_diss_rate': p['kolm_tke_diss_rate'], 'tavg': p['tavg'],
-                'tke_diss': p['tke_diss'], 'tke': p['tke'], 'lc': p['lc'], 'dd': p['dd'],
-                'uconv': p['uconv'], 'xzn0inc': p['xzn0inc'], 'xzn0outc': p['xzn0outc'],
-                'tc': p['tc'], 'nx': p['nx'], 'ny': p['ny'], 'nz': p['nz'], 'machMax_1': p['machMax_1'],
-                'machMean_1': p['machMean_1'], 'xzn0': p['xzn0'], 'ig': p['ig'], 'TKEsum': p['TKEsum'],
-                'x0002mean_cnvz': p['x0002mean_cnvz'], 'pturb_o_pgas': p['pturb_o_pgas'], 'cnvz_in_hp': p['cnvz_in_hp'],
-                'epsD': p['epsD'], 'tD': p['tD'], 'tenuc': p['tenuc'], 'resContMean': p['resContMean'],
-                'resContMax': p['resContMax'], 'resTeeMax': p['resTeeMax'], 'resTeeMean': p['resTeeMean'],
-                'xznl': p['xznl'], 'xznr': p['xznr'], 'urms': p['urms'], 'super_ad_i': p['super_ad_i'],
-                'super_ad_o': p['super_ad_o'],'cnvz_in_hp': cnvz_in_hp}
+             'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o}
