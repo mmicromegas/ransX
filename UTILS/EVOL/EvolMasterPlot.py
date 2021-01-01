@@ -1,21 +1,21 @@
-import EVOLUTION.TurbulentKineticEnergyEquationEvolution as tkeevol
-import EVOLUTION.MachNumberMaxEvolution as machmxevol
-import EVOLUTION.MachNumberMeanEvolution as machmeevol
-import EVOLUTION.ConvectionBoundariesPositionEvolution as cnvzpos
-import EVOLUTION.EnergySourceTermEvolution as enesrc
-import EVOLUTION.ConvectiveRMSvelocityEvolution as convrms
-import EVOLUTION.ConvectiveTurnoverTimescaleEvolution as convturn
-import EVOLUTION.ContResMaxEvolution as contResMax
-import EVOLUTION.ContResMeanEvolution as contResMean
-import EVOLUTION.TeeResMaxEvolution as teeResMax
-import EVOLUTION.TeeResMeanEvolution as teeResMean
+from EVOLUTION.TurbulentKineticEnergyEquationEvolutionStudy import TurbulentKineticEnergyEquationEvolutionResolutionStudy
+from EVOLUTION.MachNumberMaxEvolutionStudy import MachNumberMaxEvolutionResolutionStudy
+from EVOLUTION.MachNumberMeanEvolutionStudy import MachNumberMeanEvolutionResolutionStudy
+from EVOLUTION.ConvectiveRMSvelocityEvolutionStudy import ConvectiveRMSvelocityEvolutionResolutionStudy
+from EVOLUTION.ConvectiveTurnoverTimescaleEvolutionStudy import ConvectiveTurnoverTimescaleEvolutionResolutionStudy
+from EVOLUTION.ConvectionBoundariesPositionEvolutionStudy import ConvectionBoundariesPositionEvolutionResolutionStudy
+from EVOLUTION.EnergySourceTermEvolutionStudy import EnergySourceTermEvolutionResolutionStudy
+from EVOLUTION.ContResMaxEvolutionStudy import ContResMaxEvolutionResolutionStudy
+from EVOLUTION.ContResMeanEvolutionStudy import ContResMeanEvolutionResolutionStudy
+from EVOLUTION.TeeResMaxEvolutionStudy import TeeResMaxEvolutionResolutionStudy
+from EVOLUTION.TeeResMeanEvolutionStudy import TeeResMeanEvolutionResolutionStudy
 
-import EVOLUTION.X0002Evolution as x2evol
+from EVOLUTION.X0002EvolutionResolutionStudy import X0002EvolutionResolutionStudy
 
 import matplotlib.pyplot as plt
 
 
-class EvolMasterPlot:
+class EvolMasterPlot():
 
     def __init__(self, params):
         self.params = params
@@ -24,9 +24,10 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate 		
-        ransTkeEvol = tkeevol.TurbulentKineticEnergyEquationEvolution(params.getForProp('prop')['dataout'],
-                                                                      params.getForProp('prop')['ig'],
-                                                                      params.getForProp('prop')['prefix'])
+        ransTkeEvol = TurbulentKineticEnergyEquationEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy evolution	   
         ransTkeEvol.plot_tke_evolution(params.getForProp('prop')['laxis'],
@@ -40,12 +41,12 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransMachMax = machmxevol.MachNumberMaxEvolution(
-            params.getForProp('prop')['dataout'],
+        ransMachMax = MachNumberMaxEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
             params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
-        # plot maximum mach number evolution
+        # plot maximum Mach number evolution
         ransMachMax.plot_machmax_evolution(params.getForProp('prop')['laxis'],
                                            params.getForEvol('machmxevol')['xbl'],
                                            params.getForEvol('machmxevol')['xbr'],
@@ -57,13 +58,14 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransMachMean = machmeevol.MachNumberMeanEvolution(
-            params.getForProp('prop')['dataout'],
+        ransMachMean = MachNumberMeanEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
             params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
-        # plot turbulent kinetic energy evolution
-        ransMachMean.plot_machmean_evolution(params.getForProp('prop')['laxis'], params.getForEvol('machmeevol')['xbl'],
+        # plot mean mach number evolution
+        ransMachMean.plot_machmean_evolution(params.getForProp('prop')['laxis'],
+                                             params.getForEvol('machmeevol')['xbl'],
                                              params.getForEvol('machmeevol')['xbr'],
                                              params.getForEvol('machmeevol')['ybu'],
                                              params.getForEvol('machmeevol')['ybd'],
@@ -73,9 +75,9 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransUrmsEvol = convrms.ConvectiveRMSvelocityEvolution(params.getForProp('prop')['dataout'],
-                                                              params.getForProp('prop')['ig'],
-                                                              params.getForProp('prop')['prefix'])
+        ransUrmsEvol = ConvectiveRMSvelocityEvolutionResolutionStudy(params.getForProp('prop')['eht_data'],
+                                                                             params.getForProp('prop')['ig'],
+                                                                             params.getForProp('prop')['prefix'])
 
         # plot convective rms velocity
         ransUrmsEvol.plot_turms_evolution(params.getForProp('prop')['laxis'],
@@ -85,13 +87,33 @@ class EvolMasterPlot:
                                           params.getForEvol('convelrms')['ybd'],
                                           params.getForEvol('convelrms')['ilg'])
 
+        # ransUrmsEvol.plot_u_vs_L()
+
     def execEvolConvTurnoverTime(self):
         params = self.params
 
         # instantiate
-        ransConvTurnEvol = convturn.ConvectiveTurnoverTimescaleEvolution(params.getForProp('prop')['dataout'],
-                                                                         params.getForProp('prop')['ig'],
-                                                                         params.getForProp('prop')['prefix'])
+        ransConvTurnEvol = ConvectiveTurnoverTimescaleEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
+
+        # plot convective turnover timescales
+        ransConvTurnEvol.plot_tconvturn_evolution(params.getForProp('prop')['laxis'],
+                                                  params.getForEvol('convturn')['xbl'],
+                                                  params.getForEvol('convturn')['xbr'],
+                                                  params.getForEvol('convturn')['ybu'],
+                                                  params.getForEvol('convturn')['ybd'],
+                                                  params.getForEvol('convturn')['ilg'])
+
+    def execEvolConvTurnoverTime(self):
+        params = self.params
+
+        # instantiate
+        ransConvTurnEvol = ConvectiveTurnoverTimescaleEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
 
         # plot convective convective turnover timescale
         ransConvTurnEvol.plot_tconvturn_evolution(params.getForProp('prop')['laxis'],
@@ -104,12 +126,13 @@ class EvolMasterPlot:
     def execEvolCNVZbnry(self):
         params = self.params
 
-        # instantiate 		
-        ransCnvzPositionEvol = cnvzpos.ConvectionBoundariesPositionEvolution(params.getForProp('prop')['dataout'],
-                                                                             params.getForProp('prop')['ig'],
-                                                                             params.getForProp('prop')['prefix'])
+        # instantiate
+        ransCnvzPositionEvol = ConvectionBoundariesPositionEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
 
-        # plot evolution of convection boundaries	   
+        # plot evolution of convection boundaries
         ransCnvzPositionEvol.plot_conv_bndry_location(params.getForProp('prop')['laxis'],
                                                       params.getForEvol('cnvzbndry')['xbl'],
                                                       params.getForEvol('cnvzbndry')['xbr'],
@@ -120,12 +143,12 @@ class EvolMasterPlot:
     def execEvolTenuc(self):
         params = self.params
 
-        # instantiate 		
-        ransTenucEvol = enesrc.EnergySourceTermEvolution(params.getForProp('prop')['dataout'],
+        # instantiate
+        ransTenucEvol = EnergySourceTermEvolutionResolutionStudy(params.getForProp('prop')['eht_data'],
                                                          params.getForProp('prop')['ig'],
                                                          params.getForProp('prop')['prefix'])
 
-        # plot total energy source	   
+        # plot total energy source
         ransTenucEvol.plot_tenuc_evolution(params.getForProp('prop')['laxis'],
                                            params.getForEvol('enesource')['xbl'],
                                            params.getForEvol('enesource')['xbr'],
@@ -137,8 +160,8 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransContResMax = contResMax.ContResMaxEvolution(
-            params.getForProp('prop')['dataout'],
+        ransContResMax = ContResMaxEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
             params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
@@ -154,8 +177,8 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransContResMean = contResMean.ContResMeanEvolution(
-            params.getForProp('prop')['dataout'],
+        ransContResMean = ContResMeanEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
             params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
@@ -171,8 +194,8 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransTeeResMax = teeResMax.TeeResMaxEvolution(
-            params.getForProp('prop')['dataout'],
+        ransTeeResMax = TeeResMaxEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
             params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
@@ -188,8 +211,8 @@ class EvolMasterPlot:
         params = self.params
 
         # instantiate
-        ransTeeResMean = teeResMean.TeeResMeanEvolution(
-            params.getForProp('prop')['dataout'],
+        ransTeeResMean = TeeResMeanEvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
             params.getForProp('prop')['ig'],
             params.getForProp('prop')['prefix'])
 
@@ -204,18 +227,19 @@ class EvolMasterPlot:
     def execEvolX0002(self):
         params = self.params
 
-        # instantiate 		
-        ransX0002Evol = x2evol.X0002Evolution(params.getForProp('prop')['dataout'],
-                                              params.getForProp('prop')['ig'],
-                                              params.getForProp('prop')['prefix'])
+        # instantiate
+        ransX0002 = X0002EvolutionResolutionStudy(
+            params.getForProp('prop')['eht_data'],
+            params.getForProp('prop')['ig'],
+            params.getForProp('prop')['prefix'])
 
-        # plot evolution of x0002	   
-        ransX0002Evol.plot_x0002(params.getForProp('prop')['laxis'],
-                                 params.getForEvol('x0002evol')['xbl'],
-                                 params.getForEvol('x0002evol')['xbr'],
-                                 params.getForEvol('x0002evol')['ybu'],
-                                 params.getForEvol('x0002evol')['ybd'],
-                                 params.getForEvol('x0002evol')['ilg'])
+        # plot turbulent kinetic energy evolution
+        ransX0002.plot_x0002_evolution(params.getForProp('prop')['laxis'],
+                                       params.getForEvol('x0002evol')['xbl'],
+                                       params.getForEvol('x0002evol')['xbr'],
+                                       params.getForEvol('x0002evol')['ybu'],
+                                       params.getForEvol('x0002evol')['ybd'],
+                                       params.getForEvol('x0002evol')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

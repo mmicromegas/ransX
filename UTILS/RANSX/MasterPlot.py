@@ -1,97 +1,98 @@
-import EQUATIONS.ContinuityEquationWithMassFlux as contfdd
-import EQUATIONS.ContinuityEquationWithFavrianDilatation as contfdil
+from EQUATIONS.ContinuityEquationWithMassFlux import ContinuityEquationWithMassFlux
+from EQUATIONS.ContinuityEquationWithFavrianDilatation import ContinuityEquationWithFavrianDilatation
 
-import EQUATIONS.MomentumEquationX as momx
-import EQUATIONS.MomentumEquationY as momy
-import EQUATIONS.MomentumEquationZ as momz
+from EQUATIONS.MomentumEquationX import MomentumEquationX
+from EQUATIONS.MomentumEquationY import MomentumEquationY
+from EQUATIONS.MomentumEquationZ import MomentumEquationZ
 
-import EQUATIONS.ReynoldsStressXXequation as rxx
-import EQUATIONS.ReynoldsStressYYequation as ryy
-import EQUATIONS.ReynoldsStressZZequation as rzz
+from EQUATIONS.ReynoldsStressXXequation import ReynoldsStressXXequation
+from EQUATIONS.ReynoldsStressYYequation import ReynoldsStressYYequation
+from EQUATIONS.ReynoldsStressZZequation import ReynoldsStressZZequation
 
-import EQUATIONS.TurbulentKineticEnergyEquation as tke
-import EQUATIONS.TurbulentKineticEnergyEquationRadial as rtke
-import EQUATIONS.TurbulentKineticEnergyEquationHorizontal as htke
+from EQUATIONS.TurbulentKineticEnergyEquation import TurbulentKineticEnergyEquation
+from EQUATIONS.TurbulentKineticEnergyEquationRadial import TurbulentKineticEnergyEquationRadial
+from EQUATIONS.TurbulentKineticEnergyEquationHorizontal import TurbulentKineticEnergyEquationHorizontal
 
-import EQUATIONS.InternalEnergyEquation as ei
-import EQUATIONS.InternalEnergyFluxEquation as feix
-import EQUATIONS.InternalEnergyVarianceEquation as sigmaei
+from EQUATIONS.InternalEnergyEquation import InternalEnergyEquation
+from EQUATIONS.InternalEnergyFluxEquation import InternalEnergyFluxEquation
+from EQUATIONS.InternalEnergyVarianceEquation import InternalEnergyVarianceEquation
 
-import EQUATIONS.KineticEnergyEquation as ek
-import EQUATIONS.TotalEnergyEquation as et
+from EQUATIONS.KineticEnergyEquation import KineticEnergyEquation
+from EQUATIONS.TotalEnergyEquation import TotalEnergyEquation
 
-import EQUATIONS.EntropyEquation as ss
-import EQUATIONS.EntropyFluxEquation as fssx
-import EQUATIONS.EntropyVarianceEquation as sigmass
+from EQUATIONS.EntropyEquation import EntropyEquation
+from EQUATIONS.EntropyFluxEquation import EntropyFluxEquation
+from EQUATIONS.EntropyVarianceEquation import EntropyVarianceEquation
 
-import EQUATIONS.PressureEquation as pp
+from EQUATIONS.PressureEquation import PressureEquation
 
-import EQUATIONS.PressureFluxXequation as fppx
-import EQUATIONS.PressureFluxYequation as fppy
-import EQUATIONS.PressureFluxZequation as fppz
+from EQUATIONS.PressureFluxXequation import PressureFluxXequation
+from EQUATIONS.PressureFluxYequation import PressureFluxYequation
+from EQUATIONS.PressureFluxZequation import PressureFluxZequation
 
-import EQUATIONS.PressureVarianceEquation as sigmapp
+from EQUATIONS.PressureVarianceEquation import PressureVarianceEquation
 
-import EQUATIONS.TemperatureEquation as tt
-import EQUATIONS.TemperatureFluxEquation as fttx
-import EQUATIONS.TemperatureVarianceEquation as sigmatt
+from EQUATIONS.TemperatureEquation import TemperatureEquation
+from EQUATIONS.TemperatureFluxEquation import TemperatureFluxEquation
+from EQUATIONS.TemperatureVarianceEquation import TemperatureVarianceEquation
 
-import EQUATIONS.EnthalpyEquation as hh
-import EQUATIONS.EnthalpyFluxEquation as fhhx
-import EQUATIONS.EnthalpyVarianceEquation as sigmahh
+from EQUATIONS.EnthalpyEquation import EnthalpyEquation
+from EQUATIONS.EnthalpyFluxEquation import EnthalpyFluxEquation
+from EQUATIONS.EnthalpyVarianceEquation import EnthalpyVarianceEquation
 
-import EQUATIONS.DensityVarianceEquation as sigmadd
-import EQUATIONS.TurbulentMassFluxEquation as a
-import EQUATIONS.DensitySpecificVolumeCovarianceEquation as b
+from EQUATIONS.DensityVarianceEquation import DensityVarianceEquation
+from EQUATIONS.TurbulentMassFluxEquation import TurbulentMassFluxEquation
+from EQUATIONS.DensitySpecificVolumeCovarianceEquation import DensitySpecificVolumeCovarianceEquation
 
-import EQUATIONS.XtransportEquation as xtra
+from EQUATIONS.XtransportEquation import XtransportEquation
 
-import EQUATIONS.XfluxXequation as xflxx
-import EQUATIONS.XfluxYequation as xflxy
-import EQUATIONS.XfluxZequation as xflxz
+from EQUATIONS.XfluxXequation import XfluxXequation
+from EQUATIONS.XfluxYequation import XfluxYequation
+from EQUATIONS.XfluxZequation import XfluxZequation
 
-import EQUATIONS.XvarianceEquation as xvar
-import EQUATIONS.Xdiffusivity as xdiff
-import EQUATIONS.XdamkohlerNumber as xda
+from EQUATIONS.XvarianceEquation import XvarianceEquation
+from EQUATIONS.Xdiffusivity import Xdiffusivity
+from EQUATIONS.XdamkohlerNumber import XdamkohlerNumber
 
-import EQUATIONS.AbarTransportEquation as abar
-import EQUATIONS.ZbarTransportEquation as zbar
+from EQUATIONS.AbarTransportEquation import AbarTransportEquation
+from EQUATIONS.ZbarTransportEquation import ZbarTransportEquation
 
-import EQUATIONS.AbarFluxTransportEquation as fabarx
-import EQUATIONS.ZbarFluxTransportEquation as fzbarx
+from EQUATIONS.AbarFluxTransportEquation import AbarFluxTransportEquation
+from EQUATIONS.ZbarFluxTransportEquation import ZbarFluxTransportEquation
 
-import EQUATIONS.TemperatureDensity as ttdd
-import EQUATIONS.PressureInternalEnergy as ppei
-import EQUATIONS.NuclearEnergyProduction as enuc
-import EQUATIONS.Gravity as grav
-import EQUATIONS.TemperatureGradients as nablas
-import EQUATIONS.Degeneracy as psi
-import EQUATIONS.VelocitiesMeanExp as velmeanexp
-import EQUATIONS.VelocitiesMLTturb as velmltturb
-import EQUATIONS.RelativeRMSflct as rms
-import EQUATIONS.AbarZbar as abarzbar
-import EQUATIONS.BruntVaisalla as bruntv
-import EQUATIONS.Buoyancy as buo
+from EQUATIONS.TemperatureDensity import TemperatureDensity
+from EQUATIONS.PressureInternalEnergy import PressureInternalEnergy
+from EQUATIONS.NuclearEnergyProduction import NuclearEnergyProduction
+from EQUATIONS.Gravity import Gravity
+from EQUATIONS.TemperatureGradients import TemperatureGradients
+from EQUATIONS.Degeneracy import Degeneracy
+from EQUATIONS.VelocitiesMeanExp import VelocitiesMeanExp
+from EQUATIONS.VelocitiesMLTturb import VelocitiesMLTturb
+from EQUATIONS.RelativeRMSflct import RelativeRMSflct
+from EQUATIONS.AbarZbar import AbarZbar
+from EQUATIONS.BruntVaisalla import BruntVaisalla
+from EQUATIONS.Buoyancy import Buoyancy
 
 # import classes for hydrodynamic stellar structure equations
-import EQUATIONS.HsseContinuityEquation as hssecont
-import EQUATIONS.HsseMomentumEquationX as hssemomx
-import EQUATIONS.HsseTemperatureEquation as hssetemp
-import EQUATIONS.HsseLuminosityEquation as hsselumi
-import EQUATIONS.HsseXtransportEquation as hssecomp
+from EQUATIONS.HsseContinuityEquation import HsseContinuityEquation
+from EQUATIONS.HsseMomentumEquationX import HsseMomentumEquationX
+from EQUATIONS.HsseTemperatureEquation import HsseTemperatureEquation
+from EQUATIONS.HsseLuminosityEquation import HsseLuminosityEquation
+from EQUATIONS.HsseXtransportEquation import HsseXtransportEquation
 
-# import class for full turbulence velocity field hypothesis
-import EQUATIONS.FullTurbulenceVelocityFieldHypothesisX as ftvfhX
-import EQUATIONS.FullTurbulenceVelocityFieldHypothesisY as ftvfhY
-import EQUATIONS.FullTurbulenceVelocityFieldHypothesisZ as ftvfhZ
+# from class for full turbulence velocity field hypothesis
+from EQUATIONS.FullTurbulenceVelocityFieldHypothesisX import FullTurbulenceVelocityFieldHypothesisX
+from EQUATIONS.FullTurbulenceVelocityFieldHypothesisY import FullTurbulenceVelocityFieldHypothesisY
+from EQUATIONS.FullTurbulenceVelocityFieldHypothesisZ import FullTurbulenceVelocityFieldHypothesisZ
 
-import EQUATIONS.UxfpdIdentity as uxfpd
-import EQUATIONS.UyfpdIdentity as uyfpd
-import EQUATIONS.UzfpdIdentity as uzfpd
+from EQUATIONS.UxfpdIdentity import UxfpdIdentity
+from EQUATIONS.UyfpdIdentity import UyfpdIdentity
+from EQUATIONS.UzfpdIdentity import UzfpdIdentity
 
-import EQUATIONS.DivuDilatation as divu
+from EQUATIONS.DivuDilatation import DivuDilatation
 
 import matplotlib.pyplot as plt
+
 
 class MasterPlot():
 
@@ -102,7 +103,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+        ransCONT = ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
                                                                     params.getForProp('prop')['ig'],
                                                                     params.getForProp('prop')['fext'],
                                                                     params.getForProp('prop')['intc'],
@@ -129,7 +130,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+        ransCONT = ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
                                                                     params.getForProp('prop')['ig'],
                                                                     params.getForProp('prop')['fext'],
                                                                     params.getForProp('prop')['intc'],
@@ -149,7 +150,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+        ransCONT = ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
                                                                     params.getForProp('prop')['ig'],
                                                                     params.getForProp('prop')['fext'],
                                                                     params.getForProp('prop')['intc'],
@@ -167,7 +168,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],
+        ransCONTfdd = ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],
                                                              params.getForProp('prop')['ig'],
                                                              params.getForProp('prop')['fext'],
                                                              params.getForProp('prop')['intc'],
@@ -184,18 +185,18 @@ class MasterPlot():
                                              params.getForEqs('conteqfdd')['ilg'])
 
         ransCONTfdd.plot_Frho_space_time(params.getForProp('prop')['laxis'],
-                                             bconv, tconv,
-                                             params.getForEqs('conteqfdd')['xbl'],
-                                             params.getForEqs('conteqfdd')['xbr'],
-                                             params.getForEqs('conteqfdd')['ybu'],
-                                             params.getForEqs('conteqfdd')['ybd'],
-                                             params.getForEqs('conteqfdd')['ilg'])
+                                         bconv, tconv,
+                                         params.getForEqs('conteqfdd')['xbl'],
+                                         params.getForEqs('conteqfdd')['xbr'],
+                                         params.getForEqs('conteqfdd')['ybu'],
+                                         params.getForEqs('conteqfdd')['ybd'],
+                                         params.getForEqs('conteqfdd')['ilg'])
 
     def execContFddEqBar(self):
         params = self.params
 
         # instantiate 
-        ransCONTfdd = contfdd.ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],
+        ransCONTfdd = ContinuityEquationWithMassFlux(params.getForProp('prop')['eht_data'],
                                                              params.getForProp('prop')['ig'],
                                                              params.getForProp('prop')['fext'],
                                                              params.getForProp('prop')['intc'],
@@ -213,7 +214,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ranshssecont = hssecont.HsseContinuityEquation(params.getForProp('prop')['eht_data'],
+        ranshssecont = HsseContinuityEquation(params.getForProp('prop')['eht_data'],
                                                        params.getForProp('prop')['ig'],
                                                        params.getForProp('prop')['ieos'],
                                                        params.getForProp('prop')['fext'],
@@ -247,19 +248,19 @@ class MasterPlot():
 
         # plot continuity equation alternative simplified - cracking on velocities
 
-    #        ranshssecont.plot_velocities(params.getForProp('prop')['laxis'],\
-    #                                             params.getForEqs('cteqhsse')['xbl'],\
-    #                                             params.getForEqs('cteqhsse')['xbr'],\
-    #                                             params.getForEqs('cteqhsse')['ybu'],\
-    #                                             params.getForEqs('cteqhsse')['ybd'],\
-    #                                             params.getForEqs('cteqhsse')['ilg'])
+        #        ranshssecont.plot_velocities(params.getForProp('prop')['laxis'],\
+        #                                             params.getForEqs('cteqhsse')['xbl'],\
+        #                                             params.getForEqs('cteqhsse')['xbr'],\
+        #                                             params.getForEqs('cteqhsse')['ybu'],\
+        #                                             params.getForEqs('cteqhsse')['ybd'],\
+        #                                             params.getForEqs('cteqhsse')['ilg'])
 
-        ranshssecont.plot_dilatation_flux(params.getForProp('prop')['laxis'],\
-                                                 params.getForEqs('cteqhsse')['xbl'],\
-                                                 params.getForEqs('cteqhsse')['xbr'],\
-                                                 params.getForEqs('cteqhsse')['ybu'],\
-                                                 params.getForEqs('cteqhsse')['ybd'],\
-                                                 params.getForEqs('cteqhsse')['ilg'])
+        ranshssecont.plot_dilatation_flux(params.getForProp('prop')['laxis'],
+                                          params.getForEqs('cteqhsse')['xbl'],
+                                          params.getForEqs('cteqhsse')['xbr'],
+                                          params.getForEqs('cteqhsse')['ybu'],
+                                          params.getForEqs('cteqhsse')['ybd'],
+                                          params.getForEqs('cteqhsse')['ilg'])
 
     #        ranshssecont.plot_mass_flux_acceleration(params.getForProp('prop')['laxis'],\
     #                                             params.getForEqs('cteqhsse')['xbl'],\
@@ -272,7 +273,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ranshssemomx = hssemomx.HsseMomentumEquationX(params.getForProp('prop')['eht_data'],
+        ranshssemomx = HsseMomentumEquationX(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['ieos'],
                                                       params.getForProp('prop')['fext'],
@@ -308,7 +309,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ranshssetemp = hssetemp.HsseTemperatureEquation(params.getForProp('prop')['eht_data'],
+        ranshssetemp = HsseTemperatureEquation(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
                                                         params.getForProp('prop')['ieos'],
                                                         params.getForProp('prop')['fext'],
@@ -344,7 +345,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ranshsselumi = hsselumi.HsseLuminosityEquation(params.getForProp('prop')['eht_data'],
+        ranshsselumi = HsseLuminosityEquation(params.getForProp('prop')['eht_data'],
                                                        params.getForProp('prop')['ig'],
                                                        params.getForProp('prop')['ieos'],
                                                        params.getForProp('prop')['fext'],
@@ -353,7 +354,7 @@ class MasterPlot():
                                                        params.getForProp('prop')['prefix'])
 
         # plot hsse luminosity equation						       
-        #ranshsselumi.plot_luminosity_equation(params.getForProp('prop')['laxis'],
+        # ranshsselumi.plot_luminosity_equation(params.getForProp('prop')['laxis'],
         #                                      params.getForEqs('lueqhsse')['xbl'],
         #                                      params.getForEqs('lueqhsse')['xbr'],
         #                                      params.getForEqs('lueqhsse')['ybu'],
@@ -377,7 +378,7 @@ class MasterPlot():
                                                      params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative
-        #ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
+        # ranshsselumi.plot_luminosity_equation_2(params.getForProp('prop')['laxis'],
         #                                        params.getForEqs('lueqhsse')['xbl'],
         #                                        params.getForEqs('lueqhsse')['xbr'],
         #                                        params.getForEqs('lueqhsse')['ybu'],
@@ -385,7 +386,7 @@ class MasterPlot():
         #                                        params.getForEqs('lueqhsse')['ilg'])
 
         # plot hsse luminosity equation alternative simplified						       
-        #ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],
+        # ranshsselumi.plot_luminosity_equation_3(params.getForProp('prop')['laxis'],
         #                                        params.getForEqs('lueqhsse')['xbl'],
         #                                        params.getForEqs('lueqhsse')['xbr'],
         #                                        params.getForEqs('lueqhsse')['ybu'],
@@ -396,7 +397,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ranshssecomp = hssecomp.HsseXtransportEquation(params.getForProp('prop')['eht_data'],
+        ranshssecomp = HsseXtransportEquation(params.getForProp('prop')['eht_data'],
                                                        params.getForProp('prop')['ig'],
                                                        params.getForProp('prop')['fext'],
                                                        inuc, element, bconv, tconv,
@@ -414,7 +415,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+        ransXtra = XtransportEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
@@ -448,7 +449,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+        ransXtra = XtransportEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
@@ -460,11 +461,11 @@ class MasterPlot():
         if params.getForProp('prop')['plabel'] == "oburn":
 
             ransXtra.plot_X_with_MM(params.getForProp('prop')['laxis'],
-                            params.getForEqs(x)['xbl'],
-                            params.getForEqs(x)['xbr'],
-                            params.getForEqs(x)['ybu'],
-                            params.getForEqs(x)['ybd'],
-                            params.getForEqs(x)['ilg'])
+                                    params.getForEqs(x)['xbl'],
+                                    params.getForEqs(x)['xbr'],
+                                    params.getForEqs(x)['ybu'],
+                                    params.getForEqs(x)['ybd'],
+                                    params.getForEqs(x)['ilg'])
 
         else:
             ransXtra.plot_X(params.getForProp('prop')['laxis'],
@@ -475,20 +476,20 @@ class MasterPlot():
                             params.getForEqs(x)['ilg'])
 
         ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
-                           params.getForEqs(x)['xbl'],
-                           params.getForEqs(x)['xbr'],
-                           params.getForEqs(x)['ybu'],
-                           params.getForEqs(x)['ybd'],
-                           params.getForEqs(x)['ilg'])
+                                   params.getForEqs(x)['xbl'],
+                                   params.getForEqs(x)['xbr'],
+                                   params.getForEqs(x)['ybu'],
+                                   params.getForEqs(x)['ybd'],
+                                   params.getForEqs(x)['ilg'])
 
         ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
-                           params.getForEqs(x)['xbl'],
-                           params.getForEqs(x)['xbr'],
-                           params.getForEqs(x)['ybu'],
-                           params.getForEqs(x)['ybd'],
-                           params.getForEqs(x)['ilg'])
+                                      params.getForEqs(x)['xbl'],
+                                      params.getForEqs(x)['xbr'],
+                                      params.getForEqs(x)['ybu'],
+                                      params.getForEqs(x)['ybd'],
+                                      params.getForEqs(x)['ilg'])
 
-        #ransXtra.plot_Xm_with_MM(params.getForProp('prop')['laxis'],
+        # ransXtra.plot_Xm_with_MM(params.getForProp('prop')['laxis'],
         #                    params.getForEqs(x)['xbl'],
         #                    params.getForEqs(x)['xbr'],
         #                    params.getForEqs(x)['ybu'],
@@ -499,7 +500,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+        ransXtra = XtransportEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
@@ -519,7 +520,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXtra = xtra.XtransportEquation(params.getForProp('prop')['eht_data'],
+        ransXtra = XtransportEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['plabel'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
@@ -539,7 +540,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
+        ransXflxx = XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
                                          params.getForProp('prop')['ieos'],
                                          params.getForProp('prop')['fext'],
@@ -548,7 +549,7 @@ class MasterPlot():
                                          params.getForProp('prop')['nsdim'],
                                          params.getForProp('prop')['prefix'])
 
-        #ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
+        # ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
         #                      params.getForEqs(x)['xbr'],
         #                      params.getForEqs(x)['ybu'],
@@ -569,7 +570,7 @@ class MasterPlot():
         #                      params.getForEqs(x)['ybd'],
         #                      params.getForEqs(x)['ilg'])
 
-        #ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
+        # ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
         #                                params.getForEqs(x)['xbl'],
         #                                params.getForEqs(x)['xbr'],
         #                                params.getForEqs(x)['ybu'],
@@ -583,7 +584,7 @@ class MasterPlot():
         #                              params.getForEqs(x)['ybd'],
         #                              params.getForEqs(x)['ilg'])
 
-        #ransXflxx.plot_XfluxX2(params.getForProp('prop')['laxis'],
+        # ransXflxx.plot_XfluxX2(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
         #                      params.getForEqs(x)['xbr'],
         #                      params.getForEqs(x)['ybu'],
@@ -594,7 +595,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXflxx = xflxx.XfluxXequation(params.getForProp('prop')['eht_data'],
+        ransXflxx = XfluxXequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
                                          params.getForProp('prop')['ieos'],
                                          params.getForProp('prop')['fext'],
@@ -621,7 +622,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransXflxy = xflxy.XfluxYequation(params.getForProp('prop')['eht_data'],
+        ransXflxy = XfluxYequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
                                          inuc, element, bconv, tconv, tke_diss, tauL,
                                          params.getForProp('prop')['intc'],
@@ -638,7 +639,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXflxy = xflxy.XfluxYequation(params.getForProp('prop')['eht_data'],
+        ransXflxy = XfluxYequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
                                          inuc, element, bconv, tconv, tke_diss, tauL,
                                          params.getForProp('prop')['intc'],
@@ -655,7 +656,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransXflxz = xflxz.XfluxZequation(params.getForProp('prop')['eht_data'],
+        ransXflxz = XfluxZequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
                                          inuc, element, bconv, tconv, tke_diss, tauL,
                                          params.getForProp('prop')['intc'],
@@ -672,7 +673,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXflxz = xflxz.XfluxZequation(params.getForProp('prop')['eht_data'],
+        ransXflxz = XfluxZequation(params.getForProp('prop')['eht_data'],
                                          params.getForProp('prop')['ig'],
                                          inuc, element, bconv, tconv, tke_diss, tauL,
                                          params.getForProp('prop')['intc'],
@@ -690,7 +691,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransXvar = xvar.XvarianceEquation(params.getForProp('prop')['eht_data'],
+        ransXvar = XvarianceEquation(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           inuc, element, tauL, bconv, tconv,
                                           params.getForProp('prop')['intc'],
@@ -708,7 +709,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXvar = xvar.XvarianceEquation(params.getForProp('prop')['eht_data'],
+        ransXvar = XvarianceEquation(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           inuc, element, tauL, bconv, tconv,
                                           params.getForProp('prop')['intc'],
@@ -726,7 +727,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransXdiff = xdiff.Xdiffusivity(params.getForProp('prop')['eht_data'],
+        ransXdiff = Xdiffusivity(params.getForProp('prop')['eht_data'],
                                        params.getForProp('prop')['ig'],
                                        params.getForProp('prop')['fext'],
                                        params.getForProp('prop')['ieos'],
@@ -735,7 +736,7 @@ class MasterPlot():
                                        params.getForProp('prop')['intc'],
                                        params.getForProp('prop')['prefix'])
 
-        #ransXdiff.plot_X_Ediffusivity(params.getForProp('prop')['laxis'],
+        # ransXdiff.plot_X_Ediffusivity(params.getForProp('prop')['laxis'],
         #                              params.getForEqs(x)['xbl'],
         #                              params.getForEqs(x)['xbr'],
         #                              params.getForEqs(x)['ybu'],
@@ -743,17 +744,17 @@ class MasterPlot():
         #                              params.getForEqs(x)['ilg'])
 
         ransXdiff.plot_X_Ediffusivity2(params.getForProp('prop')['laxis'],
-                                      params.getForEqs(x)['xbl'],
-                                      params.getForEqs(x)['xbr'],
-                                      params.getForEqs(x)['ybu'],
-                                      params.getForEqs(x)['ybd'],
-                                      params.getForEqs(x)['ilg'])
+                                       params.getForEqs(x)['xbl'],
+                                       params.getForEqs(x)['xbr'],
+                                       params.getForEqs(x)['ybu'],
+                                       params.getForEqs(x)['ybd'],
+                                       params.getForEqs(x)['ilg'])
 
     def execXda(self, inuc, element, x, bconv, tconv):
         params = self.params
 
         # instantiate 
-        ransXda = xda.XdamkohlerNumber(params.getForProp('prop')['eht_data'],
+        ransXda = XdamkohlerNumber(params.getForProp('prop')['eht_data'],
                                        params.getForProp('prop')['ig'],
                                        inuc, element, bconv, tconv,
                                        params.getForProp('prop')['intc'],
@@ -770,7 +771,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransTke = TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['nsdim'],
@@ -788,11 +789,11 @@ class MasterPlot():
                          params.getForEqs('tkie')['ilg'])
 
         ransTke.plot_TKE_space_time(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeeq')['xbl'],
-                                  params.getForEqs('tkeeq')['xbr'],
-                                  params.getForEqs('tkeeq')['ybu'],
-                                  params.getForEqs('tkeeq')['ybd'],
-                                  params.getForEqs('tkeeq')['ilg'])
+                                    params.getForEqs('tkeeq')['xbl'],
+                                    params.getForEqs('tkeeq')['xbr'],
+                                    params.getForEqs('tkeeq')['ybu'],
+                                    params.getForEqs('tkeeq')['ybd'],
+                                    params.getForEqs('tkeeq')['ilg'])
 
         # plot turbulent kinetic energy evolution	   
         # ransTke.plot_tke_evolution()
@@ -804,7 +805,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransTke = TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['nsdim'],
@@ -824,7 +825,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransTke = TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['nsdim'],
@@ -834,38 +835,38 @@ class MasterPlot():
 
         # plot turbulent kinetic energy equation
         ransTke.plot_tke_equation_integral_budget(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeeqBar')['xbl'],
-                                  params.getForEqs('tkeeqBar')['xbr'],
-                                  params.getForEqs('tkeeqBar')['ybu'],
-                                  params.getForEqs('tkeeqBar')['ybd'])
+                                                  params.getForEqs('tkeeqBar')['xbl'],
+                                                  params.getForEqs('tkeeqBar')['xbr'],
+                                                  params.getForEqs('tkeeqBar')['ybu'],
+                                                  params.getForEqs('tkeeqBar')['ybd'])
 
     def execTkeRadial(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate
-        ransTkeR = rtke.TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
-                                                     params.getForProp('prop')['ig'],
-                                                     params.getForProp('prop')['intc'],
-                                                     params.getForProp('prop')['nsdim'],
-                                                     kolmdissrate, bconv, tconv,
-                                                     super_ad_i, super_ad_o,
-                                                     params.getForProp('prop')['prefix'])
+        ransTkeR = TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
+                                                             params.getForProp('prop')['ig'],
+                                                             params.getForProp('prop')['intc'],
+                                                             params.getForProp('prop')['nsdim'],
+                                                             kolmdissrate, bconv, tconv,
+                                                             super_ad_i, super_ad_o,
+                                                             params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy
         ransTkeR.plot_tkeRadial(params.getForProp('prop')['laxis'],
-                         bconv, tconv,
-                         params.getForEqs('tkieR')['xbl'],
-                         params.getForEqs('tkieR')['xbr'],
-                         params.getForEqs('tkieR')['ybu'],
-                         params.getForEqs('tkieR')['ybd'],
-                         params.getForEqs('tkieR')['ilg'])
+                                bconv, tconv,
+                                params.getForEqs('tkieR')['xbl'],
+                                params.getForEqs('tkieR')['xbr'],
+                                params.getForEqs('tkieR')['ybu'],
+                                params.getForEqs('tkieR')['ybd'],
+                                params.getForEqs('tkieR')['ilg'])
 
         ransTkeR.plot_TKEradial_space_time(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeReq')['xbl'],
-                                  params.getForEqs('tkeReq')['xbr'],
-                                  params.getForEqs('tkeReq')['ybu'],
-                                  params.getForEqs('tkeReq')['ybd'],
-                                  params.getForEqs('tkeReq')['ilg'])
+                                           params.getForEqs('tkeReq')['xbl'],
+                                           params.getForEqs('tkeReq')['xbr'],
+                                           params.getForEqs('tkeReq')['ybu'],
+                                           params.getForEqs('tkeReq')['ybd'],
+                                           params.getForEqs('tkeReq')['ilg'])
 
         # plot turbulent kinetic energy evolution
         # ransTke.plot_tke_evolution()
@@ -877,69 +878,68 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransTkeR = rtke.TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
-                                                     params.getForProp('prop')['ig'],
-                                                     params.getForProp('prop')['intc'],
-                                                     params.getForProp('prop')['nsdim'],
-                                                     kolmdissrate, bconv, tconv,
-                                                     super_ad_i, super_ad_o,
-                                                     params.getForProp('prop')['prefix'])
+        ransTkeR = TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
+                                                             params.getForProp('prop')['ig'],
+                                                             params.getForProp('prop')['intc'],
+                                                             params.getForProp('prop')['nsdim'],
+                                                             kolmdissrate, bconv, tconv,
+                                                             super_ad_i, super_ad_o,
+                                                             params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation
         ransTkeR.plot_tkeRadial_equation(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeReq')['xbl'],
-                                  params.getForEqs('tkeReq')['xbr'],
-                                  params.getForEqs('tkeReq')['ybu'],
-                                  params.getForEqs('tkeReq')['ybd'],
-                                  params.getForEqs('tkeReq')['ilg'])
+                                         params.getForEqs('tkeReq')['xbl'],
+                                         params.getForEqs('tkeReq')['xbr'],
+                                         params.getForEqs('tkeReq')['ybu'],
+                                         params.getForEqs('tkeReq')['ybd'],
+                                         params.getForEqs('tkeReq')['ilg'])
 
     def execTkeEqRadialBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate
-        ransTkeR = rtke.TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
-                                                     params.getForProp('prop')['ig'],
-                                                     params.getForProp('prop')['intc'],
-                                                     params.getForProp('prop')['nsdim'],
-                                                     kolmdissrate, bconv, tconv,
-                                                     super_ad_i, super_ad_o,
-                                                     params.getForProp('prop')['prefix'])
+        ransTkeR = TurbulentKineticEnergyEquationRadial(params.getForProp('prop')['eht_data'],
+                                                             params.getForProp('prop')['ig'],
+                                                             params.getForProp('prop')['intc'],
+                                                             params.getForProp('prop')['nsdim'],
+                                                             kolmdissrate, bconv, tconv,
+                                                             super_ad_i, super_ad_o,
+                                                             params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation
         ransTkeR.plot_tkeRadial_equation_integral_budget(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeReqBar')['xbl'],
-                                  params.getForEqs('tkeReqBar')['xbr'],
-                                  params.getForEqs('tkeReqBar')['ybu'],
-                                  params.getForEqs('tkeReqBar')['ybd'])
-
+                                                         params.getForEqs('tkeReqBar')['xbl'],
+                                                         params.getForEqs('tkeReqBar')['xbr'],
+                                                         params.getForEqs('tkeReqBar')['ybu'],
+                                                         params.getForEqs('tkeReqBar')['ybd'])
 
     def execTkeHorizontal(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate
-        ransTkeH = htke.TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
-                                                     params.getForProp('prop')['ig'],
-                                                     params.getForProp('prop')['intc'],
-                                                     params.getForProp('prop')['nsdim'],
-                                                     kolmdissrate, bconv, tconv,
-                                                     super_ad_i, super_ad_o,
-                                                     params.getForProp('prop')['prefix'])
+        ransTkeH = TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
+                                                                 params.getForProp('prop')['ig'],
+                                                                 params.getForProp('prop')['intc'],
+                                                                 params.getForProp('prop')['nsdim'],
+                                                                 kolmdissrate, bconv, tconv,
+                                                                 super_ad_i, super_ad_o,
+                                                                 params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy
         ransTkeH.plot_tkeHorizontal(params.getForProp('prop')['laxis'],
-                         bconv, tconv,
-                         params.getForEqs('tkieH')['xbl'],
-                         params.getForEqs('tkieH')['xbr'],
-                         params.getForEqs('tkieH')['ybu'],
-                         params.getForEqs('tkieH')['ybd'],
-                         params.getForEqs('tkieH')['ilg'])
+                                    bconv, tconv,
+                                    params.getForEqs('tkieH')['xbl'],
+                                    params.getForEqs('tkieH')['xbr'],
+                                    params.getForEqs('tkieH')['ybu'],
+                                    params.getForEqs('tkieH')['ybd'],
+                                    params.getForEqs('tkieH')['ilg'])
 
         ransTkeH.plot_TKEhorizontal_space_time(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeHeq')['xbl'],
-                                  params.getForEqs('tkeHeq')['xbr'],
-                                  params.getForEqs('tkeHeq')['ybu'],
-                                  params.getForEqs('tkeHeq')['ybd'],
-                                  params.getForEqs('tkeHeq')['ilg'])
+                                               params.getForEqs('tkeHeq')['xbl'],
+                                               params.getForEqs('tkeHeq')['xbr'],
+                                               params.getForEqs('tkeHeq')['ybu'],
+                                               params.getForEqs('tkeHeq')['ybd'],
+                                               params.getForEqs('tkeHeq')['ilg'])
 
         # plot turbulent kinetic energy evolution
         # ransTke.plot_tke_evolution()
@@ -951,47 +951,46 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransTkeH = htke.TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
-                                                     params.getForProp('prop')['ig'],
-                                                     params.getForProp('prop')['intc'],
-                                                     params.getForProp('prop')['nsdim'],
-                                                     kolmdissrate, bconv, tconv,
-                                                     super_ad_i, super_ad_o,
-                                                     params.getForProp('prop')['prefix'])
+        ransTkeH = TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
+                                                                 params.getForProp('prop')['ig'],
+                                                                 params.getForProp('prop')['intc'],
+                                                                 params.getForProp('prop')['nsdim'],
+                                                                 kolmdissrate, bconv, tconv,
+                                                                 super_ad_i, super_ad_o,
+                                                                 params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation
         ransTkeH.plot_tkeHorizontal_equation(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeHeq')['xbl'],
-                                  params.getForEqs('tkeHeq')['xbr'],
-                                  params.getForEqs('tkeHeq')['ybu'],
-                                  params.getForEqs('tkeHeq')['ybd'],
-                                  params.getForEqs('tkeHeq')['ilg'])
+                                             params.getForEqs('tkeHeq')['xbl'],
+                                             params.getForEqs('tkeHeq')['xbr'],
+                                             params.getForEqs('tkeHeq')['ybu'],
+                                             params.getForEqs('tkeHeq')['ybd'],
+                                             params.getForEqs('tkeHeq')['ilg'])
 
     def execTkeEqHorizontalBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate
-        ransTkeH = htke.TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
-                                                     params.getForProp('prop')['ig'],
-                                                     params.getForProp('prop')['intc'],
-                                                     params.getForProp('prop')['nsdim'],
-                                                     kolmdissrate, bconv, tconv,
-                                                     super_ad_i, super_ad_o,
-                                                     params.getForProp('prop')['prefix'])
+        ransTkeH = TurbulentKineticEnergyEquationHorizontal(params.getForProp('prop')['eht_data'],
+                                                                 params.getForProp('prop')['ig'],
+                                                                 params.getForProp('prop')['intc'],
+                                                                 params.getForProp('prop')['nsdim'],
+                                                                 kolmdissrate, bconv, tconv,
+                                                                 super_ad_i, super_ad_o,
+                                                                 params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation
         ransTkeH.plot_tkeHorizontal_equation_integral_budget(params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeHeqBar')['xbl'],
-                                  params.getForEqs('tkeHeqBar')['xbr'],
-                                  params.getForEqs('tkeHeqBar')['ybu'],
-                                  params.getForEqs('tkeHeqBar')['ybd'])
-
+                                                             params.getForEqs('tkeHeqBar')['xbl'],
+                                                             params.getForEqs('tkeHeqBar')['xbr'],
+                                                             params.getForEqs('tkeHeqBar')['ybu'],
+                                                             params.getForEqs('tkeHeqBar')['ybd'])
 
     def execMomx(self, bconv, tconv):
         params = self.params
 
         # instantiate 		
-        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'],
+        ransMomx = MomentumEquationX(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1010,7 +1009,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'],
+        ransMomx = MomentumEquationX(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1029,7 +1028,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'],
+        ransMomy = MomentumEquationY(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1047,7 +1046,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'],
+        ransMomy = MomentumEquationY(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1065,7 +1064,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'],
+        ransMomz = MomentumEquationZ(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1083,7 +1082,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'],
+        ransMomz = MomentumEquationZ(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1102,7 +1101,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransEi = ei.InternalEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransEi = InternalEnergyEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
                                            params.getForProp('prop')['intc'],
@@ -1121,7 +1120,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransEi = ei.InternalEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransEi = InternalEnergyEquation(params.getForProp('prop')['eht_data'],
                                            params.getForProp('prop')['ig'],
                                            params.getForProp('prop')['fext'],
                                            params.getForProp('prop')['intc'],
@@ -1141,7 +1140,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransEiFlx = feix.InternalEnergyFluxEquation(params.getForProp('prop')['eht_data'],
+        ransEiFlx = InternalEnergyFluxEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     tke_diss,
@@ -1159,7 +1158,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransEiFlx = feix.InternalEnergyFluxEquation(params.getForProp('prop')['eht_data'],
+        ransEiFlx = InternalEnergyFluxEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     tke_diss,
@@ -1186,7 +1185,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransHHflx = fhhx.EnthalpyFluxEquation(params.getForProp('prop')['eht_data'],
+        ransHHflx = EnthalpyFluxEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['ieos'],
                                               params.getForProp('prop')['intc'],
@@ -1205,7 +1204,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransHHflx = fhhx.EnthalpyFluxEquation(params.getForProp('prop')['eht_data'],
+        ransHHflx = EnthalpyFluxEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['ieos'],
                                               params.getForProp('prop')['intc'],
@@ -1226,7 +1225,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransHHvar = sigmahh.EnthalpyVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransHHvar = EnthalpyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['ieos'],
                                                      params.getForProp('prop')['intc'],
@@ -1245,7 +1244,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransHHvar = sigmahh.EnthalpyVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransHHvar = EnthalpyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['ieos'],
                                                      params.getForProp('prop')['intc'],
@@ -1266,7 +1265,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransEiVar = sigmaei.InternalEnergyVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransEiVar = InternalEnergyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                            params.getForProp('prop')['ig'],
                                                            params.getForProp('prop')['ieos'],
                                                            params.getForProp('prop')['intc'],
@@ -1285,7 +1284,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransEiVar = sigmaei.InternalEnergyVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransEiVar = InternalEnergyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                            params.getForProp('prop')['ig'],
                                                            params.getForProp('prop')['ieos'],
                                                            params.getForProp('prop')['intc'],
@@ -1305,7 +1304,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransSS = ss.EntropyEquation(params.getForProp('prop')['eht_data'],
+        ransSS = EntropyEquation(params.getForProp('prop')['eht_data'],
                                     params.getForProp('prop')['ig'],
                                     params.getForProp('prop')['fext'],
                                     params.getForProp('prop')['intc'],
@@ -1325,7 +1324,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransSS = ss.EntropyEquation(params.getForProp('prop')['eht_data'],
+        ransSS = EntropyEquation(params.getForProp('prop')['eht_data'],
                                     params.getForProp('prop')['ig'],
                                     params.getForProp('prop')['fext'],
                                     params.getForProp('prop')['intc'],
@@ -1346,7 +1345,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransSSflx = fssx.EntropyFluxEquation(params.getForProp('prop')['eht_data'],
+        ransSSflx = EntropyFluxEquation(params.getForProp('prop')['eht_data'],
                                              params.getForProp('prop')['ig'],
                                              params.getForProp('prop')['intc'],
                                              tke_diss,
@@ -1364,7 +1363,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransSSflx = fssx.EntropyFluxEquation(params.getForProp('prop')['eht_data'],
+        ransSSflx = EntropyFluxEquation(params.getForProp('prop')['eht_data'],
                                              params.getForProp('prop')['ig'],
                                              params.getForProp('prop')['intc'],
                                              tke_diss,
@@ -1392,7 +1391,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransSSvar = sigmass.EntropyVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransSSvar = EntropyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['nsdim'],
@@ -1411,7 +1410,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransSSvar = sigmass.EntropyVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransSSvar = EntropyVarianceEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['nsdim'],
@@ -1431,7 +1430,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransDDvar = sigmadd.DensityVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransDDvar = DensityVarianceEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     tauL,
@@ -1449,7 +1448,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransSSvar = sigmadd.DensityVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransSSvar = DensityVarianceEquation(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     tauL,
@@ -1467,7 +1466,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTMSflx = a.TurbulentMassFluxEquation(params.getForProp('prop')['eht_data'],
+        ransTMSflx = TurbulentMassFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['intc'],
                                                  params.getForProp('prop')['prefix'],
@@ -1485,7 +1484,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTMSflx = a.TurbulentMassFluxEquation(params.getForProp('prop')['eht_data'],
+        ransTMSflx = TurbulentMassFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['intc'],
                                                  params.getForProp('prop')['prefix'],
@@ -1503,7 +1502,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransDSVC = b.DensitySpecificVolumeCovarianceEquation(params.getForProp('prop')['eht_data'],
+        ransDSVC = DensitySpecificVolumeCovarianceEquation(params.getForProp('prop')['eht_data'],
                                                              params.getForProp('prop')['ig'],
                                                              params.getForProp('prop')['intc'],
                                                              params.getForProp('prop')['prefix'])
@@ -1520,7 +1519,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransDSVC = b.DensitySpecificVolumeCovarianceEquation(params.getForProp('prop')['eht_data'],
+        ransDSVC = DensitySpecificVolumeCovarianceEquation(params.getForProp('prop')['eht_data'],
                                                              params.getForProp('prop')['ig'],
                                                              params.getForProp('prop')['intc'],
                                                              params.getForProp('prop')['prefix'])
@@ -1537,7 +1536,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTempRho = ttdd.TemperatureDensity(params.getForProp('prop')['eht_data'],
+        ransTempRho = TemperatureDensity(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
                                               params.getForProp('prop')['prefix'])
@@ -1554,7 +1553,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPressEi = ppei.PressureInternalEnergy(params.getForProp('prop')['eht_data'],
+        ransPressEi = PressureInternalEnergy(params.getForProp('prop')['eht_data'],
                                                   params.getForProp('prop')['ig'],
                                                   params.getForProp('prop')['intc'],
                                                   params.getForProp('prop')['prefix'])
@@ -1571,12 +1570,12 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransEnuc = enuc.NuclearEnergyProduction(params.getForProp('prop')['eht_data'],
+        ransEnuc = NuclearEnergyProduction(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['intc'],
                                                 params.getForProp('prop')['prefix'])
 
-        #ransEnuc.plot_enuc(params.getForProp('prop')['laxis'],
+        # ransEnuc.plot_enuc(params.getForProp('prop')['laxis'],
         #                   bconv, tconv,
         #                   params.getForEqs('enuc')['xbl'],
         #                   params.getForEqs('enuc')['xbr'],
@@ -1585,12 +1584,12 @@ class MasterPlot():
         #                   params.getForEqs('enuc')['ilg'])
 
         ransEnuc.plot_enuc2(params.getForProp('prop')['laxis'],
-                           bconv, tconv,
-                           params.getForEqs('enuc')['xbl'],
-                           params.getForEqs('enuc')['xbr'],
-                           params.getForEqs('enuc')['ybu'],
-                           params.getForEqs('enuc')['ybd'],
-                           params.getForEqs('enuc')['ilg'])
+                            bconv, tconv,
+                            params.getForEqs('enuc')['xbl'],
+                            params.getForEqs('enuc')['xbr'],
+                            params.getForEqs('enuc')['ybu'],
+                            params.getForEqs('enuc')['ybd'],
+                            params.getForEqs('enuc')['ilg'])
 
         # ransEnuc.plot_enuc_per_volume(params.getForProp('prop')['laxis'], \
         #                              params.getForEqs('enuc')['xbl'], \
@@ -1603,7 +1602,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransGrav = grav.Gravity(params.getForProp('prop')['eht_data'],
+        ransGrav = Gravity(params.getForProp('prop')['eht_data'],
                                 params.getForProp('prop')['ig'],
                                 params.getForProp('prop')['intc'],
                                 params.getForProp('prop')['prefix'])
@@ -1620,7 +1619,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransNablas = nablas.TemperatureGradients(params.getForProp('prop')['eht_data'],
+        ransNablas = TemperatureGradients(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['fext'],
                                                  params.getForProp('prop')['ieos'],
@@ -1636,18 +1635,18 @@ class MasterPlot():
                                params.getForEqs('nablas')['ilg'])
 
         ransNablas.plot_nablas2(params.getForProp('prop')['laxis'],
-                               bconv, tconv, super_ad_i, super_ad_o,
-                               params.getForEqs('nablas')['xbl'],
-                               params.getForEqs('nablas')['xbr'],
-                               params.getForEqs('nablas')['ybu'],
-                               params.getForEqs('nablas')['ybd'],
-                               params.getForEqs('nablas')['ilg'])
+                                bconv, tconv, super_ad_i, super_ad_o,
+                                params.getForEqs('nablas')['xbl'],
+                                params.getForEqs('nablas')['xbr'],
+                                params.getForEqs('nablas')['ybu'],
+                                params.getForEqs('nablas')['ybd'],
+                                params.getForEqs('nablas')['ilg'])
 
     def execDegeneracy(self):
         params = self.params
 
         # instantiate 		
-        ransDeg = psi.Degeneracy(params.getForProp('prop')['eht_data'],
+        ransDeg = Degeneracy(params.getForProp('prop')['eht_data'],
                                  params.getForProp('prop')['ig'],
                                  params.getForProp('prop')['intc'],
                                  params.getForProp('prop')['prefix'])
@@ -1663,7 +1662,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransVelmeanExp = velmeanexp.VelocitiesMeanExp(params.getForProp('prop')['eht_data'],
+        ransVelmeanExp = VelocitiesMeanExp(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['intc'],
@@ -1678,11 +1677,11 @@ class MasterPlot():
                                        params.getForEqs('velbgr')['ybd'],
                                        params.getForEqs('velbgr')['ilg'])
 
-    def execVelocitiesMLTturb(self, bconv, tconv, uconv, super_ad_i, super_ad_o,):
+    def execVelocitiesMLTturb(self, bconv, tconv, uconv, super_ad_i, super_ad_o, ):
         params = self.params
 
         # instantiate 		
-        ransVelMLTturb = velmltturb.VelocitiesMLTturb(params.getForProp('prop')['eht_data'],
+        ransVelMLTturb = VelocitiesMLTturb(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['fext'],
                                                       params.getForProp('prop')['ieos'],
@@ -1702,7 +1701,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransBruntV = bruntv.BruntVaisalla(params.getForProp('prop')['eht_data'],
+        ransBruntV = BruntVaisalla(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['ieos'],
                                           params.getForProp('prop')['intc'],
@@ -1716,7 +1715,7 @@ class MasterPlot():
                                       params.getForEqs('nsq')['ybd'],
                                       params.getForEqs('nsq')['ilg'])
 
-        #ransBruntV.plot_ri(params.getForProp('prop')['laxis'],
+        # ransBruntV.plot_ri(params.getForProp('prop')['laxis'],
         #                              bconv, tconv,
         #                              params.getForEqs('nsq')['xbl'],
         #                              params.getForEqs('nsq')['xbr'],
@@ -1728,7 +1727,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransBuo = buo.Buoyancy(params.getForProp('prop')['eht_data'],
+        ransBuo = Buoyancy(params.getForProp('prop')['eht_data'],
                                params.getForProp('prop')['ig'],
                                params.getForProp('prop')['ieos'],
                                params.getForProp('prop')['intc'],
@@ -1746,7 +1745,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransRms = rms.RelativeRMSflct(params.getForProp('prop')['eht_data'],
+        ransRms = RelativeRMSflct(params.getForProp('prop')['eht_data'],
                                       params.getForProp('prop')['ig'],
                                       params.getForProp('prop')['ieos'],
                                       params.getForProp('prop')['intc'],
@@ -1761,7 +1760,7 @@ class MasterPlot():
                                        params.getForEqs('relrmsflct')['ybd'],
                                        params.getForEqs('relrmsflct')['ilg'])
 
-        #ransRms.plot_relative_rms_flct2(params.getForProp('prop')['laxis'],
+        # ransRms.plot_relative_rms_flct2(params.getForProp('prop')['laxis'],
         #                               bconv, tconv,
         #                               params.getForEqs('relrmsflct')['xbl'],
         #                               params.getForEqs('relrmsflct')['xbr'],
@@ -1773,7 +1772,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransAZ = abarzbar.AbarZbar(params.getForProp('prop')['eht_data'],
+        ransAZ = AbarZbar(params.getForProp('prop')['eht_data'],
                                    params.getForProp('prop')['ig'],
                                    params.getForProp('prop')['intc'],
                                    params.getForProp('prop')['prefix'])
@@ -1791,7 +1790,7 @@ class MasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransKe = ek.KineticEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransKe = KineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1811,7 +1810,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransKe = ek.KineticEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransKe = KineticEnergyEquation(params.getForProp('prop')['eht_data'],
                                           params.getForProp('prop')['ig'],
                                           params.getForProp('prop')['fext'],
                                           params.getForProp('prop')['intc'],
@@ -1832,7 +1831,7 @@ class MasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransTe = et.TotalEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransTe = TotalEnergyEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['intc'],
@@ -1853,7 +1852,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTe = et.TotalEnergyEquation(params.getForProp('prop')['eht_data'],
+        ransTe = TotalEnergyEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['intc'],
@@ -1875,7 +1874,7 @@ class MasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransRxx = rxx.ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],
+        ransRxx = ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['fext'],
                                                params.getForProp('prop')['intc'],
@@ -1895,7 +1894,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransRxx = rxx.ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],
+        ransRxx = ReynoldsStressXXequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['fext'],
                                                params.getForProp('prop')['intc'],
@@ -1916,7 +1915,7 @@ class MasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransRyy = ryy.ReynoldsStressYYequation(params.getForProp('prop')['eht_data'],
+        ransRyy = ReynoldsStressYYequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                -kolmrate,
@@ -1935,7 +1934,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransRyy = ryy.ReynoldsStressYYequation(params.getForProp('prop')['eht_data'],
+        ransRyy = ReynoldsStressYYequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                -kolmrate,
@@ -1955,7 +1954,7 @@ class MasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransRzz = rzz.ReynoldsStressZZequation(params.getForProp('prop')['eht_data'],
+        ransRzz = ReynoldsStressZZequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                -kolmrate,
@@ -1974,7 +1973,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransRzz = rzz.ReynoldsStressZZequation(params.getForProp('prop')['eht_data'],
+        ransRzz = ReynoldsStressZZequation(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                -kolmrate,
@@ -1993,7 +1992,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransAbar = abar.AbarTransportEquation(params.getForProp('prop')['eht_data'],
+        ransAbar = AbarTransportEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
                                               params.getForProp('prop')['nsdim'],
@@ -2012,7 +2011,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransAbar = abar.AbarTransportEquation(params.getForProp('prop')['eht_data'],
+        ransAbar = AbarTransportEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
                                               params.getForProp('prop')['nsdim'],
@@ -2031,7 +2030,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransFabarx = fabarx.AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
+        ransFabarx = AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['nsdim'],
@@ -2050,7 +2049,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransFabarx = fabarx.AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
+        ransFabarx = AbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['nsdim'],
@@ -2069,7 +2068,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransZbar = zbar.ZbarTransportEquation(params.getForProp('prop')['eht_data'],
+        ransZbar = ZbarTransportEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
                                               params.getForProp('prop')['prefix'])
@@ -2087,7 +2086,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransZbar = zbar.ZbarTransportEquation(params.getForProp('prop')['eht_data'],
+        ransZbar = ZbarTransportEquation(params.getForProp('prop')['eht_data'],
                                               params.getForProp('prop')['ig'],
                                               params.getForProp('prop')['intc'],
                                               params.getForProp('prop')['prefix'])
@@ -2105,7 +2104,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransFzbarx = fzbarx.ZbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
+        ransFzbarx = ZbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'])
@@ -2123,7 +2122,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransFzbarx = fzbarx.ZbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
+        ransFzbarx = ZbarFluxTransportEquation(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'])
@@ -2142,7 +2141,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransPP = pp.PressureEquation(params.getForProp('prop')['eht_data'],
+        ransPP = PressureEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
@@ -2170,7 +2169,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPP = pp.PressureEquation(params.getForProp('prop')['eht_data'],
+        ransPP = PressureEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
@@ -2192,7 +2191,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransPPxflx = fppx.PressureFluxXequation(params.getForProp('prop')['eht_data'],
+        ransPPxflx = PressureFluxXequation(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['ieos'],
                                                 params.getForProp('prop')['intc'],
@@ -2211,7 +2210,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPPxflx = fppx.PressureFluxXequation(params.getForProp('prop')['eht_data'],
+        ransPPxflx = PressureFluxXequation(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['ieos'],
                                                 params.getForProp('prop')['intc'],
@@ -2231,7 +2230,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransPPyflx = fppy.PressureFluxYequation(params.getForProp('prop')['eht_data'],
+        ransPPyflx = PressureFluxYequation(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['ieos'],
                                                 params.getForProp('prop')['intc'],
@@ -2250,7 +2249,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPPyflx = fppy.PressureFluxYequation(params.getForProp('prop')['eht_data'],
+        ransPPyflx = PressureFluxYequation(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['ieos'],
                                                 params.getForProp('prop')['intc'],
@@ -2270,7 +2269,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransPPzflx = fppz.PressureFluxZequation(params.getForProp('prop')['eht_data'],
+        ransPPzflx = PressureFluxZequation(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['ieos'],
                                                 params.getForProp('prop')['intc'],
@@ -2289,7 +2288,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPPzflx = fppz.PressureFluxZequation(params.getForProp('prop')['eht_data'],
+        ransPPzflx = PressureFluxZequation(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 params.getForProp('prop')['ieos'],
                                                 params.getForProp('prop')['intc'],
@@ -2310,7 +2309,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransPPvar = sigmapp.PressureVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransPPvar = PressureVarianceEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['ieos'],
                                                      params.getForProp('prop')['intc'],
@@ -2329,7 +2328,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPPvar = sigmapp.PressureVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransPPvar = PressureVarianceEquation(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['ieos'],
                                                      params.getForProp('prop')['intc'],
@@ -2349,7 +2348,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransTT = tt.TemperatureEquation(params.getForProp('prop')['eht_data'],
+        ransTT = TemperatureEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
@@ -2370,7 +2369,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTT = tt.TemperatureEquation(params.getForProp('prop')['eht_data'],
+        ransTT = TemperatureEquation(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
@@ -2393,7 +2392,7 @@ class MasterPlot():
         tauL = 1.
 
         # instantiate 		
-        ransTTvar = sigmatt.TemperatureVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransTTvar = TemperatureVarianceEquation(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
                                                         params.getForProp('prop')['fext'],
                                                         params.getForProp('prop')['ieos'],
@@ -2413,7 +2412,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTTvar = sigmatt.TemperatureVarianceEquation(params.getForProp('prop')['eht_data'],
+        ransTTvar = TemperatureVarianceEquation(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
                                                         params.getForProp('prop')['fext'],
                                                         params.getForProp('prop')['ieos'],
@@ -2434,7 +2433,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransTTflx = fttx.TemperatureFluxEquation(params.getForProp('prop')['eht_data'],
+        ransTTflx = TemperatureFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['fext'],
                                                  params.getForProp('prop')['ieos'],
@@ -2454,7 +2453,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTTflx = fttx.TemperatureFluxEquation(params.getForProp('prop')['eht_data'],
+        ransTTflx = TemperatureFluxEquation(params.getForProp('prop')['eht_data'],
                                                  params.getForProp('prop')['ig'],
                                                  params.getForProp('prop')['fext'],
                                                  params.getForProp('prop')['ieos'],
@@ -2475,7 +2474,7 @@ class MasterPlot():
         tke_diss = 0.
 
         # instantiate 		
-        ransHH = hh.EnthalpyEquation(params.getForProp('prop')['eht_data'],
+        ransHH = EnthalpyEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
@@ -2496,7 +2495,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransHH = hh.EnthalpyEquation(params.getForProp('prop')['eht_data'],
+        ransHH = EnthalpyEquation(params.getForProp('prop')['eht_data'],
                                      params.getForProp('prop')['ig'],
                                      params.getForProp('prop')['fext'],
                                      params.getForProp('prop')['ieos'],
@@ -2517,7 +2516,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate 		
-        ransFtvfhX = ftvfhX.FullTurbulenceVelocityFieldHypothesisX(params.getForProp('prop')['eht_data'],
+        ransFtvfhX = FullTurbulenceVelocityFieldHypothesisX(params.getForProp('prop')['eht_data'],
                                                                    params.getForProp('prop')['ig'],
                                                                    params.getForProp('prop')['fext'],
                                                                    params.getForProp('prop')['ieos'],
@@ -2536,7 +2535,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransFtvfhY = ftvfhY.FullTurbulenceVelocityFieldHypothesisY(params.getForProp('prop')['eht_data'],
+        ransFtvfhY = FullTurbulenceVelocityFieldHypothesisY(params.getForProp('prop')['eht_data'],
                                                                    params.getForProp('prop')['ig'],
                                                                    params.getForProp('prop')['fext'],
                                                                    params.getForProp('prop')['ieos'],
@@ -2555,7 +2554,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransFtvfhZ = ftvfhZ.FullTurbulenceVelocityFieldHypothesisZ(params.getForProp('prop')['eht_data'],
+        ransFtvfhZ = FullTurbulenceVelocityFieldHypothesisZ(params.getForProp('prop')['eht_data'],
                                                                    params.getForProp('prop')['ig'],
                                                                    params.getForProp('prop')['fext'],
                                                                    params.getForProp('prop')['ieos'],
@@ -2574,7 +2573,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransUxfpd = uxfpd.UxfpdIdentity(params.getForProp('prop')['eht_data'],
+        ransUxfpd = UxfpdIdentity(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
@@ -2593,7 +2592,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransUyfpd = uyfpd.UyfpdIdentity(params.getForProp('prop')['eht_data'],
+        ransUyfpd = UyfpdIdentity(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
@@ -2612,7 +2611,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransUzfpd = uzfpd.UzfpdIdentity(params.getForProp('prop')['eht_data'],
+        ransUzfpd = UzfpdIdentity(params.getForProp('prop')['eht_data'],
                                         params.getForProp('prop')['ig'],
                                         params.getForProp('prop')['fext'],
                                         params.getForProp('prop')['ieos'],
@@ -2631,7 +2630,7 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransDivu = divu.DivuDilatation(params.getForProp('prop')['eht_data'],
+        ransDivu = DivuDilatation(params.getForProp('prop')['eht_data'],
                                        params.getForProp('prop')['ig'],
                                        params.getForProp('prop')['fext'],
                                        params.getForProp('prop')['ieos'],
@@ -2647,12 +2646,12 @@ class MasterPlot():
                            params.getForEqs('divu')['ilg'])
 
         ransDivu.plot_divu_space_time(params.getForProp('prop')['laxis'],
-                                             bconv, tconv,
-                                             params.getForEqs('conteqfdd')['xbl'],
-                                             params.getForEqs('conteqfdd')['xbr'],
-                                             params.getForEqs('conteqfdd')['ybu'],
-                                             params.getForEqs('conteqfdd')['ybd'],
-                                             params.getForEqs('conteqfdd')['ilg'])
+                                      bconv, tconv,
+                                      params.getForEqs('conteqfdd')['xbl'],
+                                      params.getForEqs('conteqfdd')['xbr'],
+                                      params.getForEqs('conteqfdd')['ybu'],
+                                      params.getForEqs('conteqfdd')['ybd'],
+                                      params.getForEqs('conteqfdd')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """

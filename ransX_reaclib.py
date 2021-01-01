@@ -5,21 +5,29 @@
 # File: ransX_reaclib.py
 # Author: Miroslav Mocak
 # Email: miroslav.mocak@gmail.com
-# Date: August/2019
+# Date: December/2020
 # Desc: compare transport and nuclear timescales
 # Usage: run ransX_reaclib.py
 
-import UTILS.RANSX.Properties as pRop
-import UTILS.REACLIB.ReadParamsReaclib as rP
-import UTILS.REACLIB.ReaclibMasterPlot as mPlot
+from UTILS.RANSX.Properties import Properties
+from UTILS.REACLIB.ReadParamsReaclib import ReadParamsReaclib
+from UTILS.REACLIB.ReaclibMasterPlot import ReaclibMasterPlot
+
 import ast
 import os
+import sys
+import errno
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
     paramFile = os.path.join('PARAMS', 'param.reaclib')
-    params = rP.ReadParamsReaclib(paramFile)
+    params = ReadParamsReaclib(paramFile)
 
     # get input parameters
     filename = params.getForProp('prop')['eht_data']
@@ -33,14 +41,21 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # calculate properties
-    ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
+    ransP = Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     # instantiate master plot
-    plt = mPlot.ReaclibMasterPlot(params)
+    plt = ReaclibMasterPlot(params)
 
     # obtain publication quality figures
     plt.SetMatplotlibParams()
+
+    # check/create RESULTS folder
+    try:
+        os.makedirs('RESULTS')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
     # load network
     network = params.getNetwork()

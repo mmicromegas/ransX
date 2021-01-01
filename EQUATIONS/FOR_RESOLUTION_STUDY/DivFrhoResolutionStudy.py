@@ -1,10 +1,10 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import sys
 
 
@@ -14,7 +14,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class DivFrhoResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class DivFrhoResolutionStudy(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(DivFrhoResolutionStudy, self).__init__(ig)
@@ -22,7 +22,7 @@ class DivFrhoResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         # load data to list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile,allow_pickle=True))
+            eht.append(self.customLoad(ffile))
 
         # declare data lists		
         xzn0, nx, ny, nz, tavg = [], [], [], [], []
@@ -103,14 +103,14 @@ class DivFrhoResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors
         for i in range(len(grd)):
             plt.plot(grd[i], -1.*plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i])+ ' '+'(tavg = ' + str(np.int(self.tavg[i])) +' s)')
 
-        bbndry = grd[0][289]
-        tbndry = grd[0][316]
+        #bbndry = grd[0][289]
+        #tbndry = grd[0][316]
 
-        plt.text(tbndry,0.8e2,r"$\sim$0.23 Hp")
+        #plt.text(tbndry,0.8e2,r"$\sim$0.23 Hp")
 
         # convective boundary
-        plt.axvline(bbndry, linestyle='--', linewidth=0.7, color='k')
-        plt.axvline(tbndry, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(bbndry, linestyle='--', linewidth=0.7, color='k')
+        #plt.axvline(tbndry, linestyle='--', linewidth=0.7, color='k')
 
         # define and show x/y LABELS
         if self.ig == 1:

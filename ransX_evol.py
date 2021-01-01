@@ -5,26 +5,41 @@
 # File: ransX_evol.py
 # Author: Miroslav Mocak
 # Email: miroslav.mocak@gmail.com
-# Date: November/2019
-# Desc: plot time-evolution based on results from calcX_evol.py
+# Date: December/2020
+# Desc: resolution study of temporal evolution
 # Usage: run ransX_evol.py
 
-import UTILS.EVOL.EvolReadParams as rP
-import UTILS.EVOL.EvolMasterPlot as mPlot
+
+from UTILS.EVOL.EvolReadParams import EvolReadParams
+from UTILS.EVOL.EvolMasterPlot import EvolMasterPlot
 import ast
 import os
+import sys
+import errno
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
     paramFile = os.path.join('PARAMS', 'param.evol')
-    params = rP.EvolReadParams(paramFile)
+    params = EvolReadParams(paramFile)
 
     # instantiate master plot
-    plt = mPlot.EvolMasterPlot(params)
+    plt = EvolMasterPlot(params)
 
     # obtain publication quality figures
     plt.SetMatplotlibParams()
+
+    # check/create RESULTS folder
+    try:
+        os.makedirs('RESULTS')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
     # TURBULENT KINETIC ENERGY EVOLUTION
     if str2bool(params.getForEvol('tkeevol')['plotMee']):

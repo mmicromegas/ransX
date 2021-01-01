@@ -1,10 +1,10 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import os
 from scipy import integrate
 
@@ -15,13 +15,13 @@ from scipy import integrate
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XfluxXequation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XfluxXequation(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, ieos, fext, inuc, element, bconv, tconv, tke_diss, tauL, hp, intc, nsdim, data_prefix):
         super(XfluxXequation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')

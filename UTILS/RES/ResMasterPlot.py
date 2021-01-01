@@ -1,34 +1,34 @@
-import EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureResolutionStudy as tt
-import EQUATIONS.FOR_RESOLUTION_STUDY.DensityResolutionStudy as dd
-import EQUATIONS.FOR_RESOLUTION_STUDY.MomentumXResolutionStudy as momex
-import EQUATIONS.FOR_RESOLUTION_STUDY.TotalEnergyResolutionStudy as et
-import EQUATIONS.FOR_RESOLUTION_STUDY.EntropyResolutionStudy as ss
-import EQUATIONS.FOR_RESOLUTION_STUDY.EntropyVarianceResolutionStudy as ssvar
-import EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyResolutionStudy as hh
-import EQUATIONS.FOR_RESOLUTION_STUDY.PressureResolutionStudy as pp
-import EQUATIONS.FOR_RESOLUTION_STUDY.AbarResolutionStudy as abar
-import EQUATIONS.FOR_RESOLUTION_STUDY.AbarFluxResolutionStudy as abarflux
-import EQUATIONS.FOR_RESOLUTION_STUDY.DensitySpecificVolumeCovarianceResolutionStudy as dsvc
-import EQUATIONS.FOR_RESOLUTION_STUDY.BruntVaisallaResolutionStudy as bruntv
-import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentKineticEnergyResolutionStudy as tke
-import EQUATIONS.FOR_RESOLUTION_STUDY.InternalEnergyFluxResolutionStudy as feix
-import EQUATIONS.FOR_RESOLUTION_STUDY.EntropyFluxResolutionStudy as fssx
-import EQUATIONS.FOR_RESOLUTION_STUDY.PressureFluxResolutionStudy as fppx
-import EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureFluxResolutionStudy as fttx
-import EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyFluxResolutionStudy as fhhx
-import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentMassFluxResolutionStudy as a
-import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentRadialVelocityResolutionStudy as uxRms
-import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUyVelocityResolutionStudy as uyRms
-import EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUzVelocityResolutionStudy as uzRms
-import EQUATIONS.FOR_RESOLUTION_STUDY.DensityRmsResolutionStudy as ddRms
-import EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy as buoy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureResolutionStudy import TemperatureResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.DensityResolutionStudy import DensityResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.MomentumXResolutionStudy import MomentumXResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TotalEnergyResolutionStudy import TotalEnergyResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.EntropyResolutionStudy import EntropyResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.EntropyVarianceResolutionStudy import EntropyVarianceResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyResolutionStudy import EnthalpyResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.PressureResolutionStudy import PressureResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.AbarResolutionStudy import AbarResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.AbarFluxResolutionStudy import AbarFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.DensitySpecificVolumeCovarianceResolutionStudy import DensitySpecificVolumeCovarianceResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.BruntVaisallaResolutionStudy import BruntVaisallaResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentKineticEnergyResolutionStudy import TurbulentKineticEnergyResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.InternalEnergyFluxResolutionStudy import InternalEnergyFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.EntropyFluxResolutionStudy import EntropyFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.PressureFluxResolutionStudy import PressureFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TemperatureFluxResolutionStudy import TemperatureFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.EnthalpyFluxResolutionStudy import EnthalpyFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentMassFluxResolutionStudy import TurbulentMassFluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentRadialVelocityResolutionStudy import TurbulentRadialVelocityResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUyVelocityResolutionStudy import TurbulentUyVelocityResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.TurbulentUzVelocityResolutionStudy import TurbulentUzVelocityResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.DensityRmsResolutionStudy import DensityRmsResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.BuoyancyResolutionStudy import BuoyancyResolutionStudy
 
-import EQUATIONS.FOR_RESOLUTION_STUDY.XResolutionStudy as xx
-import EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy as xrho
-import EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy as xflxx
-import EQUATIONS.FOR_RESOLUTION_STUDY.XvarianceResolutionStudy as xvar
-import EQUATIONS.FOR_RESOLUTION_STUDY.DivuResolutionStudy as divu
-import EQUATIONS.FOR_RESOLUTION_STUDY.DivFrhoResolutionStudy as divfrho
+from EQUATIONS.FOR_RESOLUTION_STUDY.XResolutionStudy import XResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.XdensityResolutionStudy import XdensityResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.XfluxResolutionStudy import XfluxResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.XvarianceResolutionStudy import XvarianceResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.DivuResolutionStudy import DivuResolutionStudy
+from EQUATIONS.FOR_RESOLUTION_STUDY.DivFrhoResolutionStudy import DivFrhoResolutionStudy
 
 import matplotlib.pyplot as plt
 
@@ -42,7 +42,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransX = xx.XResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransX = XResolutionStudy(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 inuc, element,
                                                 params.getForProp('prop')['intc'],
@@ -59,7 +59,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransXrho = xrho.XdensityResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransXrho = XdensityResolutionStudy(params.getForProp('prop')['eht_data'],
                                                 params.getForProp('prop')['ig'],
                                                 inuc, element,
                                                 params.getForProp('prop')['intc'],
@@ -77,7 +77,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransXflxx = xflxx.XfluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransXflxx = XfluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                inuc, element,
                                                params.getForProp('prop')['intc'],
@@ -94,7 +94,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransXvar = xvar.XvarianceResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransXvar = XvarianceResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                inuc, element,
                                                params.getForProp('prop')['intc'],
@@ -111,7 +111,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransBruntV = bruntv.BruntVaisallaResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransBruntV = BruntVaisallaResolutionStudy(params.getForProp('prop')['eht_data'],
                                                          params.getForProp('prop')['ig'],
                                                          params.getForProp('prop')['ieos'],
                                                          params.getForProp('prop')['intc'],
@@ -128,7 +128,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTT = tt.TemperatureResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransTT = TemperatureResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -145,7 +145,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransDD = dd.DensityResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransDD = DensityResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -161,7 +161,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransMomx = momex.MomentumXResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransMomx = MomentumXResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -177,7 +177,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransEt = et.TotalEnergyResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransEt = TotalEnergyResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -193,7 +193,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransSS = ss.EntropyResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransSS = EntropyResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -209,7 +209,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransSSvar = ssvar.EntropyVarianceResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransSSvar = EntropyVarianceResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -225,7 +225,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransHH = hh.EnthalpyResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransHH = EnthalpyResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -241,7 +241,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransPP = pp.PressureResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransPP = PressureResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -257,7 +257,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransDSVC = dsvc.DensitySpecificVolumeCovarianceResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransDSVC = DensitySpecificVolumeCovarianceResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -273,7 +273,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransAbar = abar.AbarResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransAbar = AbarResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -289,7 +289,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransAbar = abarflux.AbarFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransAbar = AbarFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                params.getForProp('prop')['ig'],
                                                params.getForProp('prop')['intc'],
                                                params.getForProp('prop')['prefix'])
@@ -306,7 +306,7 @@ class ResMasterPlot():
         kolmrate = 0.
 
         # instantiate 		
-        ransTke = tke.TurbulentKineticEnergyResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransTke = TurbulentKineticEnergyResolutionStudy(params.getForProp('prop')['eht_data'],
                                                             params.getForProp('prop')['ig'],
                                                             params.getForProp('prop')['intc'],
                                                             params.getForProp('prop')['prefix'])
@@ -323,7 +323,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransEiFlx = feix.InternalEnergyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransEiFlx = InternalEnergyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                            params.getForProp('prop')['ig'],
                                                            params.getForProp('prop')['intc'],
                                                            params.getForProp('prop')['prefix'])
@@ -339,7 +339,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransSSflx = fssx.EntropyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransSSflx = EntropyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['prefix'])
@@ -355,7 +355,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTTflx = fttx.TemperatureFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransTTflx = TemperatureFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
                                                         params.getForProp('prop')['intc'],
                                                         params.getForProp('prop')['prefix'])
@@ -371,7 +371,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransHHflx = fhhx.EnthalpyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransHHflx = EnthalpyFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                      params.getForProp('prop')['ig'],
                                                      params.getForProp('prop')['intc'],
                                                      params.getForProp('prop')['prefix'])
@@ -387,7 +387,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransTMSflx = a.TurbulentMassFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransTMSflx = TurbulentMassFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['ig'],
                                                         params.getForProp('prop')['intc'],
                                                         params.getForProp('prop')['prefix'])
@@ -403,7 +403,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate 		
-        ransPPxflx = fppx.PressureFluxResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransPPxflx = PressureFluxResolutionStudy(params.getForProp('prop')['eht_data'],
                                                       params.getForProp('prop')['ig'],
                                                       params.getForProp('prop')['intc'],
                                                       params.getForProp('prop')['prefix'])
@@ -419,7 +419,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransUXrms = uxRms.TurbulentRadialVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransUXrms = TurbulentRadialVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
                                                                  params.getForProp('prop')['ig'],
                                                                  params.getForProp('prop')['intc'],
                                                                  params.getForProp('prop')['prefix'])
@@ -435,7 +435,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransUYrms = uyRms.TurbulentUyVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransUYrms = TurbulentUyVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
                                                                  params.getForProp('prop')['ig'],
                                                                  params.getForProp('prop')['intc'],
                                                                  params.getForProp('prop')['prefix'])
@@ -451,7 +451,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransUZrms = uzRms.TurbulentUzVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransUZrms = TurbulentUzVelocityResolutionStudy(params.getForProp('prop')['eht_data'],
                                                                  params.getForProp('prop')['ig'],
                                                                  params.getForProp('prop')['intc'],
                                                                  params.getForProp('prop')['prefix'])
@@ -467,7 +467,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransDDrms = ddRms.DensityRmsResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransDDrms = DensityRmsResolutionStudy(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['prefix'])
@@ -483,7 +483,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransBuoyancy = buoy.BuoyancyResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransBuoyancy = BuoyancyResolutionStudy(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['ieos'],
                                                     params.getForProp('prop')['intc'],
@@ -501,7 +501,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransDilatation = divu.DivuResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransDilatation = DivuResolutionStudy(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['prefix'])
@@ -517,7 +517,7 @@ class ResMasterPlot():
         params = self.params
 
         # instantiate
-        ransDivFrho = divfrho.DivFrhoResolutionStudy(params.getForProp('prop')['eht_data'],
+        ransDivFrho = DivFrhoResolutionStudy(params.getForProp('prop')['eht_data'],
                                                     params.getForProp('prop')['ig'],
                                                     params.getForProp('prop')['intc'],
                                                     params.getForProp('prop')['prefix'])

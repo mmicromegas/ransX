@@ -4,19 +4,26 @@
 
 # Author: Miroslav Mocak 
 # Email: miroslav.mocak@gmail.com 
-# Date: January/2019
+# Date: December/2020
 
-import UTILS.RES.ResReadParamsRansX as rP
-import UTILS.RES.ResMasterPlot as mPlot
-import UTILS.RANSX.Properties as pRop
+from UTILS.RES.ResReadParamsRansX import ResReadParamsRansX
+from UTILS.RES.ResMasterPlot import ResMasterPlot
+
 import ast
 import os
+import sys
+import errno
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
-    paramFile = os.path.join('PARAMS', 'param.ransx.res')
-    params = rP.ResReadParamsRansX(paramFile)
+    paramFile = os.path.join('PARAMS', 'param.res')
+    params = ResReadParamsRansX(paramFile)
 
     # get list with data source files and central time index
     filename = params.getForProp('prop')['eht_data']
@@ -31,15 +38,22 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # get and display simulation properties that you do resolution study of
-    #for filee in filename:
+    # for filee in filename:
     #    ransP = pRop.Properties(filee, plabel, ig, ieos, intc, laxis, xbl, xbr)
     #    ransP.properties()
 
     # instantiate master plot
-    plt = mPlot.ResMasterPlot(params)
+    plt = ResMasterPlot(params)
 
     # obtain publication quality figures
     plt.SetMatplotlibParams()
+
+    # check/create RESULTS folder
+    try:
+        os.makedirs('RESULTS')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
     # TEMPERATURE
     if str2bool(params.getForEqs('temp')['plotMee']):
@@ -159,6 +173,7 @@ def main():
             plt.execXflxx(inuc, elem, 'xflxx_' + elem)
         if str2bool(params.getForEqs('xvar_' + elem)['plotMee']):
             plt.execXvar(inuc, elem, 'xvar_' + elem)
+
 
 # define useful functions
 def str2bool(param):

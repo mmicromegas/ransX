@@ -4,10 +4,10 @@ import numpy as np
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -16,13 +16,13 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class ContinuityEquationWithFavrianDilatation(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, fext, intc, data_prefix):
         super(ContinuityEquationWithFavrianDilatation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
@@ -185,13 +185,13 @@ class ContinuityEquationWithFavrianDilatation(uCalc.Calculus, uSal.SetAxisLimit,
             plt.plot(grd1, res, color='k', linestyle='--', label='+res')
 
         # shade boundaries
-        ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
-        rinc = grd1[ind1[0]]
-        routc = grd1[ind1[-1]]
+        ind1 =  int(self.nx/2) + np.where((self.minus_div_fdd[(int(self.nx/2)):self.nx] > 6.))[0]
+        rinc = grd1[int(ind1[0])]
+        routc = grd1[int(ind1[-1])]
 
         plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
-        ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
+        ind2 =  np.where((self.minus_div_fdd[0:(int(self.nx/2))] > 0.0))[0]
         rinc = grd1[ind2[0]]
         routc = grd1[ind2[-1]]
 

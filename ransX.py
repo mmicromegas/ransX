@@ -5,21 +5,29 @@
 # File: ransX.py
 # Author: Miroslav Mocak 
 # Email: miroslav.mocak@gmail.com 
-# Date: January/2019
+# Date: December/2020
 # Desc: controls selection, hence calculation and plotting of terms in RANS equations
 # Usage: run ransX.py
 
-import UTILS.RANSX.Properties as pRop
-import UTILS.RANSX.ReadParamsRansX as rP
-import UTILS.RANSX.MasterPlot as mPlot
 import ast
 import os
+import sys
+import errno
+
+from UTILS.RANSX.Properties import Properties
+from UTILS.RANSX.ReadParamsRansX import ReadParamsRansX
+from UTILS.RANSX.MasterPlot import MasterPlot
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
     paramFile = os.path.join('PARAMS', 'param.ransx')
-    params = rP.ReadParamsRansX(paramFile)
+    params = ReadParamsRansX(paramFile)
 
     # get input parameters
     filename = params.getForProp('prop')['eht_data']
@@ -33,14 +41,21 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # calculate properties
-    ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
+    ransP = Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     # instantiate master plot
-    plt = mPlot.MasterPlot(params)
+    plt = MasterPlot(params)
 
     # obtain publication quality figures
     plt.SetMatplotlibParams()
+
+    # check/create RESULTS folder
+    try:
+        os.makedirs('RESULTS')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
     # TEMPERATURE AND DENSITY
     if str2bool(params.getForEqs('ttdd')['plotMee']):
@@ -60,7 +75,7 @@ def main():
 
     # TEMPERATURE GRADIENTS
     if str2bool(params.getForEqs('nablas')['plotMee']):
-        plt.execNablas(prp['xzn0inc'], prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+        plt.execNablas(prp['xzn0inc'], prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     # DEGENERACY PARAMETER
     if str2bool(params.getForEqs('psi')['plotMee']):
@@ -72,7 +87,7 @@ def main():
 
     # MLT AND TURBULENT VELOCITY
     if str2bool(params.getForEqs('velmlt')['plotMee']):
-        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'],prp['uconv'],prp['super_ad_i'],prp['super_ad_o'])
+        plt.execVelocitiesMLTturb(prp['xzn0inc'], prp['xzn0outc'], prp['uconv'], prp['super_ad_i'], prp['super_ad_o'])
 
     # BRUNT-VAISALLA FREQUENCY
     if str2bool(params.getForEqs('nsq')['plotMee']):
@@ -158,42 +173,41 @@ def main():
     # TURBULENT KINETIC ENERGY EQUATION
     if str2bool(params.getForEqs('tkie')['plotMee']):
         plt.execTke(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                    prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                    prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqs('tkeeq')['plotMee']):
         plt.execTkeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                      prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqsBar('tkeeqBar')['plotMee']):
         plt.execTkeEqBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                         prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     # RADIAL TURBULENT KINETIC ENERGY EQUATION
     if str2bool(params.getForEqs('tkieR')['plotMee']):
         plt.execTkeRadial(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                    prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                          prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqs('tkeReq')['plotMee']):
         plt.execTkeEqRadial(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                            prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqsBar('tkeReqBar')['plotMee']):
         plt.execTkeEqRadialBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
-
+                               prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     # HORIZONTAL TURBULENT KINETIC ENERGY EQUATION
     if str2bool(params.getForEqs('tkieH')['plotMee']):
         plt.execTkeHorizontal(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                    prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                              prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqs('tkeHeq')['plotMee']):
         plt.execTkeEqHorizontal(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                                prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqsBar('tkeHeqBar')['plotMee']):
         plt.execTkeEqHorizontalBar(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                                   prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     # TOTAL ENERGY EQUATION
     if str2bool(params.getForEqs('toe')['plotMee']):
@@ -330,10 +344,10 @@ def main():
 
     # TURBULENT MASS FLUX EQUATION a.k.a A EQUATION
     if str2bool(params.getForEqs('tmsflx')['plotMee']):
-        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'],prp['lc'])
+        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'], prp['lc'])
 
     if str2bool(params.getForEqs('aeq')['plotMee']):
-        plt.execAeq(prp['xzn0inc'], prp['xzn0outc'],prp['lc'])
+        plt.execAeq(prp['xzn0inc'], prp['xzn0outc'], prp['lc'])
 
     # DENSITY-SPECIFIC VOLUME COVARIANCE a.k.a. B EQUATION
     if str2bool(params.getForEqs('dsvc')['plotMee']):
@@ -425,24 +439,24 @@ def main():
         # COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('x_' + elem)['plotMee']):
             plt.execX(inuc, elem, 'x_' + elem,
-                      prp['xzn0inc']+hack,
-                      prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                      prp['xzn0inc'] + hack,
+                      prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
         if str2bool(params.getForEqs('xrho_' + elem)['plotMee']):
             plt.execXrho(inuc, elem, 'xrho_' + elem,
-                         prp['xzn0inc']+hack,
-                         prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                         prp['xzn0inc'] + hack,
+                         prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
         if str2bool(params.getForEqs('xtrseq_' + elem)['plotMee']):
             plt.execXtrsEq(inuc, elem, 'xtrseq_' + elem,
-                           prp['xzn0inc']+hack,
-                           prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                           prp['xzn0inc'] + hack,
+                           prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
         if str2bool(params.getForEqsBar('xtrseq_' + elem + 'Bar')['plotMee']):
             plt.execXtrsEqBar(inuc, elem,
                               'xtrseq_' + elem + 'Bar',
-                              prp['xzn0inc']+hack,
-                              prp['xzn0outc'],prp['super_ad_i'],prp['super_ad_o'])
+                              prp['xzn0inc'] + hack,
+                              prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
         # COMPOSITION FLUX IN X
         if str2bool(params.getForEqs('xflxx_' + elem)['plotMee']):
@@ -513,7 +527,7 @@ def main():
                          prp['lc'], prp['uconv'],
                          prp['xzn0inc'],
                          prp['xzn0outc'], prp['tke_diss'], prp['tauL'],
-                         prp['super_ad_i'],prp['super_ad_o'],
+                         prp['super_ad_i'], prp['super_ad_o'],
                          prp['cnvz_in_hp'])
 
         # HYDRODYNAMIC STELLAR STRUCTURE COMPOSITION TRANSPORT EQUATION

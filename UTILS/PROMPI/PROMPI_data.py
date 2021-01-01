@@ -179,7 +179,8 @@ class PROMPI_ransdat:
         return self.ransl
 
     def ransdict(self):
-        print self.eh.keys()
+        pass
+        # print self.eh.keys()
 
 
 class PROMPI_bindata:

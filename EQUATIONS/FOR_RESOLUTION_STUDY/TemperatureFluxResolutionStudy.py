@@ -1,10 +1,10 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TemperatureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TemperatureFluxResolutionStudy(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix):
         super(TemperatureFluxResolutionStudy, self).__init__(ig)
@@ -21,7 +21,7 @@ class TemperatureFluxResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, e
         # load data to list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile,allow_pickle=True))
+            eht.append(self.customLoad(ffile))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []

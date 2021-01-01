@@ -2,10 +2,10 @@ import numpy as np
 from scipy.optimize import curve_fit
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import os
 import sys
 
@@ -16,14 +16,14 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Xdiffusivity(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class Xdiffusivity(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, fext, ieos, inuc, element, lc, uconv, bconv, tconv, cnvz_in_hp,
                  tke_diss, tauL, super_ad_i, super_ad_o, intc, data_prefix):
         super(Xdiffusivity, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')

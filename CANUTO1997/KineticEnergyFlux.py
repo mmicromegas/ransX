@@ -4,10 +4,10 @@ import numpy as np
 import sys
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -16,13 +16,13 @@ import UTILS.Errors as eR
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class KineticEnergyFlux(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, fext, intc, data_prefix):
         super(KineticEnergyFlux, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
@@ -51,9 +51,9 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         uyux = self.getRAdata(eht, 'uxuy')[intc]
         uzux = self.getRAdata(eht, 'uxuz')[intc]
 
-        uxuxux = self.getRAdata(eht, 'uxuxux')[intc]
-        uyuyux = self.getRAdata(eht, 'uyuyux')[intc]
-        uzuzux = self.getRAdata(eht, 'uzuzux')[intc]
+        # uxuxux = self.getRAdata(eht, 'uxuxux')[intc]
+        # uyuyux = self.getRAdata(eht, 'uyuyux')[intc]
+        # uzuzux = self.getRAdata(eht, 'uzuzux')[intc]
 
         mm = self.getRAdata(eht, 'mm')[intc]
 
@@ -75,9 +75,9 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         #        dd*self.thirdOrder(eht,intc,"uy","uy","ux") + \
         #        dd*self.thirdOrder(eht,intc,"uz","uz","ux")
 
-        fekx2 = dd*(uxuxux - ux*uxux - ux*uxux - ux*uxux + ux*ux*ux) + \
-                dd*(uyuyux - uy*uyux - uy*uyux - ux*uyuy + uy*uy*ux) + \
-                dd*(uzuzux - uz*uzux - uz*uzux - ux*uzuz + uz*uz*ux)
+        #fekx2 = dd*(uxuxux - ux*uxux - ux*uxux - ux*uxux + ux*ux*ux) + \
+        #        dd*(uyuyux - uy*uyux - uy*uyux - ux*uyuy + uy*uy*ux) + \
+        #        dd*(uzuzux - uz*uzux - uz*uzux - ux*uzuz + uz*uz*ux)
 
 
         #########################
@@ -90,7 +90,7 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         self.dd = dd
         self.fht_ek = fht_ek
         self.fekx = fekx
-        self.fekx2 = fekx2
+        #self.fekx2 = fekx2
         self.fext = fext
 
     def plot_keflx(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
@@ -106,7 +106,7 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         # load DATA to plot
         plt1 = self.fekx
-        plt2 = self.fekx2
+        #plt2 = self.fekx2
 
         # create FIGURE
         plt.figure(figsize=(7, 6))
@@ -115,13 +115,13 @@ class KineticEnergyFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2]
+        to_plot = [plt1]
         self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
         plt.title('turbulent kinetic energy flux')
         plt.plot(grd1, plt1, color='brown', label=r"$\overline{\rho e''_k u''_x}$")
-        plt.plot(grd1, plt2, color='red', linestyle='--',label=r"$\overline{\rho} \ \overline{u'_i u'_i u'_x}$")
+        # plt.plot(grd1, plt2, color='red', linestyle='--',label=r"$\overline{\rho} \ \overline{u'_i u'_i u'_x}$")
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')

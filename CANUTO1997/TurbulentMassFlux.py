@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import sys
 
 
@@ -13,13 +13,13 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class TurbulentMassFlux(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, intc, data_prefix, lc):
         super(TurbulentMassFlux, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
@@ -52,8 +52,8 @@ class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         x0002 = self.getRAdata(eht, 'x0002')[intc]
         x0001ux = self.getRAdata(eht, 'x0001ux')[intc]
         x0002ux = self.getRAdata(eht, 'x0002ux')[intc]
-        self.alphac0001 = self.getRAdata(eht, 'alphac0001')[intc]
-        self.alphac0002 = self.getRAdata(eht, 'alphac0002')[intc]
+        # self.alphac0001 = self.getRAdata(eht, 'alphac0001')[intc]
+        # self.alphac0002 = self.getRAdata(eht, 'alphac0002')[intc]
 
         # a is turbulent mass flux
         eht_a = ux - ddux / dd
@@ -72,7 +72,7 @@ class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
 
         self.eht_a_pressflx = + (dd/pp)*eht_fpp
 
-        self.eht_a_compflx = -self.alphac0001*self.eht_fx0001 + self.alphac0002*self.eht_fx0002
+        # self.eht_a_compflx = -self.alphac0001*self.eht_fx0001 + self.alphac0002*self.eht_fx0002
         #print(self.alphac0001)
         #print("************")
         #print(self.eht_fx0001)
@@ -104,7 +104,7 @@ class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt1 = -self.dd*self.eht_a
         plt2 = self.eht_a_tempflx
         plt3 = self.eht_a_pressflx
-        plt4 = self.eht_a_compflx
+        #plt4 = self.eht_a_compflx
         #plt4 = self.alphac0001*self.eht_fx0001
         #plt4 = self.alphac0002*self.eht_fx0002
 
@@ -115,7 +115,7 @@ class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries   
-        to_plot = [plt1, plt2, plt3, plt4]
+        to_plot = [plt1, plt2, plt3]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
@@ -125,7 +125,7 @@ class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
             plt.plot(grd1, plt1, color='brown', label=r"$+\overline{\rho' u'_x}$")
             plt.plot(grd1, plt2, color='g', linestyle='--', label=r"$-(\overline{\rho} / \overline{T}) \ \overline{T'u'_x}$")
             plt.plot(grd1, plt3, color='r', linestyle='--', label=r"$+(\overline{\rho} / \overline{P}) \ \overline{P'u'_x}$")
-            plt.plot(grd1, plt4, color='b', linestyle='--', label=r"$+\alpha_c^i \ \overline{X_i'u'_x}$")
+            # plt.plot(grd1, plt4, color='b', linestyle='--', label=r"$+\alpha_c^i \ \overline{X_i'u'_x}$")
             plt.plot(grd1, plt2+plt3, color='r', linestyle='dotted', label=r"$sum$")
         elif self.ig == 2:
             plt.plot(grd1, plt1, color='brown', label=r"$a$")
@@ -159,21 +159,21 @@ class TurbulentMassFlux(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, 
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_a.eps')
 
         # create FIGURE
-        plt.figure(figsize=(7, 6))
+        # plt.figure(figsize=(7, 6))
 
-        plt1 = self.alphac0001
-        plt2 = self.alphac0002
+        # plt1 = self.alphac0001
+        # plt2 = self.alphac0002
 
         # format AXIS, make sure it is exponential
-        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+        # plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
 
         # set plot boundaries
-        to_plot = [plt1]
-        self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
+        # to_plot = [plt1]
+        # self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-        plt.plot(grd1, plt1)
-        plt.plot(grd1, plt2)
+        # plt.plot(grd1, plt1)
+        # plt.plot(grd1, plt2)
 
-        #print(self.alphac0001)
-        plt.show(block=False)
+        # print(self.alphac0001)
+        # plt.show(block=False)
 

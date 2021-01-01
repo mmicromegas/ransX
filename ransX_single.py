@@ -5,22 +5,30 @@
 # File: ransX_single.py
 # Author: Miroslav Mocak
 # Email: miroslav.mocak@gmail.com
-# Date: November/2019
+# Date: December/2020
 # Desc: plots mean fields from single ransdat
 # Usage: run ransX_single.py
 
-import UTILS.PROMPI.PROMPI_single as uPs
-import UTILS.SINGLE.ReadParamsSingle as uRps
+from UTILS.PROMPI.PROMPI_single import PROMPI_single
+from UTILS.SINGLE.ReadParamsSingle import ReadParamsSingle
+
 import warnings
 import os
+import sys
+import errno
 
 
 def main():
     warnings.filterwarnings("ignore")
 
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # read input parameters
     paramFile = os.path.join('PARAMS', 'param.single')
-    params = uRps.ReadParamsSingle(paramFile)
+    params = ReadParamsSingle(paramFile)
 
     datafile = params.getForSingle('single')['datafile']
     endianness = params.getForSingle('single')['endianness']
@@ -31,16 +39,23 @@ def main():
 
     q2plot = params.getForSingle('single')['q']
 
-    ransdat = uPs.PROMPI_single(datafile, endianness, precision)
+    ransdat = PROMPI_single(datafile, endianness, precision)
 
     ransdat.SetMatplotlibParams()
+
+    # check/create RESULTS folder
+    try:
+        os.makedirs('RESULTS')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
     # ransdat.plotMonstarIni()
 
     for q in q2plot:
         ransdat.plot_lin_q1(xbl, xbr, q, r'r (cm)', q, q)
 
-    #for q in q2plot:
+    # for q in q2plot:
     #    ransdat.plot_log_q1(xbl,xbr,q,r'r (cm)',q,q)
 
     # ransdat.plot_check_heq1()
@@ -50,7 +65,7 @@ def main():
     # ransdat.plot_nablas(xbl,xbr)
     # ransdat.plot_dx(xbl,xbr)
     # ransdat.plot_mm(xbl,xbr)
-    ransdat.PlotNucEnergyGen(xbl,xbr)
+    ransdat.PlotNucEnergyGen(xbl, xbr)
     # ransdat.PlotNucEnergyGen2(xbl,xbr)
     # ransdat.PlotTrippleAlphaNucEnergyGen(xbl,xbr)
 

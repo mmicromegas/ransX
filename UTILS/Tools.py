@@ -8,6 +8,9 @@ class Tools:
     def __init__(self):
         pass
 
+    def customLoad(self, fn):
+        return np.load(fn,allow_pickle=True,encoding='latin1')
+
     def getRAdata(self, ransdat, q):
         quantity = np.asarray(ransdat.item().get(q))
         return quantity

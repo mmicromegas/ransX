@@ -67,15 +67,15 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
                                np.min(to_plot[2][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
                                np.max(to_plot[2][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
                                np.min(to_plot[2][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
                                np.max(to_plot[2][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
@@ -83,15 +83,15 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
                                np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
                                np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
                                np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
                                np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
@@ -99,20 +99,20 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
                                np.min(to_plot[4][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
                                np.max(to_plot[4][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
 
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
                                np.min(to_plot[4][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
                                np.max(to_plot[4][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
@@ -120,19 +120,19 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
                                np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
                                np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
                                np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
                                np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
@@ -140,24 +140,24 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
                                np.min(to_plot[6][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
                                np.max(to_plot[6][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
 
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
                                np.min(to_plot[6][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
                                np.max(to_plot[6][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
@@ -165,24 +165,24 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
                                np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
                                np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
 
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
                                np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
                                np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
@@ -190,191 +190,191 @@ class ALIMITevol:
 
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
-                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
+                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]),
                                np.min(to_plot[8][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
-                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
+                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]),
                                np.max(to_plot[8][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
 
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
-                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
+                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]),
                                np.min(to_plot[8][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
-                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
+                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]),
                                np.max(to_plot[8][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
         if (number_of_curves == 10):
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
-                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]), \
-                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
+                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]),
+                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]),
                                ])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
-                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]), \
-                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
+                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]),
+                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]),
                                ])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
-                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]), \
-                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
+                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]),
+                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]),
                                ])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
-                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]), \
-                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
+                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]),
+                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]),
                                ])
                 plt.axis([xbl, xbr, minx, maxx])
 
         if (number_of_curves == 11):
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
-                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]), \
-                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
+                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]),
+                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]),
                                np.min(to_plot[10][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
-                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]), \
-                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
+                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]),
+                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]),
                                np.max(to_plot[10][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
-                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]), \
-                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
+                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]),
+                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]),
                                np.min(to_plot[10][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
-                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]), \
-                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
+                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]),
+                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]),
                                np.max(to_plot[10][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
         if (number_of_curves == 12):
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
-                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]), \
-                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
+                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]),
+                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]),
                                np.min(to_plot[10][0:-1]), np.min(to_plot[11][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
-                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]), \
-                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
+                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]),
+                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]),
                                np.max(to_plot[10][0:-1]), np.max(to_plot[11][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
-                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]), \
-                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
+                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]),
+                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]),
                                np.min(to_plot[10][idxl:idxr]), np.min(to_plot[11][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
-                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]), \
-                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
+                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]),
+                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]),
                                np.max(to_plot[10][idxl:idxr]), np.max(to_plot[11][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
         if (number_of_curves == 13):
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
-                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]), \
-                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]), \
-                               np.min(to_plot[10][0:-1]), np.min(to_plot[11][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
+                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]),
+                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]),
+                               np.min(to_plot[10][0:-1]), np.min(to_plot[11][0:-1]),
                                np.min(to_plot[12][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
-                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]), \
-                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]), \
-                               np.max(to_plot[10][0:-1]), np.max(to_plot[11][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
+                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]),
+                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]),
+                               np.max(to_plot[10][0:-1]), np.max(to_plot[11][0:-1]),
                                np.max(to_plot[12][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
-                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]), \
-                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]), \
-                               np.min(to_plot[10][idxl:idxr]), np.min(to_plot[11][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
+                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]),
+                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]),
+                               np.min(to_plot[10][idxl:idxr]), np.min(to_plot[11][idxl:idxr]),
                                np.min(to_plot[12][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
-                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]), \
-                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]), \
-                               np.max(to_plot[10][idxl:idxr]), np.max(to_plot[11][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
+                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]),
+                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]),
+                               np.max(to_plot[10][idxl:idxr]), np.max(to_plot[11][idxl:idxr]),
                                np.max(to_plot[12][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 
         if (number_of_curves == 14):
             # limit x/y axis by global min/max from all terms
             if LAXIS == 0:
-                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]), \
-                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]), \
-                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]), \
-                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]), \
-                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]), \
-                               np.min(to_plot[10][0:-1]), np.min(to_plot[11][0:-1]), \
+                minx = np.min([np.min(to_plot[0][0:-1]), np.min(to_plot[1][0:-1]),
+                               np.min(to_plot[2][0:-1]), np.min(to_plot[3][0:-1]),
+                               np.min(to_plot[4][0:-1]), np.min(to_plot[5][0:-1]),
+                               np.min(to_plot[6][0:-1]), np.min(to_plot[7][0:-1]),
+                               np.min(to_plot[8][0:-1]), np.min(to_plot[9][0:-1]),
+                               np.min(to_plot[10][0:-1]), np.min(to_plot[11][0:-1]),
                                np.min(to_plot[12][0:-1]), np.min(to_plot[13][0:-1])])
-                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]), \
-                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]), \
-                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]), \
-                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]), \
-                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]), \
-                               np.max(to_plot[10][0:-1]), np.max(to_plot[11][0:-1]), \
+                maxx = np.max([np.max(to_plot[0][0:-1]), np.max(to_plot[1][0:-1]),
+                               np.max(to_plot[2][0:-1]), np.max(to_plot[3][0:-1]),
+                               np.max(to_plot[4][0:-1]), np.max(to_plot[5][0:-1]),
+                               np.max(to_plot[6][0:-1]), np.max(to_plot[7][0:-1]),
+                               np.max(to_plot[8][0:-1]), np.max(to_plot[9][0:-1]),
+                               np.max(to_plot[10][0:-1]), np.max(to_plot[11][0:-1]),
                                np.max(to_plot[12][0:-1]), np.max(to_plot[13][0:-1])])
                 plt.axis([self.xzn0[0], self.xzn0[-1], minx, maxx])
             if LAXIS == 1:
-                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]), \
-                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]), \
-                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]), \
-                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]), \
-                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]), \
-                               np.min(to_plot[10][idxl:idxr]), np.min(to_plot[11][idxl:idxr]), \
+                minx = np.min([np.min(to_plot[0][idxl:idxr]), np.min(to_plot[1][idxl:idxr]),
+                               np.min(to_plot[2][idxl:idxr]), np.min(to_plot[3][idxl:idxr]),
+                               np.min(to_plot[4][idxl:idxr]), np.min(to_plot[5][idxl:idxr]),
+                               np.min(to_plot[6][idxl:idxr]), np.min(to_plot[7][idxl:idxr]),
+                               np.min(to_plot[8][idxl:idxr]), np.min(to_plot[9][idxl:idxr]),
+                               np.min(to_plot[10][idxl:idxr]), np.min(to_plot[11][idxl:idxr]),
                                np.min(to_plot[12][idxl:idxr]), np.min(to_plot[13][idxl:idxr])])
-                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]), \
-                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]), \
-                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]), \
-                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]), \
-                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]), \
-                               np.max(to_plot[10][idxl:idxr]), np.max(to_plot[11][idxl:idxr]), \
+                maxx = np.max([np.max(to_plot[0][idxl:idxr]), np.max(to_plot[1][idxl:idxr]),
+                               np.max(to_plot[2][idxl:idxr]), np.max(to_plot[3][idxl:idxr]),
+                               np.max(to_plot[4][idxl:idxr]), np.max(to_plot[5][idxl:idxr]),
+                               np.max(to_plot[6][idxl:idxr]), np.max(to_plot[7][idxl:idxr]),
+                               np.max(to_plot[8][idxl:idxr]), np.max(to_plot[9][idxl:idxr]),
+                               np.max(to_plot[10][idxl:idxr]), np.max(to_plot[11][idxl:idxr]),
                                np.max(to_plot[12][idxl:idxr]), np.max(to_plot[13][idxl:idxr])])
                 plt.axis([xbl, xbr, minx, maxx])
 

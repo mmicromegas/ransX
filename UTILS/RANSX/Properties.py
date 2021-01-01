@@ -1,12 +1,14 @@
 import numpy as np
 import sys
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Errors as eR
-import UTILS.Tools as uT
-import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
-import EQUATIONS.ContinuityEquationWithMassFluxCalculation as contCalc
-import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
+
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Errors import Errors
+from UTILS.Tools import Tools
+from EQUATIONS.TurbulentKineticEnergyCalculation import TurbulentKineticEnergyCalculation
+from EQUATIONS.ContinuityEquationWithMassFluxCalculation import ContinuityEquationWithMassFluxCalculation
+from EQUATIONS.TotalEnergyEquationCalculation import TotalEnergyEquationCalculation
+
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -14,13 +16,13 @@ import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class Properties(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr):
         super(Properties, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = np.load(filename, allow_pickle=True, encoding='latin1')
 
         timec = self.getRAdata(eht, 'timec')[intc]
         tavg = self.getRAdata(eht, 'tavg')
@@ -115,7 +117,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ####################################################################
 
         # instantiate turbulent kinetic energy object
-        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
+        tkeF = TurbulentKineticEnergyCalculation(filename, ig, intc)
 
         # load fields
         tkefields = tkeF.getTKEfield()
@@ -135,7 +137,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ####################################################################
 
         # instantiate continuity equation object
-        contF = contCalc.ContinuityEquationWithMassFluxCalculation(filename, ig, intc)
+        contF = ContinuityEquationWithMassFluxCalculation(filename, ig, intc)
 
         # load fields
         contfields = contF.getCONTfield()
@@ -146,7 +148,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ####################################################################
 
         # instantiate total energy equation object
-        teeF = teeCalc.TotalEnergyEquationCalculation(filename, ig, intc)
+        teeF = TotalEnergyEquationCalculation(filename, ig, intc)
 
         # load fields
         teefields = teeF.getTotalEnergyEquationField()
@@ -284,10 +286,10 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             xzn0inc = xzn0[ind[0]]
             xzn0outc = xzn0[ind[-1]]
         else:
-            #diss_max = diss.max()
-            #ind = np.where((diss > 0.02 * diss_max))[0]
+            # diss_max = diss.max()
+            # ind = np.where((diss > 0.02 * diss_max))[0]
 
-            #ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
+            # ind = np.where((self.nabla > self.nabla_ad))[0] # superadiabatic region
 
             fxi_max = np.max(np.abs(self.fxi))
             ind = np.where((np.abs(self.fxi) > 0.003 * fxi_max))[0]
@@ -310,7 +312,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
             surface = (yzn0[-1] - yzn0[0]) * (zzn0[-1] - zzn0[0])
             Vol = surface * (xznr - xznl)
         elif self.ig == 1 and self.nsdim == 2:
-            surface = (yzn0[-1] - yzn0[0])*(yzn0[-1] - yzn0[0]) # mock for 2D
+            surface = (yzn0[-1] - yzn0[0]) * (yzn0[-1] - yzn0[0])  # mock for 2D
             Vol = surface * (xznr - xznl)
         elif self.ig == 2:
             Vol = 4. / 3. * np.pi * (xznr ** 3 - xznl ** 3)
@@ -373,7 +375,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         self.nabla_ad[0:ibot] = 0.
         self.nabla_ad[itop:self.nx] = 0.
 
-        ind = np.where((self.nabla > self.nabla_ad))[0] # super-adiabatic region
+        ind = np.where((self.nabla > self.nabla_ad))[0]  # super-adiabatic region
 
         ibot_super_ad = ind[0]
         itop_super_ad = ind[-1]
@@ -383,18 +385,17 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         super_ad_o = self.xzn0[itop_super_ad]
 
         # calculate width of overshooting regions in Hp
-        #hp = -pp / self.Grad(pp, xzn0)
-        #pbot = pp[ibot]
-        #tmp = np.log(pbot / pp[ibot:ibot_super_ad])
-        #ov_in_hp = tmp[ibot_super_ad - ibot - 1]
+        # hp = -pp / self.Grad(pp, xzn0)
+        # pbot = pp[ibot]
+        # tmp = np.log(pbot / pp[ibot:ibot_super_ad])
+        # ov_in_hp = tmp[ibot_super_ad - ibot - 1]
 
-        #pbot = pp[itop_super_ad]
-        #tmp = np.log(pbot / pp[itop_super_ad:itop])
-        #ov_out_hp = tmp[itop - itop_super_ad - 1]
+        # pbot = pp[itop_super_ad]
+        # tmp = np.log(pbot / pp[itop_super_ad:itop])
+        # ov_out_hp = tmp[itop - itop_super_ad - 1]
 
         ov_in_hp = 0.
         ov_out_hp = 0.
-
 
         print('#----------------------------------------------------#')
         print('Datafile with space-time averages: ', self.filename)
@@ -402,39 +403,39 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print('Averaging windows (in s): ', tavg.item(0))
         print('Time range (in s from-to): ', round(self.trange[0], 1), round(self.trange[1], 1))
 
-        print ('---------------')
-        print ('Resolution: %i' % self.nx, self.ny, self.nz)
-        print ('Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out))
-        print ('Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc))
+        print('---------------')
+        print('Resolution: %i' % self.nx, self.ny, self.nz)
+        print('Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out))
+        print('Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc))
         if laxis != 0:
-            print ('Extent of convection zone (in Hp): %f' % cnvz_in_hp)
+            print('Extent of convection zone (in Hp): %f' % cnvz_in_hp)
         else:
             cnvz_in_hp = 0.
-        print ('Overshooting at inner/outer convection boundary (in Hp): ', round(ov_in_hp,2), round(ov_out_hp,2))
-        print ('Averaging time window (in s): %f' % tavg)
-        print ('RMS velocities in convection zone (in cm/s):  %.2e' % urms)
-        print ('Convective turnover timescale (in s)  %.2e' % tc)
-        print ('P_turb o P_gas %.2e' % pturb_o_pgas)
-        print ('Mach number Max (using uxux) %.2e' % machMax_1)
-        print ('Mach number Mean (using uxux) %.2e' % machMean_1)
-        print ('Mach number Max (using uu) %.2e' % machMax_2)
-        print ('Mach number Mean (using uu) %.2e' % machMean_2)
-        print ('Dissipation length scale (in cm): %.2e' % ld)
-        print ('Total nuclear luminosity (in erg/s): %.2e' % tenuc)
-        print ('Rate of TKE dissipation (in erg/s): %.2e' % epsD)
-        print ('Dissipation timescale for TKE (in s): %f' % tD)
-        print ('Dissipation timescale for TKE vertical (in s): %f' % tDver)
-        print ('Dissipation timescale for TKE horizontal (in s): %f' % tDhor)
-        print ('Reynolds number: %i' % Re)
+        print('Overshooting at inner/outer convection boundary (in Hp): ', round(ov_in_hp, 2), round(ov_out_hp, 2))
+        print('Averaging time window (in s): %f' % tavg)
+        print('RMS velocities in convection zone (in cm/s):  %.2e' % urms)
+        print('Convective turnover timescale (in s)  %.2e' % tc)
+        print('P_turb o P_gas %.2e' % pturb_o_pgas)
+        print('Mach number Max (using uxux) %.2e' % machMax_1)
+        print('Mach number Mean (using uxux) %.2e' % machMean_1)
+        print('Mach number Max (using uu) %.2e' % machMax_2)
+        print('Mach number Mean (using uu) %.2e' % machMean_2)
+        print('Dissipation length scale (in cm): %.2e' % ld)
+        print('Total nuclear luminosity (in erg/s): %.2e' % tenuc)
+        print('Rate of TKE dissipation (in erg/s): %.2e' % epsD)
+        print('Dissipation timescale for TKE (in s): %f' % tD)
+        print('Dissipation timescale for TKE vertical (in s): %f' % tDver)
+        print('Dissipation timescale for TKE horizontal (in s): %f' % tDhor)
+        print('Reynolds number: %i' % Re)
         # print ('Dissipation timescale for radial TKE (in s): %f' % tD_rad)
         # print ('Dissipation timescale for horizontal TKE (in s): %f' % tD_hor)
 
         uconv = (2. * tke) ** 0.5
 
-        uyrms = np.sqrt(uyuy-uy*uy)
-        uzrms = np.sqrt(uzuz-uz*uz)
+        uyrms = np.sqrt(uyuy - uy * uy)
+        uzrms = np.sqrt(uzuz - uz * uz)
 
-        uiso = np.sqrt((3./2.)*(uyrms**2+uzrms**2))
+        uiso = np.sqrt((3. / 2.) * (uyrms ** 2 + uzrms ** 2))
         if lc != 0.:
             # kolm_tke_diss_rate = (uconv ** 3) / lc
             # kolm_tke_diss_rate = (uiso ** 3) / ld
@@ -566,9 +567,11 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ig = self.ig
 
         return {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
-             'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc, 'cnvz_in_hp': cnvz_in_hp,
-             'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax_1': machMax_1, 'machMean_1': machMean_1, 'xzn0': xzn0,
-             'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
-             'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax, 'resContMean': resContMean,
-             'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
-             'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o}
+                'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
+                'cnvz_in_hp': cnvz_in_hp,
+                'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax_1': machMax_1, 'machMean_1': machMean_1, 'xzn0': xzn0,
+                'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
+                'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax,
+                'resContMean': resContMean,
+                'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
+                'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o}

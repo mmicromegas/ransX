@@ -15,7 +15,7 @@ class ContinuityEquationWithMassFluxCalculation(uCalc.Calculus, uT.Tools, object
         super(ContinuityEquationWithMassFluxCalculation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')

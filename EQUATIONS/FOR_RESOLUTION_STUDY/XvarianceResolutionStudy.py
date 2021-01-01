@@ -1,10 +1,10 @@
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
-import UTILS.Calculus as calc
-import UTILS.SetAxisLimit as al
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import sys
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -13,7 +13,7 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XvarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XvarianceResolutionStudy(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, inuc, element, intc, data_prefix):
         super(XvarianceResolutionStudy, self).__init__(ig)
@@ -21,7 +21,7 @@ class XvarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
         # load data to list of structured arrays
         eht = []
         for ffile in filename:
-            eht.append(np.load(ffile,allow_pickle=True))
+            eht.append(self.customLoad(ffile))
 
         # declare data lists		
         xzn0, nx, ny, nz = [], [], [], []
@@ -103,7 +103,7 @@ class XvarianceResolutionStudy(calc.Calculus, al.SetAxisLimit, uT.Tools, eR.Erro
 
         for i in range(len(grd)):
             plt.plot(grd[i], plt1[i], label=str(self.nx[i]) + ' x ' + str(self.ny[i]) + ' x ' + str(self.nz[i]) +
-                                            ' t: ' + str(round(self.timec[i])) + ' s')
+                                            ' t: ' + str(np.round(self.timec[i])) + ' s')
 
         # define and show x/y LABELS
         if self.ig == 1:

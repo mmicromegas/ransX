@@ -15,7 +15,7 @@ class TurbulentKineticEnergyCalculation(uCalc.Calculus, uT.Tools, object):
         super(TurbulentKineticEnergyCalculation, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         nx = self.getRAdata(eht, 'nx')

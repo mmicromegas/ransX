@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import sys
 
 
@@ -13,14 +13,14 @@ import sys
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, filename_reaclib, ig, inuc, element, bconv, tconv, tc, intc, data_prefix,
                  fext, tnuc, network):
         super(XtransportVsNuclearTimescales, self).__init__(ig)
 
         # load RANS data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load REACLIB data	
 
@@ -30,7 +30,7 @@ class XtransportVsNuclearTimescales(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools,
         # read line-by-line		
         with open(filename_reaclib) as handle:
             for lineno, line in enumerate(handle):
-                if (lineno <> 0) and (lineno % 3 <> 0):
+                if (lineno != 0) and (lineno % 3 != 0):
                     rcoeff_tmp.append(line.rstrip())
                 if lineno % 3 == 0:
                     rlabel.append(line[0:52].replace(" ", ""))

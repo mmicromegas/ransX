@@ -9,18 +9,23 @@
 # Desc: calculates time-averages over tavg
 # Usage: run ransX_tseries.py
 
-import UTILS.PROMPI.PROMPI_data as uPd
-import UTILS.TSERIES.ReadParamsTseries as uRpt
-import UTILS.Errors as uEr
+from UTILS.PROMPI.PROMPI_data import PROMPI_ransdat
+from UTILS.TSERIES.ReadParamsTseries import ReadParamsTseries
+from UTILS.Errors import Errors
 import numpy as np
 import os
 import sys
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
     paramFile = os.path.join('PARAMS', 'param.tseries')
-    params = uRpt.ReadParamsTseries(paramFile)
+    params = ReadParamsTseries(paramFile)
 
     # read input parameters
     datadir = params.getForTseries('tseries')['datadir']
@@ -39,14 +44,14 @@ def main():
     ransdat = [filee.replace(filee, datadir + filee) for filee in ransdat]
 
     filename = ransdat[0]
-    ts = uPd.PROMPI_ransdat(filename, endianness, precision)
+    ts = PROMPI_ransdat(filename, endianness, precision)
 
     time = []
     dt = []
 
     for filename in ransdat:
         print(filename)
-        ts = uPd.PROMPI_ransdat(filename, endianness, precision)
+        ts = PROMPI_ransdat(filename, endianness, precision)
         rans_tstart, rans_tend, rans_tavg = ts.rans_header()
         time.append(rans_tend)
         dt.append(rans_tavg)
@@ -78,8 +83,8 @@ def main():
     print('Averaged time range: ', round(timecmin, 3), round(timecmax, 3))
     print('nx', ts.rans()['nx'])
 
-#   instantiate errors
-    errors = uEr.Errors()
+    #   instantiate errors
+    errors = Errors()
     if ntc == 0:
         print("----------")
         print("Error(rans_tseries.py) " + errors.errorAveragedSnapshots())
@@ -90,7 +95,7 @@ def main():
     eh = []
     for i in idx[0]:
         filename = ransdat[i]
-        ts = uPd.PROMPI_ransdat(filename, endianness, precision)
+        ts = PROMPI_ransdat(filename, endianness, precision)
         field = [[data for data in ts.rans()[s]] for s in ts.ransl]
         eh.append(field)
 
@@ -169,8 +174,12 @@ def main():
     trange = {'trange': trange}
     eht.update(trange)
 
-    # STORE TIME-AVERAGED DATA i.e the EHT dictionary
+    # STORE TIME-AVERAGED DATA i.e the EHT dictionary   
     np.save(dataout + '.npy', eht)
+
+    # STORE TIME-AVERAGED DATA i.e the EHT dictionary
+    # fix_imports=True does not fix python 2 vs python 3 compatibility due to unsupported protocols in python 2 greater than 3
+    # np.save(dataout + '.npy', eht, allow_pickle=True, fix_imports=True )
 
 
 # EXECUTE MAIN

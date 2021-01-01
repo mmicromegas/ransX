@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) oburn single ---------- #
 []
-## Input-Data Directory .................... ## [single,datafile,D:\ransX\DATA_D\RANSDAT\onecdmp\onec3d.45.nuc14.512x64x64.00447.ransdat]
+## Input-Data Directory .................... ## [single,datafile,D:\Desktop\GITDEV\ransX\DATA_D\RANSDAT\oburn15\ob3d.nnuc15.128x128x128.00001.ransdat]
 ## Input Data Endianness ................... ## [single,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [single,precision,double]
-## Limit X-grid ............................ ## [single,xlimit,3.e8,4.5e9]
-## List Of Mean Fields To Plot ............. ## [single,toplot,tt,ux,uy,uz]
+## Limit X-grid ............................ ## [single,xlimit,3.e8,1.e9]
+## List Of Mean Fields To Plot ............. ## [single,toplot,tt]

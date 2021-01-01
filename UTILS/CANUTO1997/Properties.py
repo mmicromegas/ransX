@@ -1,12 +1,13 @@
 import numpy as np
 import sys
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Errors as eR
-import UTILS.Tools as uT
-import EQUATIONS.TurbulentKineticEnergyCalculation as tkeCalc
-import EQUATIONS.ContinuityEquationWithMassFluxCalculation as contCalc
-import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
+
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Errors import Errors
+from UTILS.Tools import Tools
+from EQUATIONS.TurbulentKineticEnergyCalculation import TurbulentKineticEnergyCalculation
+from EQUATIONS.ContinuityEquationWithMassFluxCalculation import ContinuityEquationWithMassFluxCalculation
+from EQUATIONS.TotalEnergyEquationCalculation import TotalEnergyEquationCalculation
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -15,13 +16,13 @@ import EQUATIONS.TotalEnergyEquationCalculation as teeCalc
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class Properties(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, plabel, ig, ieos, intc, laxis, xbl, xbr):
         super(Properties, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         timec = self.getRAdata(eht, 'timec')[intc]
         tavg = self.getRAdata(eht, 'tavg')
@@ -81,7 +82,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ####################################################################
 
         # instantiate turbulent kinetic energy object
-        tkeF = tkeCalc.TurbulentKineticEnergyCalculation(filename, ig, intc)
+        tkeF = TurbulentKineticEnergyCalculation(filename, ig, intc)
 
         # load fields
         tkefields = tkeF.getTKEfield()
@@ -95,7 +96,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ####################################################################
 
         # instantiate continuity equation object
-        contF = contCalc.ContinuityEquationWithMassFluxCalculation(filename, ig, intc)
+        contF = ContinuityEquationWithMassFluxCalculation(filename, ig, intc)
 
         # load fields
         contfields = contF.getCONTfield()
@@ -106,7 +107,7 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         ####################################################################
 
         # instantiate total energy equation object
-        teeF = teeCalc.TotalEnergyEquationCalculation(filename, ig, intc)
+        teeF = TotalEnergyEquationCalculation(filename, ig, intc)
 
         # load fields
         teefields = teeF.getTotalEnergyEquationField()
@@ -286,25 +287,25 @@ class Properties(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object)
         print('Averaging windows (in s): ', tavg.item(0))
         print('Time range (in s from-to): ', round(self.trange[0], 1), round(self.trange[1], 1))
 
-        print '---------------'
-        print 'Resolution: %i' % self.nx, self.ny, self.nz
-        print 'Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out)
-        print 'Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc)
+        print('---------------')
+        print('Resolution: %i' % self.nx, self.ny, self.nz)
+        print('Radial size of computational domain (in cm): %.2e %.2e' % (xzn0in, xzn0out))
+        print('Radial size of convection zone (in cm):  %.2e %.2e' % (xzn0inc, xzn0outc))
         if laxis != 0:
-            print 'Extent of convection zone (in Hp): %f' % cnvz_in_hp
-        print 'Averaging time window (in s): %f' % tavg
-        print 'RMS velocities in convection zone (in cm/s):  %.2e' % urms
-        print 'Convective turnover timescale (in s)  %.2e' % tc
-        print 'P_turb o P_gas %.2e' % pturb_o_pgas
-        print 'Mach number Max %.2e' % machMax
-        print 'Mach number Mean %.2e' % machMean
-        print 'Dissipation length scale (in cm): %.2e' % ld
-        print 'Total nuclear luminosity (in erg/s): %.2e' % tenuc
-        print 'Rate of TKE dissipation (in erg/s): %.2e' % epsD
-        print 'Dissipation timescale for TKE (in s): %f' % tD
-        print 'Reynolds number: %i' % Re
-        # print 'Dissipation timescale for radial TKE (in s): %f' % tD_rad
-        # print 'Dissipation timescale for horizontal TKE (in s): %f' % tD_hor
+            print('Extent of convection zone (in Hp): %f' % cnvz_in_hp)
+        print('Averaging time window (in s): %f' % tavg)
+        print('RMS velocities in convection zone (in cm/s):  %.2e' % urms)
+        print('Convective turnover timescale (in s)  %.2e' % tc)
+        print('P_turb o P_gas %.2e' % pturb_o_pgas)
+        print('Mach number Max %.2e' % machMax)
+        print('Mach number Mean %.2e' % machMean)
+        print('Dissipation length scale (in cm): %.2e' % ld)
+        print('Total nuclear luminosity (in erg/s): %.2e' % tenuc)
+        print('Rate of TKE dissipation (in erg/s): %.2e' % epsD)
+        print('Dissipation timescale for TKE (in s): %f' % tD)
+        print('Reynolds number: %i' % Re)
+        # print('Dissipation timescale for radial TKE (in s): %f' % tD_rad)
+        # print('Dissipation timescale for horizontal TKE (in s): %f' % tD_hor)
 
         uconv = (2. * tke) ** 0.5
         if lc != 0.:

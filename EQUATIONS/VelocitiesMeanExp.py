@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import UTILS.Calculus as uCalc
-import UTILS.SetAxisLimit as uSal
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+from UTILS.Calculus import Calculus
+from UTILS.SetAxisLimit import SetAxisLimit
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 import sys
 from scipy import integrate
 
@@ -13,13 +13,13 @@ from scipy import integrate
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class VelocitiesMeanExp(uCalc.Calculus, uSal.SetAxisLimit, uT.Tools, eR.Errors, object):
+class VelocitiesMeanExp(Calculus, SetAxisLimit, Tools, Errors, object):
 
     def __init__(self, filename, ig, fext, intc, nsdim, data_prefix):
         super(VelocitiesMeanExp, self).__init__(ig)
 
         # load data to structured array
-        eht = np.load(filename,allow_pickle=True)
+        eht = self.customLoad(filename)
 
         # load grid
         nx = self.getRAdata(eht, 'nx')

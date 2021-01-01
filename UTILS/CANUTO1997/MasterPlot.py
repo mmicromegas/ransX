@@ -1,13 +1,14 @@
-import CANUTO1997.ContinuityEquationWithFavrianDilatation as contfdil
-import CANUTO1997.MomentumEquationX as momx
-import CANUTO1997.MomentumEquationY as momy
-import CANUTO1997.MomentumEquationZ as momz
-import CANUTO1997.KineticEnergyFlux as keflx
-import CANUTO1997.TurbulentMassFlux as a
-import CANUTO1997.LuminosityEquation as lumi
-import CANUTO1997.TurbulentKineticEnergyEquation as tke
+from CANUTO1997.ContinuityEquationWithFavrianDilatation import ContinuityEquationWithFavrianDilatation
+from CANUTO1997.MomentumEquationX import MomentumEquationX
+from CANUTO1997.MomentumEquationY import MomentumEquationY
+from CANUTO1997.MomentumEquationZ import MomentumEquationZ
+from CANUTO1997.KineticEnergyFlux import KineticEnergyFlux
+from CANUTO1997.TurbulentMassFlux import TurbulentMassFlux
+from CANUTO1997.LuminosityEquation import LuminosityEquation
+from CANUTO1997.TurbulentKineticEnergyEquation import TurbulentKineticEnergyEquation
 
 import matplotlib.pyplot as plt
+
 
 class MasterPlot():
 
@@ -18,11 +19,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
-                                                                    params.getForProp('prop')['ig'],
-                                                                    params.getForProp('prop')['fext'],
-                                                                    params.getForProp('prop')['intc'],
-                                                                    params.getForProp('prop')['prefix'])
+        ransCONT = ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+                                                           params.getForProp('prop')['ig'],
+                                                           params.getForProp('prop')['fext'],
+                                                           params.getForProp('prop')['intc'],
+                                                           params.getForProp('prop')['prefix'])
 
         # plot density
         ransCONT.plot_rho(params.getForProp('prop')['laxis'],
@@ -44,11 +45,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
-                                                                    params.getForProp('prop')['ig'],
-                                                                    params.getForProp('prop')['fext'],
-                                                                    params.getForProp('prop')['intc'],
-                                                                    params.getForProp('prop')['prefix'])
+        ransCONT = ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+                                                           params.getForProp('prop')['ig'],
+                                                           params.getForProp('prop')['fext'],
+                                                           params.getForProp('prop')['intc'],
+                                                           params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
         ransCONT.plot_continuity_equation(params.getForProp('prop')['laxis'],
@@ -63,11 +64,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate 
-        ransCONT = contfdil.ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
-                                                                    params.getForProp('prop')['ig'],
-                                                                    params.getForProp('prop')['fext'],
-                                                                    params.getForProp('prop')['intc'],
-                                                                    params.getForProp('prop')['prefix'])
+        ransCONT = ContinuityEquationWithFavrianDilatation(params.getForProp('prop')['eht_data'],
+                                                           params.getForProp('prop')['ig'],
+                                                           params.getForProp('prop')['fext'],
+                                                           params.getForProp('prop')['intc'],
+                                                           params.getForProp('prop')['prefix'])
 
         # plot continuity equation integral budget					       
         ransCONT.plot_continuity_equation_integral_budget(params.getForProp('prop')['laxis'],
@@ -80,11 +81,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          params.getForProp('prop')['prefix'])
+        ransMomx = MomentumEquationX(params.getForProp('prop')['eht_data'],
+                                     params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
+                                     params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['prefix'])
 
         ransMomx.plot_momentum_x(params.getForProp('prop')['laxis'],
                                  bconv, tconv,
@@ -98,11 +99,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransMomx = momx.MomentumEquationX(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          params.getForProp('prop')['prefix'])
+        ransMomx = MomentumEquationX(params.getForProp('prop')['eht_data'],
+                                     params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
+                                     params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['prefix'])
 
         ransMomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'],
                                           bconv, tconv,
@@ -116,11 +117,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          params.getForProp('prop')['prefix'])
+        ransMomy = MomentumEquationY(params.getForProp('prop')['eht_data'],
+                                     params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
+                                     params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['prefix'])
 
         ransMomy.plot_momentum_y(params.getForProp('prop')['laxis'],
                                  bconv, tconv,
@@ -134,11 +135,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransMomy = momy.MomentumEquationY(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          params.getForProp('prop')['prefix'])
+        ransMomy = MomentumEquationY(params.getForProp('prop')['eht_data'],
+                                     params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
+                                     params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['prefix'])
 
         ransMomy.plot_momentum_equation_y(params.getForProp('prop')['laxis'],
                                           bconv, tconv,
@@ -152,11 +153,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          params.getForProp('prop')['prefix'])
+        ransMomz = MomentumEquationZ(params.getForProp('prop')['eht_data'],
+                                     params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
+                                     params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['prefix'])
 
         ransMomz.plot_momentum_z(params.getForProp('prop')['laxis'],
                                  bconv, tconv,
@@ -170,11 +171,11 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransMomz = momz.MomentumEquationZ(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          params.getForProp('prop')['prefix'])
+        ransMomz = MomentumEquationZ(params.getForProp('prop')['eht_data'],
+                                     params.getForProp('prop')['ig'],
+                                     params.getForProp('prop')['fext'],
+                                     params.getForProp('prop')['intc'],
+                                     params.getForProp('prop')['prefix'])
 
         ransMomz.plot_momentum_equation_z(params.getForProp('prop')['laxis'],
                                           bconv, tconv,
@@ -188,31 +189,30 @@ class MasterPlot():
         params = self.params
 
         # instantiate
-        ransKeflx = keflx.KineticEnergyFlux(params.getForProp('prop')['eht_data'],
-                                                                    params.getForProp('prop')['ig'],
-                                                                    params.getForProp('prop')['fext'],
-                                                                    params.getForProp('prop')['intc'],
-                                                                    params.getForProp('prop')['prefix'])
+        ransKeflx = KineticEnergyFlux(params.getForProp('prop')['eht_data'],
+                                      params.getForProp('prop')['ig'],
+                                      params.getForProp('prop')['fext'],
+                                      params.getForProp('prop')['intc'],
+                                      params.getForProp('prop')['prefix'])
 
         # plot density
         ransKeflx.plot_keflx(params.getForProp('prop')['laxis'],
-                          bconv, tconv,
-                          params.getForEqs('keflx')['xbl'],
-                          params.getForEqs('keflx')['xbr'],
-                          params.getForEqs('keflx')['ybu'],
-                          params.getForEqs('keflx')['ybd'],
-                          params.getForEqs('keflx')['ilg'])
-
+                             bconv, tconv,
+                             params.getForEqs('keflx')['xbl'],
+                             params.getForEqs('keflx')['xbr'],
+                             params.getForEqs('keflx')['ybu'],
+                             params.getForEqs('keflx')['ybd'],
+                             params.getForEqs('keflx')['ilg'])
 
     def execTMSflx(self, bconv, tconv, lc):
         params = self.params
 
         # instantiate
-        ransTMSflx = a.TurbulentMassFlux(params.getForProp('prop')['eht_data'],
-                                                 params.getForProp('prop')['ig'],
-                                                 params.getForProp('prop')['intc'],
-                                                 params.getForProp('prop')['prefix'],
-                                                 lc)
+        ransTMSflx = TurbulentMassFlux(params.getForProp('prop')['eht_data'],
+                                       params.getForProp('prop')['ig'],
+                                       params.getForProp('prop')['intc'],
+                                       params.getForProp('prop')['prefix'],
+                                       lc)
 
         ransTMSflx.plot_a(params.getForProp('prop')['laxis'],
                           bconv, tconv,
@@ -222,47 +222,45 @@ class MasterPlot():
                           params.getForEqs('tmsflx')['ybd'],
                           params.getForEqs('tmsflx')['ilg'])
 
-
     def execLumiEq(self, tke_diss, bconv, tconv):
         params = self.params
 
         # instantiate
-        ranslumi = lumi.LuminosityEquation(params.getForProp('prop')['eht_data'],
-                                                       params.getForProp('prop')['ig'],
-                                                       params.getForProp('prop')['ieos'],
-                                                       params.getForProp('prop')['fext'],
-                                                       params.getForProp('prop')['intc'],
-                                                       tke_diss, bconv, tconv,
-                                                       params.getForProp('prop')['prefix'])
+        ranslumi = LuminosityEquation(params.getForProp('prop')['eht_data'],
+                                      params.getForProp('prop')['ig'],
+                                      params.getForProp('prop')['ieos'],
+                                      params.getForProp('prop')['fext'],
+                                      params.getForProp('prop')['intc'],
+                                      tke_diss, bconv, tconv,
+                                      params.getForProp('prop')['prefix'])
 
         # plot luminosity equation exact
         ranslumi.plot_luminosity_equation_exact(params.getForProp('prop')['laxis'],
-                                                    params.getForEqs('lueq')['xbl'],
-                                                    params.getForEqs('lueq')['xbr'],
-                                                    params.getForEqs('lueq')['ybu'],
-                                                    params.getForEqs('lueq')['ybd'],
-                                                    params.getForEqs('lueq')['ilg'])
-
+                                                params.getForEqs('lueq')['xbl'],
+                                                params.getForEqs('lueq')['xbr'],
+                                                params.getForEqs('lueq')['ybu'],
+                                                params.getForEqs('lueq')['ybd'],
+                                                params.getForEqs('lueq')['ilg'])
 
     def execTKEeq(self, kolmrate, bconv, tconv):
         params = self.params
 
         # instantiate
-        ransTke = tke.TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
-                                          params.getForProp('prop')['ig'],
-                                          params.getForProp('prop')['fext'],
-                                          params.getForProp('prop')['intc'],
-                                          -kolmrate,
-                                          params.getForProp('prop')['prefix'])
+        ransTke = TurbulentKineticEnergyEquation(params.getForProp('prop')['eht_data'],
+                                                 params.getForProp('prop')['ig'],
+                                                 params.getForProp('prop')['fext'],
+                                                 params.getForProp('prop')['intc'],
+                                                 -kolmrate,
+                                                 params.getForProp('prop')['prefix'])
 
         # plot kinetic energy equation
         ransTke.plot_tke_equation(params.getForProp('prop')['laxis'],
-                                bconv, tconv,
-                                params.getForEqs('tkeq')['xbl'],
-                                params.getForEqs('tkeq')['xbr'],
-                                params.getForEqs('tkeq')['ybu'],
-                                params.getForEqs('tkeq')['ybd'],
-                                params.getForEqs('tkeq')['ilg'])
+                                  bconv, tconv,
+                                  params.getForEqs('tkeq')['xbl'],
+                                  params.getForEqs('tkeq')['xbr'],
+                                  params.getForEqs('tkeq')['ybu'],
+                                  params.getForEqs('tkeq')['ybd'],
+                                  params.getForEqs('tkeq')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """
@@ -280,5 +278,3 @@ class MasterPlot():
         plt.rcParams['figure.subplot.left'] = 0.17
         plt.rcParams['figure.subplot.right'] = 0.85
         plt.rcParams.update({'figure.max_open_warning': 0})
-
-

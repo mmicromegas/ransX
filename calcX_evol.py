@@ -5,23 +5,29 @@
 # File: calcX_evol.py
 # Author: Miroslav Mocak
 # Email: miroslav.mocak@gmail.com
-# Date: November/2019
+# Date: December/2020
 # Desc: calculates temporal evolution of several quantities based on RANS equations
 # Usage: run calcX_evol.py
 
 import numpy as np
 import sys
 import os
-import UTILS.EVOL.EvolReadParams as rP
-import UTILS.RANSX.Properties as pRop
-import UTILS.Tools as uT
-import UTILS.Errors as eR
+
+from UTILS.EVOL.CalcxReadParams import CalcxReadParams
+from UTILS.RANSX.Properties import Properties
+from UTILS.Tools import Tools
+from UTILS.Errors import Errors
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
-    paramFile = os.path.join('PARAMS', 'param.evol')
-    params = rP.EvolReadParams(paramFile)
+    paramFile = os.path.join('PARAMS', 'param.calcx')
+    params = CalcxReadParams(paramFile)
 
     # get input parameters
     filename = params.getForProp('prop')['eht_data']
@@ -32,11 +38,11 @@ def main():
     ieos = params.getForProp('prop')['ieos']
     laxis = params.getForProp('prop')['laxis']
 
-    # load data to structured array
-    eht = np.load(filename,allow_pickle=True)
-
     # instantiate tools
-    tools = uT.Tools()
+    tools = Tools()
+
+    # load data to structured array
+    eht = tools.customLoad(filename)
 
     # load available central times
     t_timec = tools.getRAdata(eht, 'timec')
@@ -47,7 +53,7 @@ def main():
     xzn0 = tools.getRAdata(eht, 'xzn0')
 
     # instantiate errors
-    errors = eR.Errors()
+    errors = Errors()
 
     if (xbl < xzn0[0]) or (xbr > xzn0[-1]):
         print(xbl, xbr, xzn0[0], xzn0[-1])
@@ -61,7 +67,7 @@ def main():
 
     intc = 0
     for intc in range(0, t_timec.size):
-        ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
+        ransP = Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
         prp = ransP.properties()
         t_xzn0inc.append(prp['xzn0inc'])
         t_xzn0outc.append(prp['xzn0outc'])
@@ -71,15 +77,16 @@ def main():
         t_tc.append(prp['tc'])
         t_tenuc.append(prp['tenuc'])
         t_pturb_o_pgas.append(prp['pturb_o_pgas'])
-        t_machMax.append(prp['machMax'])
-        t_machMean.append(prp['machMean'])
+        t_machMax.append(prp['machMax_1'])
+        t_machMean.append(prp['machMean_1'])
         t_urms.append(prp['urms'])
         t_resContMean.append(prp['resContMean'])
         t_resContMax.append(prp['resContMax'])
         t_resTeeMean.append(prp['resTeeMean'])
         t_resTeeMax.append(prp['resTeeMax'])
         t_x0002mean_cnvz.append(prp['x0002mean_cnvz'])
-        print(prp['xzn0inc'], prp['xzn0outc'],prp['resContMean'],prp['resContMax'],prp['resTeeMean'],prp['resTeeMax'])
+        print(prp['xzn0inc'], prp['xzn0outc'], prp['resContMean'], prp['resContMax'], prp['resTeeMean'],
+              prp['resTeeMax'])
 
     # store time-evolution
     tevol = {}
@@ -137,7 +144,7 @@ def main():
 
     # get and store grid via redundant call to properties
     # otherwise you get "prp may be as assigned before reference"
-    ransP = pRop.Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
+    ransP = Properties(filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     tavg = {'tavg': prp['tavg']}

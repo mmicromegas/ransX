@@ -5,21 +5,29 @@
 # File: ransX_canuto1997.py
 # Author: Miroslav Mocak 
 # Email: miroslav.mocak@gmail.com 
-# Date: June/2020
+# Date: December/2020
 # Desc: controls selection, hence calculation and plotting of terms in RANS equations
 # Usage: run ransX_canuto1997.py
 
-import UTILS.CANUTO1997.Properties as pRop
-import UTILS.CANUTO1997.ReadParamsRansX as rP
-import UTILS.CANUTO1997.MasterPlot as mPlot
+from UTILS.CANUTO1997.Properties import Properties
+from UTILS.CANUTO1997.ReadParamsRansX import ReadParamsRansX
+from UTILS.CANUTO1997.MasterPlot import MasterPlot
+
 import ast
 import os
+import sys
+import errno
 
 
 def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
+
     # create os independent path and read parameter file
     paramFile = os.path.join('PARAMS', 'param.canuto1997')
-    params = rP.ReadParamsRansX(paramFile)
+    params = ReadParamsRansX(paramFile)
 
     # get input parameters
     filename = params.getForProp('prop')['eht_data']
@@ -32,14 +40,21 @@ def main():
     xbr = params.getForProp('prop')['xbr']
 
     # calculate properties
-    ransP = pRop.Properties(filename, plabel, ig, ieos, intc, laxis, xbl, xbr)
+    ransP = Properties(filename, plabel, ig, ieos, intc, laxis, xbl, xbr)
     prp = ransP.properties()
 
     # instantiate master plot
-    plt = mPlot.MasterPlot(params)
+    plt = MasterPlot(params)
 
     # obtain publication quality figures
     plt.SetMatplotlibParams()
+
+    # check/create RESULTS folder
+    try:
+        os.makedirs('RESULTS')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
 
     # CONTINUITY EQUATION
     if str2bool(params.getForEqs('rho')['plotMee']):
@@ -78,16 +93,17 @@ def main():
 
     # TURBULENT MASS FLUX EQUATION a.k.a A EQUATION
     if str2bool(params.getForEqs('tmsflx')['plotMee']):
-        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'],prp['lc'])
+        plt.execTMSflx(prp['xzn0inc'], prp['xzn0outc'], prp['lc'])
 
     # LUMINOSITY EQUATION
     if str2bool(params.getForEqs('lueq')['plotMee']):
         plt.execLumiEq(prp['tke_diss'],
-                          prp['xzn0inc'],
-                          prp['xzn0outc'])
+                       prp['xzn0inc'],
+                       prp['xzn0outc'])
 
     if str2bool(params.getForEqs('tkeq')['plotMee']):
         plt.execTKEeq(prp['kolm_tke_diss_rate'], prp['xzn0inc'], prp['xzn0outc'])
+
 
 # True/False strings to proper boolean
 def str2bool(param):

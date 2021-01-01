@@ -1,4 +1,4 @@
-import EQUATIONS.REACLIB.XtransportVsNuclearTimescales as xtvsn
+from EQUATIONS.REACLIB.XtransportVsNuclearTimescales import XtransportVsNuclearTimescales
 
 import matplotlib.pyplot as plt
 
@@ -12,7 +12,7 @@ class ReaclibMasterPlot():
         params = self.params
 
         # instantiate 
-        ransXtvsn = xtvsn.XtransportVsNuclearTimescales(params.getForProp('prop')['eht_data'],
+        ransXtvsn = XtransportVsNuclearTimescales(params.getForProp('prop')['eht_data'],
                                                         params.getForProp('prop')['reaclib'],
                                                         params.getForProp('prop')['ig'],
                                                         inuc, element, bconv, tconv, tauL,
