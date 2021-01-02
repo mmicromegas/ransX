@@ -1,6 +1,6 @@
 import numpy as np
-import UTILS.Calculus as uCalc
-import UTILS.Tools as uT
+from UTILS.Calculus import Calculus
+from UTILS.Tools import Tools
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -9,7 +9,7 @@ import UTILS.Tools as uT
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class ContinuityEquationWithMassFluxCalculation(uCalc.Calculus, uT.Tools, object):
+class ContinuityEquationWithMassFluxCalculation(Calculus, Tools, object):
 
     def __init__(self, filename, ig, intc):
         super(ContinuityEquationWithMassFluxCalculation, self).__init__(ig)

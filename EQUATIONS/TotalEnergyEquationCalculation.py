@@ -1,6 +1,6 @@
 import numpy as np
-import UTILS.Calculus as uCalc
-import UTILS.Tools as uT
+from UTILS.Calculus import Calculus
+from UTILS.Tools import Tools
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -9,7 +9,7 @@ import UTILS.Tools as uT
 # Equations in Spherical Geometry and their Application to Turbulent Stellar #
 # Convection Data #
 
-class TotalEnergyEquationCalculation(uCalc.Calculus, uT.Tools, object):
+class TotalEnergyEquationCalculation(Calculus, Tools, object):
 
     def __init__(self, filename, ig, intc):
         super(TotalEnergyEquationCalculation, self).__init__(ig)
