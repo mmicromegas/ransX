@@ -37,7 +37,7 @@ Mean fields based on 3D Oxygen-Neon Burning Shell in a massive star
 
 <img src="https://user-images.githubusercontent.com/34376626/103656869-6e8fa480-4f69-11eb-909d-335d12398a9a.png" width="25%"></img> 
 
-# Available Documentation (outdated)
+# Available Documentation (a bit outdated)
 
 Available documentation encompassing ransX theory/user/implementation and developer's guide can be found in the DOCS folder.
 
