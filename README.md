@@ -23,6 +23,9 @@ git clone https://github.com/mmicromegas/ransX
 1. cd ransX
 2. start ipython
 3. run ransX.py
+4. run ransX_res.py
+5. run ransX_evol.py
+6. run ransX_reaclib.py
 
 # Available Data (research-grade)
 
@@ -34,7 +37,7 @@ Mean fields based on 3D Oxygen-Neon Burning Shell in a massive star
 
 <img src="https://user-images.githubusercontent.com/34376626/103656869-6e8fa480-4f69-11eb-909d-335d12398a9a.png" width="25%"></img> 
 
-# Available Documentation
+# Available Documentation (outdated)
 
 Available documentation encompassing ransX theory/user/implementation and developer's guide can be found in the DOCS folder.
 
