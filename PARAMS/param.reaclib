@@ -8,7 +8,7 @@
 ## File Extension For Plots ................................ ## [prop,fext,png]
 ## Geomergy; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,2]
 ## Dimensionality .......................................... ## [prop,nsdim,3]
-## Central Time Index ...................................... ## [prop,intc,4]
+## Central Time Index ...................................... ## [prop,intc,20]
 ## Limit Axis .............................................. ## [prop,laxis,2] 
 ## Oplot nuclear timescales (0: no, 1: yes) ................ ## [prop,tnuc,1]
 ## X-axis Left boundary for properties ..................... ## [prop,xbl,4.2e8]

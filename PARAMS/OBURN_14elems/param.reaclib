@@ -1,9 +1,9 @@
 # ----- Parameter file for rans(eXtreme) and OBURN ---------- #
 []
-## Input Reaclib Data ...................................... ## [prop,reaclib,D:\Desktop\GITDEV\ransX\DATA_D\REACLIB\netsu14_oburn_modified]
-## Input Tseries Data ...................................... ## [prop,eht_data,D:\ransX\DATA_D\TSERIES\tseries_oburn14_512x128x128_cosma_1400secs.npy]
+## Input Reaclib Data ...................................... ## [prop,reaclib,DATA\REACLIB\netsu14_oburn_modified]
+## Input Tseries Data ...................................... ## [prop,eht_data,DATA\TSERIES\tseries_oburn14_128x64x64_cosma_1400secs.npy]
 ## Project Label (oburn, ccp: for now only) ................ ## [prop,plabel,oburn]
-## Filename Prefix For Plots ............................... ## [prop,prefix,ob14_512x128x128_tavg1400_intc20timec2221s_]
+## Filename Prefix For Plots ............................... ## [prop,prefix,ob14_128x64x64_tavg1400_intc20timec2221s_]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,3]
 ## File Extension For Plots ................................ ## [prop,fext,png]
 ## Geomergy; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,2]

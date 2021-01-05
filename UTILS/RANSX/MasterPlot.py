@@ -475,19 +475,19 @@ class MasterPlot():
                             params.getForEqs(x)['ybd'],
                             params.getForEqs(x)['ilg'])
 
-        ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
-                                   params.getForEqs(x)['xbl'],
-                                   params.getForEqs(x)['xbr'],
-                                   params.getForEqs(x)['ybu'],
-                                   params.getForEqs(x)['ybd'],
-                                   params.getForEqs(x)['ilg'])
+        #ransXtra.plot_X_space_time(params.getForProp('prop')['laxis'],
+        #                           params.getForEqs(x)['xbl'],
+        #                           params.getForEqs(x)['xbr'],
+        #                           params.getForEqs(x)['ybu'],
+        #                           params.getForEqs(x)['ybd'],
+        #                           params.getForEqs(x)['ilg'])
 
-        ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
-                                      params.getForEqs(x)['xbl'],
-                                      params.getForEqs(x)['xbr'],
-                                      params.getForEqs(x)['ybu'],
-                                      params.getForEqs(x)['ybd'],
-                                      params.getForEqs(x)['ilg'])
+        #ransXtra.plot_rhoX_space_time(params.getForProp('prop')['laxis'],
+        #                              params.getForEqs(x)['xbl'],
+        #                              params.getForEqs(x)['xbr'],
+        #                              params.getForEqs(x)['ybu'],
+        #                              params.getForEqs(x)['ybd'],
+        #                              params.getForEqs(x)['ilg'])
 
         # ransXtra.plot_Xm_with_MM(params.getForProp('prop')['laxis'],
         #                    params.getForEqs(x)['xbl'],
@@ -788,12 +788,12 @@ class MasterPlot():
                          params.getForEqs('tkie')['ybd'],
                          params.getForEqs('tkie')['ilg'])
 
-        ransTke.plot_TKE_space_time(params.getForProp('prop')['laxis'],
-                                    params.getForEqs('tkeeq')['xbl'],
-                                    params.getForEqs('tkeeq')['xbr'],
-                                    params.getForEqs('tkeeq')['ybu'],
-                                    params.getForEqs('tkeeq')['ybd'],
-                                    params.getForEqs('tkeeq')['ilg'])
+        #ransTke.plot_TKE_space_time(params.getForProp('prop')['laxis'],
+        #                            params.getForEqs('tkeeq')['xbl'],
+        #                            params.getForEqs('tkeeq')['xbr'],
+        #                            params.getForEqs('tkeeq')['ybu'],
+        #                            params.getForEqs('tkeeq')['ybd'],
+        #                            params.getForEqs('tkeeq')['ilg'])
 
         # plot turbulent kinetic energy evolution	   
         # ransTke.plot_tke_evolution()
@@ -861,12 +861,12 @@ class MasterPlot():
                                 params.getForEqs('tkieR')['ybd'],
                                 params.getForEqs('tkieR')['ilg'])
 
-        ransTkeR.plot_TKEradial_space_time(params.getForProp('prop')['laxis'],
-                                           params.getForEqs('tkeReq')['xbl'],
-                                           params.getForEqs('tkeReq')['xbr'],
-                                           params.getForEqs('tkeReq')['ybu'],
-                                           params.getForEqs('tkeReq')['ybd'],
-                                           params.getForEqs('tkeReq')['ilg'])
+        #ransTkeR.plot_TKEradial_space_time(params.getForProp('prop')['laxis'],
+        #                                   params.getForEqs('tkeReq')['xbl'],
+        #                                   params.getForEqs('tkeReq')['xbr'],
+        #                                   params.getForEqs('tkeReq')['ybu'],
+        #                                   params.getForEqs('tkeReq')['ybd'],
+        #                                   params.getForEqs('tkeReq')['ilg'])
 
         # plot turbulent kinetic energy evolution
         # ransTke.plot_tke_evolution()
@@ -934,12 +934,12 @@ class MasterPlot():
                                     params.getForEqs('tkieH')['ybd'],
                                     params.getForEqs('tkieH')['ilg'])
 
-        ransTkeH.plot_TKEhorizontal_space_time(params.getForProp('prop')['laxis'],
-                                               params.getForEqs('tkeHeq')['xbl'],
-                                               params.getForEqs('tkeHeq')['xbr'],
-                                               params.getForEqs('tkeHeq')['ybu'],
-                                               params.getForEqs('tkeHeq')['ybd'],
-                                               params.getForEqs('tkeHeq')['ilg'])
+        #ransTkeH.plot_TKEhorizontal_space_time(params.getForProp('prop')['laxis'],
+        #                                       params.getForEqs('tkeHeq')['xbl'],
+        #                                       params.getForEqs('tkeHeq')['xbr'],
+        #                                       params.getForEqs('tkeHeq')['ybu'],
+        #                                       params.getForEqs('tkeHeq')['ybd'],
+        #                                       params.getForEqs('tkeHeq')['ilg'])
 
         # plot turbulent kinetic energy evolution
         # ransTke.plot_tke_evolution()
@@ -2645,13 +2645,13 @@ class MasterPlot():
                            params.getForEqs('divu')['ybd'],
                            params.getForEqs('divu')['ilg'])
 
-        ransDivu.plot_divu_space_time(params.getForProp('prop')['laxis'],
-                                      bconv, tconv,
-                                      params.getForEqs('conteqfdd')['xbl'],
-                                      params.getForEqs('conteqfdd')['xbr'],
-                                      params.getForEqs('conteqfdd')['ybu'],
-                                      params.getForEqs('conteqfdd')['ybd'],
-                                      params.getForEqs('conteqfdd')['ilg'])
+        #ransDivu.plot_divu_space_time(params.getForProp('prop')['laxis'],
+        #                              bconv, tconv,
+        #                              params.getForEqs('conteqfdd')['xbl'],
+        #                              params.getForEqs('conteqfdd')['xbr'],
+        #                              params.getForEqs('conteqfdd')['ybu'],
+        #                              params.getForEqs('conteqfdd')['ybd'],
+        #                              params.getForEqs('conteqfdd')['ilg'])
 
     def SetMatplotlibParams(self):
         """ This routine sets some standard values for matplotlib """
