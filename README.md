@@ -28,7 +28,7 @@ git clone https://github.com/mmicromegas/ransX
 
 Mean fields and their evolution based on 2D and 3D simulations of Two-Layer setup specified for the code comparison project https://sites.google.com/view/stellarhydrodays/home
 
-<img src="https://user-images.githubusercontent.com/34376626/103654651-726df780-4f66-11eb-8b93-2be82ddd7062.png" width="25%"></img> 
+<img src="https://user-images.githubusercontent.com/34376626/103656159-8ca8d500-4f68-11eb-92dd-a1cb7d41f2b1.png" width="25%"></img> 
 
 Mean fields based on 3D Oxygen-Neon Burning Shell in a massive star
 
