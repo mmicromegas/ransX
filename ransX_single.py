@@ -66,7 +66,7 @@ def main():
     # ransdat.plot_dx(xbl,xbr)
     # ransdat.plot_mm(xbl,xbr)
     ransdat.PlotNucEnergyGen(xbl, xbr)
-    # ransdat.PlotNucEnergyGen2(xbl,xbr)
+    #ransdat.PlotNucEnergyGen2(xbl,xbr)
     # ransdat.PlotTrippleAlphaNucEnergyGen(xbl,xbr)
 
     # ransdat.plot_lin_q1q2(xbl,xbr,'dd','tt',\

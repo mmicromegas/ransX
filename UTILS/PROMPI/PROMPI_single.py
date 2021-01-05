@@ -567,7 +567,7 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
         ind = np.where((rc > bconv) & (rc < tconv))[0]
         M = (dd * Vol)[ind].sum()
 
-        if 1==0:
+        if 1==1:
             Mhe4 = (dd * xhe4 * Vol)[ind].sum()
             Mc12 = (dd * xc12 * Vol)[ind].sum()
             Mo16 = (dd * xo16 * Vol)[ind].sum()
@@ -646,6 +646,7 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
             plt.xlabel('r (cm)')
             plt.show(block=False)
             plt.savefig('RESULTS/xne20.png')
+            plt.savefig('RESULTS/xne20.eps')
 
             plt.figure(figsize=(7, 6))
             miny = 3.e-1
@@ -794,7 +795,7 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
         plt.semilogy(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
         plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
         # plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k',linestyle='--')
-        plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
+        # plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
         # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
         # plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
 
@@ -854,7 +855,7 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
         plt.savefig('RESULTS/oburn14_nuclear_energy_gen.png')
-
+        plt.savefig('RESULTS/oburn14_nuclear_energy_gen.eps')
 
     def PlotNucEnergyGen2(self, xbl, xbr):
         """Plot nuclear reaction timescales"""
@@ -1076,7 +1077,7 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
 
 
         plt.savefig('RESULTS/oburn14_nuclear_energy_gen3.png')
-
+        plt.savefig('RESULTS/oburn14_nuclear_energy_gen3.eps')
 
 
     def plot_check_heq1(self):

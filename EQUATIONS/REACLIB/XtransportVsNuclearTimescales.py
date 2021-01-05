@@ -335,8 +335,8 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
 
         if self.tnuc == 1:
 
-            print("i m here  .................",element)
-            print(rlabel)
+            #print("i m here  .................",element)
+            #print(rlabel)
 
             ddxidict = {}
             fht_yi_list = []

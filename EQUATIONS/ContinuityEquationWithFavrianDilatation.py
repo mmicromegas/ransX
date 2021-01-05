@@ -176,8 +176,8 @@ class ContinuityEquationWithFavrianDilatation(Calculus, SetAxisLimit, Tools, Err
         self.set_plt_axis(laxis, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA
-        # plt.title(r"continuity equation with Favrian dilatation " + str(self.nsdim) + "D")
-        plt.title(r"Equation 14")
+        plt.title(r"continuity equation with Favrian dilatation " + str(self.nsdim) + "D")
+        # plt.title(r"Equation 14")
 
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', linewidth= 4, label=r'$-\partial_t \overline{\rho}$')

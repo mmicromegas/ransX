@@ -341,6 +341,8 @@ class Properties(Calculus, SetAxisLimit, Tools, Errors, object):
         ld = M * urms ** 3. / epsD
 
         # Total nuclear luminosity
+        print(dd.sum(),enuc1.sum(),enuc2.sum(),Vol.sum())
+
         tenuc = ((dd * (enuc1 + enuc2)) * Vol).sum()
 
         # Pturb over Pgas 

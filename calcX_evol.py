@@ -85,8 +85,6 @@ def main():
         t_resTeeMean.append(prp['resTeeMean'])
         t_resTeeMax.append(prp['resTeeMax'])
         t_x0002mean_cnvz.append(prp['x0002mean_cnvz'])
-        print(prp['xzn0inc'], prp['xzn0outc'], prp['resContMean'], prp['resContMax'], prp['resTeeMean'],
-              prp['resTeeMax'])
 
     # store time-evolution
     tevol = {}

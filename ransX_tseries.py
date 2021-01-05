@@ -5,7 +5,7 @@
 # File: ransX_tseries.py
 # Author: Miroslav Mocak
 # Email: miroslav.mocak@gmail.com
-# Date: January/2019
+# Date: December/2020
 # Desc: calculates time-averages over tavg
 # Usage: run ransX_tseries.py
 

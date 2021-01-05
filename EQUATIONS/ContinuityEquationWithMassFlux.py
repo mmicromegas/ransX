@@ -197,8 +197,8 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
 
 
         # plot DATA
-        # plt.title(r"continuity equation with mass flux " + str(self.nsdim) + "D")
-        plt.title(r"Equation 13")
+        plt.title(r"continuity equation with mass flux " + str(self.nsdim) + "D")
+        # plt.title(r"Equation 13")
 
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='g', linewidth=4, label=r'$-\partial_t \overline{\rho}$')
