@@ -24,6 +24,14 @@ git clone https://github.com/mmicromegas/ransX
 2. start ipython
 3. run ransX.py
 
+# Available Data (research-grade)
+
+Mean fields and their evolution based on 2D and 3D simulations of Two-Layer setup specified for the code comparison project https://sites.google.com/view/stellarhydrodays/home
+
+<img src="https://user-images.githubusercontent.com/34376626/103654651-726df780-4f66-11eb-8b93-2be82ddd7062.png" width="25%"></img> 
+
+Mean fields based on 3D Oxygen-Neon Burning Shell in a massive star
+
 # Available Documentation
 
 Available documentation encompassing ransX theory/user/implementation and developer's guide can be found in the DOCS folder.
