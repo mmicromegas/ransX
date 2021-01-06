@@ -1,8 +1,8 @@
 # ----- Parameter file for rans(eXtreme) hheflash tseries ---------- #
 []
-## Input Data Directory .................... ## [tseries,datadir,/cosma/home/dp040/dc-moca1/sims/PROMPI_for_onec1024x128/setups/o_ne_cburn/2d/test/]
+## Input Data Directory .................... ## [tseries,datadir,/cosma/home/dp040/dc-moca1/sims/PROMPI_for_ccptwo_128x128x128_dev/setups/ccp_two_layers/2d/128x128_cadence1sec/]
 ## Input Data Endianness ................... ## [tseries,endian,little_endian]
 ## Input Data Floating Point Precision ..... ## [tseries,precision,double]
-## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_onec1024x128_cosma_300secs_NofixImports]
-## Time-Range (in s) ....................... ## [tseries,trange,0.,1970.]
-## Averaging Window (in s) ................. ## [tseries,tavg,300.]
+## Output-File ............................. ## [tseries,dataout,DATA/TSERIES/tseries_ccptwo128_2D_cosma_5secs]
+## Time-Range (in s) ....................... ## [tseries,trange,0.,538.]
+## Averaging Window (in s) ................. ## [tseries,tavg,5.]

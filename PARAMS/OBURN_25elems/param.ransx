@@ -17,7 +17,7 @@
 ## Pressure and Internal Energy ............................ ## [ppei,False,3.7e8,9.8e8,0.,0.,0]
 ## Nuclear energy production ............................... ## [enuc,False,3.7e8,9.8e8,1.9e14,-0.2e14,0]
 ## Gravity ................................................. ## [grav,False,4.e8,8.e8,1.e8,-1.e9,0]
-## Temperature gradients (nabla, nabla_ad, nabla_mu) ....... ## [nablas,False,3.7e8,9.8e8,0.5,-3.5,0]
+## Temperature gradients (nabla, nabla_ad, nabla_mu) ....... ## [nablas,True,3.7e8,9.8e8,0.5,-3.5,0]
 ## Degeneracy parameter .................................... ## [psi,False,3.7e8,9.8e8,0.5,-1.75,0]
 ## Mean and Expansion velocity ............................. ## [velbgr,False,3.7e8,9.8e8,1.5e4,-0.5e4,0]
 ## MLT and Turbulent velocity .............................. ## [velmlt,False,3.7e8,9.8e8,1.e7,-0.5e6,0]
