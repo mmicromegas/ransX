@@ -31,7 +31,7 @@ cd ransX
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and create a Conda environment:
 
 ```
-conda create --name ransX python=2.7
+conda create --name ransX python=3.8
 ```
 
 Activate the environment:
