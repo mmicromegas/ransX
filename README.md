@@ -16,7 +16,38 @@ ransX requires python 3 and the following modules to work:
 
 # Installation
 
+Download the repository:
+
+```
 git clone https://github.com/mmicromegas/ransX
+```
+
+Change to ransX directory:
+
+```
+cd ransX
+```
+
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and create a Conda environment:
+
+```
+conda create --name ransX python=2.7
+```
+
+Activate the environment:
+
+```
+conda activate ransX
+```
+
+Install Python libraries listed in `requirements.txt` file:
+
+```
+pip install -r requirements.txt
+```
+
+
+
 
 # Usage
 
