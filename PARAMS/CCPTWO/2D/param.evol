@@ -1,6 +1,6 @@
 # ----- Parameter file for rans(eXtreme) and CCP project ---------- #
 []
-## Input Datadir ........................................... ## [prop,eht_data,DATA\TEVOL\]
+## Input Datadir ........................................... ## [prop,eht_data,DATA/TEVOL/]
 ## Data File List .......................................... ## [prop,eht_res,tseries_ccptwo128_2D_cosma_5secs_evol.npy,tseries_ccptwo128_3D_cosma_5secs_evol.npy,tseries_ccptwo256_3D_cosma_5secs_evol.npy,tseries_ccptwo512_3D_cosma_5secs_evol.npy,tseries_ccptwo512_2D_cosma_5secs_evol.npy]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_tavg300sEvolStudy_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]
