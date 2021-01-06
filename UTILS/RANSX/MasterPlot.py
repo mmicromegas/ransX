@@ -1634,13 +1634,13 @@ class MasterPlot():
                                params.getForEqs('nablas')['ybd'],
                                params.getForEqs('nablas')['ilg'])
 
-        ransNablas.plot_nablas2(params.getForProp('prop')['laxis'],
-                                bconv, tconv, super_ad_i, super_ad_o,
-                                params.getForEqs('nablas')['xbl'],
-                                params.getForEqs('nablas')['xbr'],
-                                params.getForEqs('nablas')['ybu'],
-                                params.getForEqs('nablas')['ybd'],
-                                params.getForEqs('nablas')['ilg'])
+        #ransNablas.plot_nablas2(params.getForProp('prop')['laxis'],
+        #                        bconv, tconv, super_ad_i, super_ad_o,
+        #                        params.getForEqs('nablas')['xbl'],
+        #                        params.getForEqs('nablas')['xbr'],
+        #                        params.getForEqs('nablas')['ybu'],
+        #                        params.getForEqs('nablas')['ybd'],
+        #                        params.getForEqs('nablas')['ilg'])
 
     def execDegeneracy(self):
         params = self.params

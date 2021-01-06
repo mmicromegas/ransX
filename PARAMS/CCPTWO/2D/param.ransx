@@ -138,7 +138,7 @@
 ## Luminosity Equation for Hydrodynamic Stellar Structure .. ## [lueqhsse,False,4.e8,1.2e9,3.e37,-3.e37,1]
 ## Temperature Equation for Hydrodynamic Stellar Structure . ## [tpeqhsse,False,4.e8,1.2e9,1.5e1,-1.5e1,1]
 []
-## Transport Equation for fluid1rons ....................... ## [xtrseq_fluid1,False,4.e8,1.2e9,1.e3,-1.e3,0]
+## Transport Equation for fluid1rons ....................... ## [xtrseq_fluid1,True,4.e8,1.2e9,1.e3,-1.e3,0]
 ## Transport Equation for fluid1rons Integral Budget ....... ## [xtrseq_fluid1Bar,False,4.e8,1.2e9,5.e29,-5.e29,0]
 ## Flux X Equation for fluid1rons .......................... ## [xflxxeq_fluid1,False,4.e8,1.2e9,3.e11,-3.e11,0]
 ## Flux Y Equation for fluid1rons .......................... ## [xflxyeq_fluid1,False,4.e8,1.2e9,4.e8,-4.e8,0]
