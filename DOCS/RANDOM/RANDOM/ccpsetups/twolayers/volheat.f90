@@ -55,7 +55,6 @@
      &              velx(i,j,k)**2.d0
                ei = energy(i,j,k)-ek
 !
-               !enuc(i,j,k,1) = (1.d0/onetu)*(oneeu/onemu)*(0.0001556706d0*(fheat(i)/(dd/onedu)))
                enuc(i,j,k,1) = (1.d0/onetu)*(oneeu/onemu)*(lum*pi*(fheat(i)/(dd/onedu)))
                enuc(i,j,k,2) = 0.d0 !neutrino emission term
 !
@@ -68,11 +67,6 @@
             enddo
          enddo                  !j-loop
       enddo                     !k-loop
-
-      !do i=1,nx
-      !   print*,i,enuc(i,1,1,1),energy(i,1,1)
-      !enddo
-      !stop
 
       !
 !..   

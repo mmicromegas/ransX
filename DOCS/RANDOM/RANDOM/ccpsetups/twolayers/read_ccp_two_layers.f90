@@ -91,30 +91,6 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
      tti(i) = onettu*tti(i)
   enddo
 
-  ! get HSE pressure for smooth gravity profile
-  if(igrav.eq.6) then
-     five_fourth = 5.d0/4.d0
-     do i=1,nlines
-        ggic(i) = g0/(yi(i)**five_fourth)
-     enddo
-!     
-     ppic(1) = 0.6d0*onepu
-     do i=2,nlines
-        deltar  = rri(i)-rri(i-1)
-        dppdr   = ddi(i)*ggic(i)
-        ppic(i) = ppic(i-1) + deltar*dppdr
-     enddo
-!
-     do i=1,nlines
-        ppi(i) = ppic(i)
-     enddo
-  endif
-
-  !do i=1,nlines
-  !   print*,i,ppi(i),ppic(i),ggic(i),g0
-  !enddo    
-
-  !stop
   
   ! calculate composition profiles for fluid_1 and fluid_2
   do i=1,nlines
@@ -126,8 +102,6 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
      endif
      ! get transition layer
      if ((yi(i).ge.(1.9375d0)).and.(yi(i).le.(2.0625d0))) then
-        !xyzi(i,1) = 1.d0-fv(i)
-        !xyzi(i,2) = fv(i)
         xyzi(i,2) = fv(i)/((1.d0-fv(i))*(mu0/mu1)+fv(i))
         xyzi(i,1) = 1.d0-xyzi(i,2)
         mui(i) = 1.d0/((xyzi(i,1)/mu0)+(xyzi(i,2)/mu1))
@@ -145,20 +119,8 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
 !     rrl: left interface of zone i
 !     rrr: right interface of zone i
 !     rr : center of zone i
-      !do i=1,nlines-1
-      !   rrl(i) = rri(i)
-      !   rrr(i) = rri(i+1)     
-      !   rr(i)  = (rrr(i)+rrl(i))/2.d0     
-      !   ppi(i) = ppi(i+1)
-      !   ddi(i) = ddi(i+1)
-      !   tti(i) = tti(i+1)        
-      !   mui(i) = mui(i+1)
-      !   do ii=1,qn
-      !      xyzi(i,ii) = xyzi(i+1,ii)
-      !   enddo
-      !enddo
-      
 
+     
       do i=1,nlines-1
          dri = (rri(i+1)-rri(i))/2.d0
          rrl(i) = rri(i)-dri
@@ -173,19 +135,6 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
 
 
 !     COPY LAST ZONE (nzones-nlines) TIMES TO FILL ARRAY
-      !do i=nlines,nzones
-      !   rrl(i) = rrl(i-1)
-      !   rr(i)  = rr(i-1)
-      !   rrr(i) = rrr(i-1)
-      !   ppi(i) = ppi(i-1)
-      !   ddi(i) = ddi(i-1)
-      !   tti(i) = tti(i-1)
-      !   mui(i) = mui(i-1)
-      !   do ii=1,qn
-      !      xyzi(i,ii) = xyzi(i-1,ii)
-      !   enddo
-      !enddo
-
       do i=nlines,nzones
          rrl(i) = rrl(i-1)
          rr(i)  = rr(i-1)
@@ -198,14 +147,6 @@ subroutine read_ccp_two_layers(nzones,rrl,rr,rrr,ddi,ppi,tti,mui,xyzi)
             xyzi(i,ii) = xyzi(i-1,ii)
          enddo
       enddo
-
-
-  
-  !do i=1,nlines
-  !   print*,i,rri(i),mui(i),xyzi(i,1),xyzi(i,2),ggi(i),ddi(i)
-  !enddo
-
-  !stop
   
   print*,'MSG(read_ccp_two_layers): pp, rho:  =', ppi(1),ppi(nlines),ddi(1),ddi(nlines)
   

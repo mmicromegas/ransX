@@ -58,10 +58,6 @@ subroutine gravty (j, k)
      endif
   endif
 
-  !do ii=1,nzn8
-  !   print*,ii,x(ii)/1.d8,grav(ii)
-  !enddo
-  !stop
   
   return
 
