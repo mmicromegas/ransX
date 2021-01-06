@@ -6,7 +6,7 @@ ransX framework implements mean field Reynolds-Averaged Navier-Stokes (a.k.a RAN
 
 # Prerequisities
 
-ransX requires python 2.7 and the following modules to work:
+ransX requires python 3 and the following modules to work:
 
 1. numpy (version <= 1.16.2)
 2. scipy
@@ -23,8 +23,21 @@ git clone https://github.com/mmicromegas/ransX
 1. cd ransX
 2. start ipython
 3. run ransX.py
+4. run ransX_res.py
+5. run ransX_evol.py
+6. run ransX_reaclib.py
 
-# Available Documentation
+# Available Data (research-grade)
+
+Mean fields and their evolution based on 2D and 3D simulations of Two-Layer setup specified for the code comparison project https://sites.google.com/view/stellarhydrodays/home
+
+<img src="https://user-images.githubusercontent.com/34376626/103656159-8ca8d500-4f68-11eb-92dd-a1cb7d41f2b1.png" width="25%"></img> 
+
+Mean fields based on 3D Oxygen-Neon Burning Shell in a massive star
+
+<img src="https://user-images.githubusercontent.com/34376626/103656869-6e8fa480-4f69-11eb-909d-335d12398a9a.png" width="25%"></img> 
+
+# Available Documentation (a bit outdated)
 
 Available documentation encompassing ransX theory/user/implementation and developer's guide can be found in the DOCS folder.
 

@@ -1,209 +1,213 @@
-import UTILS.PROMPI_data as pt
-import UTILS.ReadParamsTseries as rpt
+###############################################
+# rans(eXtreme) https://arxiv.org/abs/1401.5176
+###############################################
+
+# File: ransX_tseries.py
+# Author: Miroslav Mocak
+# Email: miroslav.mocak@gmail.com
+# Date: December/2020
+# Desc: calculates time-averages over tavg
+# Usage: run ransX_tseries.py
+
+from UTILS.PROMPI.PROMPI_data import PROMPI_ransdat
+from UTILS.TSERIES.ReadParamsTseries import ReadParamsTseries
+from UTILS.Errors import Errors
 import numpy as np
 import os
 import sys
-import matplotlib.pyplot as plt       
 
 
-# read input parameters
-	   
-paramFile = 'param.tseries'
-params = rpt.ReadParamsTseries(paramFile)	   
-	   
-datadir = params.getForTseries('tseries')['datadir']
-endianness = params.getForTseries('tseries')['endianness']
-precision = params.getForTseries('tseries')['precision']
+def main():
+    # check python version
+    if sys.version_info[0] < 3:
+        print("Python " + str(sys.version_info[0]) + "  is not supported. EXITING.")
+        sys.exit()
 
-dataout = params.getForTseries('tseries')['dataout']	
+    # create os independent path and read parameter file
+    paramFile = os.path.join('PARAMS', 'param.tseries')
+    params = ReadParamsTseries(paramFile)
 
-trange_beg = params.getForTseries('tseries')['trange_beg']	
-trange_end = params.getForTseries('tseries')['trange_end']
-trange = []
-trange.append(trange_beg)
-trange.append(trange_end)
+    # read input parameters
+    datadir = params.getForTseries('tseries')['datadir']
+    endianness = params.getForTseries('tseries')['endianness']
+    precision = params.getForTseries('tseries')['precision']
 
-tavg = params.getForTseries('tseries')['tavg']
+    dataout = params.getForTseries('tseries')['dataout']
 
-ransdat = [file for file in os.listdir(datadir) if "ransdat" in file]
-ransdat = [file.replace(file,datadir+file) for file in ransdat]	
+    trange_beg = params.getForTseries('tseries')['trange_beg']
+    trange_end = params.getForTseries('tseries')['trange_end']
+    trange = [trange_beg, trange_end]
 
-filename = ransdat[0]
-ts = pt.PROMPI_ransdat(filename,endianness,precision)
+    tavg = params.getForTseries('tseries')['tavg']
 
-ransl = ts.rans_list()
-		
-nstep = []
-time  = []
-dt  = []	
-		
-for filename in ransdat:
-    print(filename)
-    ts = pt.PROMPI_ransdat(filename,endianness,precision)
-    rans_tstart, rans_tend, rans_tavg = ts.rans_header()
-    time.append(rans_tend)
-    dt.append(rans_tavg)
-    #print(rans_tend,rans_tavg)	
-	
-# convert to array
+    ransdat = [filee for filee in sorted(os.listdir(datadir)) if "ransdat" in filee]
+    ransdat = [filee.replace(filee, datadir + filee) for filee in ransdat]
 
-time = np.asarray(time)
-dt = np.asarray(dt)		
-nt = len(ransdat)
+    filename = ransdat[0]
+    ts = PROMPI_ransdat(filename, endianness, precision)
 
-print('Numer of snapshots: ', nt)
-print('Available time range:',min(time),round(max(time),3))
-print('Restrict data to time range:', trange[0],trange[1])
+    time = []
+    dt = []
 
-#   limit snapshot list to time range of interest
+    for filename in ransdat:
+        print(filename)
+        ts = PROMPI_ransdat(filename, endianness, precision)
+        rans_tstart, rans_tend, rans_tavg = ts.rans_header()
+        time.append(rans_tend)
+        dt.append(rans_tavg)
+        # print(rans_tend,rans_tavg)
 
-idx = np.where((time > trange[0]) & (time < trange[1]))
-time = time[idx]
-dt = dt[idx]		
+    # convert to array
+    time = np.asarray(time)
+    dt = np.asarray(dt)
+    nt = len(ransdat)
 
-#  time averaging window
+    print('Number of snapshots: ', nt)
+    print('Available time range:', min(time), round(max(time), 3))
+    print('Restrict data to time range:', trange[0], trange[1])
 
-timecmin = min(time)+tavg/2.0
-timecmax = max(time)-tavg/2.0
-itc      = np.where((time >= timecmin) & (time <= timecmax))
-timec    = time[itc]
-ntc      = len(timec)
+    # limit snapshot list to time range of interest
+    idx = np.where((time > trange[0]) & (time < trange[1]))
+    time = time[idx]
+    dt = dt[idx]
 
-print('Number of time averaged snapshots: ', ntc)
-print('Averaged time range: ',round(timecmin,3), round(timecmax,3))
-print('nx',ts.rans()['nx'])
+    # time averaging window
+    timecmin = min(time) + tavg / 2.0
+    timecmax = max(time) - tavg / 2.0
+    itc = np.where((time >= timecmin) & (time <= timecmax))
+    timec = time[itc]
+    ntc = len(timec)
 
-if ntc == 0:
-    print("----------")
-    print("rans_tseries.py ERROR: Zero time-averaged snapshots.")
-    print("rans_tseries.py Adjust your trange and averaging window.")
-    print("rans_tseries.py EXITING ... ")
-    print("----------")
-    sys.exit()
+    # print useful information
+    print('Number of time averaged snapshots: ', ntc)
+    print('Averaged time range: ', round(timecmin, 3), round(timecmax, 3))
+    print('nx', ts.rans()['nx'])
 
-# READ IN DATA
+    #   instantiate errors
+    errors = Errors()
+    if ntc == 0:
+        print("----------")
+        print("Error(rans_tseries.py) " + errors.errorAveragedSnapshots())
+        print("----------")
+        sys.exit()
 
-eh = []
-for i in idx[0]:
-    filename = ransdat[i]
-    ts = pt.PROMPI_ransdat(filename,endianness,precision) 
-    field = [[data for data in ts.rans()[s]] for s in ts.ransl]
-    eh.append(field)
+    # READ IN DATA
+    eh = []
+    for i in idx[0]:
+        filename = ransdat[i]
+        ts = PROMPI_ransdat(filename, endianness, precision)
+        field = [[data for data in ts.rans()[s]] for s in ts.ransl]
+        eh.append(field)
 
-# eh = eh(r,time,quantity)	
-# plt.plot(eh[:][nt-1][2])
-# plt.show(block=False)
+    # eh = eh(r,time,quantity)
+    # plt.plot(eh[:][nt-1][2])
+    # plt.show(block=False)
 
-# TIME AVERAGING
+    # TIME AVERAGING
 
-eht = {}
+    eht = {}
 
-for s in ts.ransl:
-    idx = ts.ransl.index(s)
-    tmp2 = []
-    for i in range(ntc):
-        itavg = np.where((time >= (timec[i]-tavg/2.)) & (time <= (timec[i]+tavg/2.)))
-        sumdt = np.sum(dt[itavg])
-        tmp1 = np.zeros(ts.rans()['nx'])
-        for j in itavg[0]:   
-            tmp1 += np.asarray(eh[:][j][idx])*dt[j]
-        tmp2.append(tmp1/sumdt)
-    field = {str(s) : tmp2}  		
-    eht.update(field)     	
-	
-# store grid 
-	
-nx = {'nx' : ts.rans()['nx']}
-eht.update(nx)
+    for s in ts.ransl:
+        idx = ts.ransl.index(s)
+        tmp2 = []
+        for i in range(ntc):
+            itavg = np.where((time >= (timec[i] - tavg / 2.)) & (time <= (timec[i] + tavg / 2.)))
+            sumdt = np.sum(dt[itavg])
+            tmp1 = np.zeros(ts.rans()['nx'])
+            for j in itavg[0]:
+                tmp1 += np.asarray(eh[:][j][idx]) * dt[j]
+            tmp2.append(tmp1 / sumdt)
+        field = {str(s): tmp2}
+        eht.update(field)
 
-ny = {'nx' : ts.rans()['ny']}
-eht.update(ny)
+    # store grid
+    nx = {'nx': ts.rans()['nx']}
+    eht.update(nx)
 
-nz = {'nx' : ts.rans()['nz']}
-eht.update(nz)	
-	
-xzn0 = {'xzn0' : ts.rans()['xzn0']}
-eht.update(xzn0)
+    ny = {'ny': ts.rans()['ny']}
+    eht.update(ny)
 
-xznl = {'xznl' : ts.rans()['xznl']}
-eht.update(xznl)
+    nz = {'nz': ts.rans()['nz']}
+    eht.update(nz)
 
-xznr = {'xznr' : ts.rans()['xznr']}
-eht.update(xznr)
+    xzn0 = {'xzn0': ts.rans()['xzn0']}
+    eht.update(xzn0)
 
-yzn0 = {'yzn0' : ts.rans()['yzn0']}
-eht.update(yzn0)
+    xznl = {'xznl': ts.rans()['xznl']}
+    eht.update(xznl)
 
-yznl = {'yznl' : ts.rans()['yznl']}
-eht.update(yznl)
+    xznr = {'xznr': ts.rans()['xznr']}
+    eht.update(xznr)
 
-yznr = {'yznr' : ts.rans()['yznr']}
-eht.update(yznr)
+    yzn0 = {'yzn0': ts.rans()['yzn0']}
+    eht.update(yzn0)
 
-zzn0 = {'zzn0' : ts.rans()['zzn0']}
-eht.update(zzn0)
+    yznl = {'yznl': ts.rans()['yznl']}
+    eht.update(yznl)
 
-zznl = {'zznl' : ts.rans()['zznl']}
-eht.update(zznl)
+    yznr = {'yznr': ts.rans()['yznr']}
+    eht.update(yznr)
 
-zznr = {'zznr' : ts.rans()['zznr']}
-eht.update(zznr)
+    zzn0 = {'zzn0': ts.rans()['zzn0']}
+    eht.update(zzn0)
 
-ntc = {'ntc': ntc}
-eht.update(ntc)
+    zznl = {'zznl': ts.rans()['zznl']}
+    eht.update(zznl)
 
-# store central times
+    zznr = {'zznr': ts.rans()['zznr']}
+    eht.update(zznr)
 
-timec = {'timec': timec}
-eht.update(timec)
+    nnuc = {'nnuc': ts.rans()['nnuc']}
+    eht.update(nnuc)
 
-tavg = {'tavg': tavg}
-eht.update(tavg)
+    ntc = {'ntc': ntc}
+    eht.update(ntc)
 
-# store time-averaging window
+    # store central times
+    timec = {'timec': timec}
+    eht.update(timec)
 
-trange = {'trange': trange}
-eht.update(trange)
+    tavg = {'tavg': tavg}
+    eht.update(tavg)
 
-# store number of grid points in simulation
+    # store time-averaging window
+    trange = {'trange': trange}
+    eht.update(trange)
 
-nx = {'nx': ts.rans()['nx']}
-eht.update(nx)
+    # STORE TIME-AVERAGED DATA i.e the EHT dictionary   
+    np.save(dataout + '.npy', eht)
 
-ny = {'ny': ts.rans()['ny']}
-eht.update(ny)
-
-nz = {'nz': ts.rans()['nz']}
-eht.update(nz)
+    # STORE TIME-AVERAGED DATA i.e the EHT dictionary
+    # fix_imports=True does not fix python 2 vs python 3 compatibility due to unsupported protocols in python 2 greater than 3
+    # np.save(dataout + '.npy', eht, allow_pickle=True, fix_imports=True )
 
 
-# STORE TIME-AVERAGED DATA i.e the EHT dictionary 
-
-np.save(dataout+'.npy',eht)
+# EXECUTE MAIN
+if __name__ == "__main__":
+    main()
 
 # END
 
 # OBSOLETE CODE 
-	
-#print(ts.ransl)
 
-#fld = 'ux'
-#a = eht[fld]
-##intc = ntc - 1
-#intc = 11
-#b = a[:][intc]
-#xx = eht['xzn0']
+# print(ts.ransl)
 
-#print(b)
+# fld = 'ux'
+# a = eht[fld]
+# intc = ntc - 1
+# intc = 11
+# b = a[:][intc]
+# xx = eht['xzn0']
 
-#fig, ax1 = plt.subplots(figsize=(7,6))
+# print(b)
 
-#for i in range(nt):
+# fig, ax1 = plt.subplots(figsize=(7,6))
+
+# for i in range(nt):
 #    filename = ransdat[i]
 #    ts = pt.PROMPI_ransdat(filename,'little_endian','double')
 #    plt.plot(xx,ts.rans()[fld])
 
-#ax1.plot(xx,b,color='k')
+# ax1.plot(xx,b,color='k')
 
-#plt.show()
-
+# plt.show()

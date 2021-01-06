@@ -1,0 +1,202 @@
+25 ELEMENT NETWORK:::::::::::     14 ELEMENT NETWORK:::::::::::      13 ELEMENT NETWORK:::::::::::    15 ELEMENT NETWORK:::::::::::
+                                                                                                                                  
+    n    p             bet-           n    p             bet-            n    p            bet-           n    p            bet-  
+                                                                                                      
+  o16  he4  c12        ca85nv       o16  he4  c12        ca85nv        o16  he4  c12       ca85nv       o16  he4  c12       ca85nv
+                                                                                                      
+  o16  he4  c12        ca85rv       o16  he4  c12        ca85rv        o16  he4  c12       ca85rv       o16  he4  c12       ca85rv
+                                                                                                      
+ ne20  he4  o16        cf88nv      ne20  he4  o16        cf88nv       ne20  he4  o16       cf88nv      ne20  he4  o16       cf88nv
+                                                                                                      
+ ne20  he4  o16        cf88rv      ne20  he4  o16        cf88rv       ne20  he4  o16       cf88rv      ne20  he4  o16       cf88rv
+                                                                                                      
+ mg24    p na23        cf88nv      mg24    p na23        cf88nv       mg24    p na23       cf88nv      
+                                                                                                      
+ mg24    p na23        cf88rv      mg24    p na23        cf88rv       mg24    p na23       cf88rv      
+                                                                                                      
+ mg24  he4 ne20        cf88nv      mg24  he4 ne20        cf88nv       mg24  he4 ne20       cf88nv      mg24  he4 ne20       cf88nv
+                                                                                                       
+ mg24  he4 ne20        cf88rv      mg24  he4 ne20        cf88rv       mg24  he4 ne20       cf88rv      mg24  he4 ne20       cf88rv
+                                                                                                       
+ si28  he4 mg24        cf88rv      si28  he4 mg24        cf88rv       si28  he4 mg24       cf88rv      si28  he4 mg24       cf88rv
+                                                                                                       
+ si28  he4 mg24        cf88rv      si28  he4 mg24        cf88rv       si28  he4 mg24       cf88rv      si28  he4 mg24       cf88rv
+                                                                                                       
+  s32    p  p31        rathrv       s32    p  p31        fkthrv                                        
+                                                                                                       
+  s32  he4 si28        rathrv       s32  he4 si28        fkthrv        s32  he4 si28       fkthrv       s32  he4 si28       fkthrv
+                                                                                                       
+ cl35    p  s34        rathrv      cl35    p  s34        fkthrv       cl35    p  s34       fkthrv      
+                                                                                                       
+ cl35  he4  p31        rathrv      cl35  he4  p31        fkthrv                                        
+                                                                                                       
+ ar36    p cl35        rathrv      ar36    p cl35        fkthrv       ar36    p cl35       fkthrv      
+                                                                                                       
+ ar36  he4  s32        rathrv      ar36  he4  s32        fkthrv       ar36  he4  s32       fkthrv      ar36  he4  s32       fkthrv
+                                                                                                       
+ ar38  he4  s34        rathrv                                                                          
+                                                                                                       
+  k39    p ar38        rathrv                                                                          
+                                                                                                       
+  k39  he4 cl35        rathrv                                                                          
+                                                                                                       
+ ca40    p  k39        rathrv                                                                          
+                                                                                                       
+ ca40  he4 ar36        rathrv                                                                          ca40  he4 ar36       fkthrv
+                                                                                                       
+ ca42  he4 ar38        rathrv                                                                          
+                                                                                                       
+ ti44  he4 ca40        rathrv                                                                          ti44  he4 ca40       fkthrv
+                                                                                                       
+ ti46  he4 ca42        rathrv                                                                          
+                                                                                                       
+ cr48  he4 ti44        rathrv                                                                          cr48  he4 ti44       fkthrv
+                                                                                                       
+ cr50  he4 ti46        rathrv                                                                          
+                                                                                                       
+ fe52  he4 cr48        rathrv                                                                          fe52  he4 cr48       fkthrv
+                                                                                                       
+ fe54  he4 cr50        rathrv                                                                          
+                                                                                                       
+ ni56  he4 fe52        rathrv                                                                          ni56  he4 fe52       fkthrv
+                                                                                                       
+  c12  he4  he4  he4   cf88n       c12  he4  he4  he4   cf88n         c12  he4  he4  he4  cf88n         c12  he4  he4  he4  cf88n 
+                                                                                                       
+  c12  he4  he4  he4   cf88r       c12  he4  he4  he4   cf88r         c12  he4  he4  he4  cf88r         c12  he4  he4  he4  cf88r 
+                                                                                                       
+  he4  c12  o16        ca85n       he4  c12  o16        ca85n         he4  c12  o16       ca85n         he4  c12  o16       ca85n 
+                                                                                                       
+  he4  c12  o16        ca85r       he4  c12  o16        ca85r         he4  c12  o16       ca85r         he4  c12  o16       ca85r 
+                                                                                                       
+  he4  o16 ne20        cf88n       he4  o16 ne20        cf88n         he4  o16 ne20       cf88n         he4  o16 ne20       cf88n 
+                                                                                                       
+  he4  o16 ne20        cf88r       he4  o16 ne20        cf88r         he4  o16 ne20       cf88r         he4  o16 ne20       cf88r 
+                                                                                                       
+  he4 ne20 mg24        cf88n       he4 ne20 mg24        cf88n         he4 ne20 mg24       cf88n         he4 ne20 mg24       cf88n 
+                                                                                                       
+  he4 ne20 mg24        cf88r       he4 ne20 mg24        cf88r         he4 ne20 mg24       cf88r         he4 ne20 mg24       cf88r 
+                                                                                                       
+    p na23 mg24        cf88n         p na23 mg24        cf88n           p na23 mg24       cf88n         
+                                                                                                       
+    p na23 mg24        cf88r         p na23 mg24        cf88r           p na23 mg24       cf88r         
+                                                                                                       
+  he4 mg24 si28        cf88r       he4 mg24 si28        cf88r         he4 mg24 si28       cf88r         he4 mg24 si28       cf88r 
+                                                                                                        
+  he4 mg24 si28        cf88r       he4 mg24 si28        cf88r         he4 mg24 si28       cf88r         he4 mg24 si28       cf88r 
+                                                                                                        
+  he4 si28  s32        rathr       he4 si28  s32        fkthr         he4 si28  s32       fkthr         he4 si28  s32       fkthr 
+                                                                                                        
+    p  p31  s32        rathr         p  p31  s32        fkthr                                           
+                                                                                                        
+  he4  p31 cl35        rathr       he4  p31 cl35        fkthr                                           
+                                                                                                        
+  he4  s32 ar36        rathr       he4  s32 ar36        fkthr         he4  s32 ar36       fkthr         he4  s32 ar36       fkthr 
+                                                                                                        
+    p  s34 cl35        rathr         p  s34 cl35        fkthr           p  s34 cl35       fkthr         
+                                                                                                        
+  he4  s34 ar38        rathr                                                                            
+                                                                                                        
+    p cl35 ar36        rathr         p cl35 ar36        fkthr           p cl35 ar36       fkthr         
+                                                                                                        
+  he4 cl35  k39        rathr                                                                            
+                                                                                                        
+  he4 ar36 ca40        rathr                                                                            he4 ar36 ca40       fkthr 
+                                                                                                        
+    p ar38  k39        rathr                                                                            
+                                                                                                        
+  he4 ar38 ca42        rathr                                                                            
+                                                                                                        
+    p  k39 ca40        rathr                                                                            
+                                                                                                        
+  he4 ca40 ti44        rathr                                                                            he4 ca40 ti44       fkthr 
+                                                                                                        
+  he4 ca42 ti46        rathr                                                                            
+                                                                                                        
+  he4 ti44 cr48        rathr                                                                            he4 ti44 cr48       fkthr 
+                                                                                                        
+  he4 ti46 cr50        rathr                                                                            
+                                                                                                        
+  he4 cr48 fe52        rathr                                                                            he4 cr48 fe52       fkthr 
+                                                                                                        
+  he4 cr50 fe54        rathr                                                                            
+                                                                                                        
+  he4 fe52 ni56        rathr                                                                            he4 fe52 ni56       fkthr 
+                                                                                                        
+  c12  c12    p na23   cf88r       c12  c12    p na23   cf88r         c12  c12    p na23  cf88r         
+                                                                                                        
+  c12  c12  he4 ne20   cf88r       c12  c12  he4 ne20   cf88r         c12  c12  he4 ne20  cf88r         c12  c12  he4 ne20  cf88r 
+                                                                                                        
+  c12  o16  he4 mg24   cf88r       c12  o16  he4 mg24   cf88r         c12  o16  he4 mg24  cf88r         c12  o16  he4 mg24  cf88r 
+                                                                                                        
+  o16  o16    p  p31   cf88r       o16  o16    p  p31   cf88r                                           
+                                                                                                        
+  o16  o16  he4 si28   cf88r       o16  o16  he4 si28   cf88r         o16  o16  he4 si28  cf88r         o16  o16  he4 si28  cf88r 
+                                                                                                        
+  he4 ne20    p na23   cf88n       he4 ne20    p na23   cf88n         he4 ne20    p na23  cf88n         
+                                                                                                        
+  he4 ne20    p na23   cf88r       he4 ne20    p na23   cf88r         he4 ne20    p na23  cf88r         
+                                                                                                        
+  he4 ne20    p na23   cf88r       he4 ne20    p na23   cf88r         he4 ne20    p na23  cf88r         
+                                                                                                        
+  c12 ne20    p  p31   rolfr       c12 ne20    p  p31   rolfr                                           
+                                                                      
+  c12 ne20  he4 si28   rolfr       c12 ne20  he4 si28   rolfr         c12 ne20  he4 si28  rolfr         c12 ne20  he4 si28  rolfr 
+                                                                                                        
+    p na23  he4 ne20   cf88n         p na23  he4 ne20   cf88n           p na23  he4 ne20  cf88n         
+                                                                                                        
+    p na23  he4 ne20   cf88r         p na23  he4 ne20   cf88r           p na23  he4 ne20  cf88r         
+                                                                                                        
+    p na23  he4 ne20   cf88r         p na23  he4 ne20   cf88r           p na23  he4 ne20  cf88r         
+                                                                        
+  he4 si28    p  p31   laurrv      he4 si28    p  p31   laurrv        
+                                                                      
+  he4 si28    p  p31   laurrv      he4 si28    p  p31   laurrv        
+                                                                      
+  he4 si28    p  p31   laurrv      he4 si28    p  p31   laurrv        
+                                                                      
+  he4 si28    p  p31   laurrv      he4 si28    p  p31   laurrv        
+                                                                      
+  he4 si28    p  p31   laurrv      he4 si28    p  p31   laurrv        
+                                   
+  he4 si28    p  p31   laurrv      he4 si28    p  p31   laurrv  
+                                   
+  he4 si28  c12 ne20   rolfrv      he4 si28  c12 ne20   rolfrv        he4 si28  c12 ne20  rolfrv       he4 si28  c12 ne20  rolfrv 
+                                                                                                       
+    p  p31  he4 si28   laurr         p  p31  he4 si28   laurr                                          
+                                                                                                       
+    p  p31  he4 si28   laurr         p  p31  he4 si28   laurr                                          
+                                                                      
+    p  p31  he4 si28   laurr         p  p31  he4 si28   laurr         
+                                                                      
+    p  p31  he4 si28   laurr         p  p31  he4 si28   laurr         
+                                   
+    p  p31  he4 si28   laurr         p  p31  he4 si28   laurr  
+                                   
+    p  p31  he4 si28   laurr         p  p31  he4 si28   laurr  
+                                   
+    p  p31  c12 ne20   rolfrv        p  p31  c12 ne20   rolfrv 
+                                   
+  he4  p31    p  s34   rathr       he4  p31    p  s34   fkthr  
+                                   
+  he4  s32    p cl35   rathrv      he4  s32    p cl35   fkthrv        he4  s32    p cl35  fkthrv  
+                                                                        
+    p  s34  he4  p31   rathrv        p  s34  he4  p31   fkthrv        
+                                                                      
+    p cl35  he4  s32   rathr         p cl35  he4  s32   fkthr           p cl35  he4  s32  fkthr 
+                                                                        
+  he4 cl35    p ar38   rathr                                          
+                                                                      
+  he4 ar36    p  k39   rathrv                                         
+
+    p ar38  he4 cl35   rathrv
+
+    p  k39  he4 ar36   rathr 
+
+  he4  k39    p ca42   rathrv
+
+    p ca42  he4  k39   rathr 
+
+  he4  he4  he4  c12   cf88r       he4  he4  he4  c12   cf88r       he4  he4  he4  c12  cf88r        he4  he4  he4  c12  cf88r   
+                                                                                                     
+  he4  he4  he4  c12   cf88n       he4  he4  he4  c12   cf88n       he4  he4  he4  c12  cf88n        he4  he4  he4  c12  cf88n 
+

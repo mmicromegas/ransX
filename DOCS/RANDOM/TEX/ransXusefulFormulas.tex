@@ -1,0 +1,136 @@
+%\documentclass[     12pt,                   %fontsize
+%                    paper=a4,               %papersize
+%                    pagesize,               %area
+%                    DIV=calc,               %relation colls and rows see koma manual
+%                    liststotocnumbered]     %numbered toc (best solution report sucks over here
+%                    headsepline,            %header with line
+%                    footsepline]            %foot with line
+%                    {scrreprt}              %equals to report
+
+\documentclass[12pt,paper=a4]{report}
+
+%pagemargins
+\usepackage[left=1.cm,right=1.cm,top=2.cm,bottom=2.cm,landscape]{geometry}
+
+%\usepackage[a4paper,landscape]{geometry}
+
+
+%Chapter caption is somewhere in the center of the page, so move the shit ;)
+%\renewcommand*\chapterheadstartvskip{\vspace*{-1cm}}
+
+%If you have a new chapter, the pagestyle will be plain (only pagenumber) according to koma
+%To use ur setting redefine the chaperstyle
+%\renewcommand*{\chapterpagestyle}{scrheadings} 
+
+%Settings for head and foot
+
+%\usepackage[myheadings]{fullpage}
+%\pagestyle{myheadings}
+
+\usepackage{fancyhdr}
+%\fancyhead{}
+%\fancyhead[CO,CE]{---Draft---}
+\pagestyle{fancy}
+\rhead{}
+
+
+%\usepackage{scrpage2} 
+%\clearscrheadfoot
+%\pagestyle{scrheadings}
+
+%\ihead{top left}
+%\chead{top center}
+%\ohead{top right}       
+
+%\ifoot{bottom left} 
+%\cfoot{bottom center}
+%\ofoot{bottom right}
+
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{cancel}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{chngcntr}
+\usepackage{natbib}
+
+\usepackage{hyperref}
+\hypersetup{
+        colorlinks = true,
+        linkcolor = blue,
+        anchorcolor = red,
+        citecolor = blue,
+        filecolor = red,
+        urlcolor = red
+} 
+
+
+\newcommand{\Msun}{\mbox{M$_\odot$\,}}         % M_sun 
+
+\newcommand{\eht}{\overline}    
+\newcommand{\fht}{\widetilde}    
+\newcommand{\dr}{\frac{\partial}{\partial r}}
+\newcommand{\dt}{\frac{\partial}{\partial t}}
+\newcommand{\dth}{\frac{\partial}{\partial \theta}}
+\newcommand{\dph}{\frac{\partial}{\partial \phi}}
+
+\newcommand{\fav}{\widetilde}    
+\newcommand{\av}{\overline}  
+
+\def\ef#1{#1'}
+\def\ff#1{#1''}
+\def\fhtc#1{\left\{#1\right\}}
+\def\erho{\eht{\rho}}
+
+\newcommand{\dgr}{\mbox{$^\circ$}}           % degrees 
+
+\counterwithout{section}{chapter}
+
+
+\begin{document}
+\bibliographystyle{plainnat}
+%\begin{landscape}
+%\maketitle
+
+%\tableofcontents
+
+\newpage
+
+{\centerline {{\bf Some atrophysical quantities implemented in ransX}}}
+
+\vspace{0.2cm}
+
+\begin{table}[!h]
+\label{tab:rans-cont}
+\begin{align}                                                      
+& \nabla_{sim} = +(d ln T/d ln P) \ \ \mbox{\citep{cg2004} \ p.381}  & & \alpha = +(\partial ln \rho/\partial ln P)_{T,\mu} \ \ \mbox{\citep{kw1994} \ p.38}  \nonumber \\
+  & \nabla_{ad} = +(d ln T/d ln P)_{ad} = (\Gamma_2 -1)/\Gamma_2 \ \ \mbox{\citep{cg2004} \ p.382} & & \delta = -(\partial ln \rho/\partial ln T)_{P,\mu}  \ \ \mbox{\citep{kw1994} \ p.38} \nonumber \\
+& \nabla_{ad} = +(d ln T/d ln P)_{ad} = (\Gamma_3 -1)/\Gamma_1 \ \ & & \nonumber \\   
+& \nabla_{\mu} = +(\partial ln \mu/\partial ln P)_{S}  \ \ \mbox{\citep{cg2004} \ p.375}   & & \varphi = +(\partial ln \rho/\partial ln \mu)_{P,T} \ \ \mbox{\citep{kw1994} \ p.38} \nonumber \\
+  & & & \nonumber \\
+& \nabla = +(d ln T/d ln P)_s \ \ \mbox{\citep{kw1994} \ p.39}  & & \chi_\rho = +(\partial ln P/\partial ln \rho)_{T,\mu} \ \ \mbox{\citep{cg2004} \ p.369} \nonumber \\
+& \nabla_{e} = +(d ln T/d ln P)_e \ \ \mbox{\citep{kw1994} \ p.39} & & \chi_T = +(\partial ln P/\partial ln T)_{\rho,\mu} \ \ \mbox{\citep{cg2004} \ p.369} \nonumber \\ 
+& \nabla_{\mu} = +(d ln \mu/d ln P)_s  \ \ \mbox{\citep{kw1994} \ p.39} & & \chi_\mu = +(\partial ln P/\partial ln \mu)_{\rho,T} \ \ \mbox{\citep{cg2004} \ p.369} \nonumber \\
+  & & & \nonumber \\
+  & \alpha = +1/\chi_\rho  & & \Gamma_1 = +(d ln P/d ln \rho)_{ad} \ \ \mbox{\citep{cg2004} \ p.226} \nonumber \\
+  & \delta = -\chi_T/\chi_\rho  & & \Gamma_2 /(\Gamma_2 -1) = +(d ln P/d ln T)_{ad}  \ \ \mbox{\citep{cg2004} \ p.226} \nonumber \\
+  & \varphi = +\chi_\mu/\chi_\rho  & & \Gamma_3 -1 = +(d ln T/d ln \rho)_{ad} \ \ \mbox{\citep{cg2004} \ p.226} \nonumber \\  
+  & & & \nonumber \\  
+  & N^2 = +\frac{g \delta}{H_p} \left( \nabla_{ad} - \nabla + \frac{\varphi}{\delta}\nabla_\mu \right) \ \ \mbox{\citep{kw1994} \ p.42}  & & dq = du + Pdv \ \ \mbox{\citep{kw1994} \ p.19} \nonumber \\
+  &  b(r) = \int_{ri}^r N^2 dr \ \ {\mbox{\citep{MeakinArnett2007}}} & & dq \ \mbox{heat added per unit mass to internal energy} \ u \ \mbox{and} \ v = 1/\rho  \nonumber \\
+  & & & \nonumber \\    
+&  R_{ib} = \Delta b L/\sigma^2 \ \ {\mbox{\citep{MeakinArnett2007}}} & & \nonumber \\  
+&  c_P = (dQ/dT)_P \ \ \mbox{\citep{cg2004} \ p.221} & & \partial_m l = \epsilon - \partial_t u - P\partial_t v \ \ \mbox{\citep{kw1994} \ p.22} \nonumber \\
+&  c_V = (dQ/dT)_V  \ \ \mbox{\citep{cg2004} \ p.221} & & \partial_m l = \epsilon - \partial_t u + (P/\rho^2) \partial_t \rho \ \ \mbox{\citep{kw1994} \ p.22} \nonumber \\
+& \mu = \overline{A} = 1/\sum_k (X_k/A_k) \ \ \mbox{\citep{cg2004} \ p.439} & & \partial_m l = \epsilon - c_P \partial_t T + (\delta/\rho)\partial_t P \ \ \mbox{\citep{kw1994} \ p.22} \nonumber \\
+  & \psi = \mbox{degeneracy parameter} & & \beta_T = -(d ln \rho/d ln T)  \ \ {\mbox{\citep{MeakinArnett2007}}} \nonumber \\
+& H_P = -dr/(d ln P) = -P (dr/dP) \ \ \mbox{\citep{kw1994} \ p.38} & & H_\rho =  -dr/(d ln \rho) = -\rho dr/d\rho \nonumber   %\\
+%& H_P = & &  \nonumber     
+\end{align} 
+\end{table}
+
+\bibliography{referenc}
+
+\end{document}
+
+

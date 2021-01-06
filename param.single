@@ -1,7 +1,0 @@
-# ----- Parameter file for rans(eXtreme) oburn single ---------- #
-[]
-## Input-Data Directory .................... ## [single,datafile,D:\simonX\hheflash3dlrez\hheflash3d.45.nnuc13.lrez.00020.ransdat]
-## Input Data Endianness ................... ## [single,endian,little_endian]
-## Input Data Floating Point Precision ..... ## [single,precision,double]
-## Limit X-grid ............................ ## [single,xlimit,9.e8,5.85e9]
-## List Of Mean Fields To Plot ............. ## [single,toplot,enuc1]
