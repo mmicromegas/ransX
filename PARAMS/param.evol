@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) and CCP project ---------- #
 []
 ## Input Datadir ........................................... ## [prop,eht_data,DATA/TEVOL/]
-## Data File List .......................................... ## [prop,eht_res,tseries_ccptwo128_2D_cosma_5secs_evol.npy,tseries_ccptwo128_3D_cosma_5secs_evol.npy,tseries_ccptwo256_3D_cosma_5secs_evol.npy,tseries_ccptwo512_3D_cosma_5secs_evol.npy,tseries_ccptwo512_2D_cosma_5secs_evol.npy]
+## Data File List .......................................... ## [prop,eht_res,tseries_ccptwo128_2D_cosma_5secs_evol.npy,tseries_ccptwo128_3D_cosma_5secs_evol.npy,tseries_ccptwo256_2D_cosma_5secs_evol.npy,tseries_ccptwo256_3D_cosma_5secs_evol.npy,tseries_ccptwo512_2D_cosma_5secs_evol.npy,tseries_ccptwo512_3D_cosma_5secs_evol.npy]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_tavg300sEvolStudy_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,1]
@@ -9,7 +9,7 @@
 ## X-axis Left boundary for properties ..................... ## [prop,xbl,4.0e8]
 ## X-axis Right boundary for properties .................... ## [prop,xbr,1.18e9]
 []
-## Turbulent Kinetic Energy Evolution ...................... ## [tkeevol,True,1.,600.,5.e47,0.,0]
+## Turbulent Kinetic Energy Evolution ...................... ## [tkeevol,True,1.,600.,9.e47,0.,0]
 ## Mach Number Max Evolution ............................... ## [machmxevol,False,1.,600.,1.5e-1,2.e-3,0]
 ## Mach Number Mean Evolution .............................. ## [machmeevol,False,1.,600.,1.e-1,1.5e-3,0]
 ## Convection Boundaries Position Evolution ................ ## [cnvzbndry,False,1.,600.,1.e9,0.8e9,4]
@@ -20,4 +20,4 @@
 ## Residual Mean Continuity Equation Evolution ............. ## [contresmean,False,1.,600.,5.e1,0.,0]
 ## Residual Max Total Energy Equation Evolution ............ ## [teeresmax,False,1.,600.,5.e19,0.,0]
 ## Residual Mean Total Energy Equation Evolution ........... ## [teeresmean,False,1.,600.,1.5e19,0.,0]
-## X0002 Evolution (CCP project) ........................... ## [x0002evol,True,1.,600.,1.2e-1,0.,0]
+## X0002 Evolution (CCP project) ........................... ## [x0002evol,True,1.,600.,1.7e-1,0.,0]

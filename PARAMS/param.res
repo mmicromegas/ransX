@@ -1,7 +1,7 @@
 # ----- Parameter file for rans(eXtreme) and CCP-TWO-LAYERS ---------- #
 []
 ## Input Data Folder ....................................... ## [prop,eht_data,DATA/TSERIES/]
-## Resolution Study Input Files List ....................... ## [prop,eht_res,tseries_ccptwo128_2D_cosma_300secs.npy,tseries_ccptwo512_2D_cosma_300secs.npy,tseries_ccptwo128_3D_cosma_300secs.npy,tseries_ccptwo256_3D_cosma_300secs.npy,tseries_ccptwo512_3D_cosma_300secs.npy]
+## Resolution Study Input Files List ....................... ## [prop,eht_res,tseries_ccptwo128_2D_cosma_300secs.npy,tseries_ccptwo256_2D_cosma_300secs.npy,tseries_ccptwo512_2D_cosma_300secs.npy,tseries_ccptwo128_3D_cosma_300secs.npy,tseries_ccptwo256_3D_cosma_300secs.npy,tseries_ccptwo512_3D_cosma_300secs.npy]
 ## Project Label (oburn, ccp: for now only) ................ ## [prop,plabel,ccp]
 ## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_tavg300sDimResStudy_]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,1]
