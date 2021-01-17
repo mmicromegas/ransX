@@ -10,7 +10,7 @@
 ## Dimensionality .......................................... ## [prop,nsdim,3]
 ## Central Time Index ...................................... ## [prop,intc,4]
 ## Limit Axis .............................................. ## [prop,laxis,2]
-## Oplot nuclear timescales (0: no, 1: yes) ................ ## [prop,tnuc,1]
+## Oplot nuclear timescales (0: no, 1: yes) ................ ## [prop,tnuc,0]
 ## X-axis Left boundary for properties ..................... ## [prop,xbl,4.2e8]
 ## X-axis Right boundary for properties .................... ## [prop,xbr,9.8e8]
 ## Nuclear network ......................................... ## [network,neut,prot,he4,c12,o16,ne20,na23,mg24,si28,p31,s32,s34,cl35,ar36]

@@ -147,7 +147,7 @@ class ContinuityEquationWithFavrianDilatation(Calculus, SetAxisLimit, Tools, Err
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
 
-    def plot_continuity_equation(self, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_continuity_equation(self, wxStudio, laxis, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
 
         # check supported geometries
@@ -226,7 +226,10 @@ class ContinuityEquationWithFavrianDilatation(Calculus, SetAxisLimit, Tools, Err
         plt.legend(loc=ilg, prop={'size': 14})
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # check supported file output extension
         if self.fext != "png" and self.fext != "eps":

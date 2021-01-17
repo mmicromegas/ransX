@@ -81,7 +81,7 @@ class MomentumEquationY(Calculus, SetAxisLimit, Tools, Errors, object):
         self.ig = ig
         self.fext = fext
 
-    def plot_momentum_y(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_y(self, wxStudio, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot dduy stratification in the model"""
 
         # check supported geometries
@@ -132,7 +132,10 @@ class MomentumEquationY(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.legend(loc=ilg, prop={'size': 18})
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         if self.fext == "png":
@@ -140,7 +143,7 @@ class MomentumEquationY(Calculus, SetAxisLimit, Tools, Errors, object):
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduy.eps')
 
-    def plot_momentum_equation_y(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_equation_y(self, wxStudio, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum y equation in the model"""
 
         # check supported geometries
@@ -207,7 +210,10 @@ class MomentumEquationY(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.legend(loc=ilg, prop={'size': 12})
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         if self.fext == "png":

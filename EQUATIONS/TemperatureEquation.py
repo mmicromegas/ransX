@@ -168,7 +168,7 @@ class TemperatureEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         elif self.fext == 'eps':
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_tt.eps')
 
-    def plot_tt_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_tt_equation(self, wxStudio, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot temperature equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -246,7 +246,10 @@ class TemperatureEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.legend(loc=ilg, prop={'size': 10}, ncol=2)
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         if self.fext == 'png':

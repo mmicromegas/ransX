@@ -789,7 +789,7 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
         plt.axis([xbl, xbr, lb, ub])
 
         #plt.title(r'instantaneous')
-        plt.title(r'3D')
+        plt.title(r'instantaneous')
         plt.semilogy(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
         plt.semilogy(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
         plt.semilogy(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
@@ -854,8 +854,8 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
-        plt.savefig('RESULTS/oburn14_nuclear_energy_gen.png')
-        plt.savefig('RESULTS/oburn14_nuclear_energy_gen.eps')
+        plt.savefig('RESULTS/oburn14_nuclear_energy_gen_inst.png')
+        plt.savefig('RESULTS/oburn14_nuclear_energy_gen_inst.eps')
 
     def PlotNucEnergyGen2(self, xbl, xbr):
         """Plot nuclear reaction timescales"""

@@ -50,6 +50,9 @@ def main():
     # obtain publication quality figures
     plt.SetMatplotlibParams()
 
+    # set wxStudio flag to False
+    wxStudio = False
+
     # check/create RESULTS folder
     try:
         os.makedirs('RESULTS')
@@ -110,13 +113,13 @@ def main():
         plt.execRho(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('conteq')['plotMee']):
-        plt.execContEq(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execContEq(wxStudio, prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqsBar('conteqBar')['plotMee']):
         plt.execContEqBar()
 
     if str2bool(params.getForEqs('conteqfdd')['plotMee']):
-        plt.execContFddEq(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execContFddEq(wxStudio, prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqsBar('conteqfddBar')['plotMee']):
         plt.execContFddEqBar()
@@ -126,21 +129,21 @@ def main():
         plt.execMomx(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('momxeq')['plotMee']):
-        plt.execMomxEq(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execMomxEq(wxStudio, prp['xzn0inc'], prp['xzn0outc'])
 
     # MOMENTUM Y EQUATION
     if str2bool(params.getForEqs('momey')['plotMee']):
         plt.execMomy(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('momyeq')['plotMee']):
-        plt.execMomyEq(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execMomyEq(wxStudio, prp['xzn0inc'], prp['xzn0outc'])
 
     # MOMENTUM Z EQUATION
     if str2bool(params.getForEqs('momez')['plotMee']):
         plt.execMomz(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('momzeq')['plotMee']):
-        plt.execMomzEq(prp['xzn0inc'], prp['xzn0outc'])
+        plt.execMomzEq(wxStudio, prp['xzn0inc'], prp['xzn0outc'])
 
     # REYNOLDS STRESS XX EQUATION
     if str2bool(params.getForEqs('rxx')['plotMee']):
@@ -176,7 +179,7 @@ def main():
                     prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqs('tkeeq')['plotMee']):
-        plt.execTkeEq(prp['kolm_tke_diss_rate'], prp['xzn0inc'],
+        plt.execTkeEq(wxStudio, prp['kolm_tke_diss_rate'], prp['xzn0inc'],
                       prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])
 
     if str2bool(params.getForEqsBar('tkeeqBar')['plotMee']):
@@ -277,7 +280,7 @@ def main():
         plt.execTT(prp['xzn0inc'], prp['xzn0outc'])
 
     if str2bool(params.getForEqs('tteq')['plotMee']):
-        plt.execTTeq(prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
+        plt.execTTeq(wxStudio, prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
     # TEMPERATURE FLUX EQUATION
     if str2bool(params.getForEqs('tempflx')['plotMee']):

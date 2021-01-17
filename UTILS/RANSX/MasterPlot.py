@@ -98,6 +98,7 @@ class MasterPlot():
 
     def __init__(self, params):
         self.params = params
+        #plt.close()
 
     def execRho(self, bconv, tconv):
         params = self.params
@@ -126,7 +127,7 @@ class MasterPlot():
         #                       params.getForEqs('rho')['ybd'],
         #                       params.getForEqs('rho')['ilg'])
 
-    def execContEq(self, bconv, tconv):
+    def execContEq(self, wxStudio, bconv, tconv):
         params = self.params
 
         # instantiate 
@@ -138,7 +139,7 @@ class MasterPlot():
                                                                     params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
-        ransCONT.plot_continuity_equation(params.getForProp('prop')['laxis'],
+        ransCONT.plot_continuity_equation(wxStudio, params.getForProp('prop')['laxis'],
                                           bconv, tconv,
                                           params.getForEqs('conteq')['xbl'],
                                           params.getForEqs('conteq')['xbr'],
@@ -164,7 +165,7 @@ class MasterPlot():
                                                           params.getForEqsBar('conteqBar')['ybu'],
                                                           params.getForEqsBar('conteqBar')['ybd'])
 
-    def execContFddEq(self, bconv, tconv):
+    def execContFddEq(self, wxStudio, bconv, tconv):
         params = self.params
 
         # instantiate 
@@ -176,7 +177,7 @@ class MasterPlot():
                                                              params.getForProp('prop')['prefix'])
 
         # plot continuity equation						       
-        ransCONTfdd.plot_continuity_equation(params.getForProp('prop')['laxis'],
+        ransCONTfdd.plot_continuity_equation(wxStudio, params.getForProp('prop')['laxis'],
                                              bconv, tconv,
                                              params.getForEqs('conteqfdd')['xbl'],
                                              params.getForEqs('conteqfdd')['xbr'],
@@ -801,7 +802,7 @@ class MasterPlot():
         # plot evolution of convection boundaries	   
         # ransTke.plot_conv_bndry_location()
 
-    def execTkeEq(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
+    def execTkeEq(self, wxStudio, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
 
         # instantiate 		
@@ -814,7 +815,7 @@ class MasterPlot():
                                                      params.getForProp('prop')['prefix'])
 
         # plot turbulent kinetic energy equation			     
-        ransTke.plot_tke_equation(params.getForProp('prop')['laxis'],
+        ransTke.plot_tke_equation(wxStudio, params.getForProp('prop')['laxis'],
                                   params.getForEqs('tkeeq')['xbl'],
                                   params.getForEqs('tkeeq')['xbr'],
                                   params.getForEqs('tkeeq')['ybu'],
@@ -1005,7 +1006,7 @@ class MasterPlot():
                                  params.getForEqs('momex')['ybd'],
                                  params.getForEqs('momex')['ilg'])
 
-    def execMomxEq(self, bconv, tconv):
+    def execMomxEq(self, wxStudio, bconv, tconv):
         params = self.params
 
         # instantiate 		
@@ -1016,7 +1017,7 @@ class MasterPlot():
                                           params.getForProp('prop')['nsdim'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomx.plot_momentum_equation_x(params.getForProp('prop')['laxis'],
+        ransMomx.plot_momentum_equation_x(wxStudio, params.getForProp('prop')['laxis'],
                                           bconv, tconv,
                                           params.getForEqs('momxeq')['xbl'],
                                           params.getForEqs('momxeq')['xbr'],
@@ -1042,7 +1043,7 @@ class MasterPlot():
                                  params.getForEqs('momey')['ybd'],
                                  params.getForEqs('momey')['ilg'])
 
-    def execMomyEq(self, bconv, tconv):
+    def execMomyEq(self, wxStudio, bconv, tconv):
         params = self.params
 
         # instantiate 		
@@ -1052,7 +1053,7 @@ class MasterPlot():
                                           params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomy.plot_momentum_equation_y(params.getForProp('prop')['laxis'],
+        ransMomy.plot_momentum_equation_y(wxStudio, params.getForProp('prop')['laxis'],
                                           bconv, tconv,
                                           params.getForEqs('momyeq')['xbl'],
                                           params.getForEqs('momyeq')['xbr'],
@@ -1078,7 +1079,7 @@ class MasterPlot():
                                  params.getForEqs('momez')['ybd'],
                                  params.getForEqs('momez')['ilg'])
 
-    def execMomzEq(self, bconv, tconv):
+    def execMomzEq(self, wxStudio, bconv, tconv):
         params = self.params
 
         # instantiate 		
@@ -1088,7 +1089,7 @@ class MasterPlot():
                                           params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomz.plot_momentum_equation_z(params.getForProp('prop')['laxis'],
+        ransMomz.plot_momentum_equation_z(wxStudio, params.getForProp('prop')['laxis'],
                                           bconv, tconv,
                                           params.getForEqs('momzeq')['xbl'],
                                           params.getForEqs('momzeq')['xbr'],
@@ -2365,7 +2366,7 @@ class MasterPlot():
                        params.getForEqs('temp')['ybd'],
                        params.getForEqs('temp')['ilg'])
 
-    def execTTeq(self, tke_diss, bconv, tconv):
+    def execTTeq(self, wxStudio, tke_diss, bconv, tconv):
         params = self.params
 
         # instantiate 		
@@ -2378,7 +2379,7 @@ class MasterPlot():
                                         tke_diss,
                                         params.getForProp('prop')['prefix'])
 
-        ransTT.plot_tt_equation(params.getForProp('prop')['laxis'],
+        ransTT.plot_tt_equation(wxStudio, params.getForProp('prop')['laxis'],
                                 bconv, tconv,
                                 params.getForEqs('tteq')['xbl'],
                                 params.getForEqs('tteq')['xbr'],

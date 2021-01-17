@@ -10,6 +10,7 @@ from UTILS.Errors import Errors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.cm as cm
 
+
 # Theoretical background https://arxiv.org/abs/1401.5176
 
 # Mocak, Meakin, Viallet, Arnett, 2014, Compressible Hydrodynamic Mean-Field #
@@ -43,7 +44,7 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         # store time series for time derivatives
         t_timec = self.getRAdata(eht, 'timec')
         t_dd = self.getRAdata(eht, 'dd')
-        t_frho = self.getRAdata(eht, 'ddux') - self.getRAdata(eht, 'dd')*self.getRAdata(eht, 'ux')
+        t_frho = self.getRAdata(eht, 'ddux') - self.getRAdata(eht, 'dd') * self.getRAdata(eht, 'ux')
 
         # t_mm    = self.getRAdata(eht,'mm'))
         # minus_dt_mm = -self.dt(t_mm,xzn0,t_timec,intc)
@@ -84,16 +85,16 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         if self.ig == 1:
             self.t_frho = t_frho
         elif self.ig == 2:
-            dx = (xzn0[-1]-xzn0[0])/nx
-            dumx = xzn0[0]+np.arange(1,nx,1)*dx
+            dx = (xzn0[-1] - xzn0[0]) / nx
+            dumx = xzn0[0] + np.arange(1, nx, 1) * dx
             t_frho2 = []
 
             # interpolation due to non-equidistant radial grid
             for i in range(int(t_frho.shape[0])):
-                t_frho2.append(np.interp(dumx,xzn0,t_frho[i,:]))
+                t_frho2.append(np.interp(dumx, xzn0, t_frho[i, :]))
 
             t_frho_forspacetimediagram = np.asarray(t_frho2)
-            self.t_frho = t_frho_forspacetimediagram # for the space-time diagrams
+            self.t_frho = t_frho_forspacetimediagram  # for the space-time diagrams
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -165,7 +166,7 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         elif self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_rho.eps')
 
-    def plot_continuity_equation(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_continuity_equation(self, wxStudio, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot continuity equation in the model"""
 
         # check supported geometries
@@ -195,7 +196,6 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         to_plot = [lhs0, lhs1, rhs0, rhs1, rhs2, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
-
         # plot DATA
         plt.title(r"continuity equation with mass flux " + str(self.nsdim) + "D")
         # plt.title(r"Equation 13")
@@ -217,31 +217,31 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
             plt.plot(grd1, res, color='k', linestyle='--', label='+res')
 
         # shade boundaries
-        #ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
-        #rinc = grd1[ind1[0]]
-        #routc = grd1[ind1[-1]]
+        # ind1 =  self.nx/2 + np.where((self.minus_div_fdd[(self.nx/2):self.nx] > 6.))[0]
+        # rinc = grd1[ind1[0]]
+        # routc = grd1[ind1[-1]]
 
-        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        # plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
-        #ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
-        #rinc = grd1[ind2[0]]
-        #routc = grd1[ind2[-1]]
+        # ind2 =  np.where((self.minus_div_fdd[0:(self.nx/2)] > 0.0))[0]
+        # rinc = grd1[ind2[0]]
+        # routc = grd1[ind2[-1]]
 
-        #print(rinc,routc,ind2[0],ind2[-1],ind2,(self.nx/2),self.nx)
-        #print(self.nx)
+        # print(rinc,routc,ind2[0],ind2[-1],ind2,(self.nx/2),self.nx)
+        # print(self.nx)
 
-        #plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
+        # plt.fill([rinc, routc, routc, rinc], [ybd, ybd, ybu, ybu], 'y', edgecolor='w')
 
         # calculate overshooting in Hp
-        #ibot = ind1[0]
-        #itop = ind1[-1]
-        #pbot = self.pp[ibot]
-        #bndry_vs_hp = np.log(pbot / self.pp[ibot:itop])
-        #bndry_in_hp = bndry_vs_hp[itop - ibot - 1]
-        #bndry_in_nx = itop - ibot - 1
-        #print("Overshooting (in Hp): ", bndry_in_hp)
-        #print("Number of Grid zone In Boundary: ", bndry_in_nx)
-        #print(itop,ibot)
+        # ibot = ind1[0]
+        # itop = ind1[-1]
+        # pbot = self.pp[ibot]
+        # bndry_vs_hp = np.log(pbot / self.pp[ibot:itop])
+        # bndry_in_hp = bndry_vs_hp[itop - ibot - 1]
+        # bndry_in_nx = itop - ibot - 1
+        # print("Overshooting (in Hp): ", bndry_in_hp)
+        # print("Number of Grid zone In Boundary: ", bndry_in_nx)
+        # print(itop,ibot)
 
         # convective boundary markers
         plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
@@ -262,7 +262,10 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         plt.legend(loc=ilg, prop={'size': 14}, ncol=2)
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         if self.fext == 'png':
@@ -288,9 +291,9 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         # hack for the ccp setup getting rid of bndry noise
         fct1 = 0.5e-1
         fct2 = 1.e-1
-        xbl = xbl + fct1*xbl
-        xbr = xbr - fct2*xbl
-        print(xbl,xbr)
+        xbl = xbl + fct1 * xbl
+        xbr = xbr - fct2 * xbl
+        print(xbl, xbr)
 
         # calculate INDICES for grid boundaries 
         if laxis == 1 or laxis == 2:
@@ -402,12 +405,12 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
 
         # load DATA to plot
         plt1 = self.t_frho.T
-        #plt1 = self.t_frho.T
+        # plt1 = self.t_frho.T
 
         indRES = np.where((grd1 < 9.e8) & (grd1 > 4.e8))[0]
 
-        #pltMax = np.max(plt1[indRES])
-        #pltMin = np.min(plt1[indRES])
+        # pltMax = np.max(plt1[indRES])
+        # pltMin = np.min(plt1[indRES])
 
         pltMax = 0.2e10
         pltMin = -4.e10
@@ -415,21 +418,21 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
         # create FIGURE
         # plt.figure(figsize=(7, 6))
 
-        #print(t_timec[0], t_timec[-1], grd1[0], grd1[-1])
+        # print(t_timec[0], t_timec[-1], grd1[0], grd1[-1])
 
-        #matplotlib.rc('xtick', labelsize=30.)
-        #matplotlib.rc('ytick', labelsize=30.)
-        #matplotlib.rc('font', size=30.)
+        # matplotlib.rc('xtick', labelsize=30.)
+        # matplotlib.rc('ytick', labelsize=30.)
+        # matplotlib.rc('font', size=30.)
 
         fig, ax = plt.subplots(figsize=(14, 7))
         # fig.suptitle("log(X) (" + self.setNucNoUp(str(element))+ ")")
         fig.suptitle(r"$f_\rho$ " + str(self.nx) + ' x ' + str(self.ny) + ' x ' + str(self.nz))
 
         im = ax.imshow(plt1, interpolation='bilinear', cmap=cm.jet,
-                       origin='lower', extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
+                       origin='lower', extent=[t_timec[0], t_timec[-1], grd1[0], grd1[-1]], aspect='auto',
                        vmax=pltMax, vmin=pltMin)
 
-        #extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
+        # extent = [t_timec[0], t_timec[-1], grd1[0], grd1[-1]]
 
         divider = make_axes_locatable(ax)
         cax = divider.append_axes('right', size='5%', pad=0.05)
@@ -452,7 +455,6 @@ class ContinuityEquationWithMassFlux(Calculus, SetAxisLimit, Tools, Errors, obje
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Frho_space_time' +'.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Frho_space_time' + '.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_Frho_space_time' + '.eps')
-

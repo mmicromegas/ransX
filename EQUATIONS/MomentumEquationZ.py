@@ -134,7 +134,7 @@ class MomentumEquationZ(Calculus, SetAxisLimit, Tools, Errors, object):
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_dduz.eps')
 
-    def plot_momentum_equation_z(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_equation_z(self, wxStudio, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum z equation in the model"""
 
         # check supported geometries
@@ -197,7 +197,10 @@ class MomentumEquationZ(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.legend(loc=ilg, prop={'size': 12})
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         if self.fext == "png":

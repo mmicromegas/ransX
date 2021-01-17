@@ -157,7 +157,7 @@ class MomentumEquationX(Calculus, SetAxisLimit, Tools, Errors, object):
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_ddux.eps')
 
-    def plot_momentum_equation_x(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
+    def plot_momentum_equation_x(self, wxStudio, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
         """Plot momentum x equation in the model"""
 
         # check supported geometries
@@ -222,7 +222,10 @@ class MomentumEquationX(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.legend(loc=ilg, prop={'size': 12})
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         if self.fext == "png":

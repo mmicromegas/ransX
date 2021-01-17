@@ -139,7 +139,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_tke.png')
 
-    def plot_tke_equation(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+    def plot_tke_equation(self, wxStudio, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot turbulent kinetic energy equation in the model"""
 
         if self.ig != 1 and self.ig != 2:
@@ -227,7 +227,10 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
         plt.legend(loc=ilg, prop={'size': 12}, ncol=2)
 
         # display PLOT
-        plt.show(block=False)
+        if wxStudio:
+            plt.show()
+        else:
+            plt.show(block=False)
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq.png')
@@ -429,6 +432,7 @@ class TurbulentKineticEnergyEquation(uSal.SetAxisLimit, eR.Errors, object):
 
         # display PLOT
         plt.show(block=False)
+        #plt.show()
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'tke_eq_bar.png')

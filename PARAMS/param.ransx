@@ -33,7 +33,7 @@
 ## uzfpd Identity .......................................... ## [uzfpd,False,4.e8,1.2e9,3.5e26,-3.5e26,0]
 ## Dilatation .............................................. ## [divu,False,4.e8,1.2e9,1.5e-4,-1.5e-4,0]
 []
-## Continuity Equation ..................................... ## [conteq,True,4.e8,1.2e9,1.5e2,-1.5e2,0]
+## Continuity Equation ..................................... ## [conteq,False,4.e8,1.2e9,1.5e2,-1.5e2,0]
 ## Continuity Equation Integral Budget ..................... ## [conteqBar,False,4.e8,1.2e9,8.e28,-8.e28]
 ## Continuity Equation with Mass Flux ...................... ## [conteqfdd,False,4.e8,1.2e9,1.8e2,-1.8e2,0]
 ## Continuity Equation with Mass Flux Integral Budget ...... ## [conteqfddBar,False,4.e8,1.2e9,8.e28,-8.e28]
