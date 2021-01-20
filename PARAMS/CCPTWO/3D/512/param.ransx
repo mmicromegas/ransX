@@ -1,8 +1,8 @@
 # ----- Parameter file for rans(eXtreme) and CCP TWO-LAYERS PROJECT ---------- #
 []
-## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ccptwo128_3D_cosma_300secs.npy]
+## Input Data .............................................. ## [prop,eht_data,DATA/TSERIES/tseries_ccptwo512_3D_cosma_300secs.npy]
 ## Project Label (oburn, ccptwo: for now only) ............. ## [prop,plabel,ccptwo]
-## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_tavg300res128_3D_intc20timec370s_]
+## Filename Prefix For Plots ............................... ## [prop,prefix,ccptwo_tavg300res512_3D_intc20timec370s_]
 ## Geometry; ig = 1 Cartesian, ig = 2 Spherical ............ ## [prop,ig,1]
 ## Dimensionality .......................................... ## [prop,nsdim,3]
 ## Equation Of State; ieos = 1 Ideal Gas, ieos = 3 HelmEos . ## [prop,ieos,1]

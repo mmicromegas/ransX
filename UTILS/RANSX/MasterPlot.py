@@ -138,14 +138,23 @@ class MasterPlot():
                                                                     params.getForProp('prop')['nsdim'],
                                                                     params.getForProp('prop')['prefix'])
 
-        # plot continuity equation						       
-        ransCONT.plot_continuity_equation(wxStudio, params.getForProp('prop')['laxis'],
-                                          bconv, tconv,
-                                          params.getForEqs('conteq')['xbl'],
-                                          params.getForEqs('conteq')['xbr'],
-                                          params.getForEqs('conteq')['ybu'],
-                                          params.getForEqs('conteq')['ybd'],
-                                          params.getForEqs('conteq')['ilg'])
+        # plot continuity equation
+        if wxStudio[0]:
+            ransCONT.plot_continuity_equation(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransCONT.plot_continuity_equation(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              params.getForEqs('conteq')['xbl'],
+                                              params.getForEqs('conteq')['xbr'],
+                                              params.getForEqs('conteq')['ybu'],
+                                              params.getForEqs('conteq')['ybd'],
+                                              params.getForEqs('conteq')['ilg'])
 
     def execContEqBar(self):
         params = self.params
@@ -176,8 +185,17 @@ class MasterPlot():
                                                              params.getForProp('prop')['nsdim'],
                                                              params.getForProp('prop')['prefix'])
 
-        # plot continuity equation						       
-        ransCONTfdd.plot_continuity_equation(wxStudio, params.getForProp('prop')['laxis'],
+        # plot continuity equation
+        if wxStudio[0]:
+            ransCONTfdd.plot_continuity_equation(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransCONTfdd.plot_continuity_equation(wxStudio[0], params.getForProp('prop')['laxis'],
                                              bconv, tconv,
                                              params.getForEqs('conteqfdd')['xbl'],
                                              params.getForEqs('conteqfdd')['xbr'],
@@ -814,13 +832,22 @@ class MasterPlot():
                                                      super_ad_i, super_ad_o,
                                                      params.getForProp('prop')['prefix'])
 
-        # plot turbulent kinetic energy equation			     
-        ransTke.plot_tke_equation(wxStudio, params.getForProp('prop')['laxis'],
-                                  params.getForEqs('tkeeq')['xbl'],
-                                  params.getForEqs('tkeeq')['xbr'],
-                                  params.getForEqs('tkeeq')['ybu'],
-                                  params.getForEqs('tkeeq')['ybd'],
-                                  params.getForEqs('tkeeq')['ilg'])
+        # plot turbulent kinetic energy equation
+        if wxStudio[0]:
+            ransTke.plot_momentum_equation_x(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransTke.plot_tke_equation(wxStudio[0], params.getForProp('prop')['laxis'],
+                                      params.getForEqs('tkeeq')['xbl'],
+                                      params.getForEqs('tkeeq')['xbr'],
+                                      params.getForEqs('tkeeq')['ybu'],
+                                      params.getForEqs('tkeeq')['ybd'],
+                                      params.getForEqs('tkeeq')['ilg'])
+
 
     def execTkeEqBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params
@@ -1017,13 +1044,22 @@ class MasterPlot():
                                           params.getForProp('prop')['nsdim'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomx.plot_momentum_equation_x(wxStudio, params.getForProp('prop')['laxis'],
-                                          bconv, tconv,
-                                          params.getForEqs('momxeq')['xbl'],
-                                          params.getForEqs('momxeq')['xbr'],
-                                          params.getForEqs('momxeq')['ybu'],
-                                          params.getForEqs('momxeq')['ybd'],
-                                          params.getForEqs('momxeq')['ilg'])
+        if wxStudio[0]:
+            ransMomx.plot_momentum_equation_x(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransMomx.plot_momentum_equation_x(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              params.getForEqs('momxeq')['xbl'],
+                                              params.getForEqs('momxeq')['xbr'],
+                                              params.getForEqs('momxeq')['ybu'],
+                                              params.getForEqs('momxeq')['ybd'],
+                                              params.getForEqs('momxeq')['ilg'])
 
     def execMomy(self, bconv, tconv):
         params = self.params
@@ -1053,13 +1089,22 @@ class MasterPlot():
                                           params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomy.plot_momentum_equation_y(wxStudio, params.getForProp('prop')['laxis'],
-                                          bconv, tconv,
-                                          params.getForEqs('momyeq')['xbl'],
-                                          params.getForEqs('momyeq')['xbr'],
-                                          params.getForEqs('momyeq')['ybu'],
-                                          params.getForEqs('momyeq')['ybd'],
-                                          params.getForEqs('momyeq')['ilg'])
+        if wxStudio[0]:
+            ransMomy.plot_momentum_equation_y(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransMomy.plot_momentum_equation_y(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              params.getForEqs('momyeq')['xbl'],
+                                              params.getForEqs('momyeq')['xbr'],
+                                              params.getForEqs('momyeq')['ybu'],
+                                              params.getForEqs('momyeq')['ybd'],
+                                              params.getForEqs('momyeq')['ilg'])
 
     def execMomz(self, bconv, tconv):
         params = self.params
@@ -1089,13 +1134,22 @@ class MasterPlot():
                                           params.getForProp('prop')['intc'],
                                           params.getForProp('prop')['prefix'])
 
-        ransMomz.plot_momentum_equation_z(wxStudio, params.getForProp('prop')['laxis'],
-                                          bconv, tconv,
-                                          params.getForEqs('momzeq')['xbl'],
-                                          params.getForEqs('momzeq')['xbr'],
-                                          params.getForEqs('momzeq')['ybu'],
-                                          params.getForEqs('momzeq')['ybd'],
-                                          params.getForEqs('momzeq')['ilg'])
+        if wxStudio[0]:
+            ransMomz.plot_momentum_equation_z(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransMomz.plot_momentum_equation_z(wxStudio[0], params.getForProp('prop')['laxis'],
+                                              bconv, tconv,
+                                              params.getForEqs('momzeq')['xbl'],
+                                              params.getForEqs('momzeq')['xbr'],
+                                              params.getForEqs('momzeq')['ybu'],
+                                              params.getForEqs('momzeq')['ybd'],
+                                              params.getForEqs('momzeq')['ilg'])
 
     def execEi(self, bconv, tconv):
         params = self.params
@@ -2379,13 +2433,23 @@ class MasterPlot():
                                         tke_diss,
                                         params.getForProp('prop')['prefix'])
 
-        ransTT.plot_tt_equation(wxStudio, params.getForProp('prop')['laxis'],
-                                bconv, tconv,
-                                params.getForEqs('tteq')['xbl'],
-                                params.getForEqs('tteq')['xbr'],
-                                params.getForEqs('tteq')['ybu'],
-                                params.getForEqs('tteq')['ybd'],
-                                params.getForEqs('tteq')['ilg'])
+        if wxStudio[0]:
+            ransTT.plot_tt_equation(wxStudio[0], params.getForProp('prop')['laxis'],
+                                             bconv, tconv,
+                                              wxStudio[1],
+                                              wxStudio[2],
+                                              wxStudio[3],
+                                              wxStudio[4],
+                                              params.getForEqs('conteq')['ilg'])
+        else:
+            ransTT.plot_tt_equation(wxStudio[0], params.getForProp('prop')['laxis'],
+                                    bconv, tconv,
+                                    params.getForEqs('tteq')['xbl'],
+                                    params.getForEqs('tteq')['xbr'],
+                                    params.getForEqs('tteq')['ybu'],
+                                    params.getForEqs('tteq')['ybd'],
+                                    params.getForEqs('tteq')['ilg'])
+
 
     def execTTvar(self, bconv, tconv):
         params = self.params

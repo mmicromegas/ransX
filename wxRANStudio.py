@@ -4,6 +4,7 @@ import ast
 import os
 import sys
 import errno
+import pandas as pd
 
 from UTILS.RANSX.Properties import Properties
 from UTILS.RANSX.ReadParamsRansX import ReadParamsRansX
@@ -40,15 +41,19 @@ class myFrame(wx.Frame):  # define application with initialization routine
 
 
         chlbl2 = wx.StaticText(self.panel, label="Select RANS Equation:", pos=(10,70))
-        ransEquations = ['Continuity Equation with Favrian Dilatation',
+
+        self.ransEquations = pd.Series(['Continuity Equation with Favrian Dilatation',
                      'Continuity Equation with Turbulent Mass Flux',
                      'Momentum Equation (in X-direction)',
                      'Momentum Equation (in Y-direction)',
                      'Momentum Equation (in Z-direction)',
                      'Turbulent Kinetic Energy Equation',
-                     'Temperature Equation']
+                     'Temperature Equation'],
+                            index=['conteq', 'conteqfdd',
+                                   'momxeq', 'momyeq', 'momzeq','tkeeq','tteq'])
+
         self.box.Add(chlbl2)
-        self.choice2 = wx.Choice(self.panel, choices=ransEquations, size=(250,50), pos=(10,90))
+        self.choice2 = wx.Choice(self.panel, choices=self.ransEquations.values.tolist(), size=(250,50), pos=(10,90))
         self.box.Add(self.choice2)
         self.choice2.Bind(wx.EVT_CHOICE, self.OnChoice2)
 
@@ -68,57 +73,48 @@ class myFrame(wx.Frame):  # define application with initialization routine
 
     def OnChoice1(self, event):
         self.filename = self.datadir + self.choice1.GetString(self.choice1.GetSelection())
+
+        eqSelection = self.choice2.GetString(self.choice2.GetSelection())
+        if eqSelection != "":
+            self.XrangeL.ChangeValue(str('%.2e' % self.getPropSelection(self.filename,eqSelection,'xbl')))
+            self.XrangeR.ChangeValue(str('%.2e' % self.getPropSelection(self.filename,eqSelection,'xbr')))
+            self.YrangeD.ChangeValue(str('%.2e' % self.getPropSelection(self.filename,eqSelection,'ybd')))
+            self.YrangeU.ChangeValue(str('%.2e' % self.getPropSelection(self.filename,eqSelection,'ybu')))
         return
 
     def OnChoice2(self, event):
         print(self.choice2.GetString(self.choice2.GetSelection()))
 
-        paramFile = os.path.join('PARAMS', 'param.ransx')
-        params = ReadParamsRansX(paramFile)
-
-        # get input parameters
-        filename = params.getForProp('prop')['eht_data']
-        plabel = params.getForProp('prop')['plabel']
-        ig = params.getForProp('prop')['ig']
-        nsdim = params.getForProp('prop')['nsdim']
-        ieos = params.getForProp('prop')['ieos']
-        intc = params.getForProp('prop')['intc']
-        laxis = params.getForProp('prop')['laxis']
-        xbl = str('%.2e' % params.getForProp('prop')['xbl'])
-        xbr = str('%.2e' % params.getForProp('prop')['xbr'])
-
-        ybu = str('%.2e' % params.getForEqs('tkie')['ybu'])
-        ybd = str('%.2e' % params.getForEqs('tkie')['ybd'])
+        eqSelection = self.choice2.GetString(self.choice2.GetSelection())
+        xbl = str('%.2e' % self.getPropSelection(self.filename, eqSelection, 'xbl'))
+        xbr = str('%.2e' % self.getPropSelection(self.filename, eqSelection, 'xbr'))
+        ybu = str('%.2e' % self.getPropSelection(self.filename, eqSelection, 'ybu'))
+        ybd = str('%.2e' % self.getPropSelection(self.filename, eqSelection, 'ybd'))
 
         chlbl3 = wx.StaticText(self.panel, label="Plot Properties:", pos=(10,130))
         self.box.Add(chlbl3)
 
         chlbl4 = wx.StaticText(self.panel, label="X-Range:", pos=(10,160))
         self.box.Add(chlbl4)
-        self.XrangeL = wx.TextCtrl(self.panel, wx.ID_ANY,xbl,pos=(60,160),size=(70,20))
-        self.XrangeR = wx.TextCtrl(self.panel, wx.ID_ANY,xbr,pos=(140,160),size=(70,20))
+        self.XrangeL = wx.TextCtrl(self.panel, wx.ID_ANY,xbl,pos=(60,160),size=(70,20),style=wx.TE_PROCESS_ENTER)
+        self.XrangeR = wx.TextCtrl(self.panel, wx.ID_ANY,xbr,pos=(140,160),size=(70,20),style=wx.TE_PROCESS_ENTER)
 
         chlbl5 = wx.StaticText(self.panel, label="Y-Range:", pos=(10,180))
         self.box.Add(chlbl5)
-        self.YrangeU = wx.TextCtrl(self.panel, wx.ID_ANY,ybu,pos=(60,180),size=(70,20))
-        self.YrangeD = wx.TextCtrl(self.panel, wx.ID_ANY,ybd,pos=(140,180),size=(70,20))
-
-
+        self.YrangeU = wx.TextCtrl(self.panel, wx.ID_ANY,ybu,pos=(60,180),size=(70,20),style=wx.TE_PROCESS_ENTER)
+        self.YrangeD = wx.TextCtrl(self.panel, wx.ID_ANY,ybd,pos=(140,180),size=(70,20),style=wx.TE_PROCESS_ENTER)
 
     def onClick(self, event):
-        paramFile = os.path.join('PARAMS', 'param.ransx')
-        params = ReadParamsRansX(paramFile)
 
-        # get input parameters
-        # filename = params.getForProp('prop')['eht_data']
-        plabel = params.getForProp('prop')['plabel']
-        ig = params.getForProp('prop')['ig']
-        nsdim = params.getForProp('prop')['nsdim']
-        ieos = params.getForProp('prop')['ieos']
-        intc = params.getForProp('prop')['intc']
-        laxis = params.getForProp('prop')['laxis']
-        xbl = params.getForProp('prop')['xbl']
-        xbr = params.getForProp('prop')['xbr']
+        eqSelection = self.choice2.GetString(self.choice2.GetSelection())
+        plabel = self.getPropSelection(self.filename, eqSelection, 'plabel')
+        ig = self.getPropSelection(self.filename, eqSelection, 'ig')
+        nsdim = self.getPropSelection(self.filename, eqSelection, 'nsdim')
+        ieos = self.getPropSelection(self.filename, eqSelection, 'ieos')
+        intc = self.getPropSelection(self.filename, eqSelection, 'intc')
+        laxis = self.getPropSelection(self.filename, eqSelection, 'laxis')
+        xbl = self.getPropSelection(self.filename, eqSelection, 'xbl')
+        xbr = self.getPropSelection(self.filename, eqSelection, 'xbr')
 
         # calculate properties
         ransP = Properties(self.filename, plabel, ig, nsdim, ieos, intc, laxis, xbl, xbr)
@@ -127,13 +123,23 @@ class myFrame(wx.Frame):  # define application with initialization routine
         self.ransInfo.AppendText('Total nuclear luminosity (in erg/s): %.2e' % prp['tenuc'])
 
         # instantiate master plot
+        paramFile = self.getParamFile(self.filename)
+        params = ReadParamsRansX(paramFile)
         plt = MasterPlot(params)
 
         # obtain publication quality figures
         plt.SetMatplotlibParams()
 
-        # set wxStudio flag to True to allow GUI work properly
-        wxStudio = True
+        XrangeL = float(self.XrangeL.GetValue())
+        XrangeR = float(self.XrangeR.GetValue())
+
+        YrangeU = float(self.YrangeU.GetValue())
+        YrangeD = float(self.YrangeD.GetValue())
+
+        # set wxStudio parameter flags to allow GUI work properly
+        wxStudio = [True,XrangeL,XrangeR,YrangeU,YrangeD]
+
+        print(self.XrangeL,type(self.XrangeL))
 
         # CONTINUITY EQUATION
         if self.choice2.GetString(self.choice2.GetSelection()) == 'Continuity Equation with Favrian Dilatation':
@@ -163,12 +169,41 @@ class myFrame(wx.Frame):  # define application with initialization routine
         if self.choice2.GetString(self.choice2.GetSelection()) == 'Temperature Equation':
             plt.execTTeq(wxStudio, prp['tke_diss'], prp['xzn0inc'], prp['xzn0outc'])
 
-    def OnChoice3(self, event):
-        print(self.choice3.GetString(self.choice3.GetSelection()))
+    def getPropSelection(self, filename, eqSelection, param):
 
-    def on_test(self, event):  # define event handler for the b_test button
-        print("Button pressed")
-        event.Skip()  # all it for other event handler registered for it
+        paramFile = self.getParamFile(filename)
+        params = ReadParamsRansX(paramFile)
+        if param not in ['eht_data','plabel','prefix','ig','nsdim','ieos','intc','laxis','fext']:
+            eqIndex = self.ransEquations[self.ransEquations == eqSelection].index[0]
+            parameter = params.getForEqs(eqIndex)[param]
+        else:
+            parameter = params.getForProp('prop')[param]
+
+        return parameter
+
+    def getParamFile(self, filename):
+        if "ccptwo" in self.filename:
+            if "2D" in self.filename:
+                if "128" in self.filename:
+                    paramFile = os.path.join('PARAMS/CCPTWO/2D/128', 'param.ransx')
+                if "256" in self.filename:
+                    paramFile = os.path.join('PARAMS/CCPTWO/2D/256', 'param.ransx')
+                if "512" in self.filename:
+                    paramFile = os.path.join('PARAMS/CCPTWO/2D/512', 'param.ransx')
+            if "3D" in self.filename:
+                if "128" in self.filename:
+                    paramFile = os.path.join('PARAMS/CCPTWO/3D/128', 'param.ransx')
+                if "256" in self.filename:
+                    paramFile = os.path.join('PARAMS/CCPTWO/3D/256', 'param.ransx')
+                if "512" in self.filename:
+                    paramFile = os.path.join('PARAMS/CCPTWO/3D/512', 'param.ransx')
+        elif "oburn" in self.filename:
+            if "14" in self.filename:
+                paramFile = os.path.join('PARAMS/OBURN_14elems', 'param.ransx')
+            if "25" in self.filename:
+                paramFile = os.path.join('PARAMS/OBURN_25elems', 'param.ransx')
+
+        return paramFile
 
 
 class myApp(wx.App):  # application class

@@ -51,7 +51,8 @@ def main():
     plt.SetMatplotlibParams()
 
     # set wxStudio flag to False
-    wxStudio = False
+    dummy = ""
+    wxStudio = [False, dummy, dummy, dummy, dummy]
 
     # check/create RESULTS folder
     try:

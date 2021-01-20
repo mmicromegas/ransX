@@ -189,7 +189,7 @@ class BruntVaisalla(Calculus, SetAxisLimit, Tools, Errors, object):
 
 
     def plot_ri(self, LAXIS, bconv, tconv, xbl, xbr, ybu, ybd, ilg):
-        """Plot BruntVaisalla parameter in the model"""
+        """Plot Richardson number in the model"""
 
         # check supported geometries
         if self.ig != 1 and self.ig != 2:
