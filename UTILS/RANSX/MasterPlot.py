@@ -834,7 +834,7 @@ class MasterPlot():
 
         # plot turbulent kinetic energy equation
         if wxStudio[0]:
-            ransTke.plot_momentum_equation_x(wxStudio[0], params.getForProp('prop')['laxis'],
+            ransTke.plot_tke_equation(wxStudio[0], params.getForProp('prop')['laxis'],
                                               wxStudio[1],
                                               wxStudio[2],
                                               wxStudio[3],

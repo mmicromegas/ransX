@@ -566,12 +566,15 @@ class Properties(Calculus, SetAxisLimit, Tools, Errors, object):
 
         ig = self.ig
 
-        return {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss, 'tavg': self.tavg,
+        return {'tauL': tauL, 'kolm_tke_diss_rate': kolm_tke_diss_rate, 'tke_diss': diss,
                 'tke': tke, 'lc': lc, 'uconv': uconv, 'xzn0inc': xzn0inc, 'xzn0outc': xzn0outc,
-                'cnvz_in_hp': cnvz_in_hp,
-                'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax_1': machMax_1, 'machMean_1': machMean_1, 'xzn0': xzn0,
+                'cnvz_in_hp': cnvz_in_hp, 'timec': round(self.timec,1), 'tavg': tavg.item(0),
+                'tfrom': round(self.trange[0], 1), 'tto': round(self.trange[1], 1), 'ld': ld,
+                'tDver': tDver, 'tDhor': tDhor,
+                'tc': tc, 'nx': nx, 'ny': ny, 'nz': nz, 'machMax_1': machMax_1, 'machMean_1': machMean_1,
+                'machMax_2': machMax_2, 'machMean_2': machMean_2,'xzn0': xzn0,
                 'ig': ig, 'dd': dd, 'x0002mean_cnvz': x0002mean_cnvz, 'pturb_o_pgas': pturb_o_pgas, 'TKEsum': TKEsum,
                 'epsD': epsD, 'tD': tD, 'tenuc': tenuc, 'urms': urms, 'resContMax': resContMax,
                 'resContMean': resContMean,
                 'resTeeMax': resTeeMax, 'resTeeMean': resTeeMean, 'xznl': xznl, 'xznr': xznr,
-                'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o}
+                'super_ad_i': super_ad_i, 'super_ad_o': super_ad_o, 'xzn0in' : xzn0in, 'xzn0out': xzn0out}
