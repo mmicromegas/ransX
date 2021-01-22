@@ -1,3 +1,12 @@
+# wxPython RANSx Studio #
+
+# File: wxRANStudio.py
+# Author: Miroslav Mocak
+# Email: miroslav.mocak@gmail.com
+# Date: January/2021
+# Desc: simple GUI to ransX framework
+# Usage: python wxRANStudio.py
+
 import wx
 
 import ast
@@ -23,17 +32,11 @@ class myFrame(wx.Frame):  # define application with initialization routine
         self.panel = wx.Panel(self, wx.ID_ANY)  # panel where our widgets will be placed
 
         pic=wx.StaticBitmap(self.panel, pos=(20,250))
-        pic.SetBitmap(wx.Bitmap("UTILS/ransX.png"))
-
-        # add button, on our panel, with default object id
-        # self.b_test = wx.Button(self.panel, wx.ID_ANY, "Hi",pos=(10, 10))
-
-        # we need to bind it to event handler (clicking on button is the EVT_BUTTON event)
-        # self.Bind(wx.EVT_BUTTON, self.on_test,self.b_test)
+        pic.SetBitmap(wx.Bitmap(os.path.join('UTILS', 'ransx.png')))
 
         self.box = wx.BoxSizer(wx.VERTICAL)
 
-        self.datadir = "DATA/TSERIES/"
+        self.datadir = os.path.join('DATA', 'TSERIES')
         tseries = [filee for filee in sorted(os.listdir(self.datadir)) if "tseries" in filee]
 
         # create simple menu
@@ -83,7 +86,7 @@ class myFrame(wx.Frame):  # define application with initialization routine
         # we need to bind it to event handler (clicking on button is the EVT_BUTTON event)
         self.Bind(wx.EVT_BUTTON, self.onClick, self.b_test)
 
-        filename = self.datadir + self.choice1.GetString(self.choice1.GetSelection())
+        filename = os.path.join(self.datadir,self.choice1.GetString(self.choice1.GetSelection()))
 
         eqSelection = self.choice2.GetString(self.choice2.GetSelection())
         xbl = str('%.2e' % self.getPropSelection(filename, eqSelection, 'xbl'))
@@ -110,7 +113,7 @@ class myFrame(wx.Frame):  # define application with initialization routine
         self.Show()
 
     def OnChoice1(self, event):
-        filename = self.datadir + self.choice1.GetString(self.choice1.GetSelection())
+        filename = os.path.join(self.datadir, self.choice1.GetString(self.choice1.GetSelection()))
         eqSelection = self.choice2.GetString(self.choice2.GetSelection())
         if eqSelection != "":
             self.XrangeL.ChangeValue(str('%.2e' % self.getPropSelection(filename,eqSelection,'xbl')))
@@ -120,7 +123,7 @@ class myFrame(wx.Frame):  # define application with initialization routine
         return
 
     def OnChoice2(self, event):
-        filename = self.datadir + self.choice1.GetString(self.choice1.GetSelection())
+        filename = os.path.join(self.datadir, self.choice1.GetString(self.choice1.GetSelection()))
         eqSelection = self.choice2.GetString(self.choice2.GetSelection())
         xbl = str('%.2e' % self.getPropSelection(filename, eqSelection, 'xbl'))
         xbr = str('%.2e' % self.getPropSelection(filename, eqSelection, 'xbr'))
@@ -142,7 +145,7 @@ class myFrame(wx.Frame):  # define application with initialization routine
 
     def onClick(self, event):
 
-        filename = self.datadir + self.choice1.GetString(self.choice1.GetSelection())
+        filename = os.path.join(self.datadir, self.choice1.GetString(self.choice1.GetSelection()))
         eqSelection = self.choice2.GetString(self.choice2.GetSelection())
         plabel = self.getPropSelection(filename, eqSelection, 'plabel')
         ig = self.getPropSelection(filename, eqSelection, 'ig')
