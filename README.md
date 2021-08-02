@@ -2,7 +2,7 @@
 
 # Overview
 
-ransX framework implements mean field Reynolds-Averaged Navier-Stokes (a.k.a RANS) transport/flux/variance equations for mass, momenta, kinetic/internal/total energies, temperature, enthalpy, pressure and composition densities. For a quick but limited exposure to some of these equations, check out the  [ransX Web Studio](http://ransx.pythonanywhere.com). Theoretical background on RANS analysis can be found here [Compressible Hydrodynamic Mean-Field Equations in Spherical Geometry and their Application to Turbulent Stellar Convection Data](https://ui.adsabs.harvard.edu/abs/2014arXiv1401.5176M/abstract).
+ransX framework implements mean field Reynolds-Averaged Navier-Stokes (a.k.a RANS) transport/flux/variance equations for mass, momenta, kinetic/internal/total energies, temperature, enthalpy, pressure and composition densities. For a quick but limited exposure to some of these equations, check out the  [ransX Web Studio](http://ransx.pythonanywhere.com) (all browsers supported) or [ransX code-comparison-project Web Studio](http://codecomparisonproject.pythonanywhere.com/) (do not use Firefox). Theoretical background on RANS analysis can be found here [Compressible Hydrodynamic Mean-Field Equations in Spherical Geometry and their Application to Turbulent Stellar Convection Data](https://ui.adsabs.harvard.edu/abs/2014arXiv1401.5176M/abstract).
 
 # Prerequisities
 
