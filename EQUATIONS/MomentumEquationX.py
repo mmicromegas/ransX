@@ -190,7 +190,7 @@ class MomentumEquationX(Calculus, SetAxisLimit, Tools, Errors, object):
         # plot DATA 
         plt.title('x momentum equation ' + str(self.nsdim) + "D")
         if self.ig == 1:
-            plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_r ) $")
+            plt.plot(grd1, lhs0, color='c', label=r"$-\partial_t ( \overline{\rho} \widetilde{u}_x ) $")
             plt.plot(grd1, lhs1, color='m', label=r"$-\nabla_x (\overline{\rho} \widetilde{u}_x \widetilde{u}_x ) $")
             plt.plot(grd1, rhs0, color='b', label=r"$-\nabla_x (\widetilde{R}_{xx})$")
             plt.plot(grd1, rhs2, color='r', label=r"$-(\partial_x \overline{P} - \bar{\rho}\tilde{g}_x)$")

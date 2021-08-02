@@ -115,9 +115,6 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
 
         tau_trans = np.abs(dd*fht_xi/self.Div(fxi,xzn0))
         tau_nuc   = np.abs(dd*fht_xi/(ddxidot))
-
-        #print(ddxidot)
-        #sys.exit()
         tau_ddxi =  np.abs(dd*fht_xi/self.minus_dt_dd_fht_xi)
         tau_xi =  np.abs(fht_xi/self.minus_dt_fht_xi)
 
@@ -189,7 +186,6 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
 
         rhs0 = self.minus_div_fxi
         rhs1 = self.plus_ddxidot
-
 
         res = self.minus_resXiTransport
 
@@ -338,6 +334,12 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
+        # save PLOT
+        if self.fext == "png":
+            plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.png')
+        #if self.fext == "eps":
+        #    plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.eps')
+
         #xlim_l = 4.e8
         #xlim_r = 7.e8
         # idxl, idxr = self.idx_bndry(xlim_l, xlim_r)
@@ -347,442 +349,371 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
         #self.tau_trans[idxr:self.nx] = 1.e10
         #ind_inst = np.where(self.tau_nuc < self.tc)[0]  #
 
-        #indL = np.where(self.tau_nuc < self.tc)[0][-1]
-        #ind_inst = np.where((grd1 < self.tconv) & (grd1 > grd1[indL]))
-        #ind_inst = np.where((grd1 < 8.3e8) & (grd1 > grd1[indL]))
-        #ind_inst = ind_inst[0]
+        #for rr in self.xzn0:
+        #    if rr < self.tconv:
+        #        ind_inst = np.where((grd1 < self.tconv) & (grd1 > rr))
+                #ind_inst = np.where((grd1 < 8.3e8) & (grd1 > grd1[indL]))
+        #        ind_inst = ind_inst[0]
 
-        #print(ind_inst)
+                #if len(ind_inst) != 0:
+                #    print(ind_inst)
 
-        #indBurn = np.where(grd1 < grd1[indL])
-        #indBurn = indBurn[0]
+        #        indBurn = np.where(grd1 < rr)
+        #        indBurn = indBurn[0]
 
-        #ibot_t = ind_inst[0]
-        #itop_t = ind_inst[-1]
+                #print(indBurn)
 
-        # region boundaries where nuclear timescale is smaller than convective turnover
-        #t_i = self.xzn0[ibot_t]
-        #t_o = self.xzn0[itop_t]
+        #sys.exit()
 
-        #plt.axvline(t_i, linestyle='--', linewidth=0.7, color='r')
-        #plt.axvline(t_o, linestyle='--', linewidth=0.7, color='r')
-
-
-        if self.tnuc == 1:
-
-            #print("i m here  .................",element)
-            #print(rlabel)
-
-            ddxidict = {}
-            fht_yi_list = []
-            for rl in rlabel:
-                if element in rl:
-                    rc = rcoeffdict[rl]
-                    if rl[0:2] == '1-':
-                        plt.plot(grd1, self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]), label=rl,
-                                 linestyle='--')
-                        #print(rl,self.GET1NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6]))
-                    if rl[0:2] == '2-':
-                        rlsplit = rl.split('-')
-                        #print(rlsplit)
-                        for elem in rlsplit:
-                            if elem in network:
-                                # print('ele in network: ' + elem)
-                                inuc = self.getInuc(network, elem)
-                                # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc])/dd))
-                                fht_yi_list.append(((self.getRAdata(eht, 'ddx' + inuc)[intc] / dd) / float(inuc)))
-                                # ddxi = {ele : self.getRAdata(eht,'ddx'+inuc)[intc])}
-                                # ddxidict.update(ddxi)
-                        if rlsplit[3] == element:
-                            print(rlsplit)
-                            plt.plot(grd1,
-                                     self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[2],
-                                                           fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
-                            #print(rl,self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[2],
-                            #                               fht_yi_list[0], fht_yi_list[1]))
-                        if rlsplit[4] == element:
-                            print(rlsplit)
-                            plt.plot(grd1,
-                                     self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
-                                                           fht_yi_list[0], fht_yi_list[1]), label=rl, linestyle=':')
-                            #print(rl, self.GET2NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
-                            #                               fht_yi_list[0], fht_yi_list[1]))
-                        if rlsplit[1] == element:
-                            print(rlsplit)
-                            plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[2],
-                                                                    fht_yi_list[0],fht_yi_list[1]),label=rl,linestyle=':')
-                        if rlsplit[2] == element:
-                            print(rlsplit)
-                            plt.plot(grd1,self.GET2NUCtimescale(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6],fht_yi_list[2],
-                                                                    fht_yi_list[0],fht_yi_list[1]),label=rl,linestyle=':')
-
-                    if rl[0:2] == '3-':
-                        rlsplit = rl.split('-')
-                        # print(rlsplit)
-                        for elem in rlsplit:
-                            if elem in network:
-                                # print('ele in network: ' + elem)
-                                inuc = self.getInuc(network, elem)
-                                # fht_yi_list.append((self.getRAdata(eht,'ddx'+inuc)[intc]/dd))
-                                fht_yi_list.append(((self.getRAdata(eht, 'ddx' + inuc)[intc] / dd) / float(inuc)))
-                        if rlsplit[4] == element:
-                            plt.plot(grd1,
-                                     self.GET3NUCtimescale(rc[0], rc[1], rc[2], rc[3], rc[4], rc[5], rc[6], fht_yi_list[3],
-                                                           fht_yi_list[4]), label=rl, linestyle=':')
-                            # print(rc[0],rc[1],rc[2],rc[3],rc[4],rc[5],rc[6])
-
-        elif self.tnuc == 0:
-            print("MESSAGE(XtransportVsNuclearTimescalesEquation.py) : Omitting to plot nuclear timescales.")
-        else:
-            print("ERROR(XtransportVsNuclearTimescalesEquation.py):" + self.errorNuclTimescaleMode(self.tnuc))
-            sys.exit()
-
-        # define and show x/y LABELS
-        if self.ig == 1:
-            setxlabel = r"x (cm)"
-            setylabel = r"$\tau (s)$"
-            plt.xlabel(setxlabel)
-            plt.ylabel(setylabel)
-        elif self.ig == 2:
-            setxlabel = r"r (cm)"
-            setylabel = r"$\tau (s)$"
-            plt.xlabel(setxlabel)
-            plt.ylabel(setylabel)
-
-        # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 11})
-
-        # display PLOT
-        plt.show(block=False)
-
-        # save PLOT
-        if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.png')
-        if self.fext == "eps":
-            plt.savefig('RESULTS/' + self.data_prefix + 'xTimescales_' + element + '.eps')
-
-
-        #####################################
-
-        rc = self.getRAdata(eht, 'xzn0')
-        xznl = self.getRAdata(eht, 'xznl')
-        xznr = self.getRAdata(eht, 'xznr')
-
-        tt = self.getRAdata(eht, 'tt')[intc]
-        dd = self.getRAdata(eht, 'dd')[intc]
-
-        # for 25 element network
-        #xhe4 = self.data['x0003']
-        #xc12 = self.data['x0004']
-        #xo16 = self.data['x0005']
-        #xne20 = self.data['x0006']
-        #xsi28 = self.data['x0009']
-
-        # for 14 elements network
-        xhe4 = self.getRAdata(eht, 'x0003')[intc]
-        xc12 = self.getRAdata(eht, 'x0004')[intc]
-        xo16 = self.getRAdata(eht, 'x0005')[intc]
-        xne20 = self.getRAdata(eht, 'x0006')[intc]
-        xsi28 = self.getRAdata(eht, 'x0007')[intc]
-
-        #bconv = 4.2e8
-        #tconv = 9.5e8
-
-        Vol = 4. / 3. * np.pi * (xznr ** 3 - xznl ** 3)
-        ind = ind_inst
-        #ind = np.where((rc > bconv) & (rc < tconv))[0]
-        M = (dd * Vol)[ind].sum()
-
-        if 1==0:
-            Mhe4 = (dd * xhe4 * Vol)[ind].sum()
-            Mc12 = (dd * xc12 * Vol)[ind].sum()
-            Mo16 = (dd * xo16 * Vol)[ind].sum()
-            Mne20 = (dd * xne20 * Vol)[ind].sum()
-            Msi28 = (dd * xsi28 * Vol)[ind].sum()
-
-            xhe4inst = Mhe4/M
-            xc12inst = Mc12/M
-            xo16inst = Mo16/M
-            xne20inst = Mne20/M
-            xsi28inst = Msi28/M
-
-            xhe4mean = xhe4[ind].mean()
-            xc12mean = xc12[ind].mean()
-            xo16mean = xo16[ind].mean()
-            xne20mean = xne20[ind].mean()
-            xsi28mean = xsi28[ind].mean()
-
-            xc12rd = (xc12mean-xc12inst)/xc12inst
-            xo16rd = (xo16mean-xo16inst)/xo16inst
-            xne20rd = (xne20mean-xne20inst)/xne20inst
-            xsi28rd = (xsi28mean-xsi28inst)/xsi28inst
-
-            print('Xc12 mean:' + str(xc12mean) + '  X inst. mass conserved: ' + str(xc12inst) + ' rel.diff. ' + str(np.round(xc12rd,6)))
-            print('Xo16 mean:' + str(xo16mean) + '  X inst. mass conserved: ' + str(xo16inst) + ' rel.diff. ' + str(np.round(xo16rd,6)))
-            print('Xne20 mean:' + str(xne20mean) + '  X inst. mass conserved: ' + str(xne20inst) + ' rel.diff. ' + str(np.round(xne20rd,6)))
-            print('Xsi28 mean:' + str(xsi28mean) + '  X inst. mass conserved: ' + str(xsi28inst) + ' rel.diff. ' + str(np.round(xsi28rd,6)))
-
-            #xhe4 = np.zeros(nx)
-            #xc12 = np.zeros(nx)
-            #xo16 = np.zeros(nx)
-            #xne20 = np.zeros(nx)
-            #xsi28 = np.zeros(nx)
-
-            #xbl = rc[0]
-            #xbr = rc[-1]
-
-            plt.figure(figsize=(7, 6))
-            miny = 1.e-6
-            maxy = 1.e-4
-            plt.axis([xbl, xbr, miny, maxy])
-            plt.semilogy(rc,xc12,color='r',label='3D non-instantaneous')
-            xc12[ind] = xc12inst
-            plt.title(r'X(C12)')
-            plt.semilogy(rc,xc12,color='b',label='instantaneous')
-            plt.legend(loc=2, prop={'size': 18}, ncol=1)
-            plt.ylabel(r"X")
-            plt.xlabel('r (cm)')
-            plt.show(block=False)
-            plt.savefig('RESULTS/xc12.png')
-
-            plt.figure(figsize=(7, 6))
-            miny = 4.e-1
-            maxy = 5.e-1
-            plt.axis([xbl, xbr, miny, maxy])
-            plt.semilogy(rc,xo16,color='r',label='3D non-instantaneous')
-            xo16[ind] = xo16inst
-            plt.title(r'X(O16)')
-            plt.semilogy(rc,xo16,color='b',label='instantaneous')
-            plt.legend(loc=4, prop={'size': 18}, ncol=1)
-            plt.ylabel(r"X")
-            plt.xlabel('r (cm)')
-            plt.show(block=False)
-            plt.savefig('RESULTS/xo16.png')
-
-            plt.figure(figsize=(7, 6))
-            miny = 1.e-6
-            maxy = 1.e-1
-            plt.axis([xbl, xbr, miny, maxy])
-            plt.semilogy(rc,xne20,color='r',label='3D non-instantaneous')
-            xne20[ind] = xne20inst
-            xne20[indBurn] = 0.
-            plt.title(r'X(Ne20)')
-            plt.semilogy(rc,xne20,color='b',label='instantaneous')
-            plt.legend(loc=4, prop={'size': 18}, ncol=1)
-            plt.ylabel(r"X")
-            plt.xlabel('r (cm)')
-            plt.show(block=False)
-            plt.savefig('RESULTS/xne20.png')
-            plt.savefig('RESULTS/xne20.eps')
-
-            plt.figure(figsize=(7, 6))
-            miny = 1.e-1
-            maxy = 8.e-1
-            plt.axis([xbl, xbr, miny, maxy])
-            plt.semilogy(rc,xsi28,color='r',label='3D non-instantaneous')
-            xsi28[ind] = xsi28inst
-            plt.title(r'X(Si28)')
-            plt.semilogy(rc,xsi28,color='b',label='instantaneous')
-            plt.legend(loc=3, prop={'size': 18}, ncol=1)
-            plt.ylabel(r"X")
-            plt.xlabel('r (cm)')
-            plt.show(block=False)
-            plt.savefig('RESULTS/xsi28.png')
-
-
-            #print(xne20)
-            #sys.exit()
-
-            #  enuc = self.data['enuc1']+self.data['enuc2']
-
-
-            #xo16 = self.data['x0003']
-            #xne20 = self.data['x0004']
-            #xc12 = np.zeros(xne20.shape[0])
-            #xsi28 = np.zeros(xne20.shape[0])
-
-        enuc1 = self.getRAdata(eht,'enuc1')[intc]
-        enuc2 = self.getRAdata(eht,'enuc2')[intc]
-
-        #       ne20 > he4 + o16 (photo-d: resonance)
-        t9 = tt / 1.e9
-        # + 4.e-2*self.eht_tt[:,tt]/1.e9
-
-        # rate coefficients from netsu (source cf88)
-
-        cl = self.GETRATEcoeff(reaction='ne20_to_he4_o16_rv')
-        rate_ne20_alpha_gamma = np.exp(
-            cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
-                5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
-
-        #       he4 + ne20 > mg24
-        cl = self.GETRATEcoeff(reaction='he4_plus_ne20_to_mg24_r')
-        rate_ne20_alpha_gamma_code = np.exp(
-            cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
-                5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
-
-        #       o16 + o16 > p + p31 (resonance)
-        #        xo16 = self.fht_xo16[:,tt]
-        cl = self.GETRATEcoeff(reaction='o16_plus_o16_to_p_p31_r')
-        rate_o16_o16_pchannel_r = np.exp(
-            cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
-                5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
-
-        #       o16 + o16 > he4 + si28 (resonance)
-        #        xo16 = self.fht_xo16[:,tt]
-        cl = self.GETRATEcoeff(reaction='o16_plus_o16_to_he4_si28_r')
-        rate_o16_o16_achannel_r = np.exp(
-            cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
-                5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
-
-        #       c12 + c12 > p + na23 (resonance)
-        cl = self.GETRATEcoeff(reaction='c12_plus_c12_to_p_na23_r')
-        rate_c12_c12_pchannel_r = np.exp(
-            cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
-                5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
-
-        #       c12 + c12 > he4 + ne20 (resonance)
-        cl = self.GETRATEcoeff(reaction='c12_plus_c12_to_he4_ne20_r')
-        rate_c12_c12_achannel_r = np.exp(
-            cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
-                5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
-
-        # ANALYTIC EXPRESSIONS Caughlan & Fowler 1988
-
-        t9a = t9 / (1. + 0.0396 * t9)
-        c_tmp1 = (4.27e26) * (t9a ** (5. / 6.))
-        c_tmp2 = t9 ** (3. / 2.)
-        c_e_tmp1 = -84.165 / (t9a ** (1. / 3.))
-        c_e_tmp2 = -(2.12e-3) * (t9 ** 3.)
-
-        rate_c12_c12 = c_tmp1 / c_tmp2 * (np.exp(c_e_tmp1 + c_e_tmp2))
-
-        o_tmp1 = 7.1e36 / (t9 ** (2. / 3.))
-        o_c_tmp1 = -135.93 / (t9 ** (1. / 3.))
-        o_c_tmp2 = -0.629 * (t9 ** (2. / 3.))
-        o_c_tmp3 = -0.445 * (t9 ** (4. / 3.))
-        o_c_tmp4 = +0.0103 * (t9 ** 2.)
-
-        rate_o16_o16 = o_tmp1 * np.exp(o_c_tmp1 + o_c_tmp2 + o_c_tmp3 + o_c_tmp4)
-
-        n_tmp1 = 4.11e11 / (t9 ** (2. / 3.))
-        n_e_tmp1 = -46.766 / (t9 ** (1. / 3.)) - (t9 / 2.219) ** 2.
-        n_tmp2 = 1. + 0.009 * (t9 ** (1. / 3.)) + 0.882 * (t9 ** (2. / 3.)) + 0.055 * t9 + 0.749 * (
-                    t9 ** (4. / 3.)) + 0.119 * (t9 ** (5. / 3.))
-        n_tmp3 = 5.27e3 / (t9 ** (3. / 2.))
-        n_e_tmp3 = -15.869 / t9
-
-        n_tmp4 = 6.51e3 * (t9 ** (1. / 2.))
-        n_e_tmp4 = -16.223 / t9
-
-        rate_alpha_gamma_cf88 = n_tmp1 * np.exp(n_e_tmp1) * n_tmp2 + n_tmp3 * np.exp(n_e_tmp3) + n_tmp4 * np.exp(
-            n_e_tmp4)
-
-        c1_c12 = 4.8e18
-        c1_o16 = 8.e18
-        c1_ne20 = 2.5e29
-        c1_si28 = 1.8e28
-
-        yc12sq = (xc12 / 12.) ** 2.
-        yo16sq = (xo16 / 16.) ** 2.
-        yne20sq = (xne20 / 20.) ** 2.
-
-        yo16 = xo16 / 16.
-
-        lag = (3.e-3) * (t9 ** (10.5))
-        lox = (2.8e-12) * (t9 / 2.) ** 33.
-        lca = (4.e-11) * (t9 ** 29.)
-        lsi = 120. * (t9 / 3.5) ** 5.
-
-        en_c12 = c1_c12 * yc12sq * dd * (rate_c12_c12_achannel_r + rate_c12_c12_pchannel_r)
-        en_c12_acf88 = c1_c12 * yc12sq * dd * (rate_c12_c12)
-        en_o16 = c1_o16 * yo16sq * dd * (rate_o16_o16_achannel_r + rate_o16_o16_pchannel_r)
-        en_o16_acf88 = c1_o16 * yo16sq * dd * (rate_o16_o16)
-        en_ne20 = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * rate_ne20_alpha_gamma_code * np.exp(-54.89 / t9)
-        en_ne20_acf88 = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * rate_ne20_alpha_gamma * np.exp(-54.89 / t9)
-        en_ne20_hw = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * lag * np.exp(-54.89 / t9)
-        #        en_ne20_ini = c1_ne20*(t9**(3./2.))*(yne20sq_ini/yo16)*rate_ne20_alpha_gamma_code*np.exp(-54.89/t9)
-        en_ne20_lag = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * lag * np.exp(-54.89 / t9)
-        en_si28 = c1_si28 * (t9 ** 3. / 2.) * xsi28 * (np.exp(-142.07 / t9)) * rate_ne20_alpha_gamma_code
-        en_si28_acf88 = c1_si28 * (t9 ** 3. / 2.) * xsi28 * (np.exp(-142.07 / t9)) * rate_ne20_alpha_gamma
-
+        miny = 1.e-6
+        maxy = 1.e0
         plt.figure(figsize=(7, 6))
+        plt.title('ne20')
+        plt.axis([xbl, xbr,miny,maxy])
 
-        lb = 1.e-5
-        ub = 1.e18
-
-        #plt.yscale('symlog')
-
-        plt.axis([xbl, xbr, lb, ub])
-
-        plt.title(r'instantaneous')
-        #plt.title(r'3D')
-        plt.semilogy(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
-        plt.semilogy(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
-        plt.semilogy(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
-        plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
-        # plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k',linestyle='--')
-        # plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
-        # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
-        # plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
-
-        en_c12tot = (en_c12 * dd * Vol)[ind].sum()
-        en_o16tot = (en_o16 * dd * Vol)[ind].sum()
-        en_ne20tot = (en_ne20 * dd * Vol)[ind].sum()
-        en_si28tot = (en_si28 * dd * Vol)[ind].sum()
-
-        print('Total Enuc c12 burn:' + str(en_c12tot))
-        print('Total Enuc o16 burn:' + str(en_o16tot))
-        print('Total Enuc ne20 burn:' + str(en_ne20tot))
-        print('Total Enuc si28 burn:' + str(en_si28tot))
+        #plt.figure(figsize=(7, 6))
+        #lb = 1.e-5
+        #ub = 1.e18
+        # plt.yscale('symlog')
+        #plt.axis([xbl, xbr, lb, ub])
 
 
-        # Clayton, Principles of Stellar Evolution and Nucleosynthesis, page 414, eq.5-105
-        f = 1. # screening factor
-        tt8 = tt/1.e8
-        #epsilon3alpha = 4.4e-8*(dd**2.)*(xhe4**3.)*((tt/1.e8)**40.)*f  # this is around 1e8 K
-        epsilon3alpha = 3.9e11*((dd**2.)*(xhe4**3.)/(tt8**3.))*np.exp(-42.94/tt8)
-        #print(epsilon3alpha)
+        ne20totlum = []
+        rtotlum = []
+        ii = 1
+        for rr in self.xzn0:
+            if self.tconv > rr > self.bconv:
+                ii = ii + 1
+                ind_inst = np.where((grd1 < self.tconv) & (grd1 > rr))
+                #ind_inst = np.where((grd1 < 8.3e8) & (grd1 > grd1[indL]))
+                if len(ind_inst[0]) != 0:
+                    ind_inst = ind_inst[0]
 
-        #plt.plot(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
-        #plt.plot(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
-        #plt.plot(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
-        #plt.plot(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
-        #plt.plot(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k')
-        #plt.plot(rc, epsilon3alpha, label=r"$\dot{\epsilon}_{\rm nuc}$ (He$^{4}$)")
+                    #print(ind_inst)
 
-        #print("en_ne20")
-        #print(en_ne20)
-        #print("*****")
-        #print(en_si28)
+                    indBurn = np.where(grd1 < rr)
+                    indBurn = indBurn[0]
 
-        #plt.semilogy(rc,en_c12_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
-        #plt.semilogy(rc,en_o16_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
-        #plt.semilogy(rc,en_ne20_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
-        #plt.semilogy(rc,en_si28_acf88,label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
-        #        plt.semilogy(rc,en_c12_acf88+en_o16_acf88+en_ne20_acf88+en_si28_acf88,label='total',color='k')
+                    #####################################
 
-        #plt.semilogy(rc,enuc1,color='m',linestyle='--',label='enuc1')
-        # plt.semilogy(rc,enuc2,color='r',linestyle='--',label='-neut code')
-        #plt.semilogy(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
-        #print(enuc1)
+                    rc = self.getRAdata(eht, 'xzn0')
+                    xznl = self.getRAdata(eht, 'xznl')
+                    xznr = self.getRAdata(eht, 'xznr')
 
-        # convective boundary markers
-        #plt.axvline(bconv, linestyle='--', linewidth=0.7, color='k')
-        #plt.axvline(tconv, linestyle='--', linewidth=0.7, color='k')
+                    tt = self.getRAdata(eht, 'tt')[intc]
+                    dd = self.getRAdata(eht, 'dd')[intc]
 
-        plt.legend(loc=1, prop={'size': 14}, ncol=1)
+                    # for 25 element network
+                    #xhe4 = self.data['x0003']
+                    #xc12 = self.data['x0004']
+                    #xo16 = self.data['x0005']
+                    #xne20 = self.data['x0006']
+                    #xsi28 = self.data['x0009']
 
-        plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
-        #plt.xlabel('r ($10^8$ cm)')
+                    # for 14 elements network
+                    xhe4 = self.getRAdata(eht, 'x0003')[intc]
+                    xc12 = self.getRAdata(eht, 'x0004')[intc]
+                    xo16 = self.getRAdata(eht, 'x0005')[intc]
+                    xne20 = self.getRAdata(eht, 'x0006')[intc]
+                    xsi28 = self.getRAdata(eht, 'x0007')[intc]
+
+                    #bconv = 4.2e8
+                    #tconv = 9.5e8
+
+                    Vol = 4. / 3. * np.pi * (xznr ** 3 - xznl ** 3)
+                    ind = ind_inst
+                    #ind = np.where((rc > bconv) & (rc < tconv))[0]
+                    M = (dd * Vol)[ind].sum()
+
+                    print(ind)
+
+                    if 1==1:
+                        Mhe4 = (dd * xhe4 * Vol)[ind].sum()
+                        Mc12 = (dd * xc12 * Vol)[ind].sum()
+                        Mo16 = (dd * xo16 * Vol)[ind].sum()
+                        Mne20 = (dd * xne20 * Vol)[ind].sum()
+                        Msi28 = (dd * xsi28 * Vol)[ind].sum()
+
+                        xhe4inst = Mhe4/M
+                        xc12inst = Mc12/M
+                        xo16inst = Mo16/M
+                        xne20inst = Mne20/M
+                        xsi28inst = Msi28/M
+
+                        xhe4mean = xhe4[ind].mean()
+                        xc12mean = xc12[ind].mean()
+                        xo16mean = xo16[ind].mean()
+                        xne20mean = xne20[ind].mean()
+                        xsi28mean = xsi28[ind].mean()
+
+                        xc12rd = (xc12mean-xc12inst)/xc12inst
+                        xo16rd = (xo16mean-xo16inst)/xo16inst
+                        xne20rd = (xne20mean-xne20inst)/xne20inst
+                        xsi28rd = (xsi28mean-xsi28inst)/xsi28inst
+
+                        #print('Xc12 mean:' + str(xc12mean) + '  X inst. mass conserved: ' + str(xc12inst) + ' rel.diff. ' + str(np.round(xc12rd,6)))
+                        #print('Xo16 mean:' + str(xo16mean) + '  X inst. mass conserved: ' + str(xo16inst) + ' rel.diff. ' + str(np.round(xo16rd,6)))
+                        #print('Xne20 mean:' + str(xne20mean) + '  X inst. mass conserved: ' + str(xne20inst) + ' rel.diff. ' + str(np.round(xne20rd,6)))
+                        #print('Xsi28 mean:' + str(xsi28mean) + '  X inst. mass conserved: ' + str(xsi28inst) + ' rel.diff. ' + str(np.round(xsi28rd,6)))
+
+                        #xhe4 = np.zeros(nx)
+                        #xc12 = np.zeros(nx)
+                        #xo16 = np.zeros(nx)
+                        #xne20 = np.zeros(nx)
+                        #xsi28 = np.zeros(nx)
+
+                        #xbl = rc[0]
+                        #xbr = rc[-1]
+
+                        #plt.figure(figsize=(7, 6))
+                        #miny = 1.e-6
+                        #maxy = 1.e-4
+                        #plt.axis([xbl, xbr, miny, maxy])
+                        #plt.semilogy(rc,xc12,color='r',label='3D non-instantaneous')
+                        xc12[ind] = xc12inst
+                        #plt.title(r'X(C12)')
+                        #plt.semilogy(rc,xc12,color='b',label='instantaneous')
+                        #plt.legend(loc=2, prop={'size': 18}, ncol=1)
+                        #plt.ylabel(r"X")
+                        #plt.xlabel('r (cm)')
+                        #plt.show(block=False)
+                        #plt.savefig('RESULTS/xc12.png')
+
+                        #plt.figure(figsize=(7, 6))
+                        #miny = 4.e-1
+                        #maxy = 5.e-1
+                        #plt.axis([xbl, xbr, miny, maxy])
+                        #plt.semilogy(rc,xo16,color='r',label='3D non-instantaneous')
+                        xo16[ind] = xo16inst
+                        #plt.title(r'X(O16)')
+                        #plt.semilogy(rc,xo16,color='b',label='instantaneous')
+                        #plt.legend(loc=4, prop={'size': 18}, ncol=1)
+                        #plt.ylabel(r"X")
+                        #plt.xlabel('r (cm)')
+                        #plt.show(block=False)
+                        #plt.savefig('RESULTS/xo16.png')
+
+                        #plt.figure(figsize=(7, 6))
+                        #miny = 1.e-6
+                        #maxy = 1.e-1
+                        #plt.axis([xbl, xbr, miny, maxy])
+
+                        #######################################
+                        plt.semilogy(rc, xne20, color='r')
+                        xne20[ind] = xne20inst
+                        xne20[indBurn] = 0.
+                        if (ii % 8) == 0:
+                        #    xne20[ind] = xne20inst
+                        #    xne20[indBurn] = 0.
+                            plt.semilogy(rc,xne20)
+                        #######################################
+
+                        #plt.show(block=False)
+                        #plt.savefig('RESULTS/xne20.png')
+                        #plt.savefig('RESULTS/xne20.eps')
+
+                        #plt.figure(figsize=(7, 6))
+                        #miny = 1.e-1
+                        #maxy = 8.e-1
+                        #plt.axis([xbl, xbr, miny, maxy])
+                        #plt.semilogy(rc,xsi28,color='r',label='3D non-instantaneous')
+                        xsi28[ind] = xsi28inst
+                        #plt.title(r'X(Si28)')
+                        #plt.semilogy(rc,xsi28,color='b',label='instantaneous')
+                        #plt.legend(loc=3, prop={'size': 18}, ncol=1)
+                        #plt.ylabel(r"X")
+                        #plt.xlabel('r (cm)')
+                        #plt.show(block=False)
+                        #plt.savefig('RESULTS/xsi28.png')
+
+
+                        #print(xne20)
+                        #sys.exit()
+
+                        #  enuc = self.data['enuc1']+self.data['enuc2']
+
+
+                        #xo16 = self.data['x0003']
+                        #xne20 = self.data['x0004']
+                        #xc12 = np.zeros(xne20.shape[0])
+                        #xsi28 = np.zeros(xne20.shape[0])
+
+                    enuc1 = self.getRAdata(eht,'enuc1')[intc]
+                    enuc2 = self.getRAdata(eht,'enuc2')[intc]
+
+                    #       ne20 > he4 + o16 (photo-d: resonance)
+                    t9 = tt / 1.e9
+                    # + 4.e-2*self.eht_tt[:,tt]/1.e9
+
+                    # rate coefficients from netsu (source cf88)
+
+                    cl = self.GETRATEcoeff(reaction='ne20_to_he4_o16_rv')
+                    rate_ne20_alpha_gamma = np.exp(
+                        cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
+                            5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
+
+                    #       he4 + ne20 > mg24
+                    cl = self.GETRATEcoeff(reaction='he4_plus_ne20_to_mg24_r')
+                    rate_ne20_alpha_gamma_code = np.exp(
+                        cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
+                            5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
+
+                    #       o16 + o16 > p + p31 (resonance)
+                    #        xo16 = self.fht_xo16[:,tt]
+                    cl = self.GETRATEcoeff(reaction='o16_plus_o16_to_p_p31_r')
+                    rate_o16_o16_pchannel_r = np.exp(
+                        cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
+                            5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
+
+                    #       o16 + o16 > he4 + si28 (resonance)
+                    #        xo16 = self.fht_xo16[:,tt]
+                    cl = self.GETRATEcoeff(reaction='o16_plus_o16_to_he4_si28_r')
+                    rate_o16_o16_achannel_r = np.exp(
+                        cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
+                            5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
+
+                    #       c12 + c12 > p + na23 (resonance)
+                    cl = self.GETRATEcoeff(reaction='c12_plus_c12_to_p_na23_r')
+                    rate_c12_c12_pchannel_r = np.exp(
+                        cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
+                            5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
+
+                    #       c12 + c12 > he4 + ne20 (resonance)
+                    cl = self.GETRATEcoeff(reaction='c12_plus_c12_to_he4_ne20_r')
+                    rate_c12_c12_achannel_r = np.exp(
+                        cl[0] + cl[1] * (t9 ** (-1.)) + cl[2] * (t9 ** (-1. / 3.)) + cl[3] * (t9 ** (1. / 3.)) + cl[4] * t9 + cl[
+                            5] * (t9 ** (5. / 3.)) + cl[6] * np.log(t9))
+
+                    # ANALYTIC EXPRESSIONS Caughlan & Fowler 1988
+
+                    t9a = t9 / (1. + 0.0396 * t9)
+                    c_tmp1 = (4.27e26) * (t9a ** (5. / 6.))
+                    c_tmp2 = t9 ** (3. / 2.)
+                    c_e_tmp1 = -84.165 / (t9a ** (1. / 3.))
+                    c_e_tmp2 = -(2.12e-3) * (t9 ** 3.)
+
+                    rate_c12_c12 = c_tmp1 / c_tmp2 * (np.exp(c_e_tmp1 + c_e_tmp2))
+
+                    o_tmp1 = 7.1e36 / (t9 ** (2. / 3.))
+                    o_c_tmp1 = -135.93 / (t9 ** (1. / 3.))
+                    o_c_tmp2 = -0.629 * (t9 ** (2. / 3.))
+                    o_c_tmp3 = -0.445 * (t9 ** (4. / 3.))
+                    o_c_tmp4 = +0.0103 * (t9 ** 2.)
+
+                    rate_o16_o16 = o_tmp1 * np.exp(o_c_tmp1 + o_c_tmp2 + o_c_tmp3 + o_c_tmp4)
+
+                    n_tmp1 = 4.11e11 / (t9 ** (2. / 3.))
+                    n_e_tmp1 = -46.766 / (t9 ** (1. / 3.)) - (t9 / 2.219) ** 2.
+                    n_tmp2 = 1. + 0.009 * (t9 ** (1. / 3.)) + 0.882 * (t9 ** (2. / 3.)) + 0.055 * t9 + 0.749 * (
+                                t9 ** (4. / 3.)) + 0.119 * (t9 ** (5. / 3.))
+                    n_tmp3 = 5.27e3 / (t9 ** (3. / 2.))
+                    n_e_tmp3 = -15.869 / t9
+
+                    n_tmp4 = 6.51e3 * (t9 ** (1. / 2.))
+                    n_e_tmp4 = -16.223 / t9
+
+                    rate_alpha_gamma_cf88 = n_tmp1 * np.exp(n_e_tmp1) * n_tmp2 + n_tmp3 * np.exp(n_e_tmp3) + n_tmp4 * np.exp(
+                        n_e_tmp4)
+
+                    c1_c12 = 4.8e18
+                    c1_o16 = 8.e18
+                    c1_ne20 = 2.5e29
+                    c1_si28 = 1.8e28
+
+                    yc12sq = (xc12 / 12.) ** 2.
+                    yo16sq = (xo16 / 16.) ** 2.
+                    yne20sq = (xne20 / 20.) ** 2.
+
+                    yo16 = xo16 / 16.
+
+                    lag = (3.e-3) * (t9 ** (10.5))
+                    lox = (2.8e-12) * (t9 / 2.) ** 33.
+                    lca = (4.e-11) * (t9 ** 29.)
+                    lsi = 120. * (t9 / 3.5) ** 5.
+
+                    en_c12 = c1_c12 * yc12sq * dd * (rate_c12_c12_achannel_r + rate_c12_c12_pchannel_r)
+                    en_c12_acf88 = c1_c12 * yc12sq * dd * (rate_c12_c12)
+                    en_o16 = c1_o16 * yo16sq * dd * (rate_o16_o16_achannel_r + rate_o16_o16_pchannel_r)
+                    en_o16_acf88 = c1_o16 * yo16sq * dd * (rate_o16_o16)
+                    en_ne20 = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * rate_ne20_alpha_gamma_code * np.exp(-54.89 / t9)
+                    en_ne20_acf88 = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * rate_ne20_alpha_gamma * np.exp(-54.89 / t9)
+                    en_ne20_hw = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * lag * np.exp(-54.89 / t9)
+                    #        en_ne20_ini = c1_ne20*(t9**(3./2.))*(yne20sq_ini/yo16)*rate_ne20_alpha_gamma_code*np.exp(-54.89/t9)
+                    en_ne20_lag = c1_ne20 * (t9 ** (3. / 2.)) * (yne20sq / yo16) * lag * np.exp(-54.89 / t9)
+                    en_si28 = c1_si28 * (t9 ** 3. / 2.) * xsi28 * (np.exp(-142.07 / t9)) * rate_ne20_alpha_gamma_code
+                    en_si28_acf88 = c1_si28 * (t9 ** 3. / 2.) * xsi28 * (np.exp(-142.07 / t9)) * rate_ne20_alpha_gamma
+
+                    #plt.figure(figsize=(7, 6))
+
+                    #lb = 1.e-5
+                    #ub = 1.e18
+
+                    #plt.yscale('symlog')
+
+                    #plt.axis([xbl, xbr, lb, ub])
+
+                    #plt.title(r'instantaneous')
+                    #plt.title(r'3D')
+                    #plt.semilogy(rc, en_c12, label=r"$\dot{\epsilon}_{\rm nuc}$ (C$^{12}$)")
+                    #plt.semilogy(rc, en_o16, label=r"$\dot{\epsilon}_{\rm nuc}$ (O$^{16}$)")
+                    #if (ii % 8) == 0:
+                    #    plt.semilogy(rc, en_ne20)
+                    #plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
+                    # plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k',linestyle='--')
+                    # plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
+                    # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
+                    # plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
+
+                    en_c12tot = (en_c12 * dd * Vol)[ind].sum()
+                    en_o16tot = (en_o16 * dd * Vol)[ind].sum()
+                    en_ne20tot = (en_ne20 * dd * Vol)[ind].sum()
+                    en_si28tot = (en_si28 * dd * Vol)[ind].sum()
+
+                    #print('Total Enuc c12 burn:' + str(en_c12tot))
+                    #print('Total Enuc o16 burn:' + str(en_o16tot))
+                    print('Total Enuc ne20 burn:' + str(en_ne20tot))
+                    #print('Total Enuc si28 burn:' + str(en_si28tot))
+
+                    rtotlum.append(rr)
+                    ne20totlum.append(en_ne20tot)
+
+        plt.semilogy(rc, xne20, color='b')
+        plt.legend(loc=2, prop={'size': 18}, ncol=1)
+        plt.ylabel(r"X")
         plt.xlabel('r (cm)')
+
+
+        #plt.legend(loc=1, prop={'size': 14}, ncol=1)
+        #plt.ylabel(r"$\dot{\epsilon}_{\rm nuc}$ (erg g$^{-1}$ s$^{-1}$)")
+        #plt.xlabel('r ($10^8$ cm)')
+        #plt.xlabel('r (cm)')
 
         #axvline(x=5.65, color='k', linewidth=1)
         plt.show(block=False)
         #        text(9.,1.e6,r"ob",fontsize=42,color='k')
 
-        plt.savefig('RESULTS/oburn14_nuclear_energy_gen_inst.png')
-        plt.savefig('RESULTS/oburn14_nuclear_energy_gen_inst.eps')
+        plt.savefig('RESULTS/oburn14_X_inst.png')
+
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+        plt.axis([xbl, xbr,1.e40,1.e49])
+        plt.semilogy(rtotlum,ne20totlum,color='b',label='ne20')
+
+        plt.axhline(y=9.4e42, color='r', linestyle='dotted',label='ne20 (3D value)')
+
+        setxlabel = r"depth of ne20 mixing (cm)"
+        setylabel = r"total luminosity (ergs/s)"
+        plt.xlabel(setxlabel)
+        plt.ylabel(setylabel)
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 16})
+
+        plt.show(block=False)
+
+        plt.savefig('RESULTS/oburn14_totlum_vs_depthofne20mix.png')
+        #plt.savefig('RESULTS/oburn14_nuclear_energy_gen_inst.eps')
 
 
 

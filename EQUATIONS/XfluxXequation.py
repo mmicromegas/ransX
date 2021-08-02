@@ -7,7 +7,8 @@ from UTILS.Tools import Tools
 from UTILS.Errors import Errors
 import os
 from scipy import integrate
-
+import pandas as pd
+import seaborn as sb
 
 # Theoretical background https://arxiv.org/abs/1401.5176
 
@@ -333,6 +334,8 @@ class XfluxXequation(Calculus, SetAxisLimit, Tools, Errors, object):
         self.fxxi = fxxi
         self.fext = fext
         self.nsdim = nsdim
+        self.eht = eht
+        self.intc = intc
 
     def plot_XfluxX(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot Xflux stratification in the model"""
@@ -1004,3 +1007,80 @@ class XfluxXequation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # save PLOT
         plt.savefig('RESULTS/' + self.data_prefix + 'mean_alphaX_' + element + '.png')
+
+
+    def plot_fluxCorr(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
+        """Plot correlations in the model"""
+
+        eht = self.eht
+        intc = self.intc
+
+        # load x GRID
+        grd1 = self.xzn0
+
+        ux = self.getRAdata(eht, 'ux')[intc]
+        xfluid1 = self.getRAdata(eht, 'x0001')[intc]
+        xfluid1ux = self.getRAdata(eht, 'x0001ux')[intc]
+
+        ux = self.getRAdata(eht, 'ux')[intc]
+        xfluid2 = self.getRAdata(eht, 'x0002')[intc]
+        xfluid2ux = self.getRAdata(eht, 'x0002ux')[intc]
+
+        tt = self.getRAdata(eht, 'tt')[intc]
+        ttux = self.getRAdata(eht, 'ttux')[intc]
+
+        ei = self.getRAdata(eht, 'ei')[intc]
+        eiux = self.getRAdata(eht, 'eiux')[intc]
+
+        ek = self.getRAdata(eht, 'ek')[intc]
+        ekux = self.getRAdata(eht, 'ekux')[intc]
+
+        dd = self.getRAdata(eht, 'dd')[intc]
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+
+        xflux0001 = (xfluid1ux - xfluid1*ux)
+        xflux0002 = xfluid2ux - xfluid2*ux
+        ttflux = ttux - tt*ux
+        eiflux = eiux - ei*ux
+        ekflux = ekux - ek*ux
+        ddflux = ddux - dd*ux
+
+        xflux0001sc = xflux0001/np.max(np.abs(xflux0001))
+        xflux0002sc = xflux0002/np.max(np.abs(xflux0002))
+        ttfluxsc = ttflux/np.max(np.abs(ttflux))
+        eifluxsc = eiflux/np.max(np.abs(eiflux))
+        ekfluxsc = ekflux/np.max(np.abs(ekflux))
+        ddfluxsc = ddflux / np.max(np.abs(ddflux))
+
+        df = pd.DataFrame()
+        df['xflux0001sc'] = xflux0001sc.tolist()
+        df['xflux0002sc'] = xflux0002sc.tolist()
+        df['ttfluxsc'] = ttfluxsc.tolist()
+        df['eifluxsc'] = eifluxsc.tolist()
+        df['ekfluxsc'] = ekfluxsc.tolist()
+        df['ddfluxsc'] = ddfluxsc.tolist()
+
+        print(df.head())
+
+        sb.pairplot(df)
+        # plt.show(block=False)
+
+        print(df.corr())
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        plt.plot(grd1, xflux0001sc, color='k', label=r"$+flux1$")
+        plt.plot(grd1, xflux0002sc, color='r', label=r"$+flux2$")
+        plt.plot(grd1, ttfluxsc, color='b', label=r"$+Tflux$")
+        plt.plot(grd1, eifluxsc, color='m', label=r"$+Eiflux$")
+        plt.plot(grd1, ekfluxsc, color='g', label=r"$+Ekflux$")
+        plt.plot(grd1, ddfluxsc, color='cyan', label=r"$+ddflux$")
+
+        # show LEGEND
+        plt.legend(loc=0, prop={'size': 10})
+
+        plt.show(block=False)
+
+        # save PLOT
+        plt.savefig('RESULTS/' + self.data_prefix + 'pairplot.png')

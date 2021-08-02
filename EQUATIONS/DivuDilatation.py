@@ -304,6 +304,10 @@ class DivuDilatation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         self.t_timec = t_timec
 
+        self.divux = divux
+        self.divuy = divuy
+        self.divuz = divuz
+
     def plot_divu(self, LAXIS, xbl, xbr, ybu, ybd, ilg):
         """Plot divu in the model"""
 
@@ -352,6 +356,59 @@ class DivuDilatation(Calculus, SetAxisLimit, Tools, Errors, object):
         # define and show x/y LABELS
         if self.ig == 1:
             setxlabel = r'x (cm)'
+            setylabel = r"s$^{-1}$"
+            plt.ylabel(setylabel)
+            plt.xlabel(setxlabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"s$^{-1}$"
+            plt.ylabel(setylabel)
+            plt.xlabel(setxlabel)
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 14})
+
+        # display PLOT
+        plt.show(block=False)
+
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        rfac = 4.e8
+        tfac = 0.7920256
+        yf = 1./tfac
+
+        # set plot boundaries
+        to_plot = [plt1/yf, plt2/yf, plt6/yf]
+        self.set_plt_axis(LAXIS, xbl/rfac, xbr/rfac, ybu/yf, ybd/yf, [yval / yf for yval in to_plot])
+
+        # plot DATA
+        if self.ig == 1:
+            plt.title('divu (cartesian) ccp units')
+            #plt.plot(grd1, plt2, color='g', label=r"$divu2$")
+            plt.plot(grd1/rfac, plt1/yf, marker='o', color='r',markersize=6,markevery=20, label=r"+$\overline{\nabla \cdot {\bf u}}$")
+            plt.plot(grd1/rfac, plt4/yf, color='b', label=r"+$\nabla_x \overline{u}_x$")
+            plt.plot(grd1/rfac, plt3/yf, color='g', label=r"+$\nabla_x \widetilde{u}_x$")
+            # plt.plot(grd1, plt5, color='m', linestyle='dotted',label=r"+$\overline{\rho \nabla \cdot {\bf u}}/\overline{\rho}$")
+            plt.plot(grd1/rfac, plt6/yf, color='c', label=r"+$\nabla_x \overline{u''}_x$")
+        elif self.ig == 2:
+            plt.title('divu (spherical)')
+            plt.plot(grd1, plt1, color='r', label=r"$divu1$")
+            plt.plot(grd1, plt2, color='g', label=r"$divu2$")
+
+        plt.axhline(y=0., linestyle='--',color='k')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
             setylabel = r"cm s$^{-2}$"
             plt.ylabel(setylabel)
             plt.xlabel(setxlabel)
@@ -370,6 +427,61 @@ class DivuDilatation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # display PLOT
         plt.show(block=False)
+
+        # create FIGURE
+        plt.figure(figsize=(7, 6))
+
+        # format AXIS, make sure it is exponential
+        plt.gca().yaxis.get_major_formatter().set_powerlimits((0, 0))
+
+        #plt1 = self.divux
+        plt2 = self.divuy
+        plt3 = self.divuz
+
+        print(plt2)
+        print(plt3)
+
+        rfac = 4.e8
+        tfac = 0.7920256
+        yf = 1./tfac
+
+        # set plot boundaries
+        to_plot = [plt2/yf, plt3/yf]
+        self.set_plt_axis(LAXIS, xbl/rfac, xbr/rfac, ybu/yf, ybd/yf, [yval / yf for yval in to_plot])
+
+        # plot DATA
+        if self.ig == 1:
+            plt.title('divu (cartesian) ccp units')
+            #plt.plot(grd1, plt2, color='g', label=r"$divu2$")
+            #plt.plot(grd1/rfac, plt1/yf, marker='o', color='r',markersize=6,markevery=20, label=r"+divux")
+            plt.plot(grd1/rfac, plt2/yf, color='b', label=r"+divuy")
+            plt.plot(grd1/rfac, plt3/yf, color='g', label=r"+divuz")
+
+
+        plt.axhline(y=0., linestyle='--',color='k')
+
+        # define and show x/y LABELS
+        if self.ig == 1:
+            setxlabel = r'x (cm)'
+            setylabel = r"cm s$^{-2}$"
+            plt.ylabel(setylabel)
+            plt.xlabel(setxlabel)
+        elif self.ig == 2:
+            setxlabel = r'r (cm)'
+            setylabel = r"cm s$^{-2}$"
+            plt.ylabel(setylabel)
+            plt.xlabel(setxlabel)
+
+        # convective boundary markers
+        plt.axvline(self.bconv, linestyle='-', linewidth=0.7, color='k')
+        plt.axvline(self.tconv, linestyle='-', linewidth=0.7, color='k')
+
+        # show LEGEND
+        plt.legend(loc=ilg, prop={'size': 14})
+
+        # display PLOT
+        plt.show(block=False)
+
 
         # check supported file output extension
         if self.fext != "png" and self.fext != "eps":

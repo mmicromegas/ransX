@@ -568,35 +568,42 @@ class MasterPlot():
                                          params.getForProp('prop')['nsdim'],
                                          params.getForProp('prop')['prefix'])
 
-        # ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
-        #                      params.getForEqs(x)['xbl'],
-        #                      params.getForEqs(x)['xbr'],
-        #                      params.getForEqs(x)['ybu'],
-        #                      params.getForEqs(x)['ybd'],
-        #                      params.getForEqs(x)['ilg'])
-
-        ransXflxx.plot_alphaX(params.getForProp('prop')['laxis'],
+        ransXflxx.plot_XfluxX(params.getForProp('prop')['laxis'],
                               params.getForEqs(x)['xbl'],
                               params.getForEqs(x)['xbr'],
                               params.getForEqs(x)['ybu'],
                               params.getForEqs(x)['ybd'],
                               params.getForEqs(x)['ilg'])
 
-        # ransXflxx.plot_XfluxxX(params.getForProp('prop')['laxis'],
+        ransXflxx.plot_fluxCorr(params.getForProp('prop')['laxis'],
+                              params.getForEqs(x)['xbl'],
+                              params.getForEqs(x)['xbr'],
+                              params.getForEqs(x)['ybu'],
+                              params.getForEqs(x)['ybd'],
+                              params.getForEqs(x)['ilg'])
+
+        #ransXflxx.plot_alphaX(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
         #                      params.getForEqs(x)['xbr'],
         #                      params.getForEqs(x)['ybu'],
         #                      params.getForEqs(x)['ybd'],
         #                      params.getForEqs(x)['ilg'])
 
-        # ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
+        #ransXflxx.plot_XfluxxX(params.getForProp('prop')['laxis'],
+        #                      params.getForEqs(x)['xbl'],
+        #                      params.getForEqs(x)['xbr'],
+        #                      params.getForEqs(x)['ybu'],
+        #                      params.getForEqs(x)['ybd'],
+        #                      params.getForEqs(x)['ilg'])
+
+        #ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
         #                                params.getForEqs(x)['xbl'],
         #                                params.getForEqs(x)['xbr'],
         #                                params.getForEqs(x)['ybu'],
         #                                params.getForEqs(x)['ybd'],
         #                                params.getForEqs(x)['ilg'])
 
-        # ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
+        #ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
         #                              params.getForEqs(x)['xbl'],
         #                              params.getForEqs(x)['xbr'],
         #                              params.getForEqs(x)['ybu'],
@@ -807,12 +814,12 @@ class MasterPlot():
                          params.getForEqs('tkie')['ybd'],
                          params.getForEqs('tkie')['ilg'])
 
-        #ransTke.plot_TKE_space_time(params.getForProp('prop')['laxis'],
-        #                            params.getForEqs('tkeeq')['xbl'],
-        #                            params.getForEqs('tkeeq')['xbr'],
-        #                            params.getForEqs('tkeeq')['ybu'],
-        #                            params.getForEqs('tkeeq')['ybd'],
-        #                            params.getForEqs('tkeeq')['ilg'])
+        ransTke.plot_TKE_space_time(params.getForProp('prop')['laxis'],
+                                    params.getForEqs('tkeeq')['xbl'],
+                                    params.getForEqs('tkeeq')['xbr'],
+                                    params.getForEqs('tkeeq')['ybu'],
+                                    params.getForEqs('tkeeq')['ybd'],
+                                    params.getForEqs('tkeeq')['ilg'])
 
         # plot turbulent kinetic energy evolution	   
         # ransTke.plot_tke_evolution()
@@ -847,7 +854,6 @@ class MasterPlot():
                                       params.getForEqs('tkeeq')['ybu'],
                                       params.getForEqs('tkeeq')['ybd'],
                                       params.getForEqs('tkeeq')['ilg'])
-
 
     def execTkeEqBar(self, kolmdissrate, bconv, tconv, super_ad_i, super_ad_o):
         params = self.params

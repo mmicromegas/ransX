@@ -795,8 +795,8 @@ class PROMPI_single(PROMPI_ransdat, Calculus, object):
         plt.semilogy(rc, en_ne20, label=r"$\dot{\epsilon}_{\rm nuc}$ (Ne$^{20}$)")
         plt.semilogy(rc, en_si28, label=r"$\dot{\epsilon}_{\rm nuc}$ (Si$^{28}$)")
         # plt.semilogy(rc, en_c12 + en_o16 + en_ne20 + en_si28,label='total', color='k',linestyle='--')
-        # plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
-        # plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
+        plt.plot(rc,enuc1,color='m',linestyle='--',label='enuc1')
+        #plt.plot(rc,enuc2,color='r',linestyle='--',label='-neut code')
         # plt.plot(rc,enuc1-enuc2,color='b',linestyle='--',label='enuc1-enuc2')
 
         en_c12tot = (en_c12 * dd * Vol)[ind].sum()

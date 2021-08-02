@@ -217,7 +217,7 @@ class VelocitiesMLTturb(Calculus, SetAxisLimit, Tools, Errors, object):
         # display PLOT
         plt.show(block=False)
 
-        # save PLOT
+        # save PLOT ....
         if self.fext == "png":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_velocities_turb.png')
         if self.fext == "eps":
