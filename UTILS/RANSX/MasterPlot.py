@@ -575,12 +575,12 @@ class MasterPlot():
                               params.getForEqs(x)['ybd'],
                               params.getForEqs(x)['ilg'])
 
-        ransXflxx.plot_fluxCorr(params.getForProp('prop')['laxis'],
-                              params.getForEqs(x)['xbl'],
-                              params.getForEqs(x)['xbr'],
-                              params.getForEqs(x)['ybu'],
-                              params.getForEqs(x)['ybd'],
-                              params.getForEqs(x)['ilg'])
+        #ransXflxx.plot_fluxCorr(params.getForProp('prop')['laxis'],
+        #                      params.getForEqs(x)['xbl'],
+        #                      params.getForEqs(x)['xbr'],
+        #                      params.getForEqs(x)['ybu'],
+        #                      params.getForEqs(x)['ybd'],
+        #                      params.getForEqs(x)['ilg'])
 
         #ransXflxx.plot_alphaX(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
@@ -596,12 +596,12 @@ class MasterPlot():
         #                      params.getForEqs(x)['ybd'],
         #                      params.getForEqs(x)['ilg'])
 
-        #ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
-        #                                params.getForEqs(x)['xbl'],
-        #                                params.getForEqs(x)['xbr'],
-        #                                params.getForEqs(x)['ybu'],
-        #                                params.getForEqs(x)['ybd'],
-        #                                params.getForEqs(x)['ilg'])
+        ransXflxx.plot_XfluxXRogers1989(params.getForProp('prop')['laxis'],
+                                        params.getForEqs(x)['xbl'],
+                                        params.getForEqs(x)['xbr'],
+                                        params.getForEqs(x)['ybu'],
+                                        params.getForEqs(x)['ybd'],
+                                        params.getForEqs(x)['ilg'])
 
         #ransXflxx.plot_Xflux_gradient(params.getForProp('prop')['laxis'],
         #                              params.getForEqs(x)['xbl'],
@@ -610,7 +610,7 @@ class MasterPlot():
         #                              params.getForEqs(x)['ybd'],
         #                              params.getForEqs(x)['ilg'])
 
-        # ransXflxx.plot_XfluxX2(params.getForProp('prop')['laxis'],
+        #ransXflxx.plot_XfluxX2(params.getForProp('prop')['laxis'],
         #                      params.getForEqs(x)['xbl'],
         #                      params.getForEqs(x)['xbr'],
         #                      params.getForEqs(x)['ybu'],

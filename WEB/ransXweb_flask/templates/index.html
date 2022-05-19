@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>ransX</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/ransX.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+</head>
+
+<body onload="submitRANS()">
+
+    <div class="float-left">
+        <button class="button button1" onclick="window.location.href='https://github.com/mmicromegas/ransX';">ransX
+            Source (Github)</button>
+    </div>
+
+    <div class="float-left header-title">Welcome To Interactive Web Studio for rans(eXtreme)</div>
+
+    <div class="float-left">
+        <a href=readme ><button class="button button1">Readme</button></a>
+    </div>
+
+    <!-- <div class="float-left">
+       <button class="button button1" onclick="alert('Implementation In Progress')">Log In</button>
+    </div>
+
+    <div class="float-left">
+        <button class="button button1" onclick="alert('Implementation In Progress')">Sign Up</button>
+    </div>
+    -->
+
+    <div class="clear-float"></div>
+
+    <div class="float-left">
+        <form>
+            <p> Model:
+                <select id="modelSelect">
+                    <option value='3d-ccptwo'>3D Two-Layers Setup of the Code Comparison Project</option>
+                    <option value='2d-ccptwo'>2D Two-Layers Setup of the Code Comparison Project</option>
+                    <option value='3d-oburn-14ele'>3D Oxygen Burning Shell (14 elements)</option>
+                    <option value='3d-oburn-25ele'>3D Oxygen Burning Shell (25 elements) </option>
+                    <option value='3d-neshellBoost10x-25ele'>3D Neon Burning Shell NucBoost 10x (25 elements) </option>
+                    <option value='3d-heflashBoost100x-6ele'>3D Core Helium Flash NucBoost 100x (6 elements) </option>
+                    <!-- <option value='3d-thpulse-15ele'>3D Thermal Pulse (15 elements) </option> -->
+                </select>
+                Resolution:
+                <select id="resSelect" class="resSelect">
+                    <!-- <option value='res64x64x64'>64x64x64</option> -->
+                    <option value='res128x128x128'>128x128x128</option>
+                    <option value='res256x256x256'>256x256x256</option>
+                    <option value='res512x512x512'>512x512x512</option>
+                </select>
+                Equation:
+                <select id="equationSelect" class="equationSelect">
+                    <option value='conteq'>Continuity Equation with Favrian Dilatation</option>
+                    <option value='conteqfdd'>Continuity Equation with Turbulent Mass Flux</option>
+                    <option value='momxeq'>Momentum Equation X</option>
+                    <option value='tkeeq'>Turbulent Kinetic Energy Equation</option>
+                    <option value='eieq'>Internal Energy Equation</option>
+                    <option value='sseq'>Entropy Equation</option>
+                    <option value='srctempflct'>Energy Source, Temp and RMS of fluctuations</option> 
+                    <option value='velnablas'>Velocities And Temperature Gradients</option>           
+                    <option value='xtrseq_fluid1'>Transport Equation for Fluid1ronds</option>
+                    <option value='xtrseq_fluid2'>Transport Equation for Fluid2ronds</option>
+                </select>
+                <button id="changeButton" class="button button1" type="button" onclick="submitRANS();">Submit</button>
+            </p>
+        </form>
+    </div>
+
+    <div class="clear-float"></div>
+
+    <div class="float-left">
+        <table id='ransxinfo' style="font-size: 12px;" border=0></table>
+    </div>
+
+    <div class="clear-float"></div>
+
+    <script type text="text/javascript">
+
+        function submitRANS() {
+            callRANSx(function (data) {
+                createIframe(data[0].outputFile, data[0].youtubeEmbed);
+                displayInfo(data);
+            });
+        }
+
+        function displayInfo(data) {
+            var itemList1 = [
+                { 'label': 'Resolution: ', 'value': data[0].nx + "x" + data[0].ny + "x" + data[0].nz },
+                { 'label': 'Time-Averaging Window (in TOs): ', 'value': data[0].tavg_to },
+                { 'label': 'Effective Reynolds Number: ', 'value': data[0].Re },
+                { 'label': 'Mach Number: ', 'value': data[0].mach },
+                { 'label': 'Central Time (in s): ', 'value': data[0].timec }
+            ]
+
+            var itemList2 = [
+                { 'label': '     Elements: ', 'value': data[0].network},
+                { 'label': '     Convective Turnover Timescale (in s): ', 'value': data[0].tc },
+                { 'label': '     TKE Dissipation Timescale (in s): ', 'value': data[0].tD },
+                { 'label': '     RMS velocity (in cm/s): ', 'value': data[0].urms.toExponential(1) },
+                { 'label': '     Averaging Time-Range (From,To in s): ', 'value': data[0].trange }
+            ]
+
+            items_table = document.getElementById('ransxinfo');
+
+            items_table.innerHTML = '<tr><td>' + itemList1[0].label + '</td><td>' + itemList1[0].value + '</td><td>' + itemList2[0].label + '</td><td>' + itemList2[0].value + '</td></tr>';
+            for (i = 1; i < 5; i++) {
+                items_table.innerHTML += '<tr><td>' + itemList1[i].label + '</td><td>' + itemList1[i].value + '</td><td>' + itemList2[i].label + '</td><td>' + itemList2[i].value + '</td></tr>';
+            }
+
+        }
+
+        function callRANSx(handleData) {
+
+            var selectModelEquation = {
+                "modelSelect": document.getElementById("modelSelect").value,
+                "equationSelect": document.getElementById("equationSelect").value,
+                "resSelect": document.getElementById("resSelect").value
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "{{url_for('ransx')}}",
+                dataType: "JSON",
+                data: JSON.stringify(selectModelEquation),
+                success: function (response) {
+                    handleData(response);
+                }
+            });
+
+        }
+
+
+        function createIframe(outputFile,youtubeEmbed) {
+
+            var iframes = document.querySelectorAll('iframe');
+
+            for (var i = 0; i < iframes.length; i++) {
+                iframes[i].parentNode.removeChild(iframes[i]);
+            }
+
+            const iframe1 = document.createElement('iframe');
+            iframe1.id = 'eqs';
+            iframe1.src = "{{url_for('static', filename='addFile')}}".replace("addFile", outputFile);
+            iframe1.style.position = 'relative';
+            iframe1.height = "500";
+            iframe1.width = "1100";
+            iframe1.frameBorder = "0";
+            iframe1.scrolling = "no";
+            document.body.appendChild(iframe1);
+            
+            console.log(youtubeEmbed);
+
+            const iframe2 = document.createElement('iframe');
+            iframe2.id = 'ymov';
+            iframe2.src = youtubeEmbed;
+            iframe2.height = "400";
+            iframe2.width = "400";
+            iframe2.frameBorder = "0";
+            iframe2.allow = "accelerometer";
+            iframe2.allow = "clipboard-write";
+            iframe2.allow = "encrypted-media";
+            iframe2.allow = "gyroscope";
+            iframe2.allow = "picture-in-picture";
+            iframe2.style.position = 'static';
+            document.body.appendChild(iframe2);
+            
+        }
+
+        $(document).ready(function () {
+
+            $("#modelSelect").change(function () {
+
+                var el = $(this);
+                var test="xtrseq";
+
+                if (el.val() === "3d-oburn-14ele") {
+                    $(".resSelect option[value*='res']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+                    $("#resSelect").append("<option value='res128x64x64'>128x64x64</option>");
+                    $("#resSelect").append("<option value='res512x128x128'>512x128x128</option>");
+
+                    $(".equationSelect option[value*='xtrseq']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+
+                    $("#equationSelect").append("<option value='xtrseq_neut'>Transport Equation for Neutrons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_prot'>Transport Equation for Protons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_he4'>Transport Equation for He4</option>");
+                    $("#equationSelect").append("<option value='xtrseq_c12'>Transport Equation for C12</option>");
+                    $("#equationSelect").append("<option value='xtrseq_o16'>Transport Equation for O16</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ne20'>Transport Equation for Ne20</option>");
+                    $("#equationSelect").append("<option value='xtrseq_na23'>Transport Equation for Na23</option>");
+                    $("#equationSelect").append("<option value='xtrseq_mg24'>Transport Equation for Mg24</option>");
+                    $("#equationSelect").append("<option value='xtrseq_si28'>Transport Equation for Si28</option>");
+                    $("#equationSelect").append("<option value='xtrseq_p31'>Transport Equation for P31</option>");
+                    $("#equationSelect").append("<option value='xtrseq_s32'>Transport Equation for S32</option>");
+                    $("#equationSelect").append("<option value='xtrseq_s34'>Transport Equation for S34</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cl35'>Transport Equation for Cl35</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ar36'>Transport Equation for Ar36</option>");
+                }
+                else if (el.val() === "3d-oburn-25ele") {
+                    $(".resSelect option[value*='res']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+                    $("#resSelect").append("<option value='res128x64x64'>128x64x64</option>");
+                    $(".equationSelect option[value*='xtrseq']").each(function() {  
+                        $(this).remove();
+                    });
+
+                    $("#equationSelect").append("<option value='xtrseq_neut'>Transport Equation for Neutrons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_prot'>Transport Equation for Protons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_he4'>Transport Equation for He4</option>");
+                    $("#equationSelect").append("<option value='xtrseq_c12'>Transport Equation for C12</option>");
+                    $("#equationSelect").append("<option value='xtrseq_o16'>Transport Equation for O16</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ne20'>Transport Equation for Ne20</option>");
+                    $("#equationSelect").append("<option value='xtrseq_na23'>Transport Equation for Na23</option>");
+                    $("#equationSelect").append("<option value='xtrseq_mg24'>Transport Equation for Mg24</option>");
+                    $("#equationSelect").append("<option value='xtrseq_si28'>Transport Equation for Si28</option>");
+                    $("#equationSelect").append("<option value='xtrseq_p31'>Transport Equation for P31</option>");
+                    $("#equationSelect").append("<option value='xtrseq_s32'>Transport Equation for S32</option>");
+                    $("#equationSelect").append("<option value='xtrseq_s34'>Transport Equation for S34</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cl35'>Transport Equation for Cl35</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ar36'>Transport Equation for Ar36</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ar38'>Transport Equation for Ar38</option>");
+                    $("#equationSelect").append("<option value='xtrseq_k39'>Transport Equation for K39</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ca40'>Transport Equation for Ca40</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ca42'>Transport Equation for Ca42</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ti44'>Transport Equation for Ti44</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ti46'>Transport Equation for Ti46</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cr48'>Transport Equation for Cr48</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cr50'>Transport Equation for Cr50</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fe52'>Transport Equation for Fe52</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fe54'>Transport Equation for Fe54</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ni56'>Transport Equation for Ni56</option>");
+                }
+                else if (el.val() === "3d-neshellBoost10x-25ele") {
+                    $(".resSelect option[value*='res']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+                    $("#resSelect").append("<option value='res128x128x128'>128x128x128</option>");
+
+                    $(".equationSelect option[value*='xtrseq']").each(function() {  
+                        $(this).remove();
+                    });
+                    $("#equationSelect").append("<option value='xtrseq_neut'>Transport Equation for Neutrons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_prot'>Transport Equation for Protons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_he4'>Transport Equation for He4</option>");
+                    $("#equationSelect").append("<option value='xtrseq_c12'>Transport Equation for C12</option>");
+                    $("#equationSelect").append("<option value='xtrseq_o16'>Transport Equation for O16</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ne20'>Transport Equation for Ne20</option>");
+                    $("#equationSelect").append("<option value='xtrseq_na23'>Transport Equation for Na23</option>");
+                    $("#equationSelect").append("<option value='xtrseq_mg24'>Transport Equation for Mg24</option>");
+                    $("#equationSelect").append("<option value='xtrseq_si28'>Transport Equation for Si28</option>");
+                    $("#equationSelect").append("<option value='xtrseq_p31'>Transport Equation for P31</option>");
+                    $("#equationSelect").append("<option value='xtrseq_s32'>Transport Equation for S32</option>");
+                    $("#equationSelect").append("<option value='xtrseq_s34'>Transport Equation for S34</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cl35'>Transport Equation for Cl35</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ar36'>Transport Equation for Ar36</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ar38'>Transport Equation for Ar38</option>");
+                    $("#equationSelect").append("<option value='xtrseq_k39'>Transport Equation for K39</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ca40'>Transport Equation for Ca40</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ca42'>Transport Equation for Ca42</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ti44'>Transport Equation for Ti44</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ti46'>Transport Equation for Ti46</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cr48'>Transport Equation for Cr48</option>");
+                    $("#equationSelect").append("<option value='xtrseq_cr50'>Transport Equation for Cr50</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fe52'>Transport Equation for Fe52</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fe54'>Transport Equation for Fe54</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ni56'>Transport Equation for Ni56</option>");
+                }                
+                else if (el.val() === "3d-ccptwo") {
+                    $(".resSelect option[value*='res']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+                    $("#resSelect").append("<option value='res128x128x128'>128x128x128</option>");
+                    $("#resSelect").append("<option value='res256x256x256'>256x256x256</option>");
+                    $("#resSelect").append("<option value='res512x512x512'>512x512x512</option>");
+
+                    $(".equationSelect option[value*='xtrseq']").each(function() { 
+                        $(this).remove();
+                    });
+                    $("#equationSelect").append("<option value='xtrseq_fluid1'>Transport Equation for Fluid1rons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fluid2'>Transport Equation for Fluid2rons</option>");
+                }
+                else if (el.val() === "2d-ccptwo") {
+                    $(".resSelect option[value*='res']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+                    $("#resSelect").append("<option value='res128x128'>128x128</option>");
+                    $("#resSelect").append("<option value='res512x512'>512x512</option>");
+
+                    $(".equationSelect option[value*='xtrseq']").each(function() { 
+                        $(this).remove();
+                    });
+                    $("#equationSelect").append("<option value='xtrseq_fluid1'>Transport Equation for Fluid1rons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fluid2'>Transport Equation for Fluid2rons</option>");
+                }
+                else if (el.val() === "3d-heflashBoost100x-6ele") {
+                    $(".resSelect option[value*='res']").each(function() { // the value* - the star is jquery contains selector 
+                        $(this).remove();
+                    });
+                    $("#resSelect").append("<option value='res512x128x128'>512x128x128</option>");
+
+                    $(".equationSelect option[value*='xtrseq']").each(function() { 
+                        $(this).remove();
+                    });
+                    $("#equationSelect").append("<option value='xtrseq_neut'>Transport Equation for Neutrons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_prot'>Transport Equation for Protons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_he4'>Transport Equation for He4</option>");
+                    $("#equationSelect").append("<option value='xtrseq_c12'>Transport Equation for C12</option>");
+                    $("#equationSelect").append("<option value='xtrseq_o16'>Transport Equation for O16</option>");
+                    $("#equationSelect").append("<option value='xtrseq_ne20'>Transport Equation for Ne20</option>");
+                }
+                else if (el.val() === "3d-thpulse-15ele") {
+                    $(".equationSelect option[value*='xtrseq']").each(function() { 
+                        $(this).remove();
+                    });
+                    $("#equationSelect").append("<option value='xtrseq_fluid1'>Transport Equation for Fluid1rons</option>");
+                    $("#equationSelect").append("<option value='xtrseq_fluid2'>Transport Equation for Fluid2rons</option>");
+                }                
+
+            });
+
+        
+
+        });
+
+
+    </script>
+
+    <!-- <script type="text/javascript" src="{{ url_for('static',filename='js/ransX.js') }}"></script> -->
+
+</body>
+
+</html>

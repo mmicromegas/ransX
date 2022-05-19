@@ -155,7 +155,8 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 
-        plt.title('hsse rhoX transport for ' + element)
+        #plt.title('hsse rhoX transport for ' + element)
+        plt.title('composition equation for ' + element)
         # plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}_i$')
         # plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}_i$')
         # plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f_i$')
@@ -198,7 +199,8 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.ylabel(setylabel)
 
         # show LEGEND
-        plt.legend(loc=ilg, prop={'size': 14}, ncol=2)
+        #plt.legend(loc=ilg, prop={'size': 14}, ncol=2)
+        plt.legend(loc=ilg, prop={'size': 12}, ncol=1)
 
         # display PLOT
         plt.show(block=False)
