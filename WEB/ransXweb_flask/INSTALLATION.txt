@@ -1,0 +1,25 @@
+1. clone the ransX_development branch
+git clone --branch ransX_development https://github.com/mmicromegas/ransX
+
+2. change to ransXweb_flask directory:
+cd ransX/WEB/ransXweb_flask
+
+3. install Miniconda https://docs.conda.io/en/latest/miniconda.html and create a Conda environment:
+conda create --name ransXweb_flask python=3.8
+
+4. activate the environment:
+conda activate ransXweb_flask
+
+5. install Python libraries listed in requirements.txt file:
+pip install -r requirements.txt
+
+6. download TSERIES data from the link below
+https://drive.google.com/drive/folders/1JMpJ4rsKB92IXyflZCz73nExO30a0soi?usp=sharing
+
+7. unzip the downloaded TSERIES data and copy it to DATA folder of the ransXweb_flash
+unzip TSERIES-***.zip
+cp TSERIES-***.zip ransX/WEB/ransXweb_flask/DATA
+
+8. launch the webapp, local URL will appear in the terminal, copy it and paste to any browser
+cd ransXweb_flask
+python app.py
