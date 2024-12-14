@@ -1,0 +1,3 @@
+<b>Interactive webStudio for [ransX](https://github.com/mmicromegas/ransX) analysis of [code-comparison-project](https://drive.google.com/drive/folders/1g0AOL7ka0LV4u4qoIbv4gihGjqay7Hk7) 3D two-layers simulations</b>. 
+
+Theoretical background for RANS analysis can be found in this article [Compressible Hydrodynamic Mean-Field Equations in Spherical Geometry and their Application to Turbulent Stellar Convection Data](https://ui.adsabs.harvard.edu/abs/2014arXiv1401.5176M/abstract).  

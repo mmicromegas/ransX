@@ -1,0 +1,25 @@
+1. clone the ransX_development branch
+git clone --branch ransX_development https://github.com/mmicromegas/ransX
+
+2. change to ransX directory:
+cd ransX/WEB/ransXweb_codecomparisonproject_dash
+
+3. install Miniconda https://docs.conda.io/en/latest/miniconda.html and create a Conda environment:
+conda create --name ransXweb_ccpdash python=3.8
+
+4. activate the environment:
+conda activate ransXweb_ccpdash
+
+5. install Python libraries listed in requirements.txt file:
+pip install -r requirements.txt
+
+6. download DATA folder from the link below
+https://drive.google.com/drive/folders/1I6QRv4yF4fnmBX8hOlApCzFy0-6QYck7?usp=sharing
+
+7. unzip the downloaded DATA and overwrite it to DATA folder of the ransXweb_codecomparisonproject_dash
+unzip DATA-***.zip
+cp DATA-***.zip -r ransX/WEB/ransXweb_codecomparisonproject_dash
+
+8. launch the webapp, local URL will appear in the terminal, copy it and paste to any browser except Firefox
+cd ransXweb_codecomparisonproject_dash
+python app.py

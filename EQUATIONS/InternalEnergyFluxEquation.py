@@ -200,7 +200,7 @@ class InternalEnergyFluxEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         fetx = ddetux - ddux * ddet / dd
         fpx = ppux - pp * ux
 
-        intQ = integrate.cumtrapz(dd*(enuc1+enuc2),xzn0,initial=0)
+        intQ = integrate.cumulative_trapezoid(dd*(enuc1+enuc2),xzn0,initial=0)
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix

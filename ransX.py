@@ -442,6 +442,7 @@ def main():
         hack = 0.0e9
         # COMPOSITION TRANSPORT EQUATION
         if str2bool(params.getForEqs('x_' + elem)['plotMee']):
+            print(elem)
             plt.execX(inuc, elem, 'x_' + elem,
                       prp['xzn0inc'] + hack,
                       prp['xzn0outc'], prp['super_ad_i'], prp['super_ad_o'])

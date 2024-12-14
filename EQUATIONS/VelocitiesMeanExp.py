@@ -56,11 +56,11 @@ class VelocitiesMeanExp(Calculus, SetAxisLimit, Tools, Errors, object):
         if self.ig == 1:
             #t_mm = self.getRAdata(eht, 'dd')*Vol
             #t_dd = self.getRAdata(eht, 'dd')
-            #t_mm = integrate.cumtrapz(self.getRAdata(eht, 'dd')*Vol, xzn0, initial = 0.)
+            #t_mm = integrate.cumulative_trapezoid(self.getRAdata(eht, 'dd')*Vol, xzn0, initial = 0.)
             t_dd = self.getRAdata(eht, 'dd')
             for i in range(t_timec.shape[0]):
                 #t_mm_l.append(t_dd[i]*Vol[i])
-                t_mm_l.append(integrate.cumtrapz(t_dd[i]*Vol, xzn0, initial = 0.))
+                t_mm_l.append(integrate.cumulative_trapezoid(t_dd[i]*Vol, xzn0, initial = 0.))
                 #print(t_dd[i])
                 #sys.exit()
             t_mm = np.asarray(t_mm_l)

@@ -61,7 +61,7 @@ md_text_empty_line = open(os.path.join(filepath, "ransX-table-empty-line.md"), "
 
 ###### important for latex ######
 #mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
-mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML")
+#mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML")
 
 listOfCodes = ['3d-ccptwo-prompi', '3d-ccptwo-flash', '3d-ccptwo-music', '3d-ccptwo-slh', '3d-ccptwo-slh2']
 listOfComparison = ['3d-ccptwo-comparison']
@@ -148,9 +148,8 @@ app.layout = html.Div([
                                     columns=[{"name": i, "id": i} for i in df.columns],
                                     data=df.to_dict('records'),
                                 )]),
-                            dcc.Graph(id='figRANS'),
-                        ]),
-                        mathjax_script
+                            dcc.Graph(id='figRANS',mathjax=True),
+                        ])
                     ])
                 ], width=3)], align='center'),
             html.Br(),

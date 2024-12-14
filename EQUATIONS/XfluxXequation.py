@@ -268,9 +268,9 @@ class XfluxXequation(Calculus, SetAxisLimit, Tools, Errors, object):
         self.turb_thermal_diff = (Drr1*self.Grad(dd, xzn0)/dd)*xi
 
         # integral model
-        intFii = integrate.cumtrapz(self.minus_rxx_gradx_fht_xi+self.minus_xiff_gradx_pp_minus_xiff_gradx_ppff,xzn0,initial=0)
+        intFii = integrate.cumulative_trapezoid(self.minus_rxx_gradx_fht_xi+self.minus_xiff_gradx_pp_minus_xiff_gradx_ppff,xzn0,initial=0)
         cD = 1.e-16
-        intFi = cD*integrate.cumtrapz(intFii,xzn0,initial=0)
+        intFi = cD*integrate.cumulative_trapezoid(intFii,xzn0,initial=0)
 
         #self.fhtflxineut =  self.getRAdata(eht, 'ddx0001ux')[intc] - self.getRAdata(eht, 'ddx0001')[intc] * ddux / dd
         #self.fhtflxiprot =  self.getRAdata(eht, 'ddx0002ux')[intc] - self.getRAdata(eht, 'ddx0002')[intc] * ddux / dd

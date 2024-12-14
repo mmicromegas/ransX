@@ -386,14 +386,14 @@ class TurbulentKineticEnergyEquationHorizontal(uSal.SetAxisLimit, eR.Errors, obj
         elif self.ig == 2:
             Sr = 4. * np.pi * rc ** 2
 
-        int_term1 = integrate.simps(term1_sel * Sr, rc)
-        int_term2 = integrate.simps(term2_sel * Sr, rc)
-        # int_term3 = integrate.simps(term3_sel * Sr, rc)
-        int_term4 = integrate.simps(term4_sel * Sr, rc)
-        int_term5 = integrate.simps(term5_sel * Sr, rc)
-        # int_term6 = integrate.simps(term6_sel * Sr, rc)
-        int_term7 = integrate.simps(term7_sel * Sr, rc)
-        int_term8 = integrate.simps(term8_sel * Sr, rc)
+        int_term1 = integrate.simpson(term1_sel * Sr, x=rc)
+        int_term2 = integrate.simpson(term2_sel * Sr, x=rc)
+        # int_term3 = integrate.simpson(term3_sel * Sr, x=rc)
+        int_term4 = integrate.simpson(term4_sel * Sr, x=rc)
+        int_term5 = integrate.simpson(term5_sel * Sr, x=rc)
+        # int_term6 = integrate.simpson(term6_sel * Sr, x=rc)
+        int_term7 = integrate.simpson(term7_sel * Sr, x=rc)
+        int_term8 = integrate.simpson(term8_sel * Sr, x=rc)
 
         fig = plt.figure(figsize=(7, 6))
 

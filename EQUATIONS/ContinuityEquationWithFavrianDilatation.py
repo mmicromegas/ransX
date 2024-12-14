@@ -283,10 +283,10 @@ class ContinuityEquationWithFavrianDilatation(Calculus, SetAxisLimit, Tools, Err
         elif self.ig == 2:
             Sr = 4. * np.pi * rc ** 2
 
-        int_term1 = integrate.simps(term1_sel * Sr, rc)
-        int_term2 = integrate.simps(term2_sel * Sr, rc)
-        int_term3 = integrate.simps(term3_sel * Sr, rc)
-        int_term4 = integrate.simps(term4_sel * Sr, rc)
+        int_term1 = integrate.simpson(term1_sel * Sr, x=rc)
+        int_term2 = integrate.simpson(term2_sel * Sr, x=rc)
+        int_term3 = integrate.simpson(term3_sel * Sr, x=rc)
+        int_term4 = integrate.simpson(term4_sel * Sr, x=rc)
 
         fig = plt.figure(figsize=(7, 6))
 

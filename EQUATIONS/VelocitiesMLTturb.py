@@ -177,7 +177,8 @@ class VelocitiesMLTturb(Calculus, SetAxisLimit, Tools, Errors, object):
         plt8 = np.nan_to_num(plt8)
 
         # set plot boundaries   
-        to_plot = [plt4, plt5, plt6, plt7]
+        # to_plot = [plt4, plt5, plt6, plt7]
+        to_plot = [plt4]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
         # plot DATA 

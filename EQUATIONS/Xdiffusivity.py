@@ -386,12 +386,12 @@ class Xdiffusivity(Calculus, SetAxisLimit, Tools, Errors, object):
                        self.minus_div_eht_dd_fht_ux_fht_xi[idxl:idxr] -
                        self.plus_ddxidot[idxl:idxr])
 
-        Deff2 = (1./(dd[idxl:idxr]*xx*xx*self.Grad(fht_xi[idxl:idxr],xx)))*integrate.cumtrapz(yy, xx, initial=0)
+        Deff2 = (1./(dd[idxl:idxr]*xx*xx*self.Grad(fht_xi[idxl:idxr],xx)))*integrate.cumulative_trapezoid(yy, xx, initial=0)
 
         xx = self.xzn0[idxl:idxr]
         yy = (xx**2.)*(-self.minus_dt_fht_xi[idxl:idxr])
 
-        Deff3 = (1./(xx*xx*self.Grad(fht_xi[idxl:idxr],xx)))*integrate.cumtrapz(yy, xx, initial=0)
+        Deff3 = (1./(xx*xx*self.Grad(fht_xi[idxl:idxr],xx)))*integrate.cumulative_trapezoid(yy, xx, initial=0)
 
         term6 = Deff2
         term7 = Deff3

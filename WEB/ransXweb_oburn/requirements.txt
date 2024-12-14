@@ -1,0 +1,7 @@
+dash==2.0.0
+Werkzeug==2.0.0
+dash-bootstrap-components==1.1.0
+dash-defer-js-import==0.0.2
+plotly==5.8.0
+scipy==1.8.1
+pandas==1.4.2
