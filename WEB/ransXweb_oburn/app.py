@@ -79,10 +79,20 @@ equations = [{'label': 'Continuity Equation with Favrian Dilatation', 'value': '
              {'label': 'Continuity Equation with Turbulent Mass Flux', 'value': 'conteqfdd'},
              {'label': 'Momentum Equation X', 'value': 'momex'},
              {'label': 'Turbulent Kinetic Energy Equation', 'value': 'tkeeq'},
-             {'label': 'Transport Equation for Fluid1ronds', 'value': 'xtrseq_prot'},
-             {'label': 'Transport Equation for Fluid2ronds', 'value': 'xtrseq_neut'},
-             {'label': 'Variance Equation for Fluid1ronds', 'value': 'xvareq_prot'},
-             {'label': 'Variance Equation for Fluid2ronds', 'value': 'xvareq_neut'},
+             {'label': 'Transport Equation for prot', 'value': 'xtrseq_prot'},
+             {'label': 'Transport Equation for neut', 'value': 'xtrseq_neut'},
+             {'label': 'Transport Equation for he4', 'value': 'xtrseq_he4'},
+             {'label': 'Transport Equation for c12', 'value': 'xtrseq_c12'},
+             {'label': 'Transport Equation for o16', 'value': 'xtrseq_o16'},
+             {'label': 'Transport Equation for ne20', 'value': 'xtrseq_ne20'},
+             {'label': 'Transport Equation for na23', 'value': 'xtrseq_na23'},
+             {'label': 'Transport Equation for mg24', 'value': 'xtrseq_mg24'},
+             {'label': 'Transport Equation for si28', 'value': 'xtrseq_si28'},
+             {'label': 'Transport Equation for p31', 'value': 'xtrseq_p31'},
+             {'label': 'Transport Equation for s32', 'value': 'xtrseq_s32'},
+             {'label': 'Transport Equation for s34', 'value': 'xtrseq_s34'},
+             {'label': 'Transport Equation for cl35', 'value': 'xtrseq_cl35'},
+             {'label': 'Transport Equation for ar36', 'value': 'xtrseq_ar36'},
              {'label': 'Source, Mean and Turbulent Velocities', 'value': 'srcvel'}]
 
 comparison = [{'label': 'Velocities', 'value': 'urmstke'},
@@ -155,7 +165,7 @@ app.layout = html.Div([
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    html.Div(html.Footer("2021 Created by mmicromegas"))
+                    html.Div(html.Footer("2024 Created by mmicromegas"))
                 ], width=9)], align='center'),
         ])
     )
@@ -289,7 +299,10 @@ def update_figRANS(codeSelect, equationSelect):
     if codeSelect in listOfCodes:
 
         if equationSelect not in ['conteq', 'conteqfdd', 'momex', 'tkeeq', 'eieq', 'srcvel', 'xtrseq_prot',
-                                  'xtrseq_neut', 'xvareq_prot', 'xvareq_neut']:
+                                  'xtrseq_neut', 'xtrseq_he4', 'xtrseq_c12', 'xtrseq_o16', 'xtrseq_ne20',
+                                  'xtrseq_na23', 'xtrseq_mg24', 'xtrseq_si28', 'xtrseq_p31', 'xtrseq_s32',
+                                  'xtrseq_s34', 'xtrseq_cl35', 'xtrseq_ar36']:
+
             equationSelect = 'conteq'  # fallback option when coming from comparison
 
         # calculate properties
@@ -334,6 +347,8 @@ def update_figRANS(codeSelect, equationSelect):
         # COMPOSITION TRANSPORT
         for elem in network[1:]:  # skip network identifier in the list
             inuc = params.getInuc(network, elem)
+
+            print(elem)
 
             # COMPOSITION TRANSPORT EQUATION
             if equationSelect == 'xtrseq_' + elem:
