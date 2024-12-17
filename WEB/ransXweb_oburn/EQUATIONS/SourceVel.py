@@ -40,7 +40,8 @@ class SourceVel(Calculus, Tools, Errors, object):
 
         ux = self.getRAdata(eht,'ux')[intc]
         dd = self.getRAdata(eht,'dd')[intc]
-        enuc = self.getRAdata(eht,'enuc')[intc]
+        enuc1 = self.getRAdata(eht,'enuc1')[intc]
+        enuc2 = self.getRAdata(eht,'enuc2')[intc]
         ddux = self.getRAdata(eht,'ddux')[intc]
         dduxux = self.getRAdata(eht,'dduxux')[intc]
 
@@ -57,7 +58,8 @@ class SourceVel(Calculus, Tools, Errors, object):
         self.eht_ux = eht_ux
         self.fht_ux = fht_ux
         self.urms = urms
-        self.enuc = enuc
+        self.enuc1 = enuc1
+        self.enuc2 = enuc2
 
         self.nsdim = nsdim
         self.code = code
@@ -133,17 +135,17 @@ class SourceVel(Calculus, Tools, Errors, object):
             rows=1, cols=3, subplot_titles=(title1, title2, title3))
 
         # 1st subplot
-        fig.append_trace(
+        fig.add_trace(
             go.Scatter(x=xzn0_l, y=self.eht_ux, name=eQterms[0],
                        line=dict(color='brown'),hoverinfo='none'),
             row=1, col=1)
 
-        fig.append_trace(
+        fig.add_trace(
             go.Scatter(x=xzn0_l, y=self.fht_ux, name=eQterms[1],
                        line=dict(color='red'),hoverinfo='none'),
             row=1, col=1)
 
-        fig.append_trace(
+        fig.add_trace(
             go.Scatter(x=xzn0_l, y=self.fht_ux-self.eht_ux, name=eQterms[2],
                        line=dict(color='magenta'),hoverinfo='none'),
             row=1, col=1)
@@ -151,37 +153,42 @@ class SourceVel(Calculus, Tools, Errors, object):
         fig.add_vline(bconv,line_width=1, line_dash="dot", line_color="black")
         fig.add_vline(tconv,line_width=1, line_dash="dot", line_color="black")
 
-        fig.update_xaxes(title_text="x (ccp units)", exponentformat='e', range=[xbl_l, xbr_l], tickangle=-45, row=1, col=1,
+        fig.update_xaxes(title_text="r (cm)", exponentformat='e', range=[xbl_l, xbr_l], tickangle=-45, row=1, col=1,
                          tickwidth = 2,ticklen = 10, nticks = 10, showgrid = True, showline = True, linewidth = 1,
                          linecolor = 'black', mirror = True, ticks = 'outside')
-        fig.update_yaxes(title_text="ccp units", range=[ybdBgr1, ybuBgr1], tickangle=-45, exponentformat='e',
+        fig.update_yaxes(title_text=r"$\mbox{cm s}^{-1}$", range=[ybdBgr1, ybuBgr1], tickangle=-45, exponentformat='e',
                          row=1, col=1, tickwidth=2,
                          ticklen=10, nticks=10, showgrid=True,
                          showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside')
 
         # 2nd subplot
-        fig.append_trace(
-            go.Scatter(x=xzn0_l, y=self.enuc, showlegend=False,
+        fig.add_trace(
+            go.Scatter(x=xzn0_l, y=self.enuc1, showlegend=False,
                        line=dict(color='red'),hoverinfo='none'),
+            row=1, col=2)
+
+        fig.add_trace(
+            go.Scatter(x=xzn0_l, y=self.enuc2, showlegend=False,
+                       line=dict(color='blue'),hoverinfo='none'),
             row=1, col=2)
 
         fig.add_vline(bconv,line_width=1, line_dash="dot", line_color="black")
         fig.add_vline(tconv,line_width=1, line_dash="dot", line_color="black")
 
-        fig.update_xaxes(title_text="x (ccp units)", exponentformat='e', range=[xbl_l, xbr_l], tickangle=-45,
+        fig.update_xaxes(title_text="r (cm)", exponentformat='e', range=[xbl_l, xbr_l], tickangle=-45,
                          tickwidth=2,
                          ticklen=10, nticks=10,
                          showgrid=True, showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside', row=1, col=2)
-        fig.update_yaxes(title_text="ccp units", range=[ybdBgr2, ybuBgr2], tickangle=-45,
+        fig.update_yaxes(title_text=r"$\mbox{erg g}^{-1} \mbox{s}^{-1}$", range=[ybdBgr2, ybuBgr2], tickangle=-65,
                          tickwidth=2,
                          ticklen=10, nticks=10, showgrid=True, exponentformat='e',
                          showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside', row=1, col=2)
 
         # 3rd subplot
-        fig.append_trace(
+        fig.add_trace(
             go.Scatter(x=xzn0_l, y=self.urms,showlegend=False,
                        line=dict(color='red'),hoverinfo='none'),
             row=1, col=3)
@@ -189,12 +196,12 @@ class SourceVel(Calculus, Tools, Errors, object):
         fig.add_vline(bconv,line_width=1, line_dash="dot", line_color="black")
         fig.add_vline(tconv,line_width=1, line_dash="dot", line_color="black")
 
-        fig.update_xaxes(title_text="x (ccp units)", exponentformat='e', range=[xbl_l, xbr_l], tickangle=-45,
+        fig.update_xaxes(title_text="r (cm)", exponentformat='e', range=[xbl_l, xbr_l], tickangle=-45,
                          tickwidth=2,
                          ticklen=10, nticks=10,
                          showgrid=True, showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside', row=1, col=3)
-        fig.update_yaxes(title_text="ccp units", range=[ybdBgr3, ybuBgr3], tickangle=-45,
+        fig.update_yaxes(title_text=r"$\mbox{cm s}^{-1}$", range=[ybdBgr3, ybuBgr3], tickangle=-45,
                          tickwidth=2,
                          ticklen=10, nticks=10, showgrid=True, exponentformat='e',
                          showline=True, linewidth=1, linecolor='black', mirror=True,

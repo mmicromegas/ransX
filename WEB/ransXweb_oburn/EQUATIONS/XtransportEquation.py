@@ -223,14 +223,25 @@ class XtransportEquation(Calculus, Tools, Errors, object):
         fig.add_vline(bconv,line_width=1, line_dash="dot", line_color="black")
         fig.add_vline(tconv,line_width=1, line_dash="dot", line_color="black")
 
-        fig.update_xaxes(title_text="x (ccp units)", exponentformat='e', range=[xbl_l,xbr_l], tickangle=-45, row=1, col=1,
+        fig.update_xaxes(title_text="r (cm)", exponentformat='e', range=[xbl_l,xbr_l], tickangle=-45, row=1, col=1,
                          tickwidth = 2,ticklen = 10, nticks = 10, showgrid = True, showline = True, linewidth = 1,
                          linecolor = 'black', mirror = True, ticks = 'outside')
-        fig.update_yaxes(title_text="ccp units", range=[ybdEq, ybuEq], tickangle=-45, exponentformat='e',
+        fig.update_yaxes(title_text=r"$\mbox{g cm}^{-3} \mbox{s}^{-1}$", range=[ybdEq, ybuEq], tickangle=-45, exponentformat='e',
                          row=1, col=1, tickwidth=2,
                          ticklen=10, nticks=10, showgrid=True,
                          showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside')
+
+        fig.update_layout(
+            legend=dict(
+                yanchor="top",
+                y=0.98,
+                xanchor="right",
+                x=0.98,
+                bgcolor='rgba(0,0,0,0)',
+                font=dict(size=18)
+            )
+        )
 
         # 2nd subplot
         fig.add_trace(
@@ -240,12 +251,12 @@ class XtransportEquation(Calculus, Tools, Errors, object):
         fig.add_vline(bconv,line_width=1, line_dash="dot", line_color="black")
         fig.add_vline(tconv,line_width=1, line_dash="dot", line_color="black")
 
-        fig.update_xaxes(title_text="x (ccp units)", exponentformat='e', range=[xbl_l,xbr_l], tickangle=-45,
+        fig.update_xaxes(title_text="r (cm)", exponentformat='e', range=[xbl_l,xbr_l], tickangle=-45,
                          tickwidth=2,
                          ticklen=10, nticks=10,
                          showgrid=True, showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside', row=1, col=2)
-        fig.update_yaxes(title_text="X (ccp units)", range=[ybdBgr, ybuBgr], tickangle=-45,
+        fig.update_yaxes(title_text=r"$\widetilde{X}$", range=[ybdBgr, ybuBgr], tickangle=-45,
                          tickwidth=2,
                          ticklen=10, nticks=10, showgrid=True, exponentformat='e',
                          showline=True, linewidth=1, linecolor='black', mirror=True,
@@ -255,7 +266,7 @@ class XtransportEquation(Calculus, Tools, Errors, object):
         fig.add_trace(go.Bar(
             x=eQterms,y=int_terms,
             orientation='v', showlegend=False, hoverinfo='none'), row=1, col=3)
-        fig.update_yaxes(title_text="ccp units", range=[ybdBar, ybuBar], exponentformat='e', tickangle=-45,
+        fig.update_yaxes(title_text=r"$\mbox{g s}^{-1}$", range=[ybdBar, ybuBar], exponentformat='e', tickangle=-45,
                          tickwidth=2, ticks='outside',showline=True, linewidth=1, linecolor='black', mirror=True, row=1, col=3)
         fig.update_xaxes(title_text=r'', showgrid=True, showline=True, linewidth=1, linecolor='black', mirror=True, row=1, col=3)
 

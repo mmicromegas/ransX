@@ -75,10 +75,7 @@ codes = [{'label': 'PROMPI', 'value': '3d-ccptwo-prompi'},
          {'label': 'COMPARISON', 'value': '3d-ccptwo-comparison'}]
 # {'label': 'MODELS (based on PROMPI)', 'value': '3d-ccptwo-prompi-models'}]
 
-equations = [{'label': 'Continuity Equation with Favrian Dilatation', 'value': 'conteq'},
-             {'label': 'Continuity Equation with Turbulent Mass Flux', 'value': 'conteqfdd'},
-             {'label': 'Momentum Equation X', 'value': 'momex'},
-             {'label': 'Turbulent Kinetic Energy Equation', 'value': 'tkeeq'},
+equations = [{'label': 'Source, Mean and Turbulent Velocities', 'value': 'srcvel'},
              {'label': 'Transport Equation for prot', 'value': 'xtrseq_prot'},
              {'label': 'Transport Equation for neut', 'value': 'xtrseq_neut'},
              {'label': 'Transport Equation for he4', 'value': 'xtrseq_he4'},
@@ -92,8 +89,7 @@ equations = [{'label': 'Continuity Equation with Favrian Dilatation', 'value': '
              {'label': 'Transport Equation for s32', 'value': 'xtrseq_s32'},
              {'label': 'Transport Equation for s34', 'value': 'xtrseq_s34'},
              {'label': 'Transport Equation for cl35', 'value': 'xtrseq_cl35'},
-             {'label': 'Transport Equation for ar36', 'value': 'xtrseq_ar36'},
-             {'label': 'Source, Mean and Turbulent Velocities', 'value': 'srcvel'}]
+             {'label': 'Transport Equation for ar36', 'value': 'xtrseq_ar36'}]
 
 comparison = [{'label': 'Velocities', 'value': 'urmstke'},
               {'label': 'Composition Flux', 'value': 'xflux'}]
@@ -146,7 +142,7 @@ app.layout = html.Div([
                                         id='equation',
                                         multi=False,
                                         options=equations,
-                                        value='conteq'
+                                        value='xtrseq_neut'
                                     ),
                                 ], style=dict(width='40%')),
                             ], style=dict(display='flex')),
@@ -298,7 +294,7 @@ def update_figRANS(codeSelect, equationSelect):
 
     if codeSelect in listOfCodes:
 
-        if equationSelect not in ['conteq', 'conteqfdd', 'momex', 'tkeeq', 'eieq', 'srcvel', 'xtrseq_prot',
+        if equationSelect not in ['srcvel', 'xtrseq_prot',
                                   'xtrseq_neut', 'xtrseq_he4', 'xtrseq_c12', 'xtrseq_o16', 'xtrseq_ne20',
                                   'xtrseq_na23', 'xtrseq_mg24', 'xtrseq_si28', 'xtrseq_p31', 'xtrseq_s32',
                                   'xtrseq_s34', 'xtrseq_cl35', 'xtrseq_ar36']:
@@ -347,8 +343,6 @@ def update_figRANS(codeSelect, equationSelect):
         # COMPOSITION TRANSPORT
         for elem in network[1:]:  # skip network identifier in the list
             inuc = params.getInuc(network, elem)
-
-            print(elem)
 
             # COMPOSITION TRANSPORT EQUATION
             if equationSelect == 'xtrseq_' + elem:
