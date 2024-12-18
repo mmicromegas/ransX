@@ -183,7 +183,7 @@ class XtransportEquation(Calculus, Tools, Errors, object):
         terms = [lhs0,lhs1,rhs0,rhs1,res]
         int_terms = self.calcIntegralBudget(terms, xbl_l, xbr_l, nx, xzn0_l, yzn0, zzn0, nsdim, plabel, laxis, self.ig)
 
-        eQterms = [r"$-\partial_t (\overline{\rho} \widetilde{X})$",r"$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x)$",
+        eQterms = [r"$-\partial_t (\overline{\rho} \widetilde{X})$",r"$-\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x )$",
                  r"$-\nabla_x f$", r"$+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc}$", r"$+res$"]
 
         # Plot
@@ -232,17 +232,6 @@ class XtransportEquation(Calculus, Tools, Errors, object):
                          showline=True, linewidth=1, linecolor='black', mirror=True,
                          ticks='outside')
 
-        fig.update_layout(
-            legend=dict(
-                yanchor="top",
-                y=0.98,
-                xanchor="right",
-                x=0.98,
-                bgcolor='rgba(0,0,0,0)',
-                font=dict(size=18)
-            )
-        )
-
         # 2nd subplot
         fig.add_trace(
             go.Scatter(x=xzn0_l, y=plt1,
@@ -272,7 +261,7 @@ class XtransportEquation(Calculus, Tools, Errors, object):
 
         # show
         fig.update_layout(height=550, width=1400, font=dict(size=14), xaxis_tickangle=-45, yaxis_tickangle=-45)
-        fig.update_layout(legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.02, bgcolor='rgba(0,0,0,0)',font=dict(size=18)),
+        fig.update_layout(legend=dict(yanchor="top", y=0.98, xanchor="left", x=0.12, bgcolor='rgba(0,0,0,0)',font=dict(size=18)),
                           title=r"$\partial_t (\overline{\rho} \widetilde{X}) = -\nabla_x (\overline{\rho} \widetilde{X} \widetilde{u}_x) "
                                 r"-\nabla_x f "
                                 r"+\overline{\rho} \widetilde{\dot{X}}^{\rm nuc} + res$")

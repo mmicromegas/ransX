@@ -23,6 +23,8 @@ from UTILS.RANSX.Properties import Properties
 from UTILS.RANSX.ReadParamsRansXi import ReadParamsRansXi
 from UTILS.RANSX.MasterPlot import MasterPlot
 
+import numpy as np
+
 app = dash.Dash(name='ransX')
 server = app.server
 
@@ -63,19 +65,20 @@ md_text_empty_line = open(os.path.join(filepath, "ransX-table-empty-line.md"), "
 #mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
 #mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML")
 
-listOfCodes = ['3d-ccptwo-prompi', '3d-ccptwo-flash', '3d-ccptwo-music', '3d-ccptwo-slh', '3d-ccptwo-slh2']
+listOfCodes = ['3d-oburn-prompi', '3d-ccptwo-flash', '3d-ccptwo-music', '3d-ccptwo-slh', '3d-ccptwo-slh2']
 listOfComparison = ['3d-ccptwo-comparison']
-listOfModels = ['3d-ccptwo-prompi-models']
+listOfModels = ['3d-oburn-prompi-models']
 
-codes = [{'label': 'PROMPI', 'value': '3d-ccptwo-prompi'},
+codes = [{'label': 'Oxygen Burning Shell', 'value': '3d-oburn-prompi'},
          {'label': 'FLASH', 'value': '3d-ccptwo-flash'},
          {'label': 'SLH', 'value': '3d-ccptwo-slh'},
          {'label': 'SLH (latest April/2021)', 'value': '3d-ccptwo-slh2'},
          {'label': 'MUSIC', 'value': '3d-ccptwo-music'},
          {'label': 'COMPARISON', 'value': '3d-ccptwo-comparison'}]
-# {'label': 'MODELS (based on PROMPI)', 'value': '3d-ccptwo-prompi-models'}]
+# {'label': 'MODELS (based on PROMPI)', 'value': '3d-oburn-prompi-models'}]
 
-equations = [{'label': 'Source, Mean and Turbulent Velocities', 'value': 'srcvel'},
+equations = [{'label': 'Temperature, Density, Pressure, Internal Energy', 'value': 'tdc'},
+             {'label': 'Source, Mean and Turbulent Velocities', 'value': 'srcvel'},
              {'label': 'Transport Equation for prot', 'value': 'xtrseq_prot'},
              {'label': 'Transport Equation for neut', 'value': 'xtrseq_neut'},
              {'label': 'Transport Equation for he4', 'value': 'xtrseq_he4'},
@@ -94,7 +97,7 @@ equations = [{'label': 'Source, Mean and Turbulent Velocities', 'value': 'srcvel
 comparison = [{'label': 'Velocities', 'value': 'urmstke'},
               {'label': 'Composition Flux', 'value': 'xflux'}]
 
-dictOptions = {'3d-ccptwo-prompi': equations,
+dictOptions = {'3d-oburn-prompi': equations,
                '3d-ccptwo-flash': equations,
                '3d-ccptwo-slh': equations,
                '3d-ccptwo-slh2': equations,
@@ -131,7 +134,7 @@ app.layout = html.Div([
                                     dcc.Dropdown(
                                         id='code',
                                         options=codes,
-                                        value='3d-ccptwo-prompi',
+                                        value='3d-oburn-prompi',
                                         multi=False
                                     ),
                                 ], style=dict(width='40%')),
@@ -172,7 +175,7 @@ def getParams(codeSelect):
     global params
 
     if codeSelect in listOfCodes:
-        if codeSelect == '3d-ccptwo-prompi':
+        if codeSelect == '3d-oburn-prompi':
             paramFile = os.path.join('PARAMS', 'PROMPI', 'param.ransxi')
             params = ReadParamsRansXi(paramFile)
         elif codeSelect == '3d-ccptwo-flash':
@@ -215,23 +218,23 @@ def update_table(codeSelect):
         ransP = Properties(params)
         prp = ransP.properties()
 
-        data = {'Name of Property': ['Resolution', 'Depth of the Convection Zone (in ccp units)',
+        data = {'Name of Property': ['Resolution', 'Depth of the Convection Zone (in 10e8 cm)',
                                      'Effective Reynolds Number'],
-                'Value': [str(prp['nx']) + 'x' + str(prp['ny']) + 'x' + str(prp['nz']), prp['lc'], prp['Re']],
-                'Name of Property ': ['Time-Averaging Window (in turnover timescales)', 'Central Time (in ccp units)',
-                                      'Averaging Time-Range (From-To in ccp units)'],
+                'Value': [str(prp['nx']) + 'x' + str(prp['ny']) + 'x' + str(prp['nz']), np.round(prp['lc']/1.e8,1), prp['Re']],
+                'Name of Property ': ['Time-Averaging Window (in turnover timescales)', 'Central Time (in seconds)',
+                                      'Averaging Time-Range (From-To in seconds)'],
                 'Value ': [prp['tavg_to'], prp['timec'], str(prp['timerange_beg']) + '-' + str(prp['timerange_end'])],
-                'Name of Property  ': ['Convective Turnover Timescale (in ccp units)',
-                                       'Turbulent Kinetic Energy Dissipation Timescale (in ccp units)',
-                                       'Root-Mean-Square Turbulence Velocity (in ccp units)'],
-                'Value  ': [prp['tc'], prp['tD'], prp['urms']]}
+                'Name of Property  ': ['Convective Turnover Timescale (in seconds)',
+                                       'Turbulent Kinetic Energy Dissipation Timescale (in seconds)',
+                                       'Root-Mean-Square Turbulence Velocity (in 10e6 cm/s)'],
+                'Value  ': [prp['tc'], prp['tD'], np.round(prp['urms']/1.e6,1)]}
 
         #    [prp['tc'], prp['tD'], '%.2e' % prp['urms']]
 
         df = pd.DataFrame(data)
     elif codeSelect in listOfComparison:
         # calculate properties
-        params = getParams('3d-ccptwo-prompi')  # hardcoded - assuming all loaded data have the same resolution,
+        params = getParams('3d-oburn-prompi')  # hardcoded - assuming all loaded data have the same resolution,
         # averaging window, and approx. central time
         ransP = Properties(params)
         prp = ransP.properties()
@@ -248,7 +251,7 @@ def update_table(codeSelect):
         df = pd.DataFrame(data)
     elif codeSelect in listOfModels:
         # calculate properties
-        params = getParams('3d-ccptwo-prompi')  # hardcoded as the models are based on PROMPI only
+        params = getParams('3d-oburn-prompi')  # hardcoded as the models are based on PROMPI only
         ransP = Properties(params)
         prp = ransP.properties()
 
@@ -294,7 +297,7 @@ def update_figRANS(codeSelect, equationSelect):
 
     if codeSelect in listOfCodes:
 
-        if equationSelect not in ['srcvel', 'xtrseq_prot',
+        if equationSelect not in ['tdc','srcvel', 'xtrseq_prot',
                                   'xtrseq_neut', 'xtrseq_he4', 'xtrseq_c12', 'xtrseq_o16', 'xtrseq_ne20',
                                   'xtrseq_na23', 'xtrseq_mg24', 'xtrseq_si28', 'xtrseq_p31', 'xtrseq_s32',
                                   'xtrseq_s34', 'xtrseq_cl35', 'xtrseq_ar36']:
@@ -336,6 +339,10 @@ def update_figRANS(codeSelect, equationSelect):
         # VELOCITY
         if equationSelect == 'srcvel':
             fig = plt.execSrcvel(bconv, tconv)
+
+        # TEMPERATURE, DENSITY, COMPOSITION
+        if equationSelect == 'tdc':
+            fig = plt.execTDC(bconv, tconv)
 
         # load network
         network = params.getNetwork()

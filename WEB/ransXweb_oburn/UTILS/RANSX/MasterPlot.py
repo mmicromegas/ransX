@@ -6,6 +6,7 @@ from EQUATIONS.XvarianceEquation import XvarianceEquation
 from EQUATIONS.TurbulentKineticEnergyEquation import TurbulentKineticEnergyEquation
 from EQUATIONS.InternalEnergyEquation import InternalEnergyEquation
 from EQUATIONS.SourceVel import SourceVel
+from EQUATIONS.TDC import TDC
 
 from EQUATIONS.FOR_COMPARISON.VelTke import VelTke
 from EQUATIONS.FOR_COMPARISON.CompositionFlux import CompositionFlux
@@ -241,6 +242,34 @@ class MasterPlot():
                           params.getForEqs('velmlt')['ybu'],
                           params.getForEqs('velmlt')['ybd'],
                           params.getForEqs('velmlt')['ilg'])
+
+        return fig
+
+    def execTDC(self, bconv, tconv):
+        params = self.params
+
+        # instantiate
+        ransTDC = TDC(params.getForProp('prop')['eht_data'],
+                                                           params.getForProp('prop')['plabel'],
+                                                           params.getForProp('prop')['code'],
+                                                           params.getForProp('prop')['ig'],
+                                                           params.getForProp('prop')['fext'],
+                                                           params.getForProp('prop')['intc'],
+                                                           params.getForProp('prop')['nsdim'],
+                                                           params.getForProp('prop')['prefix'])
+
+        # figRANS
+        fig = ransTDC.plot_tempdensx(params.getForProp('prop')['laxis'],
+                          bconv, tconv,
+                          params.getForEqs('rho')['xbl'],
+                          params.getForEqs('rho')['xbr'],
+                          params.getForEqs('rho')['ybu'],
+                          params.getForEqs('rho')['ybd'],
+                          params.getForEqs('press')['ybu'],
+                          params.getForEqs('press')['ybd'],
+                          params.getForEqs('eint')['ybu'],
+                          params.getForEqs('eint')['ybd'],
+                          params.getForEqs('eint')['ilg'])
 
         return fig
 
