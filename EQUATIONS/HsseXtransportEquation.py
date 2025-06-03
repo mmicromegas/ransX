@@ -68,6 +68,9 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         # END HSSE Xi TRANSPORT EQUATION
         ################################
 
+        self.tau_trans = np.abs(dd*fht_xi/self.Div(fxi,xzn0))
+        self.tau_nuc   = np.abs(dd*fht_xi/(ddxidot))
+
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
         self.xzn0 = xzn0
@@ -154,9 +157,13 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         to_plot = [lhs0, rhs0, rhs1, rhs2, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        element_nice = self.setNucNoUp(str(element))
+
         # plot DATA 
         #plt.title('hsse rhoX transport for ' + element)
-        plt.title('composition equation for ' + element)
+        #plt.title('composition equation for ' + element)
+        plt.title(str(element_nice))
+
         # plt.plot(grd1,lhs0,color='r',label = r'$-\partial_t \widetilde{X}_i$')
         # plt.plot(grd1,rhs0,color='g',label=r'$+\widetilde{\dot{X}}^{\rm nuc}_i$')
         # plt.plot(grd1,rhs1,color='b',label=r'$-(1/\overline{\rho}) \nabla_r f_i$')
@@ -191,6 +198,32 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
+        # restrict grid between self.bconv and self.tconv
+        mask = (grd1 >= self.bconv*1.02) & (grd1 <= self.tconv*0.85)
+        xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+        threshold_rhs0 = 0.1 * np.max(rhs0[mask])
+        threshold_neg = -0.1 * np.max(rhs0[mask])
+        ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+        ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+        ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+        indices_to_plot = [idx for idx in ind_array if
+                           (rhs0[mask][idx] > threshold_rhs0 or rhs0[mask][idx] < threshold_neg)]
+        if len(indices_to_plot) > 0:
+            for idx in indices_to_plot:
+                plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                plt.text(grd1[mask][idx] * 1., rhs0[mask][idx] * 1.,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                         self.tau_nuc[mask][idx]),
+                         fontsize=15, color='k')
+        elif (rhs0[mask][0] > threshold_rhs0 or rhs0[mask][0] < threshold_neg):
+            plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+            plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                     '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                     self.tau_nuc[mask][0]),
+                     fontsize=14, color='k')
+
+
         # define and show x/y LABELS
         setxlabel = r"r (cm)"
         setylabel = r"s$^{-1}$"
@@ -210,3 +243,58 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
             plt.savefig('RESULTS/' + self.data_prefix + 'hsse_mean_Xtransport_' + element + '.png')
         elif self.fext == 'eps':
             plt.savefig('RESULTS/' + self.data_prefix + 'hsse_mean_Xtransport_' + element + '.eps')
+
+    def setNucNoUp(self, inpt):
+        elmnt = ""
+        if inpt == "neut":
+            elmnt = r"neut"
+        if inpt == "prot":
+            elmnt = r"prot"
+        if inpt == "he4":
+            elmnt = r"He$^{4}$"
+        if inpt == "c12":
+            elmnt = r"C$^{12}$"
+        if inpt == "o16":
+            elmnt = r"O$^{16}$"
+        if inpt == "ne20":
+            elmnt = r"Ne$^{20}$"
+        if inpt == "na23":
+            elmnt = r"Na$^{23}$"
+        if inpt == "mg24":
+            elmnt = r"Mg$^{24}$"
+        if inpt == "si28":
+            elmnt = r"Si$^{28}$"
+        if inpt == "p31":
+            elmnt = r"P$^{31}$"
+        if inpt == "s32":
+            elmnt = r"S$^{32}$"
+        if inpt == "s34":
+            elmnt = r"S$^{34}$"
+        if inpt == "cl35":
+            elmnt = r"Cl$^{35}$"
+        if inpt == "ar36":
+            elmnt = r"Ar$^{36}$"
+        if inpt == "ar38":
+            elmnt = r"Ar$^{38}$"
+        if inpt == "k39":
+            elmnt = r"K$^{39}$"
+        if inpt == "ca40":
+            elmnt = r"Ca$^{40}$"
+        if inpt == "ca42":
+            elmnt = r"Ca$^{42}$"
+        if inpt == "ti44":
+            elmnt = r"Ti$^{44}$"
+        if inpt == "ti46":
+            elmnt = r"Ti$^{46}$"
+        if inpt == "cr48":
+            elmnt = r"Cr$^{48}$"
+        if inpt == "cr50":
+            elmnt = r"Cr$^{50}$"
+        if inpt == "fe52":
+            elmnt = r"Fe$^{52}$"
+        if inpt == "fe54":
+            elmnt = r"Fe$^{54}$"
+        if inpt == "ni56":
+            elmnt = r"Ni$^{56}$"
+
+        return elmnt
