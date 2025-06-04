@@ -198,30 +198,187 @@ class HsseXtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
 
-        # restrict grid between self.bconv and self.tconv
-        mask = (grd1 >= self.bconv*1.02) & (grd1 <= self.tconv*0.85)
-        xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
 
-        threshold_rhs0 = 0.1 * np.max(rhs0[mask])
-        threshold_neg = -0.1 * np.max(rhs0[mask])
-        ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
-        ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
-        ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
-        indices_to_plot = [idx for idx in ind_array if
-                           (rhs0[mask][idx] > threshold_rhs0 or rhs0[mask][idx] < threshold_neg)]
-        if len(indices_to_plot) > 0:
-            for idx in indices_to_plot:
+
+        if element == 's32':
+            # restrict grid between self.bconv and self.tconv
+            mask = (grd1 >= self.bconv * 1.05) & (grd1 <= self.tconv * 0.85)
+            xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+            threshold_pos = 0.1 * np.max(rhs0[mask])
+            threshold_neg = 0.1 * np.min(rhs0[mask])
+
+            ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+            ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+            ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+            indices_to_plot = [idx for idx in ind_array if
+                               (rhs0[mask][idx] > threshold_pos or rhs0[mask][idx] < threshold_neg)]
+
+            if len(indices_to_plot) > 0:
+                for idx in indices_to_plot:
+                    plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                    plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
+                             '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                             self.tau_nuc[mask][idx]),
+                             fontsize=15, color='k')
+            elif (rhs0[mask][0] > threshold_pos or rhs0[mask][0] < threshold_neg):
+                plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+                plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                         self.tau_nuc[mask][0]),
+                         fontsize=14, color='k')
+        elif element == 'mg24':
+            # restrict grid between self.bconv and self.tconv
+            mask = (grd1 >= self.bconv * 1.015) & (grd1 <= self.tconv * 0.85)
+            xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+            threshold_pos = 0.02 * np.max(rhs0[mask])
+            threshold_neg = 0.02 * np.min(rhs0[mask])
+
+            ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+            ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+            ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+            indices_to_plot = [idx for idx in ind_array if
+                               (rhs0[mask][idx] > threshold_pos or rhs0[mask][idx] < threshold_neg)]
+
+            if len(indices_to_plot) > 0:
+                #for idx in indices_to_plot:
+                    # plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                    # plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
+                    #          '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                    #                                                          self.tau_nuc[mask][idx]),
+                    #          fontsize=15, color='k')
+
+                idx = indices_to_plot[0]
                 plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
-                plt.text(grd1[mask][idx] * 1., rhs0[mask][idx] * 1.,
+                plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
                          '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
                                                                          self.tau_nuc[mask][idx]),
                          fontsize=15, color='k')
-        elif (rhs0[mask][0] > threshold_rhs0 or rhs0[mask][0] < threshold_neg):
-            plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
-            plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
-                     '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
-                                                                     self.tau_nuc[mask][0]),
-                     fontsize=14, color='k')
+
+                idx = indices_to_plot[1]
+                plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                plt.text(grd1[mask][idx] * 1.03, np.abs(rhs0[mask][idx]) * 5.,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                         self.tau_nuc[mask][idx]),
+                         fontsize=15, color='k')
+
+
+            elif (rhs0[mask][0] > threshold_pos or rhs0[mask][0] < threshold_neg):
+                plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+                plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                         self.tau_nuc[mask][0]),
+                         fontsize=14, color='k')
+        elif element == 'na23':
+            # restrict grid between self.bconv and self.tconv
+            mask = (grd1 >= self.bconv * 1.2) & (grd1 <= self.tconv * 0.85)
+            xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+            threshold_pos = 0.1 * np.max(rhs0[mask])
+            threshold_neg = 0.1 * np.min(rhs0[mask])
+
+            ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+            ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+            ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+            indices_to_plot = [idx for idx in ind_array if
+                               (rhs0[mask][idx] > threshold_pos or rhs0[mask][idx] < threshold_neg)]
+
+            if len(indices_to_plot) > 0:
+                for idx in indices_to_plot:
+                    plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                    plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
+                             '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                             self.tau_nuc[mask][idx]),
+                             fontsize=15, color='k')
+            elif (rhs0[mask][0] > threshold_pos or rhs0[mask][0] < threshold_neg):
+                plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+                plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                         self.tau_nuc[mask][0]),
+                         fontsize=14, color='k')
+        elif element == 'ne20':
+            # restrict grid between self.bconv and self.tconv
+            mask = (grd1 >= self.bconv * 1.4) & (grd1 <= self.tconv * 0.85)
+            xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+            threshold_pos = 0.1 * np.max(rhs0[mask])
+            threshold_neg = 0.1 * np.min(rhs0[mask])
+
+            ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+            ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+            ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+            indices_to_plot = [idx for idx in ind_array if
+                               (rhs0[mask][idx] > threshold_pos or rhs0[mask][idx] < threshold_neg)]
+
+            if len(indices_to_plot) > 0:
+                for idx in indices_to_plot:
+                    plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                    plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
+                             '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                             self.tau_nuc[mask][idx]),
+                             fontsize=15, color='k')
+            elif (rhs0[mask][0] > threshold_pos or rhs0[mask][0] < threshold_neg):
+                plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+                plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                         self.tau_nuc[mask][0]),
+                         fontsize=14, color='k')
+        elif element == 'ar36':
+            # restrict grid between self.bconv and self.tconv
+            mask = (grd1 >= self.bconv * 1.015) & (grd1 <= self.tconv * 0.85)
+            xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+            threshold_pos = 0.1 * np.max(rhs0[mask])
+            threshold_neg = 1. * np.min(rhs0[mask])
+
+            ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+            ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+            ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+            indices_to_plot = [idx for idx in ind_array if
+                               (rhs0[mask][idx] > threshold_pos or rhs0[mask][idx] < threshold_neg)]
+
+            if len(indices_to_plot) > 0:
+                for idx in indices_to_plot:
+                    plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                    plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
+                             '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                             self.tau_nuc[mask][idx]),
+                             fontsize=15, color='k')
+            elif (rhs0[mask][0] > threshold_pos or rhs0[mask][0] < threshold_neg):
+                plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+                plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                         self.tau_nuc[mask][0]),
+                         fontsize=14, color='k')
+
+        else:
+            # restrict grid between self.bconv and self.tconv
+            mask = (grd1 >= self.bconv * 1.015) & (grd1 <= self.tconv * 0.85)
+            xnuc_grad = self.Grad(rhs0[mask], grd1[mask])
+
+            threshold_pos = 0.12 * np.max(rhs0[mask])
+            threshold_neg = 0.12 * np.min(rhs0[mask])
+
+            ind_array_neg2 = np.where(np.diff(np.sign(xnuc_grad)) == -2)[0]
+            ind_array_pos2 = np.where(np.diff(np.sign(xnuc_grad)) == 2)[0]
+            ind_array = np.sort(np.concatenate((ind_array_neg2, ind_array_pos2)))
+            indices_to_plot = [idx for idx in ind_array if
+                               (rhs0[mask][idx] > threshold_pos or rhs0[mask][idx] < threshold_neg)]
+
+            if len(indices_to_plot) > 0:
+                for idx in indices_to_plot:
+                    plt.plot(grd1[mask][idx], rhs0[mask][idx], 'ko', markersize=8)
+                    plt.text(grd1[mask][idx] * 1.03, rhs0[mask][idx] * 1.03,
+                             '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][idx],
+                                                                             self.tau_nuc[mask][idx]),
+                             fontsize=15, color='k')
+            elif (rhs0[mask][0] > threshold_pos or rhs0[mask][0] < threshold_neg):
+                plt.plot(grd1[mask][0], rhs0[mask][0], 'ko', markersize=8)
+                plt.text(grd1[mask][0], rhs0[mask][0] * 1.5,
+                         '$\\tau_{trans}$=%.0fs\n$\\tau_{nuc}$=%.0fs' % (self.tau_trans[mask][0],
+                                                                         self.tau_nuc[mask][0]),
+                         fontsize=14, color='k')
 
 
         # define and show x/y LABELS
