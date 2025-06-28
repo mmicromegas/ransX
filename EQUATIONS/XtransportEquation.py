@@ -8,6 +8,7 @@ from UTILS.Calculus import Calculus
 from UTILS.SetAxisLimit import SetAxisLimit
 from UTILS.Tools import Tools
 from UTILS.Errors import Errors
+import os
 
 
 # Theoretical background https://arxiv.org/abs/1401.5176
@@ -23,6 +24,11 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # load data to structured array
         eht = self.customLoad(filename)
+
+        filename_ini = os.path.join('WEB','ransXweb_oburn','DATA_D','tseries_oburn14_512x128x128_cosma_ini.npy')
+        eht_ini = self.customLoad(filename_ini)
+        intc_ini = 5
+
 
         # load grid
         xzn0 = self.getRAdata(eht, 'xzn0')
@@ -102,6 +108,9 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         #    print("ERROR(XtransportEquation.py): core mass not defined!")
         #    sys.exit()
 
+        self.tau_trans = np.abs(dd*fht_xi/self.Div(fxi,xzn0))
+        self.tau_nuc   = np.abs(dd*fht_xi/(ddxidot))
+
         self.fhtxineut = self.getRAdata(eht, 'ddx0001')[intc]/dd
         self.fhtxiprot = self.getRAdata(eht, 'ddx0002')[intc]/dd
         self.fhtxihe4 = self.getRAdata(eht, 'ddx0003')[intc]/dd
@@ -116,6 +125,106 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         self.fhtxis34 = self.getRAdata(eht, 'ddx0012')[intc]/dd
         self.fhtxicl35 = self.getRAdata(eht, 'ddx0013')[intc]/dd
         self.fhtxiar36 = self.getRAdata(eht, 'ddx0014')[intc]/dd
+
+        self.fhtxineut_ini = self.getRAdata(eht_ini, 'ddx0001')[intc_ini] / dd
+        self.fhtxiprot_ini = self.getRAdata(eht_ini, 'ddx0002')[intc_ini] / dd
+        self.fhtxihe4_ini = self.getRAdata(eht_ini, 'ddx0003')[intc_ini] / dd
+        self.fhtxic12_ini = self.getRAdata(eht_ini, 'ddx0004')[intc_ini] / dd
+        self.fhtxio16_ini = self.getRAdata(eht_ini, 'ddx0005')[intc_ini] / dd
+        self.fhtxine20_ini = self.getRAdata(eht_ini, 'ddx0006')[intc_ini] / dd
+        self.fhtxina23_ini = self.getRAdata(eht_ini, 'ddx0007')[intc_ini] / dd
+        self.fhtximg24_ini = self.getRAdata(eht_ini, 'ddx0008')[intc_ini] / dd
+        self.fhtxisi28_ini = self.getRAdata(eht_ini, 'ddx0009')[intc_ini] / dd
+        self.fhtxip31_ini = self.getRAdata(eht_ini, 'ddx0010')[intc_ini] / dd
+        self.fhtxis32_ini = self.getRAdata(eht_ini, 'ddx0011')[intc_ini] / dd
+        self.fhtxis34_ini = self.getRAdata(eht_ini, 'ddx0012')[intc_ini] / dd
+        self.fhtxicl35_ini = self.getRAdata(eht_ini, 'ddx0013')[intc_ini] / dd
+        self.fhtxiar36_ini = self.getRAdata(eht_ini, 'ddx0014')[intc_ini] / dd
+
+
+        # read TYCHO's initial model
+
+        dir_model = os.path.join(os.path.realpath('.'), 'DATA', 'INIMODEL', 'imodel.tycho')
+
+        with open(dir_model, 'r') as f:
+            # read header: nlines and nspecies
+            header_line = f.readline()
+            parts = header_line.split()
+            nlines = int(parts[0])
+            nspecies = int(parts[1])
+            # print("MSG(read_tycho): read network definition:")
+            # print("MSG(read_tycho): nlines,nspecies=", nlines, nspecies)
+            # print("MSG(read_tycho): i  xnucid  zz  nn")
+
+            xnucid = []
+            xnuczz = []
+            xnucnn = []
+            for i in range(nspecies):
+                line = f.readline()
+                # assuming each line contains a 5-character string followed by two integers
+                fields = line.split()
+                xnucid.append(fields[0])
+                xnuczz.append(int(fields[1]))
+                xnucnn.append(int(fields[2]))
+                # print(
+                #     "MSG(read_tycho): {:4d} {:5s} {:4d} {:4d}".format(i + 1, fields[0], int(fields[1]), int(fields[2])))
+
+        data = np.loadtxt(dir_model, skiprows=26)
+        nxmax = 500
+
+        # rr = data[1:nxmax, 2]
+        # xneut_ini = data[1:nxmax, 9]*(xnucnn[0] + xnuczz[0])  # neutrons
+        # xp_ini = data[1:nxmax, 10] * (xnucnn[1] + xnuczz[1])
+        # xhe4_ini = data[1:nxmax, 11] * (xnucnn[2] + xnuczz[2])
+        # xc12_ini = data[1:nxmax, 12] * (xnucnn[3] + xnuczz[3])
+        # xo16_ini = data[1:nxmax, 13] * (xnucnn[4] + xnuczz[4])
+        # xne20_ini = data[1:nxmax, 14] * (xnucnn[5] + xnuczz[5])
+        # xna23_ini = data[1:nxmax, 15] * (xnucnn[6] + xnuczz[6])
+        # xmg24_ini = data[1:nxmax, 16] * (xnucnn[7] + xnuczz[7])
+        # xsi28_ini = data[1:nxmax, 17] * (xnucnn[8] + xnuczz[8])
+        # xp31_ini = data[1:nxmax, 18] * (xnucnn[9] + xnuczz[9])
+        # xs32_ini = data[1:nxmax, 19] * (xnucnn[10] + xnuczz[10])
+        # xs34_ini = data[1:nxmax, 20] * (xnucnn[11] + xnuczz[11])
+        # xcl35_ini = data[1:nxmax, 21] * (xnucnn[12] + xnuczz[12])
+        # xar36_ini = data[1:nxmax, 22] * (xnucnn[13] + xnuczz[13])
+        # xar38_ini = data[1:nxmax, 23] * (xnucnn[14] + xnuczz[14])
+        # xk39_ini = data[1:nxmax, 24] * (xnucnn[15] + xnuczz[15])
+        # xca40_ini = data[1:nxmax, 25] * (xnucnn[16] + xnuczz[16])
+        # xca42_ini = data[1:nxmax, 26] * (xnucnn[17] + xnuczz[17])
+        # xti44_ini = data[1:nxmax, 27] * (xnucnn[18] + xnuczz[18])
+        # xti46_ini = data[1:nxmax, 28] * (xnucnn[19] + xnuczz[19])
+        # xcr48_ini = data[1:nxmax, 29] * (xnucnn[20] + xnuczz[20])
+        # xcr50_ini = data[1:nxmax, 30] * (xnucnn[21] + xnuczz[21])
+        # xfe52_ini = data[1:nxmax, 31] * (xnucnn[22] + xnuczz[22])
+        # xfe54_ini = data[1:nxmax, 32] * (xnucnn[23] + xnuczz[23])
+        # xni56_ini = data[1:nxmax, 33] * (xnucnn[24] + xnuczz[24])
+
+
+        # self.xneut_ini_int = np.interp(xzn0, rr, xneut_ini)
+        # self.xp_ini_int = np.interp(xzn0, rr, xp_ini)
+        # self.xhe4_ini_int = np.interp(xzn0, rr, xhe4_ini)
+        # self.xc12_ini_int = np.interp(xzn0, rr, xc12_ini)
+        # self.xo16_ini_int = np.interp(xzn0, rr, xo16_ini)
+        # self.xne20_ini_int = np.interp(xzn0, rr, xne20_ini)
+        # self.xna23_ini_int = np.interp(xzn0, rr, xna23_ini)
+        # self.xmg24_ini_int = np.interp(xzn0, rr, xmg24_ini)
+        # self.xsi28_ini_int = np.interp(xzn0, rr, xsi28_ini)
+        # self.xp31_ini_int = np.interp(xzn0, rr, xp31_ini)
+        # self.xs32_ini_int = np.interp(xzn0, rr, xs32_ini)
+        # self.xs34_ini_int = np.interp(xzn0, rr, xs34_ini)
+        # self.xcl35_ini_int = np.interp(xzn0, rr, xcl35_ini)
+        # self.xar36_ini_int = np.interp(xzn0, rr, xar36_ini)
+        # self.xar38_ini_int = np.interp(xzn0, rr, xar38_ini)
+        # self.xk39_ini_int = np.interp(xzn0, rr, xk39_ini)
+        # self.xca40_ini_int = np.interp(xzn0, rr, xca40_ini)
+        # self.xca42_ini_int = np.interp(xzn0, rr, xca42_ini)
+        # self.xti44_ini_int = np.interp(xzn0, rr, xti44_ini)
+        # self.xti46_ini_int = np.interp(xzn0, rr, xti46_ini)
+        # self.xcr48_ini_int = np.interp(xzn0, rr, xcr48_ini)
+        # self.xcr50_ini_int = np.interp(xzn0, rr, xcr50_ini)
+        # self.xfe52_ini_int = np.interp(xzn0, rr, xfe52_ini)
+        # self.xfe54_ini_int = np.interp(xzn0, rr, xfe54_ini)
+        # self.xni56_ini_int = np.interp(xzn0, rr, xni56_ini)
 
         # assign global data to be shared across whole class
         self.data_prefix = data_prefix
@@ -337,6 +446,37 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         # load DATA to plot
         plt1 = self.fht_xi
 
+        # to plt2, select self.fhtxineut_ini when element is 'neut', do the same for other elements
+        if element == 'neut':
+            plt2 = self.fhtxineut_ini
+        elif element == 'prot':
+            plt2 = self.fhtxiprot_ini
+        elif element == 'he4':
+            plt2 = self.fhtxihe4_ini
+        elif element == 'c12':
+            plt2 = self.fhtxic12_ini
+        elif element == 'o16':
+            plt2 = self.fhtxio16_ini
+        elif element == 'ne20':
+            plt2 = self.fhtxine20_ini
+        elif element == 'na23':
+            plt2 = self.fhtxina23_ini
+        elif element == 'mg24':
+            plt2 = self.fhtximg24_ini
+        elif element == 'si28':
+            plt2 = self.fhtxisi28_ini
+        elif element == 'p31':
+            plt2 = self.fhtxip31_ini
+        elif element == 's32':
+            plt2 = self.fhtxis32_ini
+        elif element == 's34':
+            plt2 = self.fhtxis34_ini
+        elif element == 'cl35':
+            plt2 = self.fhtxicl35_ini
+        elif element == 'ar36':
+            plt2 = self.fhtxiar36_ini
+
+
         fig, ax1 = plt.subplots(figsize=(7, 6))
 
         to_plot = [plt1]
@@ -344,6 +484,9 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # plot DATA
         ax1.semilogy(grd1, plt1, color='brown', label=self.setNucNoUp(str(element)))
+        ax1.semilogy(grd1, plt2, color='magenta', label=self.setNucNoUp(str(element))+' ini')
+
+
 
         # define and show x/y LABELS
         if self.ig == 1:
@@ -377,6 +520,14 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         ax2.set_xticklabels(newMMlabel)
         ax2.set_xlabel('enclosed mass (msol)')
+
+        # calculate ratio of plt2 to plt1 at the location in the middle between self.bconv and self.tconv
+        mid_x = (self.bconv + self.tconv) / 2.
+        mid_index = np.argmin(np.abs(grd1 - mid_x))
+        ratio = plt1[mid_index] / plt2[mid_index]
+
+        print(f"At mid convective boundary (x = {mid_x:.2e}), the ratio of {element} current to initial X: {ratio:.4e}")
+
 
         # display PLOT
         plt.show(block=False)
@@ -819,8 +970,12 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         to_plot = [lhs0, lhs1, rhs0, rhs1, res]
         self.set_plt_axis(LAXIS, xbl, xbr, ybu, ybd, to_plot)
 
+        # create mapping between element and element_nice, when he4, make element_nice to be $He^{4}$
+        element_nice = self.setNucNoUp(str(element))
+
         # plot DATA
-        plt.title(r"rhoX transport for " + str(element) + " (netw: " + str(self.nnuc) + " ele) " + str(self.nsdim) + "D")
+        #plt.title(r"rhoX transport for " + str(element) + " (netw: " + str(self.nnuc) + " ele) " + str(self.nsdim) + "D")
+        plt.title(str(element_nice))
 
         if self.ig == 1:
             plt.plot(grd1, lhs0, color='r', label=r'$-\partial_t (\overline{\rho} \widetilde{X})$')
@@ -838,6 +993,12 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         # convective boundary markers
         plt.axvline(self.bconv, linestyle='--', linewidth=0.7, color='k')
         plt.axvline(self.tconv, linestyle='--', linewidth=0.7, color='k')
+
+
+
+
+
+
 
         # convective boundary markers - only super-adiatic regions
         # plt.axvline(self.super_ad_i, linestyle=':', linewidth=0.7, color='k')
@@ -991,8 +1152,11 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # Create a title, in italics
 
-        ax.set_title(r"rhoX transport budget for " + str(element) + " (netw: " + str(self.nnuc) + " ele) " + str(self.nsdim) + "D")
+        #ax.set_title(r"rhoX transport budget for " + str(element) + " (netw: " + str(self.nnuc) + " ele) " + str(self.nsdim) + "D")
         #ax.set_title('rhoX transport budget for ' + element)
+
+        element_nice = self.setNucNoUp(str(element))
+        ax.set_title(element_nice)
 
         # This sets the ticks on the x axis to be exactly where we put
         # the center of the bars.
