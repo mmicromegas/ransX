@@ -508,14 +508,14 @@ class MasterPlot():
         #                              params.getForEqs(x)['ybd'],
         #                              params.getForEqs(x)['ilg'])
 
-        #ransXtra.plot_Xm_with_MM_1(params.getForProp('prop')['laxis'],
+        # ransXtra.plot_Xm_with_MM_1(params.getForProp('prop')['laxis'],
         #                    params.getForEqs(x)['xbl'],
         #                    params.getForEqs(x)['xbr'],
         #                    params.getForEqs(x)['ybu'],
         #                    params.getForEqs(x)['ybd'],
         #                    params.getForEqs(x)['ilg'])
-
-        #ransXtra.plot_Xm_with_MM_2(params.getForProp('prop')['laxis'],
+        #
+        # ransXtra.plot_Xm_with_MM_2(params.getForProp('prop')['laxis'],
         #                           params.getForEqs(x)['xbl'],
         #                           params.getForEqs(x)['xbr'],
         #                           params.getForEqs(x)['ybu'],

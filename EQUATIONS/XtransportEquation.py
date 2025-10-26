@@ -527,6 +527,8 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
         ratio = plt1[mid_index] / plt2[mid_index]
 
         print(f"At mid convective boundary (x = {mid_x:.2e}), the ratio of {element} current to initial X: {ratio:.4e}")
+        print(f"Log At mid convective boundary (x = {mid_x:.2e}), the log10 ratio of {element} current to initial X: {np.log10(ratio):.1e}")
+
 
 
         # display PLOT
@@ -637,7 +639,7 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM_ini.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM1_ini.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM_1.eps')
 
@@ -740,7 +742,7 @@ class XtransportEquation(Calculus, SetAxisLimit, Tools, Errors, object):
 
         # save PLOT
         if self.fext == "png":
-            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM_ini.png')
+            plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM2_ini.png')
         if self.fext == "eps":
             plt.savefig('RESULTS/' + self.data_prefix + 'mean_Xm_withMM_2.eps')
 

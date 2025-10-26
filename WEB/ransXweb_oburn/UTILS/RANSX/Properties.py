@@ -20,7 +20,8 @@ class Properties(Calculus, Tools, Errors, object):
         # get input parameters
         filename = params.getForProp('prop')['eht_data']
         plabel = params.getForProp('prop')['plabel']
-        code = params.getForProp('prop')['code']
+        #code = params.getForProp('prop')['code']
+        code = 'PROMPI'
         ig = params.getForProp('prop')['ig']
         nsdim = params.getForProp('prop')['nsdim']
         ieos = params.getForProp('prop')['ieos']
@@ -39,10 +40,10 @@ class Properties(Calculus, Tools, Errors, object):
 
         # load grid
         nx = self.getRAdata(eht, 'nx')
-        #ny = self.getRAdata(eht, 'ny')
-        #nz = self.getRAdata(eht, 'nz')
-        ny = nx
-        nz = nx
+        ny = self.getRAdata(eht, 'ny')
+        nz = self.getRAdata(eht, 'nz')
+        #ny = nx
+        #nz = nx
 
 
         xzn0 = self.getRAdata(eht, 'xzn0')
@@ -78,23 +79,17 @@ class Properties(Calculus, Tools, Errors, object):
         uyuy = self.getRAdata(eht, 'uyuy')[intc]
         uzuz = self.getRAdata(eht, 'uzuz')[intc]
 
-        if plabel == 'ccptwo':
-            ddux = self.getRAdata(eht, 'ddux')[intc]
-            ddxi = self.getRAdata(eht, 'ddx0001')[intc]
-            ddxiux = self.getRAdata(eht, 'ddx0001ux')[intc]
-            fxi = ddxiux - ddxi * ddux / dd
-        else:
-            print("ERROR(Properties.py): Project " + plabel + " not supported.")
-            sys.exit()
+
+        ddux = self.getRAdata(eht, 'ddux')[intc]
+        ddxi = self.getRAdata(eht, 'ddx0001')[intc]
+        ddxiux = self.getRAdata(eht, 'ddx0001ux')[intc]
+        fxi = ddxiux - ddxi * ddux / dd
+
 
         pp = self.getRAdata(eht, 'pp')[intc]
 
 
-        # for ccp project
-        if plabel == 'ccptwo':
-            x0002 = self.getRAdata(eht, 'x0002')[intc]
-        else:
-            x0002 = np.zeros(nx)
+
 
         ####################################################################
 
@@ -151,7 +146,6 @@ class Properties(Calculus, Tools, Errors, object):
         self.nsdim = nsdim
         self.laxis = laxis
 
-        self.x0002 = x0002
         self.fxi = fxi
 
     def properties(self):

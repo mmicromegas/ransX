@@ -23,6 +23,9 @@ from UTILS.RANSX.Properties import Properties
 from UTILS.RANSX.ReadParamsRansXi import ReadParamsRansXi
 from UTILS.RANSX.MasterPlot import MasterPlot
 
+from UTILS.REACLIB.ReadParamsReaclib import ReadParamsReaclib
+
+
 import numpy as np
 
 app = dash.Dash(name='ransX')
@@ -65,16 +68,11 @@ md_text_empty_line = open(os.path.join(filepath, "ransX-table-empty-line.md"), "
 #mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
 #mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML")
 
-listOfCodes = ['3d-oburn-prompi', '3d-ccptwo-flash', '3d-ccptwo-music', '3d-ccptwo-slh', '3d-ccptwo-slh2']
-listOfComparison = ['3d-ccptwo-comparison']
-listOfModels = ['3d-oburn-prompi-models']
+listOfCodes = ['3d-oburn-prompi']
+listOfTimescales = ['3d-oburn-prompi-timescales']
 
-codes = [{'label': 'Oxygen Burning Shell', 'value': '3d-oburn-prompi'},
-         {'label': 'FLASH', 'value': '3d-ccptwo-flash'},
-         {'label': 'SLH', 'value': '3d-ccptwo-slh'},
-         {'label': 'SLH (latest April/2021)', 'value': '3d-ccptwo-slh2'},
-         {'label': 'MUSIC', 'value': '3d-ccptwo-music'},
-         {'label': 'COMPARISON', 'value': '3d-ccptwo-comparison'}]
+codes = [{'label': 'Oxygen Burning Shell Composition Equations', 'value': '3d-oburn-prompi'},
+         {'label': 'Oxygen Burning Shell Timescales', 'value': '3d-oburn-prompi-timescales'}]
 # {'label': 'MODELS (based on PROMPI)', 'value': '3d-oburn-prompi-models'}]
 
 equations = [{'label': 'Temperature, Density, Pressure, Internal Energy', 'value': 'tdc'},
@@ -94,15 +92,24 @@ equations = [{'label': 'Temperature, Density, Pressure, Internal Energy', 'value
              {'label': 'Transport Equation for cl35', 'value': 'xtrseq_cl35'},
              {'label': 'Transport Equation for ar36', 'value': 'xtrseq_ar36'}]
 
-comparison = [{'label': 'Velocities', 'value': 'urmstke'},
-              {'label': 'Composition Flux', 'value': 'xflux'}]
+
+timescales = [{'label': 'Timescales for prot', 'value': 'xtimescales_prot'},
+              {'label': 'Timescales for neut', 'value': 'xtimescales_neut'},
+              {'label': 'Timescales for he4', 'value': 'xtimescales_he4'},
+              {'label': 'Timescales for c12', 'value': 'xtimescales_c12'},
+              {'label': 'Timescales for o16', 'value': 'xtimescales_o16'},
+              {'label': 'Timescales for ne20', 'value': 'xtimescales_ne20'},
+              {'label': 'Timescales for na23', 'value': 'xtimescales_na23'},
+              {'label': 'Timescales for mg24', 'value': 'xtimescales_mg24'},
+              {'label': 'Timescales for si28', 'value': 'xtimescales_si28'},
+              {'label': 'Timescales for p31', 'value': 'xtimescales_p31'},
+              {'label': 'Timescales for s32', 'value': 'xtimescales_s32'},
+              {'label': 'Timescales for s34', 'value': 'xtimescales_s34'},
+              {'label': 'Timescales for cl35', 'value': 'xtimescales_cl35'},
+              {'label': 'Timescales for ar36', 'value': 'xtimescales_ar36'}]
 
 dictOptions = {'3d-oburn-prompi': equations,
-               '3d-ccptwo-flash': equations,
-               '3d-ccptwo-slh': equations,
-               '3d-ccptwo-slh2': equations,
-               '3d-ccptwo-music': equations,
-               '3d-ccptwo-comparison': comparison}
+               '3d-oburn-prompi-timescales': timescales}
 
 # initialize properties for table-properties
 data = {'Name of Property': ['Resolution', 'Depth of the Convection Zone (in ccp units)', 'Effective Reynolds Number'],
@@ -140,7 +147,7 @@ app.layout = html.Div([
                                 ], style=dict(width='40%')),
                                 html.Div([
                                     html.Label(
-                                        'RANS Equation: (or mean field for COMPARISON option in Code: dropdown)'),
+                                        'RANS Transport Equations or Timescales'),
                                     dcc.Dropdown(
                                         id='equation',
                                         multi=False,
@@ -178,26 +185,14 @@ def getParams(codeSelect):
         if codeSelect == '3d-oburn-prompi':
             paramFile = os.path.join('PARAMS', 'PROMPI', 'param.ransxi')
             params = ReadParamsRansXi(paramFile)
-        elif codeSelect == '3d-ccptwo-flash':
-            paramFile = os.path.join('PARAMS', 'FLASH', 'param.ransxi')
-            params = ReadParamsRansXi(paramFile)
-        elif codeSelect == '3d-ccptwo-music':
-            paramFile = os.path.join('PARAMS', 'MUSIC', 'param.ransxi')
-            params = ReadParamsRansXi(paramFile)
-        elif codeSelect == '3d-ccptwo-slh':
-            paramFile = os.path.join('PARAMS', 'SLH', 'param.ransxi')
-            params = ReadParamsRansXi(paramFile)
-        elif codeSelect == '3d-ccptwo-slh2':
-            paramFile = os.path.join('PARAMS', 'SLH', 'param.ransxi2')
-            params = ReadParamsRansXi(paramFile)
         else:
             print('ERROR (app.py): code not supported (update_table)')
-    elif codeSelect in listOfComparison:
-        # create os independent path and read parameter file
-        paramFile = os.path.join('PARAMS', 'COMPARISON', 'param.compare')
-        params = CompareReadParamsRansX(paramFile)
-    elif codeSelect in listOfModels:
-        pass
+    elif codeSelect in listOfTimescales:
+            if codeSelect == '3d-oburn-prompi-timescales':
+                paramFile = os.path.join('PARAMS', 'PROMPI', 'param.reaclib')
+                params = ReadParamsReaclib(paramFile)
+            else:
+                print('ERROR (app.py): code not supported (update_table)')
     else:
         print('ERROR (app.py): code not supported (update_table)')
 
@@ -232,44 +227,26 @@ def update_table(codeSelect):
         #    [prp['tc'], prp['tD'], '%.2e' % prp['urms']]
 
         df = pd.DataFrame(data)
-    elif codeSelect in listOfComparison:
+    elif codeSelect in listOfTimescales:
         # calculate properties
-        params = getParams('3d-oburn-prompi')  # hardcoded - assuming all loaded data have the same resolution,
-        # averaging window, and approx. central time
+        params = getParams(codeSelect)
         ransP = Properties(params)
         prp = ransP.properties()
 
-        data = {'Name of Property': ['Resolution', 'Averaging Time-Range (From-To in ccp units)'],
-                'Value': [str(prp['nx']) + 'x' + str(prp['ny']) + 'x' + str(prp['nz']),
-                          str(prp['timerange_beg']) + '-' + str(prp['timerange_end'])],
-                'Name of Property ': ['Time-Averaging Window (in turnover timescales)',
-                                      'Approximate Central Time (in ccp units)'],
-                'Value ': [prp['tavg_to'], prp['timec']]}
-
-        #    [prp['tc'], prp['tD'], '%.2e' % prp['urms']]
-
-        df = pd.DataFrame(data)
-    elif codeSelect in listOfModels:
-        # calculate properties
-        params = getParams('3d-oburn-prompi')  # hardcoded as the models are based on PROMPI only
-        ransP = Properties(params)
-        prp = ransP.properties()
-
-        data = {'Name of Property': ['Resolution', 'Depth of the Convection Zone (in ccp units)',
+        data = {'Name of Property': ['Resolution', 'Depth of the Convection Zone (in 10e8 cm)',
                                      'Effective Reynolds Number'],
-                'Value': [str(prp['nx']) + 'x' + str(prp['ny']) + 'x' + str(prp['nz']), prp['lc'], prp['Re']],
-                'Name of Property ': ['Time-Averaging Window (in turnover timescales)', 'Central Time (in ccp units)',
-                                      'Averaging Time-Range (From-To in ccp units)'],
+                'Value': [str(prp['nx']) + 'x' + str(prp['ny']) + 'x' + str(prp['nz']), np.round(prp['lc']/1.e8,1), prp['Re']],
+                'Name of Property ': ['Time-Averaging Window (in turnover timescales)', 'Central Time (in seconds)',
+                                      'Averaging Time-Range (From-To in seconds)'],
                 'Value ': [prp['tavg_to'], prp['timec'], str(prp['timerange_beg']) + '-' + str(prp['timerange_end'])],
-                'Name of Property  ': ['Convective Turnover Timescale (in ccp units)',
-                                       'Turbulent Kinetic Energy Dissipation Timescale (in ccp units)',
-                                       'Root-Mean-Square Turbulence Velocity (in ccp units)'],
-                'Value  ': [prp['tc'], prp['tD'], prp['urms']]}
+                'Name of Property  ': ['Convective Turnover Timescale (in seconds)',
+                                       'Turbulent Kinetic Energy Dissipation Timescale (in seconds)',
+                                       'Root-Mean-Square Turbulence Velocity (in 10e6 cm/s)'],
+                'Value  ': [prp['tc'], prp['tD'], np.round(prp['urms']/1.e6,1)]}
 
         #    [prp['tc'], prp['tD'], '%.2e' % prp['urms']]
 
         df = pd.DataFrame(data)
-
     else:
         print('ERROR (app.py): code not supported (update_table)')
 
@@ -302,7 +279,7 @@ def update_figRANS(codeSelect, equationSelect):
                                   'xtrseq_na23', 'xtrseq_mg24', 'xtrseq_si28', 'xtrseq_p31', 'xtrseq_s32',
                                   'xtrseq_s34', 'xtrseq_cl35', 'xtrseq_ar36']:
 
-            equationSelect = 'conteq'  # fallback option when coming from comparison
+            equationSelect = 'xtrseq_neut'  # fallback option when coming from comparison
 
         # calculate properties
         ransP = Properties(params)
@@ -315,26 +292,6 @@ def update_figRANS(codeSelect, equationSelect):
 
         # instantiate master plot
         plt = MasterPlot(params)
-
-        # CONTINUITY EQUATION WITH FAVRIAN DILATATION
-        if equationSelect == 'conteq':
-            fig = plt.execContEq(bconv, tconv)
-
-        # CONTINUITY EQUATION WITH TURBULENT MASS FLUX
-        if equationSelect == 'conteqfdd':
-            fig = plt.execContEqFdd(bconv, tconv)
-
-        # MOMENTUM EQUATION IN X DIRECTION
-        if equationSelect == 'momex':
-            fig = plt.execMomex(bconv, tconv)
-
-        # TURBULENT KINETIC ENERGY EQUATION
-        if equationSelect == 'tkeeq':
-            fig = plt.execTkeEq(bconv, tconv)
-
-        # INTERNAL ENERGY EQUATION
-        if equationSelect == 'eieq':
-            fig = plt.execEiEq(bconv, tconv, tke_diss)
 
         # VELOCITY
         if equationSelect == 'srcvel':
@@ -353,31 +310,49 @@ def update_figRANS(codeSelect, equationSelect):
 
             # COMPOSITION TRANSPORT EQUATION
             if equationSelect == 'xtrseq_' + elem:
-                fig = plt.execXtrsEq(inuc, elem, equationSelect, bconv, tconv)
+                fig = plt.execXtrsEq(inuc, elem, equationSelect, bconv, tconv, prp['tc'])
 
             # COMPOSITION VARIANCE EQUATION
-            if equationSelect == 'xvareq_' + elem:
-                fig = plt.execXvarEq(inuc, elem, equationSelect, bconv, tconv)
+            #if equationSelect == 'xvareq_' + elem:
+            #    fig = plt.execXvarEq(inuc, elem, equationSelect, bconv, tconv)
 
-    elif codeSelect in listOfComparison:
+    elif codeSelect in listOfTimescales:
 
-        if equationSelect not in ['urmstke', 'xflux']:
-            equationSelect = 'urmstke'
+        if equationSelect not in ['xTimescales_prot',
+                                  'xTimescales_neut', 'xTimescales_he4', 'xTimescales_c12', 'xTimescales_o16', 'xTimescales_ne20',
+                                  'xTimescales_na23', 'xTimescales_mg24', 'xTimescales_si28', 'xTimescales_p31', 'xTimescales_s32',
+                                  'xTimescales_s34', 'xTimescales_cl35', 'xTimescales_ar36']:
+
+            equationSelect = 'xTimescales_neut'  # fallback option when coming from comparison
+
+        # calculate properties
+        ransP = Properties(params)
+        prp = ransP.properties()
+
+        # extract some properties
+        bconv = prp['xzn0inc']
+        tconv = prp['xzn0outc']
+        tke_diss = prp['tke_diss']
+
 
         # instantiate master plot
         plt = MasterPlot(params)
 
-        # VELOCITY AND TKE
-        if equationSelect == 'urmstke':
-            fig = plt.execUxComparison()
+        # load network
+        network = params.getNetwork()
 
-        # COMPOSITION FLUX
-        if equationSelect == 'xflux':
-            fig = plt.execXfluxComparison()
+        # COMPOSITION TRANSPORT
+        for elem in network[1:]:  # skip network identifier in the list
+            inuc = params.getInuc(network, elem)
+
+            print('xTimescales_',elem)
 
 
-    elif codeSelect in listOfModels:
-        pass
+            # TIMESCALES
+            if equationSelect == 'xTimescales_' + elem:
+                fig = plt.execXtransportVSnuclearTimescales(inuc, elem, 'xTimescales_' + elem, prp['xzn0inc'], prp['xzn0outc'],
+                                                  prp['tc'])
+
     else:
         print('ERROR (app.py): code not supported (update_figRANS)')
 

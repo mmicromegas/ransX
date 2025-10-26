@@ -301,14 +301,8 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
 
         plt.yscale('symlog')
 
-        # create mapping between element and element_nice, when he4, make element_nice to be $He^{4}$
-        element_nice = self.setNucNoUp(str(self.element))
-
-        print(element_nice)
-
         # plot DATA 		
-        #plt.title(r"$timescales \ for \ $" + self.element)
-        plt.title(str(element_nice))
+        plt.title(r"$timescales \ for \ $" + self.element)
         # plt.plot(grd1,plt0,label=r"$-\tau_{trans}^i$",color='r')
         # plt.plot(grd1,plt1,label=r"$-\tau_{nuc}^i$",color='b')
 
@@ -316,7 +310,7 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
 
         plt.plot(grd1[xlimitrange], plt0[xlimitrange], label=r"$|\tau_{trans}^i|$", color='r')
         plt.plot(grd1[xlimitrange], plt1[xlimitrange], label=r"$|\tau_{nuc}^i|$", color='b')
-        #plt.plot(grd1[xlimitrange], plt2[xlimitrange], label=r"$|\tau_{\rho X}^i|$", color='m')
+        plt.plot(grd1[xlimitrange], plt2[xlimitrange], label=r"$|\tau_{\rho X}^i|$", color='m')
         #plt.plot(grd1[xlimitrange], plt3[xlimitrange], label=r"$|\tau_{X}^i|$", color='brown')
 
         xlimitbottom = np.where(grd1 < self.bconv)
@@ -1128,57 +1122,3 @@ class XtransportVsNuclearTimescales(Calculus, SetAxisLimit, Tools, Errors, objec
         return inuc
 
 
-    def setNucNoUp(self, inpt):
-        elmnt = ""
-        if inpt == "neut":
-            elmnt = r"neut"
-        if inpt == "prot":
-            elmnt = r"prot"
-        if inpt == "he4":
-            elmnt = r"He$^{4}$"
-        if inpt == "c12":
-            elmnt = r"C$^{12}$"
-        if inpt == "o16":
-            elmnt = r"O$^{16}$"
-        if inpt == "ne20":
-            elmnt = r"Ne$^{20}$"
-        if inpt == "na23":
-            elmnt = r"Na$^{23}$"
-        if inpt == "mg24":
-            elmnt = r"Mg$^{24}$"
-        if inpt == "si28":
-            elmnt = r"Si$^{28}$"
-        if inpt == "p31":
-            elmnt = r"P$^{31}$"
-        if inpt == "s32":
-            elmnt = r"S$^{32}$"
-        if inpt == "s34":
-            elmnt = r"S$^{34}$"
-        if inpt == "cl35":
-            elmnt = r"Cl$^{35}$"
-        if inpt == "ar36":
-            elmnt = r"Ar$^{36}$"
-        if inpt == "ar38":
-            elmnt = r"Ar$^{38}$"
-        if inpt == "k39":
-            elmnt = r"K$^{39}$"
-        if inpt == "ca40":
-            elmnt = r"Ca$^{40}$"
-        if inpt == "ca42":
-            elmnt = r"Ca$^{42}$"
-        if inpt == "ti44":
-            elmnt = r"Ti$^{44}$"
-        if inpt == "ti46":
-            elmnt = r"Ti$^{46}$"
-        if inpt == "cr48":
-            elmnt = r"Cr$^{48}$"
-        if inpt == "cr50":
-            elmnt = r"Cr$^{50}$"
-        if inpt == "fe52":
-            elmnt = r"Fe$^{52}$"
-        if inpt == "fe54":
-            elmnt = r"Fe$^{54}$"
-        if inpt == "ni56":
-            elmnt = r"Ni$^{56}$"
-
-        return elmnt
